@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "# #",
+        " D "
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:leather"
+        },
+        "D": {
+            "item": "minecraft:gold_ingot"
+        }
+    },
+    "result": {
+        "item": "mocreatures:medallion",
+        "count": 1
+    }
+}

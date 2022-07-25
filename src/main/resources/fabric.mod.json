@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "mocreatures",
+  "version": "${version}",
+
+  "name": "DrZhark's Mo' Creatures v2.12.2",
+  "description": "Mo' Creatures is a mod created by DrZhark. It was created on November 17, 2010. A mod which adds over 30 new mobs to your game, it provides many new animal and monster mobs, as well as the ability to tame and ride some.",
+  "authors": [
+    "kozibrodka"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/mo-creatures",
+    "sources": "https://github.com/calmilamsy/BIN-fabric-example-mod"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/mocreatures/stationapi/textures/egg/bear.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "stationapi:event_bus": [
+      "net.kozibrodka.mocreatures.events.mod_mocreatures",
+      "net.kozibrodka.mocreatures.events.CreaturesListener",
+      "net.kozibrodka.mocreatures.events.EggListener"
+    ],
+    "stationapi:event_bus_client": [
+
+    ],
+    "stationapi:event_bus_server": [
+
+    ],
+    "gcapi": [
+      "net.kozibrodka.mocreatures.events.mod_mocreatures"
+    ]
+  },
+  "mixins": [
+    "kozibrodka.mixins.json"
+  ],
+
+  "depends": {
+    "minecraft": "1.0.0-beta.7.3"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.kozibrodka.mocreatures.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "BlockBaseAccesor",
+    "CreeperAccesor",
+    "DungeonSaddleMixin",
+    "EntityBaseAccesor",
+    "LimitsMixin",
+    "LivingAccesor",
+    "MocreaturesHellMixin",
+    "MocreaturesMixin",
+    "MonsterBaseAccesor",
+    "PlayerBaseMixin",
+    "WalkingBaseAccesor"
+  ],
+  "server": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

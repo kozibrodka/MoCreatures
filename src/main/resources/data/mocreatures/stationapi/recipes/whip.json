@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "#L#",
+        "L L",
+        "# i"
+    ],
+    "key": {
+        "#": {
+            "item": "mocreatures:bigcatclaw"
+        },
+        "L": {
+            "item": "minecraft:leather"
+        },
+        "i": {
+            "item": "minecraft:iron_ingot"
+        }
+    },
+    "result": {
+        "item": "mocreatures:whip",
+        "count": 1
+    }
+}
