@@ -160,11 +160,11 @@ public class EntityBear extends AnimalBase
         {
             dropItem(new ItemInstance(getMobDrops(), 1, 0), 0.0F);
         }
-
-        int k = rand.nextInt(2);
-        for(int j = 0; j < k; j++)
-        {
-            dropItem(new ItemInstance(mod_mocreatures.wildleather, 1, 0), 0.0F);
+        if(mocr.mocreaturesGlass.balancesettings.balance_drop) {
+            int k = rand.nextInt(2);
+            for (int j = 0; j < k; j++) {
+                dropItem(new ItemInstance(mod_mocreatures.wildleather, 1, 0), 0.0F);
+            }
         }
     }
 

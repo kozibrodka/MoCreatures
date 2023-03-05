@@ -766,7 +766,7 @@ public class EntityHorse extends AnimalBase
             }
             return true;
         }
-        if(itemstack != null && (itemstack.itemId == mod_mocreatures.greenapple.id))
+        if(itemstack != null && (((mocr.mocreaturesGlass.balancesettings.balance_drop) && itemstack.itemId == mod_mocreatures.greenapple.id)  ||  (((itemstack.itemId == ItemBase.apple.id)||(itemstack.itemId == ItemBase.goldenApple.id)) && !mocr.mocreaturesGlass.balancesettings.balance_drop)))
         {
             if(--itemstack.count == 0)
             {

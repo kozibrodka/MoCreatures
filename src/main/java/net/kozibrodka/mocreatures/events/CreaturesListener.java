@@ -18,6 +18,7 @@ import net.modificationstation.stationapi.api.event.registry.MobHandlerRegistryE
 import net.modificationstation.stationapi.api.mod.entrypoint.Entrypoint;
 import net.modificationstation.stationapi.api.registry.Identifier;
 import net.modificationstation.stationapi.api.registry.ModID;
+import net.modificationstation.stationapi.api.registry.Registry;
 import net.modificationstation.stationapi.api.util.Null;
 
 public class CreaturesListener {
@@ -58,34 +59,34 @@ public class CreaturesListener {
 
     @EventListener
     private static void registerMobHandlers(MobHandlerRegistryEvent event) {
-        event.registry.register(Identifier.of(MOD_ID, "Bear"), EntityBear::new);
-        event.registry.register(Identifier.of(MOD_ID, "BigCat"), EntityBigCat::new);
-        event.registry.register(Identifier.of(MOD_ID, "Bird"), EntityBird::new);
-        event.registry.register(Identifier.of(MOD_ID, "Boar"), EntityBoar::new);
-        event.registry.register(Identifier.of(MOD_ID, "Bunny"), EntityBunny::new);
-        event.registry.register(Identifier.of(MOD_ID, "CaveOgre"), EntityCaveOgre::new);
-        event.registry.register(Identifier.of(MOD_ID, "Deer"), EntityDeer::new);
-        event.registry.register(Identifier.of(MOD_ID, "Dolphin"), EntityDolphin::new);
-        event.registry.register(Identifier.of(MOD_ID, "Duck"), EntityDuck::new);
-        event.registry.register(Identifier.of(MOD_ID, "FireOgre"), EntityFireOgre::new);
-        event.registry.register(Identifier.of(MOD_ID, "Fishy"), EntityFishy::new);
-        event.registry.register(Identifier.of(MOD_ID, "FishyEgg"), EntityFishyEgg::new);
-        event.registry.register(Identifier.of(MOD_ID, "FlameWraith"), EntityFlameWraith::new);
-        event.registry.register(Identifier.of(MOD_ID, "Fox"), EntityFox::new);
-        event.registry.register(Identifier.of(MOD_ID, "HellRat"), EntityHellRat::new);
-        event.registry.register(Identifier.of(MOD_ID, "Horse"), EntityHorse::new);
-        event.registry.register(Identifier.of(MOD_ID, "Kitty"), EntityKitty::new);
-        event.registry.register(Identifier.of(MOD_ID, "KittyBed"), EntityKittyBed::new);
-        event.registry.register(Identifier.of(MOD_ID, "LitterBox"), EntityLitterBox::new);
-        event.registry.register(Identifier.of(MOD_ID, "Mouse"), EntityMouse::new);
-        event.registry.register(Identifier.of(MOD_ID, "Ogre"), EntityOgre::new);
-        event.registry.register(Identifier.of(MOD_ID, "PolarBear"), EntityPolarBear::new);
-        event.registry.register(Identifier.of(MOD_ID, "Rat"), EntityRat::new);
-        event.registry.register(Identifier.of(MOD_ID, "Shark"), EntityShark::new);
-        event.registry.register(Identifier.of(MOD_ID, "SharkEgg"), EntitySharkEgg::new);
-        event.registry.register(Identifier.of(MOD_ID, "WereWolf"), EntityWerewolf::new);
-        event.registry.register(Identifier.of(MOD_ID, "Wraith"), EntityWraith::new);
-        event.registry.register(Identifier.of(MOD_ID, "WildWolf"), EntityWWolf::new);
+        Registry.register(event.registry, MOD_ID.id("Bear"), EntityBear::new);
+        Registry.register(event.registry, MOD_ID.id("BigCat"), EntityBigCat::new);
+        Registry.register(event.registry, MOD_ID.id("Bird"), EntityBird::new);
+        Registry.register(event.registry, MOD_ID.id("Boar"), EntityBoar::new);
+        Registry.register(event.registry, MOD_ID.id("Bunny"), EntityBunny::new);
+        Registry.register(event.registry, MOD_ID.id("CaveOgre"), EntityCaveOgre::new);
+        Registry.register(event.registry, MOD_ID.id("Deer"), EntityDeer::new);
+        Registry.register(event.registry, MOD_ID.id("Dolphin"), EntityDolphin::new);
+        Registry.register(event.registry, MOD_ID.id("Duck"), EntityDuck::new);
+        Registry.register(event.registry, MOD_ID.id("FireOgre"), EntityFireOgre::new);
+        Registry.register(event.registry, MOD_ID.id("Fishy"), EntityFishy::new);
+        Registry.register(event.registry, MOD_ID.id("FishyEgg"), EntityFishyEgg::new);
+        Registry.register(event.registry, MOD_ID.id("FlameWraith"), EntityFlameWraith::new);
+        Registry.register(event.registry, MOD_ID.id("Fox"), EntityFox::new);
+        Registry.register(event.registry, MOD_ID.id("HellRat"), EntityHellRat::new);
+        Registry.register(event.registry, MOD_ID.id("Horse"), EntityHorse::new);
+        Registry.register(event.registry, MOD_ID.id("Kitty"), EntityKitty::new);
+        Registry.register(event.registry, MOD_ID.id("KittyBed"), EntityKittyBed::new);
+        Registry.register(event.registry, MOD_ID.id("LitterBox"), EntityLitterBox::new);
+        Registry.register(event.registry, MOD_ID.id("Mouse"), EntityMouse::new);
+        Registry.register(event.registry, MOD_ID.id("Ogre"), EntityOgre::new);
+        Registry.register(event.registry, MOD_ID.id("PolarBear"), EntityPolarBear::new);
+        Registry.register(event.registry, MOD_ID.id("Rat"), EntityRat::new);
+        Registry.register(event.registry, MOD_ID.id("Shark"), EntityShark::new);
+        Registry.register(event.registry, MOD_ID.id("SharkEgg"), EntitySharkEgg::new);
+        Registry.register(event.registry, MOD_ID.id("WereWolf"), EntityWerewolf::new);
+        Registry.register(event.registry, MOD_ID.id("Wraith"), EntityWraith::new);
+        Registry.register(event.registry, MOD_ID.id("WildWolf"), EntityWWolf::new);
     }
 
     @EventListener

@@ -156,12 +156,13 @@ public class EntityFox extends AnimalBase
         {
             dropItem(new ItemInstance(getMobDrops(), 1, 0), 0.0F);
         }
-        int a = rand.nextInt(10);
-        if(a < 8)
-        {
-            int k = rand.nextInt(2);
-            for (int j = 0; j < k; j++) {
-                dropItem(new ItemInstance(mod_mocreatures.wildleather, 1, 0), 0.0F);
+        if(mocr.mocreaturesGlass.balancesettings.balance_drop) {
+            int a = rand.nextInt(10);
+            if (a < 8) {
+                int k = rand.nextInt(2);
+                for (int j = 0; j < k; j++) {
+                    dropItem(new ItemInstance(mod_mocreatures.wildleather, 1, 0), 0.0F);
+                }
             }
         }
     }

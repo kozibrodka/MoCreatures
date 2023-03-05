@@ -21,7 +21,8 @@
     "stationapi:event_bus": [
       "net.kozibrodka.mocreatures.events.mod_mocreatures",
       "net.kozibrodka.mocreatures.events.CreaturesListener",
-      "net.kozibrodka.mocreatures.events.EggListener"
+      "net.kozibrodka.mocreatures.events.EggListener",
+      "net.kozibrodka.mocreatures.events.TextureListener"
     ],
     "stationapi:event_bus_client": [
 
@@ -34,7 +35,7 @@
     ]
   },
   "mixins": [
-    "kozibrodka.mixins.json"
+    "mocreatures.mixins.json"
   ],
 
   "depends": {

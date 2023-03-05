@@ -96,11 +96,11 @@ public class EntityPolarBear extends EntityBear
         {
             dropItem(new ItemInstance(getMobDrops(), 1, 0), 0.0F);
         }
-
-        int k = rand.nextInt(2);
-        for(int j = 0; j < k; j++)
-        {
-            dropItem(new ItemInstance(mod_mocreatures.polarleather, 1, 0), 0.0F);
+        if(mocr.mocreaturesGlass.balancesettings.balance_drop) {
+            int k = rand.nextInt(2);
+            for (int j = 0; j < k; j++) {
+                dropItem(new ItemInstance(mod_mocreatures.polarleather, 1, 0), 0.0F);
+            }
         }
     }
 

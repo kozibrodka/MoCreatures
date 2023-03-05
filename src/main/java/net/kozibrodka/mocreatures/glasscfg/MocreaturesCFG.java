@@ -8,7 +8,7 @@ public class MocreaturesCFG {
     public SpawnLimitsCFG spawnlimits = new SpawnLimitsCFG();
 
     @ConfigCategory("§aAnimals")
-    public AnimalsCFG animals = new AnimalsCFG();
+    public AnimalsCFG animals = new AnimalsCFG();  //BYC moze wyjebac vanilla zwierzatka
 
     @ConfigCategory("§6Hunter Creatures")
     public HunterCreaturesCFG huntercreatures = new HunterCreaturesCFG();
@@ -21,5 +21,8 @@ public class MocreaturesCFG {
 
     @ConfigCategory("§9Other Settings")
     public OtherSettingsCFG othersettings = new OtherSettingsCFG();
+
+    @ConfigCategory("§eBalance Settings (Extra)")
+    public BalanceCFG balancesettings = new BalanceCFG();
 
 }

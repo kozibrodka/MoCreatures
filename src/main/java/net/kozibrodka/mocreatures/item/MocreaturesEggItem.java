@@ -2,6 +2,7 @@ package net.kozibrodka.mocreatures.item;
 
 
 import net.kozibrodka.mocreatures.entity.*;
+import net.kozibrodka.mocreatures.events.TextureListener;
 import net.minecraft.entity.EntityBase;
 import net.minecraft.entity.player.PlayerBase;
 import net.minecraft.item.ItemInstance;
@@ -15,7 +16,6 @@ public class MocreaturesEggItem extends TemplateItemBase {
         this.maxStackSize = 16;
         ide = i;
     }
-
 
     public boolean useOnTile(ItemInstance arg, PlayerBase arg2, Level arg3, int i, int j, int k, int l) {
 

@@ -556,7 +556,7 @@ public class EntityBigCat extends AnimalBase
     public boolean interact(PlayerBase entityplayer)
     {
         ItemInstance itemstack = entityplayer.inventory.getHeldItem();
-        if(itemstack !=null && entityplayer.name.equals(tigerOwner) && tamed && itemstack.itemId == mod_mocreatures.bigcatfood.id)
+        if(itemstack !=null && mocr.mocreaturesGlass.balancesettings.balance_drop && entityplayer.name.equals(tigerOwner) && tamed && itemstack.itemId == mod_mocreatures.bigcatfood.id)
         {
             if(--itemstack.count == 0)
             {

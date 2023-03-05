@@ -191,11 +191,11 @@ public class EntityShark extends EntityCustomWM
             {
                 dropItem(new ItemInstance(mod_mocreatures.sharkteeth, 1, 0), 0.0F);
             }
-
-            int j1 = rand.nextInt(2);
-            for(int l1 = 0; l1 < j1; l1++)
-            {
-                dropItem(new ItemInstance(mod_mocreatures.sharkoil, 1, 0), 0.0F);
+            if(mocr.mocreaturesGlass.balancesettings.balance_drop) {
+                int j1 = rand.nextInt(2);
+                for (int l1 = 0; l1 < j1; l1++) {
+                    dropItem(new ItemInstance(mod_mocreatures.sharkoil, 1, 0), 0.0F);
+                }
             }
 
         } else
