@@ -8,8 +8,10 @@ import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.entity.animal.Chicken;
 import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
-public class EntityDuck extends Chicken
+public class EntityDuck extends Chicken implements MobSpawnDataProvider
 {
 
     public EntityDuck(Level world)
@@ -57,4 +59,9 @@ public class EntityDuck extends Chicken
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "Duck");
+    }
 }

@@ -20,10 +20,12 @@ import net.minecraft.item.ItemBase;
 import net.minecraft.item.ItemInstance;
 import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 
-public class EntityDolphin extends EntityCustomWM
+public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvider
 {
 
     public EntityDolphin(Level world)
@@ -575,4 +577,9 @@ public class EntityDolphin extends EntityCustomWM
     public boolean hungry;
     public String name;
     public boolean displayname;
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "Dolphin");
+    }
 }

@@ -14,9 +14,11 @@ import net.minecraft.item.ItemInstance;
 import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
 import net.minecraft.util.maths.MathHelper;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 public class EntityWerewolf extends MonsterBase
-    implements MonsterEntityType
+    implements MonsterEntityType, MobSpawnDataProvider
 {
 
     public EntityWerewolf(Level world)
@@ -396,4 +398,9 @@ public class EntityWerewolf extends MonsterBase
     private int tcounter;
     public boolean hunched;
     public boolean isUndead;
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "WereWolf");
+    }
 }

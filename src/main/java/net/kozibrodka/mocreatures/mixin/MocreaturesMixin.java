@@ -27,20 +27,20 @@ public class MocreaturesMixin{
     private void Injected(CallbackInfo ci) {
         mod_mocreatures mocr = new mod_mocreatures();
         this.creatures.add(new EntityEntry(EntityBear.class, mocr.mocreaturesGlass.huntercreatures.bearfreq));
-        this.creatures.add(new EntityEntry(EntityBigCat.class, mocr.mocreaturesGlass.huntercreatures.lionfreq));
+//        this.creatures.add(new EntityEntry(EntityBigCat.class, mocr.mocreaturesGlass.huntercreatures.lionfreq)); //TODO GUI
         this.creatures.add(new EntityEntry(EntityBird.class, mocr.mocreaturesGlass.animals.birdfreq));
         this.creatures.add(new EntityEntry(EntityBoar.class, mocr.mocreaturesGlass.huntercreatures.boarfreq));
         this.creatures.add(new EntityEntry(EntityBunny.class, mocr.mocreaturesGlass.animals.bunnyfreq));
         this.creatures.add(new EntityEntry(EntityDeer.class, mocr.mocreaturesGlass.animals.deerfreq));
         this.creatures.add(new EntityEntry(EntityDuck.class, mocr.mocreaturesGlass.animals.duckfreq));
         this.creatures.add(new EntityEntry(EntityFox.class, mocr.mocreaturesGlass.huntercreatures.foxfreq));
-        this.creatures.add(new EntityEntry(EntityHorse.class, mocr.mocreaturesGlass.animals.horsefreq));
-        this.creatures.add(new EntityEntry(EntityKitty.class, mocr.mocreaturesGlass.animals.kittyfreq));
+//        this.creatures.add(new EntityEntry(EntityHorse.class, mocr.mocreaturesGlass.animals.horsefreq)); //TODO GUI
+//        this.creatures.add(new EntityEntry(EntityKitty.class, mocr.mocreaturesGlass.animals.kittyfreq)); //TODO GUI
         this.creatures.add(new EntityEntry(EntityMouse.class, mocr.mocreaturesGlass.animals.micefreq));
         this.creatures.add(new EntityEntry(EntityPolarBear.class, mocr.mocreaturesGlass.huntercreatures.pbearfreq));
 
         this.waterCreatures.add(new EntityEntry(EntityShark.class, mocr.mocreaturesGlass.watermobs.sharkfreq));
-        this.waterCreatures.add(new EntityEntry(EntityDolphin.class, mocr.mocreaturesGlass.watermobs.dolphinfreq));
+//        this.waterCreatures.add(new EntityEntry(EntityDolphin.class, mocr.mocreaturesGlass.watermobs.dolphinfreq)); //TODO GUI
         this.waterCreatures.add(new EntityEntry(EntityFishy.class, mocr.mocreaturesGlass.watermobs.fishfreq));
 
         this.monsters.add(new EntityEntry(EntityWWolf.class, mocr.mocreaturesGlass.hostilemobs.wwolffreq));

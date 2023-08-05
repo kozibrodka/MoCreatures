@@ -16,10 +16,12 @@ import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
 import net.minecraft.util.maths.Box;
 import net.minecraft.util.maths.MathHelper;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 
-public class EntityMouse extends AnimalBase
+public class EntityMouse extends AnimalBase implements MobSpawnDataProvider
 {
 
     public EntityMouse(Level world)
@@ -255,4 +257,9 @@ public class EntityMouse extends AnimalBase
     public boolean picked;
     private boolean fertile;
     private int micetimer;
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "Mouse");
+    }
 }

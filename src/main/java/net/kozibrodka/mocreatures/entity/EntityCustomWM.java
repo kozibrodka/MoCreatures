@@ -16,6 +16,7 @@ import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
 import net.minecraft.util.maths.MathHelper;
 import net.minecraft.util.maths.Vec3f;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 import java.util.Random;

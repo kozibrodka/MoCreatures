@@ -4,14 +4,14 @@
   "package": "net.kozibrodka.mocreatures.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "LimitsMixin",
+    "MocreaturesHellMixin",
+    "MocreaturesMixin",
     "BlockBaseAccesor",
     "CreeperAccesor",
     "DungeonSaddleMixin",
     "EntityBaseAccesor",
-    "LimitsMixin",
     "LivingAccesor",
-    "MocreaturesHellMixin",
-    "MocreaturesMixin",
     "MonsterBaseAccesor",
     "PlayerBaseMixin",
     "WalkingBaseAccesor"

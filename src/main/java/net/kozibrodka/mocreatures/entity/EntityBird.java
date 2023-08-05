@@ -15,11 +15,13 @@ import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
 import net.minecraft.util.maths.Box;
 import net.minecraft.util.maths.MathHelper;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 
 
-public class EntityBird extends AnimalBase
+public class EntityBird extends AnimalBase implements MobSpawnDataProvider
 {
 
     public EntityBird(Level world)
@@ -610,5 +612,10 @@ public class EntityBird extends AnimalBase
     public float wingh;
     public boolean tamed;
     public boolean picked;
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "Bird");
+    }
 }
 

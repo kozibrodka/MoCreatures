@@ -1,5 +1,7 @@
 package net.kozibrodka.mocreatures.events;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.kozibrodka.mocreatures.glasscfg.MocreaturesCFG;
 import net.kozibrodka.mocreatures.item.*;
@@ -9,8 +11,10 @@ import net.mine_diver.unsafeevents.listener.ListenerPriority;
 import net.minecraft.achievement.Achievements;
 import net.minecraft.block.BlockBase;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.options.KeyBinding;
 import net.minecraft.item.ItemBase;
 import net.minecraft.item.ItemInstance;
+import net.modificationstation.stationapi.api.client.event.option.KeyBindingRegisterEvent;
 import net.modificationstation.stationapi.api.event.achievement.AchievementRegisterEvent;
 import net.modificationstation.stationapi.api.event.container.slot.ItemUsedInCraftingEvent;
 import net.modificationstation.stationapi.api.event.recipe.RecipeRegisterEvent;
@@ -22,6 +26,9 @@ import net.modificationstation.stationapi.api.registry.ModID;
 import net.modificationstation.stationapi.api.template.item.TemplateItemBase;
 import net.modificationstation.stationapi.api.util.Null;
 import net.minecraft.achievement.Achievement;
+import org.lwjgl.input.Keyboard;
+
+import java.util.List;
 
 
 public class mod_mocreatures {
@@ -38,12 +45,13 @@ public class mod_mocreatures {
     public static Achievement RobertMaklowicz;
 
 
+    //TODO: horse faliing DMG crazy speed boost
 
     @EventListener(priority = ListenerPriority.HIGHEST)
     public void registerAchievements(AchievementRegisterEvent event) {
         Indiana = new Achievement(77, MOD_ID.id("indiana").toString(), -4, -4, mod_mocreatures.whip, Achievements.OPEN_INVENTORY).method_1041();
         BunnyKilla = new Achievement(78, MOD_ID.id("bunnykilla").toString(), -5, -5, mod_mocreatures.whip, Achievements.OPEN_INVENTORY).method_1041();
-        //TODO: extra, make not retarded names
+        //TODO: extra example achievement, make not retarded names
         WilfFlyingWest = new Achievement(79, MOD_ID.id("wildflyingwest").toString(), -6, -6, mod_mocreatures.horsesaddle, Achievements.OPEN_INVENTORY).method_1041();
         RobertMaklowicz = new Achievement(80, MOD_ID.id("robertmaklowicz").toString(), -7, -7, BlockBase.FLOWING_WATER, Achievements.OPEN_INVENTORY).method_1041();
 
@@ -52,9 +60,12 @@ public class mod_mocreatures {
         Indiana.setUnusual();
         WilfFlyingWest.setUnusual();
         RobertMaklowicz.setUnusual();
-
-
     }
+
+
+//                "LimitsMixin",
+//                "MocreaturesHellMixin",
+//                "MocreaturesMixin",
 
 
     @EventListener
@@ -130,8 +141,8 @@ public class mod_mocreatures {
         return ~i & 0xf;
     }
 
-    @SuppressWarnings("deprecation")
-    public static Minecraft mc = Minecraft.class.cast(FabricLoader.getInstance().getGameInstance());
+//    @SuppressWarnings("deprecation")
+//    public static Minecraft mc = Minecraft.class.cast(FabricLoader.getInstance().getGameInstance());
 
 
     @EventListener
@@ -151,7 +162,7 @@ public class mod_mocreatures {
         rope = new TemplateItemBase(Identifier.of(MOD_ID, "rope")).setTranslationKey(MOD_ID, "rope");
         petfood = new TemplateItemBase(Identifier.of(MOD_ID, "petfood")).setTranslationKey(MOD_ID, "petfood");
 
-        //TODO: extra items, optional for balance
+        //TODO: extra items, optional for balance propably going to remove some of it
         if(mocreaturesGlass.balancesettings.balance_drop) {
             sharkoil = new TemplateItemBase(Identifier.of(MOD_ID, "sharkoil")).setTranslationKey(MOD_ID, "sharkoil");
             wildleather = new TemplateItemBase(Identifier.of(MOD_ID, "wildleather")).setTranslationKey(MOD_ID, "wildleather");
@@ -163,28 +174,35 @@ public class mod_mocreatures {
         }
     }
 
-    public static TemplateItemBase horsesaddle;
-    public static TemplateItemBase haystack;
-    public static TemplateItemBase sugarlump;
-    public static TemplateItemBase sharkteeth;
-    public static TemplateItemBase sharkegg;
-    public static TemplateItemBase fishyegg;
-    public static TemplateItemBase bigcatclaw;
-    public static TemplateItemBase whip;
-    public static TemplateItemBase medallion;
-    public static TemplateItemBase litterbox;
-    public static TemplateItemBase woolball;
-    public static TemplateItemBase rope;
-    public static TemplateItemBase petfood ;
-    public static TemplateItemBase kittybed;
+//    @EventListener
+//    public void registerKeyBindings(KeyBindingRegisterEvent event) {
+//        List<KeyBinding> list = event.keyBindings;
+//        list.add(keyBinding_horseFuel = new KeyBinding("Horse Fuel...", Keyboard.KEY_H));
+//    }
+//    public static KeyBinding keyBinding_horseFuel;
 
-    public static TemplateItemBase sharkoil;
-    public static TemplateItemBase wildleather;
-    public static TemplateItemBase polarleather;
-    public static TemplateItemBase greenapple;
-    public static TemplateItemBase bigcatfood;
-    public static TemplateItemBase sharkfood;
-    public static TemplateItemBase goldenshears;
+    public static ItemBase horsesaddle;
+    public static ItemBase haystack;
+    public static ItemBase sugarlump;
+    public static ItemBase sharkteeth;
+    public static ItemBase sharkegg;
+    public static ItemBase fishyegg;
+    public static ItemBase bigcatclaw;
+    public static ItemBase whip;
+    public static ItemBase medallion;
+    public static ItemBase litterbox;
+    public static ItemBase woolball;
+    public static ItemBase rope;
+    public static ItemBase petfood ;
+    public static ItemBase kittybed;
+
+    public static ItemBase sharkoil;
+    public static ItemBase wildleather;
+    public static ItemBase polarleather;
+    public static ItemBase greenapple;
+    public static ItemBase bigcatfood;
+    public static ItemBase sharkfood;
+    public static ItemBase goldenshears;
 
 
 }

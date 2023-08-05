@@ -17,10 +17,12 @@ import net.minecraft.item.ItemBase;
 import net.minecraft.item.ItemInstance;
 import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 
-public class EntityLitterBox extends Living
+public class EntityLitterBox extends Living implements MobSpawnDataProvider
 {
 
     public EntityLitterBox(Level world)
@@ -193,4 +195,9 @@ public class EntityLitterBox extends Living
     public boolean usedlitter;
     public boolean pickedUp;
     public int littertime;
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "LitterBox");
+    }
 }

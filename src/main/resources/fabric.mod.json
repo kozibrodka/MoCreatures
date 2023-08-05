@@ -14,18 +14,18 @@
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/mocreatures/stationapi/textures/egg/bear.png",
+  "icon": "assets/mocreatures/stationapi/textures/item/egg/bear.png",
 
   "environment": "*",
   "entrypoints": {
     "stationapi:event_bus": [
       "net.kozibrodka.mocreatures.events.mod_mocreatures",
       "net.kozibrodka.mocreatures.events.CreaturesListener",
-      "net.kozibrodka.mocreatures.events.EggListener",
-      "net.kozibrodka.mocreatures.events.TextureListener"
+      "net.kozibrodka.mocreatures.events.EggListener"
     ],
     "stationapi:event_bus_client": [
-
+      "net.kozibrodka.mocreatures.events.KeybindListener",
+      "net.kozibrodka.mocreatures.events.TextureListener"
     ],
     "stationapi:event_bus_server": [
 

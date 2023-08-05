@@ -14,11 +14,13 @@ import net.minecraft.item.ItemBase;
 import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
 import net.minecraft.util.maths.Box;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.Iterator;
 import java.util.List;
 
-public class EntityRat extends MonsterBase
+public class EntityRat extends MonsterBase implements MobSpawnDataProvider
 {
 
     public EntityRat(Level world)
@@ -196,4 +198,9 @@ public class EntityRat extends MonsterBase
     mod_mocreatures mocr = new mod_mocreatures();
     public int typeint;
     public boolean typechosen;
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "Rat");
+    }
 }

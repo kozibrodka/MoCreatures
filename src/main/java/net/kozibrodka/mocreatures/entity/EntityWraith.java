@@ -11,9 +11,11 @@ import net.minecraft.item.ItemBase;
 import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
 import net.minecraft.util.maths.MathHelper;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 public class EntityWraith extends EntityFlyerMob
-    implements MonsterEntityType
+    implements MonsterEntityType, MobSpawnDataProvider
 {
 
     public EntityWraith(Level world)
@@ -107,4 +109,9 @@ public class EntityWraith extends EntityFlyerMob
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "Wraith");
+    }
 }

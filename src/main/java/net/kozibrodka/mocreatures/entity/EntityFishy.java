@@ -14,10 +14,12 @@ import net.minecraft.item.ItemBase;
 import net.minecraft.item.ItemInstance;
 import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 
-public class EntityFishy extends EntityCustomWM
+public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider
 {
 
     public EntityFishy(Level world)
@@ -371,4 +373,9 @@ public class EntityFishy extends EntityCustomWM
     public int gestationtime;
     public boolean eaten;
     public boolean hungry;
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "Fishy");
+    }
 }

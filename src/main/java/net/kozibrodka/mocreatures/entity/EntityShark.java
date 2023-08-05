@@ -18,11 +18,13 @@ import net.minecraft.item.ItemBase;
 import net.minecraft.item.ItemInstance;
 import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 
 
-public class EntityShark extends EntityCustomWM
+public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
 {
 
     public EntityShark(Level world)
@@ -336,4 +338,9 @@ public class EntityShark extends EntityCustomWM
     public boolean adult;
     public boolean tamed;
     public int maxhealth;
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "Shark");
+    }
 }

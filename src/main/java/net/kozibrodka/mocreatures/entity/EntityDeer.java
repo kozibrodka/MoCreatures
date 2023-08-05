@@ -4,6 +4,7 @@
 
 package net.kozibrodka.mocreatures.entity;
 
+import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.block.BlockBase;
 import net.minecraft.class_61;
 import net.minecraft.entity.EntityBase;
@@ -13,10 +14,12 @@ import net.minecraft.item.ItemBase;
 import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
 import net.minecraft.util.maths.MathHelper;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 
-public class EntityDeer extends AnimalBase
+public class EntityDeer extends AnimalBase implements MobSpawnDataProvider
 {
 
     public EntityDeer(Level world)
@@ -236,4 +239,9 @@ public class EntityDeer extends AnimalBase
     public boolean adult;
     public float edad;
     public boolean tamed;
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "Deer");
+    }
 }

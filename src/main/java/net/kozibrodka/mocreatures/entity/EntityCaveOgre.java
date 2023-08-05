@@ -11,9 +11,11 @@ import net.minecraft.item.ItemBase;
 import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
 import net.minecraft.util.maths.MathHelper;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 public class EntityCaveOgre extends EntityOgre
-    implements MonsterEntityType
+    implements MonsterEntityType, MobSpawnDataProvider
 {
 
     public EntityCaveOgre(Level world)
@@ -93,4 +95,9 @@ public class EntityCaveOgre extends EntityOgre
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "CaveOgre");
+    }
 }

@@ -15,10 +15,12 @@ import net.minecraft.item.ItemBase;
 import net.minecraft.item.ItemInstance;
 import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 
-public class EntityFox extends AnimalBase
+public class EntityFox extends AnimalBase implements MobSpawnDataProvider
 {
 
     public EntityFox(Level world)
@@ -210,4 +212,9 @@ public class EntityFox extends AnimalBase
     protected double attackRange;
     public boolean foxboolean;
     protected int force;
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "Fox");
+    }
 }

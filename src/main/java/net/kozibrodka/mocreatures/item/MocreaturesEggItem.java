@@ -19,6 +19,9 @@ public class MocreaturesEggItem extends TemplateItemBase {
 
     public boolean useOnTile(ItemInstance arg, PlayerBase arg2, Level arg3, int i, int j, int k, int l) {
 
+        if(arg3.isServerSide){
+            return true;
+        }
 
         if(ide == 1){
             huj = new EntityBear(arg3);

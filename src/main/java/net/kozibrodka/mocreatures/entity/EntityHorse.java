@@ -5,7 +5,9 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.fabricmc.loader.api.FabricLoader;
+import net.kozibrodka.mocreatures.events.KeybindListener;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.fuelsystem.GuiHorseFuel;
 import net.kozibrodka.mocreatures.mixin.LivingAccesor;
 import net.kozibrodka.mocreatures.mixin.MonsterBaseAccesor;
 import net.kozibrodka.mocreatures.mixin.WalkingBaseAccesor;
@@ -30,10 +32,13 @@ import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
 import net.minecraft.util.io.ListTag;
 import net.minecraft.util.maths.MathHelper;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
+import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-public class EntityHorse extends AnimalBase
+public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDataProvider
 {
 
     public EntityHorse(Level world)
@@ -56,6 +61,7 @@ public class EntityHorse extends AnimalBase
         fwingh = 1.0F;
         localstack = new ItemInstance[27];
         localstackx54 = new ItemInstance[54];
+        cargoItems = new ItemInstance[1];
         maxhealth = 20;
         hasreproduced = false;
         gestationtime = 0;
@@ -633,7 +639,130 @@ public class EntityHorse extends AnimalBase
         }
         limbDistance += (f4 - limbDistance) * 0.4F;
         field_1050 += limbDistance;
+        if(mocr.mocreaturesGlass.balancesettings.horse_fuel && mc.currentScreen == null && Keyboard.isKeyDown(KeybindListener.keyBinding_horseFuel.key) && passenger != null)
+        {
+            openFuelGui();
+        }
+//        animalKeyDown = Keyboard.isKeyDown(mod_mocreatures.keyBinding_horseFuel.key);
+        burnFuel(1);
+        addFuel();
     }
+
+    //TODO:EXTRA FUEL
+    public boolean isFuelled()
+    {
+        if(mocr.mocreaturesGlass.balancesettings.horse_fuel)
+        {
+            return animalFuel > 0;
+        }else{
+            return true;
+        }
+    }
+
+    public void burnFuel(int a){
+        if(mocr.mocreaturesGlass.balancesettings.horse_fuel)
+        {
+            animalFuel = animalFuel - a;
+        }
+    }
+
+    public void addFuel(){
+        if(mocr.mocreaturesGlass.balancesettings.horse_fuel)
+        {
+            if(animalFuel <= 0 && passenger != null && !level.isServerSide)
+            {
+                if(cargoItems[0] != null && cargoItems[0].itemId == ItemBase.coal.id)  //PALIWO
+                {
+                    animalFuel = 200; //plane.planeFuelAdd
+                    takeInventoryItem(0, 1);
+                }
+            }
+        }
+    }
+
+    public ItemInstance takeInventoryItem(int i, int j)
+    {
+        if(cargoItems[i] != null)
+        {
+            if(cargoItems[i].count <= j)
+            {
+                ItemInstance itemstack = cargoItems[i];
+                cargoItems[i] = null;
+                return itemstack;
+            }
+            ItemInstance itemstack1 = cargoItems[i].split(j);
+            if(cargoItems[i].count == 0)
+            {
+                cargoItems[i] = null;
+            }
+            return itemstack1;
+        } else
+        {
+            return null;
+        }
+    }
+
+    public void openFuelGui(){
+        if(!level.isServerSide) {
+            if (mc.currentScreen instanceof GuiHorseFuel) {
+                mc.openScreen(null);
+            } else if (passenger.vehicle instanceof EntityHorse) {
+                mc.openScreen(new GuiHorseFuel(((PlayerBase)passenger).inventory, (EntityHorse)passenger.vehicle));
+            }
+        }
+    }
+
+
+    public int getBurnTimeRemainingScaled(int i)
+    {
+        return (animalFuel * i) / 200;//return (planeFuel * i) / plane.planeFuelAdd;
+    }
+
+    public int getInventorySize()
+    {
+        return 1;
+    }
+
+    public ItemInstance getInventoryItem(int i)
+    {
+        return cargoItems[i];
+    }
+
+    public String getContainerName()
+    {
+        return "TESTOWY NA RAZIE";
+    }
+
+    public int getMaxItemCount()
+    {
+        return 64;
+    }
+
+    public void markDirty()
+    {
+    }
+
+    public void setInventoryItem(int i, ItemInstance itemstack)
+    {
+        cargoItems[i] = itemstack;
+        if(itemstack != null && itemstack.count > getMaxItemCount())
+        {
+            itemstack.count = getMaxItemCount();
+        }
+    }
+
+    public boolean canPlayerUse(PlayerBase entityplayer)
+    {
+        if(removed)
+        {
+            return false;
+        } else
+        {
+            return entityplayer.method_1352(this) <= 64D;
+        }
+    }
+
+    //TODO:EXTRA FUEL end
 
     protected void handleFallDamage(float f)
     {
@@ -1058,6 +1187,19 @@ public class EntityHorse extends AnimalBase
 
             nbttagcompound.put("Items", nbttaglist);
         }
+        if(mocr.mocreaturesGlass.balancesettings.horse_fuel) {
+            ListTag fuelList = new ListTag();
+            for (int i = 0; i < cargoItems.length; i++) {
+                if (cargoItems[i] != null) {
+                    CompoundTag comp2 = new CompoundTag();
+                    comp2.put("SlotFuel", (byte) i);
+                    cargoItems[i].toTag(comp2);
+                    fuelList.add(comp2);
+                }
+            }
+            nbttagcompound.put("Fuels", fuelList);
+        }
+
     }
 
     public void readCustomDataFromTag(CompoundTag nbttagcompound)
@@ -1108,8 +1250,23 @@ public class EntityHorse extends AnimalBase
                     localstackx54[j] = new ItemInstance(nbttagcompound1);
                 }
             }
-
         }
+
+        if(mocr.mocreaturesGlass.balancesettings.horse_fuel) {
+            ListTag nbttaglist2 = nbttagcompound.getListTag("Fuels");
+            cargoItems = new ItemInstance[1];
+            for(int i = 0; i < nbttaglist2.size(); i++)
+            {
+                CompoundTag nbttagcompound1 = (CompoundTag)nbttaglist2.get(i);
+                int k = nbttagcompound1.getByte("SlotFuel") & 0xff;
+                if(k >= 0 && k < cargoItems.length)
+                {
+                    cargoItems[k] = new ItemInstance(nbttagcompound1);
+                }
+            }
+        }
+
+
     }
 
     protected boolean method_640()
@@ -1140,7 +1297,7 @@ public class EntityHorse extends AnimalBase
             dropItem(new ItemInstance(getMobDrops(), 1, 0), 0.0F);
         }
 
-        if(rideable) {
+        if(rideable && mocr.mocreaturesGlass.balancesettings.horse_saddle) {
             int k = rand.nextInt(2);
             for (int j = 0; j < k; j++) {
                 dropItem(new ItemInstance(mod_mocreatures.horsesaddle, 1, 0), 0.0F);
@@ -1214,4 +1371,12 @@ public class EntityHorse extends AnimalBase
     public Living roper;
     public String name;
     public boolean displayname;
+    public ItemInstance cargoItems[];
+    private int animalFuel;
+    public boolean animalKeyDown;
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "Horse");
+    }
 }

@@ -14,11 +14,13 @@ import net.minecraft.entity.monster.MonsterBase;
 import net.minecraft.entity.player.PlayerBase;
 import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 
 
-public class EntityBoar extends Pig
+public class EntityBoar extends Pig implements MobSpawnDataProvider
 {
 
     public EntityBoar(Level world)
@@ -174,4 +176,9 @@ public class EntityBoar extends Pig
     mod_mocreatures mocr = new mod_mocreatures();
     protected int force;
     protected double attackRange;
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "Boar");
+    }
 }

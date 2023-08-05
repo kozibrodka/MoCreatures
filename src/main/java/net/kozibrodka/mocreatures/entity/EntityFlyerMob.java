@@ -4,6 +4,7 @@
 
 package net.kozibrodka.mocreatures.entity;
 
+import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.block.BlockBase;
 import net.minecraft.class_61;
 import net.minecraft.entity.EntityBase;
@@ -12,6 +13,8 @@ import net.minecraft.entity.player.PlayerBase;
 import net.minecraft.level.Level;
 import net.minecraft.util.maths.MathHelper;
 import net.minecraft.util.maths.Vec3f;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.Random;
 
@@ -263,4 +266,5 @@ public class EntityFlyerMob extends MonsterBase
     protected int attackStrength;
     private class_61 entitypath;
     public double speedModifier;
+
 }

@@ -15,8 +15,10 @@ import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
 import net.minecraft.util.maths.Box;
 import net.minecraft.util.maths.MathHelper;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
-public class EntityPolarBear extends EntityBear
+public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
 {
 
     public EntityPolarBear(Level world)
@@ -134,4 +136,9 @@ public class EntityPolarBear extends EntityBear
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "PolarBear");
+    }
 }

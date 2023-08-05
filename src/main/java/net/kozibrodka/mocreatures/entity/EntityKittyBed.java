@@ -15,9 +15,10 @@ import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
 import net.minecraft.util.maths.Vec3f;
 import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 
-public class EntityKittyBed extends Living
+public class EntityKittyBed extends Living implements MobSpawnDataProvider
 {
 
     public EntityKittyBed(Level world)
@@ -197,4 +198,9 @@ public class EntityKittyBed extends Living
     public boolean pickedUp;
     public float milklevel;
     public int sheetcolour;
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "KittyBed");
+    }
 }

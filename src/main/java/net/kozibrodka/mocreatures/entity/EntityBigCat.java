@@ -17,6 +17,7 @@ import net.minecraft.entity.animal.AnimalBase;
 import net.minecraft.entity.animal.Wolf;
 import net.minecraft.entity.monster.MonsterBase;
 import net.minecraft.entity.player.PlayerBase;
+import net.minecraft.inventory.InventoryBase;
 import net.minecraft.item.ItemBase;
 import net.minecraft.item.ItemInstance;
 import net.minecraft.item.tool.Sword;
@@ -24,11 +25,14 @@ import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
 import net.minecraft.util.maths.Box;
 import net.minecraft.util.maths.MathHelper;
+import net.modificationstation.stationapi.api.gui.screen.container.GuiHelper;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 
 
-public class EntityBigCat extends AnimalBase
+public class EntityBigCat extends AnimalBase implements MobSpawnDataProvider
 {
 
     public EntityBigCat(Level world)
@@ -50,6 +54,19 @@ public class EntityBigCat extends AnimalBase
         maxhealth = 25;
         tigerOwner = "";
         protectFromPlayers = true;
+    }
+
+    protected void initDataTracker()
+    {
+        super.initDataTracker();
+        dataTracker.startTracking(16, Byte.valueOf((byte)0)); //Type
+        dataTracker.startTracking(17, Byte.valueOf((byte)0)); //Age
+        dataTracker.startTracking(18, Byte.valueOf((byte)0)); //Adult
+
+        dataTracker.startTracking(20, Byte.valueOf((byte)0)); //Tamed
+        dataTracker.startTracking(21, Byte.valueOf((byte)0)); //Sitting
+        dataTracker.startTracking(22, Byte.valueOf((byte)0)); //Hungry
+        dataTracker.startTracking(23, Byte.valueOf((byte)0)); //Render Health
     }
 
     public void setType(int i)
@@ -807,10 +824,11 @@ public class EntityBigCat extends AnimalBase
         this.sitting = false;
     }
 
-        public static void setName(EntityBigCat entitybigcat)
+    public static void setName(EntityBigCat entitybigcat)
     {
         entitybigcat.displayname = true;
         mc.openScreen(new MoCGUI(entitybigcat, entitybigcat.name));
+//        GuiHelper.openGUI(entityPlayer, Identifier.of("mocreatures:openTamePaper"), null, null, entitybigcat.name);
     }
 
     @SuppressWarnings("deprecation")
@@ -836,5 +854,10 @@ public class EntityBigCat extends AnimalBase
     public boolean displayname;
     public int maxhealth;
     public Living roper;
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "BigCat");
+    }
 }
 

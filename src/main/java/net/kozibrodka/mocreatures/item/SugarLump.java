@@ -25,7 +25,7 @@ public class SugarLump extends TemplateItemBase
 
     public ItemInstance use(ItemInstance itemstack, Level world, PlayerBase entityplayer)
     {
-        if(!mod_mocreatures.mocreaturesGlass.balancesettings.sugar_lump) {
+        if(mod_mocreatures.mocreaturesGlass.balancesettings.sugar_lump) {
             itemstack.count--;
             entityplayer.addHealth(a);
         }

@@ -12,9 +12,11 @@ import net.minecraft.item.ItemBase;
 import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
 import net.minecraft.util.maths.MathHelper;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 public class EntityFlameWraith extends EntityWraith
-    implements MonsterEntityType
+    implements MonsterEntityType, MobSpawnDataProvider
 {
 
     public EntityFlameWraith(Level world)
@@ -95,4 +97,9 @@ public class EntityFlameWraith extends EntityWraith
 
     mod_mocreatures mocr = new mod_mocreatures();
     protected int burningTime;
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "FlameWraith");
+    }
 }

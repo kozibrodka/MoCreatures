@@ -10,12 +10,10 @@ import net.minecraft.entity.Living;
 import net.minecraft.entity.player.PlayerBase;
 import net.minecraft.item.ItemInstance;
 import net.minecraft.level.Level;
+import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
-// Referenced classes of package net.minecraft.src:
-//            EntityLiving, World, EntityPlayer, ItemStack, 
-//            mod_mocreatures, InventoryPlayer, EntityFishy, Material
-
-public class EntityFishyEgg extends Living
+public class EntityFishyEgg extends Living implements MobSpawnDataProvider
 {
 
     public EntityFishyEgg(Level world)
@@ -109,4 +107,9 @@ public class EntityFishyEgg extends Living
 
     private int tCounter;
     private int lCounter;
+
+    @Override
+    public Identifier getHandlerIdentifier() {
+        return Identifier.of(mod_mocreatures.MOD_ID, "FishyEgg");
+    }
 }
