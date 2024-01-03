@@ -1,14 +1,14 @@
 package net.kozibrodka.mocreatures.mixin;
 
 import net.kozibrodka.mocreatures.entity.*;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.Living;
-import net.minecraft.entity.animal.Wolf;
-import net.minecraft.entity.monster.Creeper;
-import net.minecraft.entity.monster.Ghast;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.util.maths.Box;
-import net.minecraft.level.Level;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.CreeperEntity;
+import net.minecraft.entity.mob.GhastEntity;
+import net.minecraft.entity.passive.WolfEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.Box;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -21,41 +21,41 @@ import java.util.Iterator;
 import java.util.List;
 
 
-@Mixin(PlayerBase.class)
-public class PlayerBaseMixin extends Living{
+@Mixin(PlayerEntity.class)
+public class PlayerBaseMixin extends LivingEntity{
 
 
     @Shadow public String name;
 
-    public PlayerBaseMixin(Level arg) {
+    public PlayerBaseMixin(World arg) {
         super(arg);
     }
 
-    @Shadow  protected boolean isPvpable() {
+    @Shadow  protected boolean method_498() {
         return false;
     }
 
 
-    @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerBase;method_510(Lnet/minecraft/entity/Living;Z)V"))
-    private void injected(EntityBase i, int par2, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;method_510(Lnet/minecraft/entity/LivingEntity;Z)V"))
+    private void injected(Entity i, int par2, CallbackInfoReturnable<Boolean> cir) {
         Object obj3 = i;
-        this.alertBigCat((Living)obj3, false);
+        this.alertBigCat((LivingEntity)obj3, false);
     }
 
-    @Inject(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerBase;method_510(Lnet/minecraft/entity/Living;Z)V"))
-    private void injected1(EntityBase par1, CallbackInfo ci) {
-        this.alertBigCat((Living)par1, true);
+    @Inject(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;method_510(Lnet/minecraft/entity/LivingEntity;Z)V"))
+    private void injected1(Entity par1, CallbackInfo ci) {
+        this.alertBigCat((LivingEntity)par1, true);
     }
 
-    public void alertBigCat(Living entityliving, boolean flag){
-        if((entityliving instanceof Creeper) || (entityliving instanceof Ghast))
+    public void alertBigCat(LivingEntity entityliving, boolean flag){
+        if((entityliving instanceof CreeperEntity) || (entityliving instanceof GhastEntity))
         {
             return;
         }
-        if(entityliving instanceof Wolf)
+        if(entityliving instanceof WolfEntity)
         {
-            Wolf entitywolf = (Wolf)entityliving;
-            if(entitywolf.isTamed() && name.equals(entitywolf.getOwner()))
+            WolfEntity entitywolf = (WolfEntity)entityliving;
+            if(entitywolf.method_425() && name.equals(entitywolf.method_432()))
             {
                 return;
             }
@@ -74,11 +74,11 @@ public class PlayerBaseMixin extends Living{
         }
 
 
-        if((entityliving instanceof PlayerBase) && !isPvpable())
+        if((entityliving instanceof PlayerEntity) && !method_498())
         {
             return;
         }
-        List list = level.getEntities(EntityBigCat.class, Box.createButWasteMemory(x, y, z, x + 1.0D, y + 1.0D, z + 1.0D).expand(16D, 4D, 16D));
+        List list = world.method_175(EntityBigCat.class, Box.createCached(x, y, z, x + 1.0D, y + 1.0D, z + 1.0D).expand(16D, 4D, 16D));
         Iterator iterator = list.iterator();
         do
         {
@@ -86,11 +86,11 @@ public class PlayerBaseMixin extends Living{
             {
                 break;
             }
-            EntityBase entity = (EntityBase)iterator.next();
+            Entity entity = (Entity)iterator.next();
             EntityBigCat entitybigcat = (EntityBigCat)entity;
-            if(entitybigcat.tamed && entitybigcat.adult && entitybigcat.method_634() == null && name.equals(entitybigcat.tigerOwner) && (!flag || !entitybigcat.sitting))
+            if(entitybigcat.tamed && entitybigcat.adult && entitybigcat.getTarget() == null && name.equals(entitybigcat.tigerOwner) && (!flag || !entitybigcat.sitting))
             {
-                if(!(entityliving instanceof PlayerBase && !entitybigcat.protectFromPlayers))
+                if(!(entityliving instanceof PlayerEntity && !entitybigcat.protectFromPlayers))
                 {
                     entitybigcat.wstanSzybko();
                     entitybigcat.ustawCel(entityliving);

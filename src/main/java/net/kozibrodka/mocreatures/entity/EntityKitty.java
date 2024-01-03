@@ -7,35 +7,35 @@ package net.kozibrodka.mocreatures.entity;
 import net.fabricmc.loader.api.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCGUI;
-import net.minecraft.block.BlockBase;
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Block;
+import net.minecraft.block.Material;
 import net.minecraft.class_61;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.Item;
-import net.minecraft.entity.Living;
-import net.minecraft.entity.animal.AnimalBase;
-import net.minecraft.entity.animal.Wolf;
-import net.minecraft.entity.monster.MonsterBase;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemBase;
-import net.minecraft.item.ItemInstance;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
-import net.minecraft.util.maths.Box;
-import net.minecraft.util.maths.MathHelper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.MonsterEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.WolfEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 
-public class EntityKitty extends AnimalBase implements MobSpawnDataProvider
+public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider
 {
 
-    public EntityKitty(Level world)
+    public EntityKitty(World world)
     {
         super(world);
-        setSize(0.7F, 0.5F);
+        setBoundingBoxSpacing(0.7F, 0.5F);
         texture = "/assets/mocreatures/stationapi/textures/mob/pussycata.png";
         field_1045 = true;
         adult = true;
@@ -46,7 +46,7 @@ public class EntityKitty extends AnimalBase implements MobSpawnDataProvider
         hungry = false;
         kittytimer = 0;
         health = 15;
-        madtimer = rand.nextInt(5);
+        madtimer = random.nextInt(5);
         maxhealth = 15;
         name = "";
         displayname = false;
@@ -75,24 +75,24 @@ public class EntityKitty extends AnimalBase implements MobSpawnDataProvider
         return kittystate == 16 && method_932();
     }
 
-    public double getHeightOffset()
+    public double method_1385()
     {
-        if(vehicle instanceof PlayerBase)
+        if(field_1595 instanceof PlayerEntity)
         {
             if(kittystate == 10)
             {
-                return (double)(standingEyeHeight - 1.1F);
+                return (double)(eyeHeight - 1.1F);
             }
             if(upsideDown())
             {
-                return (double)(standingEyeHeight - 1.7F);
+                return (double)(eyeHeight - 1.7F);
             }
             if(onMaBack())
             {
-                return (double)(standingEyeHeight - 1.5F);
+                return (double)(eyeHeight - 1.5F);
             }
         }
-        return (double)standingEyeHeight;
+        return (double)eyeHeight;
     }
 
     public void setType(int i)
@@ -106,7 +106,7 @@ public class EntityKitty extends AnimalBase implements MobSpawnDataProvider
     {
         if(typeint == 0)
         {
-            int i = rand.nextInt(100);
+            int i = random.nextInt(100);
             if(i <= 15)
             {
                 typeint = 1;
@@ -177,27 +177,27 @@ public class EntityKitty extends AnimalBase implements MobSpawnDataProvider
         typechosen = true;
     }
 
-    public boolean interact(PlayerBase entityplayer)
+    public boolean method_1323(PlayerEntity entityplayer)
     {
-        ItemInstance itemstack = entityplayer.inventory.getHeldItem();
+        ItemStack itemstack = entityplayer.inventory.getSelectedItem();
         if(kittystate == 2 && itemstack != null && itemstack.itemId == mod_mocreatures.medallion.id)
         {
             if(--itemstack.count == 0)
             {
-                entityplayer.inventory.setInventoryItem(entityplayer.inventory.selectedHotbarSlot, null);
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
             changeKittyState(3);
             health = maxhealth;
             setName(this);
             return true;
         }
-        if(kittystate == 7 && itemstack != null && itemstack.itemId == ItemBase.cake.id)
+        if(kittystate == 7 && itemstack != null && itemstack.itemId == Item.CAKE.id)
         {
             if(--itemstack.count == 0)
             {
-                entityplayer.inventory.setInventoryItem(entityplayer.inventory.selectedHotbarSlot, null);
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
-            level.playSound(this, "moreatures:kittyeatingf", 1.0F, 1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
+            world.playSound(this, "moreatures:kittyeatingf", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             changeKittyState(9);
             return true;
         }
@@ -205,35 +205,35 @@ public class EntityKitty extends AnimalBase implements MobSpawnDataProvider
         {
             if(--itemstack.count == 0)
             {
-                entityplayer.inventory.setInventoryItem(entityplayer.inventory.selectedHotbarSlot, null);
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
             kittystate = 8;
-            Item entityitem = new Item(level, x, y + 1.0D, z, new ItemInstance(mod_mocreatures.woolball, 1));
+            ItemEntity entityitem = new ItemEntity(world, x, y + 1.0D, z, new ItemStack(mod_mocreatures.woolball, 1));
             entityitem.pickupDelay = 30;
-            entityitem.age = -10000;
-            level.spawnEntity(entityitem);
-            entityitem.velocityY += level.rand.nextFloat() * 0.05F;
-            entityitem.velocityX += (level.rand.nextFloat() - level.rand.nextFloat()) * 0.3F;
-            entityitem.velocityZ += (level.rand.nextFloat() - level.rand.nextFloat()) * 0.3F;
-            entity = entityitem;
+            entityitem.itemAge = -10000;
+            world.method_210(entityitem);
+            entityitem.velocityY += world.field_214.nextFloat() * 0.05F;
+            entityitem.velocityX += (world.field_214.nextFloat() - world.field_214.nextFloat()) * 0.3F;
+            entityitem.velocityZ += (world.field_214.nextFloat() - world.field_214.nextFloat()) * 0.3F;
+            target = entityitem;
             return true;
         }
-        if(kittystate == 13 && itemstack != null && (itemstack.itemId == ItemBase.rawFish.id || itemstack.itemId == ItemBase.cookedFish.id))
+        if(kittystate == 13 && itemstack != null && (itemstack.itemId == Item.RAW_FISH.id || itemstack.itemId == Item.COOKED_FISH.id))
         {
             if(--itemstack.count == 0)
             {
-                entityplayer.inventory.setInventoryItem(entityplayer.inventory.selectedHotbarSlot, null);
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
-            level.playSound(this, "kittyeatingf", 1.0F, 1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
+            world.playSound(this, "kittyeatingf", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             changeKittyState(7);
             return true;
         }
-        if(itemstack != null && kittystate > 2 && (itemstack.itemId == ItemBase.diamondPickaxe.id || itemstack.itemId == ItemBase.woodPickaxe.id || itemstack.itemId == ItemBase.stonePickaxe.id || itemstack.itemId == ItemBase.ironPickaxe.id || itemstack.itemId == ItemBase.goldPickaxe.id))
+        if(itemstack != null && kittystate > 2 && (itemstack.itemId == Item.DIAMOND_PICKAXE.id || itemstack.itemId == Item.WOODEN_PICKAXE.id || itemstack.itemId == Item.STONE_PICKAXE.id || itemstack.itemId == Item.IRON_PICKAXE.id || itemstack.itemId == Item.GOLDEN_PICKAXE.id))
         {
             displayname = !displayname;
             return true;
         }
-        if(itemstack != null && kittystate > 2 && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == ItemBase.book.id))
+        if(itemstack != null && kittystate > 2 && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == Item.BOOK.id))
         {
             setName(this);
             return true;
@@ -241,7 +241,7 @@ public class EntityKitty extends AnimalBase implements MobSpawnDataProvider
         if(itemstack != null && kittystate > 2 && pickable() && itemstack.itemId == mod_mocreatures.rope.id)
         {
             changeKittyState(14);
-            startRiding(entityplayer);
+            method_1376(entityplayer);
             return true;
         }
         if(itemstack != null && kittystate > 2 && whipeable() && itemstack.itemId == mod_mocreatures.whip.id)
@@ -249,15 +249,15 @@ public class EntityKitty extends AnimalBase implements MobSpawnDataProvider
             isSitting = !isSitting;
             return true;
         }
-        if(itemstack == null && kittystate == 10 && vehicle != null)
+        if(itemstack == null && kittystate == 10 && field_1595 != null)
         {
-            vehicle = null;
+            field_1595 = null;
             return true;
         }
         if(itemstack == null && kittystate > 2 && pickable())
         {
             changeKittyState(15);
-            startRiding(entityplayer);
+            method_1376(entityplayer);
             return true;
         }
         if(itemstack == null && kittystate == 15)
@@ -280,7 +280,7 @@ public class EntityKitty extends AnimalBase implements MobSpawnDataProvider
         return kittystate != 13;
     }
 
-    public void updateDespawnCounter()
+    public void method_937()
     {
         if(!adult && kittystate != 10)
         {
@@ -288,13 +288,13 @@ public class EntityKitty extends AnimalBase implements MobSpawnDataProvider
         }
         if(kittystate != 12)
         {
-            super.updateDespawnCounter();
+            super.method_937();
         }
-        if(rand.nextInt(200) == 0)
+        if(random.nextInt(200) == 0)
         {
             displayemo = !displayemo;
         }
-        if(!adult && rand.nextInt(200) == 0)
+        if(!adult && random.nextInt(200) == 0)
         {
             edad += 0.005F;
             if(edad >= 1.0F)
@@ -303,7 +303,7 @@ public class EntityKitty extends AnimalBase implements MobSpawnDataProvider
                 field_1045 = false;
             }
         }
-        if(!hungry && !isSitting && rand.nextInt(100) == 0)
+        if(!hungry && !isSitting && random.nextInt(100) == 0)
         {
             hungry = true;
         }
@@ -315,40 +315,40 @@ label0:
             break;
 
         case 1: // '\001'
-            if(rand.nextInt(10) == 0)
+            if(random.nextInt(10) == 0)
             {
-                Living entityliving = getBoogey(6D, true);
+                LivingEntity entityliving = getBoogey(6D, true);
                 if(entityliving != null)
                 {
                     runLikeHell(entityliving);
                 }
                 break;
             }
-            if(!hungry || rand.nextInt(10) != 0)
+            if(!hungry || random.nextInt(10) != 0)
             {
                 break;
             }
-            Item entityitem = getClosestItem(this, 10D, ItemBase.cookedFish.id, ItemBase.cookedFish.id);
+            ItemEntity entityitem = getClosestItem(this, 10D, Item.COOKED_FISH.id, Item.COOKED_FISH.id);
             if(entityitem == null)
             {
                 break;
             }
-            float f = entityitem.distanceTo(this);
+            float f = entityitem.method_1351(this);
             if(f > 2.0F)
             {
                 getMyOwnPath(entityitem, f);
             }
-            if(f < 2.0F && entityitem != null && deathTime == 0)
+            if(f < 2.0F && entityitem != null && field_1041 == 0)
             {
-                entityitem.remove();
-                level.playSound(this, "mocreatures:kittyeatingf", 1.0F, 1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
+                entityitem.markDead();
+                world.playSound(this, "mocreatures:kittyeatingf", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
                 hungry = false;
                 kittystate = 2;
             }
             break;
 
         case 2: // '\002'
-            Living entityliving1 = getBoogey(6D, false);
+            LivingEntity entityliving1 = getBoogey(6D, false);
             if(entityliving1 != null)
             {
                 runLikeHell(entityliving1);
@@ -359,27 +359,27 @@ label0:
             kittytimer++;
             if(kittytimer > 500)
             {
-                if(rand.nextInt(200) == 0)
+                if(random.nextInt(200) == 0)
                 {
                     changeKittyState(13);
                     break;
                 }
-                if(rand.nextInt(500) == 0)
+                if(random.nextInt(500) == 0)
                 {
                     changeKittyState(7);
                     break;
                 }
             }
-            if(rand.nextInt(20) != 0)
+            if(random.nextInt(20) != 0)
             {
                 break;
             }
             EntityKittyBed entitykittybed = (EntityKittyBed)getKittyStuff(this, 18D, false);
-            if(entitykittybed == null || entitykittybed.passenger != null || !entitykittybed.hasMilk && !entitykittybed.hasFood)
+            if(entitykittybed == null || entitykittybed.field_1594 != null || !entitykittybed.hasMilk && !entitykittybed.hasFood)
             {
                 break;
             }
-            float f5 = entitykittybed.distanceTo(this);
+            float f5 = entitykittybed.method_1351(this);
             if(f5 > 2.0F)
             {
                 getMyOwnPath(entitykittybed, f5);
@@ -387,15 +387,15 @@ label0:
             if(f5 < 2.0F)
             {
                 changeKittyState(4);
-                startRiding(entitykittybed);
+                method_1376(entitykittybed);
                 isSitting = true;
             }
             break;
 
         case 4: // '\004'
-            if(vehicle != null)
+            if(field_1595 != null)
             {
-                EntityKittyBed entitykittybed1 = (EntityKittyBed)vehicle;
+                EntityKittyBed entitykittybed1 = (EntityKittyBed)field_1595;
                 if(entitykittybed1 != null && !entitykittybed1.hasMilk && !entitykittybed1.hasFood)
                 {
                     health = maxhealth;
@@ -406,7 +406,7 @@ label0:
                 health = maxhealth;
                 changeKittyState(5);
             }
-            if(rand.nextInt(2500) == 0)
+            if(random.nextInt(2500) == 0)
             {
                 health = maxhealth;
                 changeKittyState(7);
@@ -415,21 +415,21 @@ label0:
 
         case 5: // '\005'
             kittytimer++;
-            if(kittytimer > 2000 && rand.nextInt(1000) == 0)
+            if(kittytimer > 2000 && random.nextInt(1000) == 0)
             {
                 changeKittyState(13);
                 break;
             }
-            if(rand.nextInt(20) != 0)
+            if(random.nextInt(20) != 0)
             {
                 break;
             }
             EntityLitterBox entitylitterbox = (EntityLitterBox)getKittyStuff(this, 18D, true);
-            if(entitylitterbox == null || entitylitterbox.passenger != null || entitylitterbox.usedlitter)
+            if(entitylitterbox == null || entitylitterbox.field_1594 != null || entitylitterbox.usedlitter)
             {
                 break;
             }
-            float f6 = entitylitterbox.distanceTo(this);
+            float f6 = entitylitterbox.method_1351(this);
             if(f6 > 2.0F)
             {
                 getMyOwnPath(entitylitterbox, f6);
@@ -437,7 +437,7 @@ label0:
             if(f6 < 2.0F)
             {
                 changeKittyState(6);
-                startRiding(entitylitterbox);
+                method_1376(entitylitterbox);
             }
             break;
 
@@ -447,8 +447,8 @@ label0:
             {
                 break;
             }
-            level.playSound(this, "mocreatures:kittypoo", 1.0F, 1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
-            EntityLitterBox entitylitterbox1 = (EntityLitterBox)vehicle;
+            world.playSound(this, "mocreatures:kittypoo", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+            EntityLitterBox entitylitterbox1 = (EntityLitterBox)field_1595;
             if(entitylitterbox1 != null)
             {
                 entitylitterbox1.usedlitter = true;
@@ -462,12 +462,12 @@ label0:
             {
                 break;
             }
-            if(rand.nextInt(20) == 0)
+            if(random.nextInt(20) == 0)
             {
-                PlayerBase entityplayer = level.getClosestPlayerTo(this, 12D);
+                PlayerEntity entityplayer = world.method_186(this, 12D);
                 if(entityplayer != null)
                 {
-                    ItemInstance itemstack = entityplayer.inventory.getHeldItem();
+                    ItemStack itemstack = entityplayer.inventory.getSelectedItem();
                     if(itemstack != null && itemstack.itemId == mod_mocreatures.woolball.id)
                     {
                         changeKittyState(11);
@@ -475,22 +475,22 @@ label0:
                     }
                 }
             }
-            if(field_1612 && rand.nextInt(500) == 0)
+            if(field_1612 && random.nextInt(500) == 0)
             {
                 changeKittyState(13);
                 break;
             }
-            if(rand.nextInt(500) == 0 && !level.isDaylight())
+            if(random.nextInt(500) == 0 && !world.method_220())
             {
                 changeKittyState(12);
                 break;
             }
-            if(rand.nextInt(2000) == 0)
+            if(random.nextInt(2000) == 0)
             {
                 changeKittyState(3);
                 break;
             }
-            if(rand.nextInt(4000) == 0)
+            if(random.nextInt(4000) == 0)
             {
                 changeKittyState(16);
             }
@@ -502,19 +502,19 @@ label0:
                 changeKittyState(13);
                 break;
             }
-            if(entity != null && (entity instanceof Item))
+            if(target != null && (target instanceof ItemEntity))
             {
-                float f1 = distanceTo(entity);
+                float f1 = method_1351(target);
                 if(f1 < 1.5F)
                 {
                     swingArm();
-                    if(rand.nextInt(10) == 0)
+                    if(random.nextInt(10) == 0)
                     {
-                        kittySmack(this, entity);
+                        kittySmack(this, target);
                     }
                 }
             }
-            if(entity == null || rand.nextInt(1000) == 0)
+            if(target == null || random.nextInt(1000) == 0)
             {
                 changeKittyState(7);
             }
@@ -522,9 +522,9 @@ label0:
 
         case 9: // '\t'
             kittytimer++;
-            if(rand.nextInt(50) == 0)
+            if(random.nextInt(50) == 0)
             {
-                List list = level.getEntities(this, boundingBox.expand(16D, 6D, 16D));
+                List list = world.getEntities(this, boundingBox.expand(16D, 6D, 16D));
                 int j = 0;
                 do
                 {
@@ -532,13 +532,13 @@ label0:
                     {
                         break;
                     }
-                    EntityBase entity = (EntityBase)list.get(j);
+                    Entity entity = (Entity)list.get(j);
                     if((entity instanceof EntityKitty) && (entity instanceof EntityKitty) && ((EntityKitty)entity).kittystate == 9)
                     {
                         changeKittyState(18);
                         entity = entity;
                         ((EntityKitty)entity).changeKittyState(18);
-                        ((EntityKitty)entity).entity = this;
+                        ((EntityKitty)entity).target = this;
                         break;
                     }
                     j++;
@@ -556,84 +556,84 @@ label0:
                 changeKittyState(7);
                 break;
             }
-            if(rand.nextInt(50) == 0)
+            if(random.nextInt(50) == 0)
             {
-                List list1 = level.getEntities(this, boundingBox.expand(16D, 6D, 16D));
+                List list1 = world.getEntities(this, boundingBox.expand(16D, 6D, 16D));
                 for(int k = 0; k < list1.size(); k++)
                 {
-                    EntityBase entity1 = (EntityBase)list1.get(k);
+                    Entity entity1 = (Entity)list1.get(k);
                     if(!(entity1 instanceof EntityKitty) || ((EntityKitty)entity1).kittystate != 21)
                     {
                         continue;
                     }
-                    float f9 = distanceTo(entity1);
+                    float f9 = method_1351(entity1);
                     if(f9 > 12F)
                     {
-                        entity = entity1;
+                        target = entity1;
                     }
                 }
 
             }
-            if(entity == null && rand.nextInt(100) == 0)
+            if(target == null && random.nextInt(100) == 0)
             {
-                int i = rand.nextInt(10);
+                int i = random.nextInt(10);
                 if(i < 7)
                 {
-                    entity = getClosestItem(this, 10D, -1, -1);
+                    target = getClosestItem(this, 10D, -1, -1);
                 } else
                 {
-                    entity = level.getClosestPlayerTo(this, 18D);
+                    target = world.method_186(this, 18D);
                 }
             }
-            if(entity != null && rand.nextInt(400) == 0)
+            if(target != null && random.nextInt(400) == 0)
             {
-                entity = null;
+                target = null;
             }
-            if(entity != null && (entity instanceof Item))
+            if(target != null && (target instanceof ItemEntity))
             {
-                float f2 = distanceTo(entity);
+                float f2 = method_1351(target);
                 if(f2 < 1.5F)
                 {
                     swingArm();
-                    if(rand.nextInt(10) == 0)
+                    if(random.nextInt(10) == 0)
                     {
-                        kittySmack(this, entity);
+                        kittySmack(this, target);
                     }
                 }
             }
-            if(entity != null && (entity instanceof EntityKitty) && rand.nextInt(20) == 0)
+            if(target != null && (target instanceof EntityKitty) && random.nextInt(20) == 0)
             {
-                float f3 = distanceTo(entity);
+                float f3 = method_1351(target);
                 if(f3 < 2.0F)
                 {
                     swingArm();
-                    setTarget(null);
+                    method_635(null);
                 }
             }
-            if(entity == null || !(entity instanceof PlayerBase))
+            if(target == null || !(target instanceof PlayerEntity))
             {
                 break;
             }
-            float f4 = distanceTo(entity);
-            if(f4 < 2.0F && rand.nextInt(20) == 0)
+            float f4 = method_1351(target);
+            if(f4 < 2.0F && random.nextInt(20) == 0)
             {
                 swingArm();
             }
             break;
 
         case 11: // '\013'
-            PlayerBase entityplayer1 = level.getClosestPlayerTo(this, 18D);
-            if(entityplayer1 == null || rand.nextInt(10) != 0)
+            PlayerEntity entityplayer1 = world.method_186(this, 18D);
+            if(entityplayer1 == null || random.nextInt(10) != 0)
             {
                 break;
             }
-            ItemInstance itemstack1 = entityplayer1.inventory.getHeldItem();
+            ItemStack itemstack1 = entityplayer1.inventory.getSelectedItem();
             if(itemstack1 == null || itemstack1 != null && itemstack1.itemId != mod_mocreatures.woolball.id)
             {
                 changeKittyState(7);
                 break;
             }
-            float f8 = entityplayer1.distanceTo(this);
+            float f8 = entityplayer1.method_1351(this);
             if(f8 > 5F)
             {
                 method_429(entityplayer1, f8);
@@ -642,39 +642,39 @@ label0:
 
         case 12: // '\f'
             kittytimer++;
-            if(level.isDaylight() || kittytimer > 500 && rand.nextInt(500) == 0)
+            if(world.method_220() || kittytimer > 500 && random.nextInt(500) == 0)
             {
                 changeKittyState(7);
                 break;
             }
             isSitting = true;
-            if(rand.nextInt(80) == 0 || !onGround)
+            if(random.nextInt(80) == 0 || !field_1623)
             {
-                super.updateDespawnCounter();
+                super.method_937();
             }
             break;
 
         case 13: // '\r'
             hungry = false;
-            entity = level.getClosestPlayerTo(this, 18D);
-            if(entity != null)
+            target = world.method_186(this, 18D);
+            if(target != null)
             {
-                float f7 = distanceTo(entity);
+                float f7 = method_1351(target);
                 if(f7 < 1.5F)
                 {
                     swingArm();
-                    if(rand.nextInt(20) == 0)
+                    if(random.nextInt(20) == 0)
                     {
                         madtimer--;
-                        entity.damage(this, 1);
+                        target.damage(this, 1);
                         if(madtimer < 1)
                         {
                             changeKittyState(7);
-                            madtimer = rand.nextInt(5);
+                            madtimer = random.nextInt(5);
                         }
                     }
                 }
-                if(rand.nextInt(1000) == 0)
+                if(random.nextInt(1000) == 0)
                 {
                     changeKittyState(7);
                 }
@@ -685,26 +685,26 @@ label0:
             break;
 
         case 14: // '\016'
-            if(onGround)
+            if(field_1623)
             {
                 changeKittyState(13);
                 break;
             }
-            if(rand.nextInt(50) == 0)
+            if(random.nextInt(50) == 0)
             {
                 swingArm();
             }
-            if(vehicle == null)
+            if(field_1595 == null)
             {
                 break;
             }
-            yaw = vehicle.yaw + 90F;
-            PlayerBase entityplayer2 = (PlayerBase)vehicle;
+            yaw = field_1595.yaw + 90F;
+            PlayerEntity entityplayer2 = (PlayerEntity)field_1595;
             if(entityplayer2 == null)
             {
                 break;
             }
-            ItemInstance itemstack2 = entityplayer2.inventory.getHeldItem();
+            ItemStack itemstack2 = entityplayer2.inventory.getSelectedItem();
             if(itemstack2 != null && itemstack2.itemId != mod_mocreatures.rope.id)
             {
                 changeKittyState(13);
@@ -712,13 +712,13 @@ label0:
             break;
 
         case 15: // '\017'
-            if(onGround)
+            if(field_1623)
             {
                 changeKittyState(7);
             }
-            if(vehicle != null)
+            if(field_1595 != null)
             {
-                yaw = vehicle.yaw + 90F;
+                yaw = field_1595.yaw + 90F;
             }
             break;
 
@@ -730,7 +730,7 @@ label0:
             }
             if(!onTree)
             {
-                if(!foundTree && rand.nextInt(50) == 0)
+                if(!foundTree && random.nextInt(50) == 0)
                 {
                     int ai[] = ReturnNearestMaterialCoord(this, Material.WOOD, Double.valueOf(18D));
                     if(ai[0] != -1)
@@ -742,8 +742,8 @@ label0:
                             {
                                 break;
                             }
-                            int k1 = level.getTileId(ai[0], ai[1] + i1, ai[2]);
-                            if(k1 != 0 && BlockBase.BY_ID[k1].material != Material.WOOD && k1 != 0 && BlockBase.BY_ID[k1].material == Material.LEAVES)
+                            int k1 = world.getBlockId(ai[0], ai[1] + i1, ai[2]);
+                            if(k1 != 0 && Block.BLOCKS[k1].material != Material.WOOD && k1 != 0 && Block.BLOCKS[k1].material == Material.LEAVES)
                             {
                                 foundTree = true;
                                 treeCoord[0] = ai[0];
@@ -755,16 +755,16 @@ label0:
                         } while(true);
                     }
                 }
-                if(!foundTree || rand.nextInt(10) != 0)
+                if(!foundTree || random.nextInt(10) != 0)
                 {
                     break;
                 }
-                class_61 pathentity = level.method_189(this, treeCoord[0], treeCoord[1], treeCoord[2], 24F);
+                class_61 pathentity = world.method_189(this, treeCoord[0], treeCoord[1], treeCoord[2], 24F);
                 if(pathentity != null)
                 {
-                    setTarget(pathentity);
+                    method_635(pathentity);
                 }
-                Double double1 = Double.valueOf(squaredDistanceTo(treeCoord[0], treeCoord[1], treeCoord[2]));
+                Double double1 = Double.valueOf(method_1347(treeCoord[0], treeCoord[1], treeCoord[2]));
                 if(double1.doubleValue() < 7D)
                 {
                     onTree = true;
@@ -803,7 +803,7 @@ label0:
                 int k3 = MathHelper.floor(x) - l1;
                 velocityZ -= 0.01D;
             }
-            if(onGround || !field_1624 || !field_1625)
+            if(field_1623 || !field_1624 || !field_1625)
             {
                 break;
             }
@@ -814,10 +814,10 @@ label0:
                 {
                     break label0;
                 }
-                int j4 = level.getTileId(treeCoord[0], treeCoord[1] + i4, treeCoord[2]);
+                int j4 = world.getBlockId(treeCoord[0], treeCoord[1] + i4, treeCoord[2]);
                 if(j4 == 0)
                 {
-                    setPositionAndAngles(treeCoord[0], treeCoord[1] + i4, treeCoord[2], yaw, pitch);
+                    method_1341(treeCoord[0], treeCoord[1] + i4, treeCoord[2], yaw, pitch);
                     changeKittyState(17);
                     treeCoord[0] = -1;
                     treeCoord[1] = -1;
@@ -828,7 +828,7 @@ label0:
             } while(true);
 
         case 17: // '\021'
-            PlayerBase entityplayer3 = level.getClosestPlayerTo(this, 2D);
+            PlayerEntity entityplayer3 = world.method_186(this, 2D);
             if(entityplayer3 != null)
             {
                 changeKittyState(7);
@@ -836,26 +836,26 @@ label0:
             break;
 
         case 18: // '\022'
-            if(entity == null || !(entity instanceof EntityKitty))
+            if(target == null || !(target instanceof EntityKitty))
             {
                 changeKittyState(9);
                 break;
             }
-            EntityKitty entitykitty = (EntityKitty)entity;
+            EntityKitty entitykitty = (EntityKitty)target;
             if(entitykitty != null && entitykitty.kittystate == 18)
             {
-                if(rand.nextInt(50) == 0)
+                if(random.nextInt(50) == 0)
                 {
                     swingArm();
                 }
-                float f10 = distanceTo(entitykitty);
+                float f10 = method_1351(entitykitty);
                 if(f10 < 5F)
                 {
                     kittytimer++;
                 }
-                if(kittytimer > 500 && rand.nextInt(50) == 0)
+                if(kittytimer > 500 && random.nextInt(50) == 0)
                 {
-                    ((EntityKitty)entity).changeKittyState(7);
+                    ((EntityKitty)target).changeKittyState(7);
                     changeKittyState(19);
                 }
             } else
@@ -865,16 +865,16 @@ label0:
             break;
 
         case 19: // '\023'
-            if(rand.nextInt(20) != 0)
+            if(random.nextInt(20) != 0)
             {
                 break;
             }
             EntityKittyBed entitykittybed2 = (EntityKittyBed)getKittyStuff(this, 18D, false);
-            if(entitykittybed2 == null || entitykittybed2.passenger != null)
+            if(entitykittybed2 == null || entitykittybed2.field_1594 != null)
             {
                 break;
             }
-            float f11 = entitykittybed2.distanceTo(this);
+            float f11 = entitykittybed2.method_1351(this);
             if(f11 > 2.0F)
             {
                 getMyOwnPath(entitykittybed2, f11);
@@ -882,12 +882,12 @@ label0:
             if(f11 < 2.0F)
             {
                 changeKittyState(20);
-                startRiding(entitykittybed2);
+                method_1376(entitykittybed2);
             }
             break;
 
         case 20: // '\024'
-            if(vehicle == null)
+            if(field_1595 == null)
             {
                 changeKittyState(19);
                 break;
@@ -898,13 +898,13 @@ label0:
             {
                 break;
             }
-            int i2 = rand.nextInt(3) + 1;
+            int i2 = random.nextInt(3) + 1;
             for(int l2 = 0; l2 < i2; l2++)
             {
-                EntityKitty entitykitty1 = new EntityKitty(level);
-                entitykitty1.setPosition(x, y, z);
-                level.spawnEntity(entitykitty1);
-                level.playSound(this, "mob.chickenplop", 1.0F, (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
+                EntityKitty entitykitty1 = new EntityKitty(world);
+                entitykitty1.method_1340(x, y, z);
+                world.method_210(entitykitty1);
+                world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
                 entitykitty1.adult = false;
                 entitykitty1.changeKittyState(10);
                 damage(null, 1);
@@ -917,11 +917,11 @@ label0:
             kittytimer++;
             if(kittytimer > 2000)
             {
-                List list2 = level.getEntities(this, boundingBox.expand(24D, 8D, 24D));
+                List list2 = world.getEntities(this, boundingBox.expand(24D, 8D, 24D));
                 int i3 = 0;
                 for(int l3 = 0; l3 < list2.size(); l3++)
                 {
-                    EntityBase entity2 = (EntityBase)list2.get(l3);
+                    Entity entity2 = (Entity)list2.get(l3);
                     if((entity2 instanceof EntityKitty) && ((EntityKitty)entity2).kittystate == 10)
                     {
                         i3++;
@@ -935,9 +935,9 @@ label0:
                 }
                 kittytimer = 1000;
             }
-            if(entity != null && (entity instanceof PlayerBase) && rand.nextInt(300) == 0)
+            if(target != null && (target instanceof PlayerEntity) && random.nextInt(300) == 0)
             {
-                entity = null;
+                target = null;
             }
             break;
 
@@ -952,12 +952,12 @@ label0:
     private void changeKittyState(int i)
     {
         kittystate = i;
-        startRiding(null);
+        method_1376(null);
         isSitting = false;
         kittytimer = 0;
         onTree = false;
         foundTree = false;
-        entity = null;
+        target = null;
     }
 
     public boolean method_932()
@@ -999,7 +999,7 @@ label0:
         return f + f3;
     }
 
-    public int[] ReturnNearestMaterialCoord(EntityBase entity, Material material, Double double1)
+    public int[] ReturnNearestMaterialCoord(Entity entity, Material material, Double double1)
     {
         Box axisalignedbb = entity.boundingBox.expand(double1.doubleValue(), double1.doubleValue(), double1.doubleValue());
         int i = MathHelper.floor(axisalignedbb.minX);
@@ -1014,8 +1014,8 @@ label0:
             {
                 for(int i2 = i1; i2 < j1; i2++)
                 {
-                    int j2 = level.getTileId(k1, l1, i2);
-                    if(j2 != 0 && BlockBase.BY_ID[j2].material == material)
+                    int j2 = world.getBlockId(k1, l1, i2);
+                    if(j2 != 0 && Block.BLOCKS[j2].material == material)
                     {
                         return (new int[] {
                             k1, l1, i2
@@ -1032,11 +1032,11 @@ label0:
         });
     }
 
-    protected EntityBase getAttackTarget()
+    protected Entity method_638()
     {
-        if(level.difficulty > 0 && kittystate != 8 && kittystate != 10 && kittystate != 15 && kittystate != 18 && kittystate != 19 && !method_640() && hungry)
+        if(world.field_213 > 0 && kittystate != 8 && kittystate != 10 && kittystate != 15 && kittystate != 18 && kittystate != 19 && !method_640() && hungry)
         {
-            Living entityliving = getClosestTarget(this, 10D);
+            LivingEntity entityliving = getClosestTarget(this, 10D);
             return entityliving;
         } else
         {
@@ -1044,47 +1044,47 @@ label0:
         }
     }
 
-    public Living getClosestTarget(EntityBase entity, double d)
+    public LivingEntity getClosestTarget(Entity entity, double d)
     {
         double d1 = -1D;
-        Living entityliving = null;
-        List list = level.getEntities(this, boundingBox.expand(d, d, d));
+        LivingEntity entityliving = null;
+        List list = world.getEntities(this, boundingBox.expand(d, d, d));
         for(int i = 0; i < list.size(); i++)
         {
-            EntityBase entity1 = (EntityBase)list.get(i);
-            if(!(entity1 instanceof Living) || (entity1 instanceof EntityKitty) || (entity1 instanceof PlayerBase) || (entity1 instanceof MonsterBase) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof Wolf) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityBigCat) && !mocr.mocreaturesGlass.huntercreatures.attackbigcat || (entity1 instanceof EntityBigCat) && ((EntityBigCat) entity1).tamed && kittystate > 2 || (entity1 instanceof EntityDolphin) && ((EntityDolphin) entity1).tamed && kittystate > 2 || (entity1 instanceof EntityShark) && ((EntityShark)entity1).tamed && kittystate > 2 || (double)entity1.width > 0.5D && (double)entity1.height > 0.5D)
+            Entity entity1 = (Entity)list.get(i);
+            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityKitty) || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityBigCat) && !mocr.mocreaturesGlass.huntercreatures.attackbigcat || (entity1 instanceof EntityBigCat) && ((EntityBigCat) entity1).tamed && kittystate > 2 || (entity1 instanceof EntityDolphin) && ((EntityDolphin) entity1).tamed && kittystate > 2 || (entity1 instanceof EntityShark) && ((EntityShark)entity1).tamed && kittystate > 2 || (double)entity1.spacingXZ > 0.5D && (double)entity1.spacingY > 0.5D)
             {
                 continue;
             }
-            double d2 = entity1.squaredDistanceTo(entity.x, entity.y, entity.z);
-            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((Living)entity1).method_928(entity))
+            double d2 = entity1.method_1347(entity.x, entity.y, entity.z);
+            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).method_928(entity))
             {
                 d1 = d2;
-                entityliving = (Living)entity1;
+                entityliving = (LivingEntity)entity1;
             }
         }
 
         return entityliving;
     }
 
-    public Item getClosestItem(EntityBase entity, double d, int i, int j)
+    public ItemEntity getClosestItem(Entity entity, double d, int i, int j)
     {
         double d1 = -1D;
-        Item entityitem = null;
-        List list = level.getEntities(this, boundingBox.expand(d, d, d));
+        ItemEntity entityitem = null;
+        List list = world.getEntities(this, boundingBox.expand(d, d, d));
         for(int k = 0; k < list.size(); k++)
         {
-            EntityBase entity1 = (EntityBase)list.get(k);
-            if(!(entity1 instanceof Item))
+            Entity entity1 = (Entity)list.get(k);
+            if(!(entity1 instanceof ItemEntity))
             {
                 continue;
             }
-            Item entityitem1 = (Item)entity1;
-            if(i != -1 && j != -1 && entityitem1.item.itemId != i && j != 0 && entityitem1.item.itemId != j)
+            ItemEntity entityitem1 = (ItemEntity)entity1;
+            if(i != -1 && j != -1 && entityitem1.stack.itemId != i && j != 0 && entityitem1.stack.itemId != j)
             {
                 continue;
             }
-            double d2 = entityitem1.squaredDistanceTo(entity.x, entity.y, entity.z);
+            double d2 = entityitem1.method_1347(entity.x, entity.y, entity.z);
             if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1))
             {
                 d1 = d2;
@@ -1095,16 +1095,16 @@ label0:
         return entityitem;
     }
 
-    private void getMyOwnPath(EntityBase entity, float f)
+    private void getMyOwnPath(Entity entity, float f)
     {
-        class_61 pathentity = level.method_192(this, entity, 16F);
+        class_61 pathentity = world.method_192(this, entity, 16F);
         if(pathentity != null)
         {
-            setTarget(pathentity);
+            method_635(pathentity);
         }
     }
 
-    public boolean damage(EntityBase entity, int i)
+    public boolean damage(Entity entity, int i)
     {
         if(super.damage(entity, i))
         {
@@ -1112,20 +1112,20 @@ label0:
             {
                 if(kittystate == 10)
                 {
-                    List list = level.getEntities(this, boundingBox.expand(16D, 6D, 16D));
+                    List list = world.getEntities(this, boundingBox.expand(16D, 6D, 16D));
                     for(int j = 0; j < list.size(); j++)
                     {
-                        EntityBase entity1 = (EntityBase)list.get(j);
+                        Entity entity1 = (Entity)list.get(j);
                         if((entity1 instanceof EntityKitty) && ((EntityKitty)entity1).kittystate == 21)
                         {
-                            ((EntityKitty)entity1).entity = entity;
+                            ((EntityKitty)entity1).target = entity;
                             return true;
                         }
                     }
 
                     return true;
                 }
-                if(entity instanceof PlayerBase)
+                if(entity instanceof PlayerEntity)
                 {
                     if(kittystate < 2)
                     {
@@ -1154,9 +1154,9 @@ label0:
         }
     }
 
-    private void method_429(EntityBase entity, float f)
+    private void method_429(Entity entity, float f)
     {
-        class_61 pathentity = level.method_192(this, entity, 16F);
+        class_61 pathentity = world.method_192(this, entity, 16F);
         if(pathentity == null && f > 12F)
         {
             int i = MathHelper.floor(entity.x) - 2;
@@ -1166,9 +1166,9 @@ label0:
             {
                 for(int i1 = 0; i1 <= 4; i1++)
                 {
-                    if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && level.canSuffocate(i + l, k - 1, j + i1) && !level.canSuffocate(i + l, k, j + i1) && !level.canSuffocate(i + l, k + 1, j + i1))
+                    if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && world.method_1780(i + l, k - 1, j + i1) && !world.method_1780(i + l, k, j + i1) && !world.method_1780(i + l, k + 1, j + i1))
                     {
-                        setPositionAndAngles((float)(i + l) + 0.5F, k, (float)(j + i1) + 0.5F, yaw, pitch);
+                        method_1341((float)(i + l) + 0.5F, k, (float)(j + i1) + 0.5F, yaw, pitch);
                         return;
                     }
                 }
@@ -1177,18 +1177,18 @@ label0:
 
         } else
         {
-            setTarget(pathentity);
+            method_635(pathentity);
         }
     }
 
-    public Living getKittyStuff(EntityBase entity, double d, boolean flag)
+    public LivingEntity getKittyStuff(Entity entity, double d, boolean flag)
     {
         double d1 = -1D;
         Object obj = null;
-        List list = level.getEntities(entity, boundingBox.expand(d, d, d));
+        List list = world.getEntities(entity, boundingBox.expand(d, d, d));
         for(int i = 0; i < list.size(); i++)
         {
-            EntityBase entity1 = (EntityBase)list.get(i);
+            Entity entity1 = (Entity)list.get(i);
             if(flag)
             {
                 if(!(entity1 instanceof EntityLitterBox))
@@ -1200,7 +1200,7 @@ label0:
                 {
                     continue;
                 }
-                double d2 = entity1.squaredDistanceTo(entity.x, entity.y, entity.z);
+                double d2 = entity1.method_1347(entity.x, entity.y, entity.z);
                 if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && entitylitterbox.method_928(entity))
                 {
                     d1 = d2;
@@ -1213,7 +1213,7 @@ label0:
                 continue;
             }
             EntityKittyBed entitykittybed = (EntityKittyBed)entity1;
-            double d3 = entity1.squaredDistanceTo(entity.x, entity.y, entity.z);
+            double d3 = entity1.method_1347(entity.x, entity.y, entity.z);
             if((d < 0.0D || d3 < d * d) && (d1 == -1D || d3 < d1) && entitykittybed.method_928(entity))
             {
                 d1 = d3;
@@ -1221,7 +1221,7 @@ label0:
             }
         }
 
-        return ((Living) (obj));
+        return ((LivingEntity) (obj));
     }
 
     public void tick()
@@ -1229,11 +1229,11 @@ label0:
         super.tick();
         if(isSwinging)
         {
-            handSwingProgress += 0.2F;
-            if(handSwingProgress > 2.0F)
+            field_1035 += 0.2F;
+            if(field_1035 > 2.0F)
             {
                 isSwinging = false;
-                handSwingProgress = 0.0F;
+                field_1035 = 0.0F;
             }
         }
     }
@@ -1248,13 +1248,13 @@ label0:
         if(!isSwinging)
         {
             isSwinging = true;
-            handSwingProgress = 0.0F;
+            field_1035 = 0.0F;
         }
     }
 
-    protected void tryAttack(EntityBase entity, float f)
+    protected void method_637(Entity entity, float f)
     {
-        if(f > 2.0F && f < 6F && rand.nextInt(30) == 0 && onGround)
+        if(f > 2.0F && f < 6F && random.nextInt(30) == 0 && field_1623)
         {
             double d = entity.x - x;
             double d1 = entity.z - z;
@@ -1265,12 +1265,12 @@ label0:
         }
         if((double)f < 2D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
         {
-            attackTime = 20;
+            field_1042 = 20;
             if(kittystate != 18 && kittystate != 10)
             {
                 swingArm();
             }
-            if(kittystate == 13 && (entity instanceof PlayerBase) || kittystate == 8 && (entity instanceof Item) || kittystate == 18 && (entity instanceof EntityKitty) || kittystate == 10)
+            if(kittystate == 13 && (entity instanceof PlayerEntity) || kittystate == 8 && (entity instanceof ItemEntity) || kittystate == 18 && (entity instanceof EntityKitty) || kittystate == 10)
             {
                 return;
             }
@@ -1278,29 +1278,29 @@ label0:
         }
     }
 
-    public Living getBoogey(double d, boolean flag)
+    public LivingEntity getBoogey(double d, boolean flag)
     {
         double d1 = -1D;
-        Living entityliving = null;
-        List list = level.getEntities(this, boundingBox.expand(d, 4D, d));
+        LivingEntity entityliving = null;
+        List list = world.getEntities(this, boundingBox.expand(d, 4D, d));
         for(int i = 0; i < list.size(); i++)
         {
-            EntityBase entity = (EntityBase)list.get(i);
-            if((entity instanceof Living) && !(entity instanceof EntityDeer) && !(entity instanceof EntityHorse) && ((double)entity.width >= 0.5D || (double)entity.height >= 0.5D) && (flag || !(entity instanceof PlayerBase)))
+            Entity entity = (Entity)list.get(i);
+            if((entity instanceof LivingEntity) && !(entity instanceof EntityDeer) && !(entity instanceof EntityHorse) && ((double)entity.spacingXZ >= 0.5D || (double)entity.spacingY >= 0.5D) && (flag || !(entity instanceof PlayerEntity)))
             {
-                entityliving = (Living)entity;
+                entityliving = (LivingEntity)entity;
             }
         }
 
         return entityliving;
     }
 
-    public void runLikeHell(EntityBase entity)
+    public void runLikeHell(Entity entity)
     {
         double d = x - entity.x;
         double d1 = z - entity.z;
         double d2 = Math.atan2(d, d1);
-        d2 += (double)(rand.nextFloat() - rand.nextFloat()) * 0.75D;
+        d2 += (double)(random.nextFloat() - random.nextFloat()) * 0.75D;
         double d3 = x + Math.sin(d2) * 8D;
         double d4 = z + Math.cos(d2) * 8D;
         int i = MathHelper.floor(d3);
@@ -1313,34 +1313,34 @@ label0:
             {
                 break;
             }
-            int i1 = (i + rand.nextInt(4)) - rand.nextInt(4);
-            int j1 = (j + rand.nextInt(3)) - rand.nextInt(3);
-            int k1 = (k + rand.nextInt(4)) - rand.nextInt(4);
-            if(j1 > 4 && (level.getTileId(i1, j1, k1) == 0 || level.getTileId(i1, j1, k1) == BlockBase.SNOW.id) && level.getTileId(i1, j1 - 1, k1) != 0)
+            int i1 = (i + random.nextInt(4)) - random.nextInt(4);
+            int j1 = (j + random.nextInt(3)) - random.nextInt(3);
+            int k1 = (k + random.nextInt(4)) - random.nextInt(4);
+            if(j1 > 4 && (world.getBlockId(i1, j1, k1) == 0 || world.getBlockId(i1, j1, k1) == Block.SNOW.id) && world.getBlockId(i1, j1 - 1, k1) != 0)
             {
-                class_61 pathentity = level.method_189(this, i1, j1, k1, 16F);
-                setTarget(pathentity);
+                class_61 pathentity = world.method_189(this, i1, j1, k1, 16F);
+                method_635(pathentity);
                 break;
             }
             l++;
         } while(true);
     }
 
-    public void writeCustomDataToTag(CompoundTag nbttagcompound)
+    public void writeNbt(NbtCompound nbttagcompound)
     {
-        super.writeCustomDataToTag(nbttagcompound);
-        nbttagcompound.put("TypeInt", typeint);
-        nbttagcompound.put("Adult", adult);
-        nbttagcompound.put("Sitting", isSitting);
-        nbttagcompound.put("Edad", edad);
-        nbttagcompound.put("KittyState", kittystate);
-        nbttagcompound.put("Name", name);
-        nbttagcompound.put("DisplayName", displayname);
+        super.writeNbt(nbttagcompound);
+        nbttagcompound.putInt("TypeInt", typeint);
+        nbttagcompound.putBoolean("Adult", adult);
+        nbttagcompound.putBoolean("Sitting", isSitting);
+        nbttagcompound.putFloat("Edad", edad);
+        nbttagcompound.putInt("KittyState", kittystate);
+        nbttagcompound.putString("Name", name);
+        nbttagcompound.putBoolean("DisplayName", displayname);
     }
 
-    public void readCustomDataFromTag(CompoundTag nbttagcompound)
+    public void readNbt(NbtCompound nbttagcompound)
     {
-        super.readCustomDataFromTag(nbttagcompound);
+        super.readNbt(nbttagcompound);
         adult = nbttagcompound.getBoolean("Adult");
         typeint = nbttagcompound.getInt("TypeInt");
         edad = nbttagcompound.getFloat("Edad");
@@ -1350,17 +1350,17 @@ label0:
         displayname = nbttagcompound.getBoolean("DisplayName");
     }
 
-    protected void handleFallDamage(float f)
+    protected void method_1389(float f)
     {
     }
 
-    protected String getAmbientSound()
+    protected String method_911()
     {
         if(kittystate == 4)
         {
-            if(vehicle != null)
+            if(field_1595 != null)
             {
-                EntityKittyBed entitykittybed = (EntityKittyBed)vehicle;
+                EntityKittyBed entitykittybed = (EntityKittyBed)field_1595;
                 if(entitykittybed != null && !entitykittybed.hasMilk)
                 {
                     return "mocreatures:kittyeatingm";
@@ -1401,7 +1401,7 @@ label0:
         }
     }
 
-    protected String getHurtSound()
+    protected String method_912()
     {
         if(kittystate == 10)
         {
@@ -1412,7 +1412,7 @@ label0:
         }
     }
 
-    protected String getDeathSound()
+    protected String method_913()
     {
         if(kittystate == 10)
         {
@@ -1423,12 +1423,12 @@ label0:
         }
     }
 
-    protected int getMobDrops()
+    protected int method_914()
     {
         return 0;
     }
 
-    public int getLimitPerChunk()
+    public int method_916()
     {
         return 2;
     }
@@ -1438,14 +1438,14 @@ label0:
         return kittystate < 3;
     }
 
-    public void remove()
+    public void markDead()
     {
         if(kittystate > 2 && health > 0)
         {
             return;
         } else
         {
-            super.remove();
+            super.markDead();
             return;
         }
     }
@@ -1455,7 +1455,7 @@ label0:
         return mocr.mocreaturesGlass.animals.kittyfreq > 0 && super.canSpawn();
     }
 
-    public void kittySmack(EntityBase entity, EntityBase entity1)
+    public void kittySmack(Entity entity, Entity entity1)
     {
         double d = entity.x - entity1.x;
         double d1 = entity.z - entity1.z;
@@ -1551,7 +1551,7 @@ label0:
     public static void setName(EntityKitty entitykitty)
     {
         entitykitty.displayname = true;
-        mc.openScreen(new MoCGUI(entitykitty, entitykitty.name));
+        mc.setScreen(new MoCGUI(entitykitty, entitykitty.name));
     }
 
     @SuppressWarnings("deprecation")

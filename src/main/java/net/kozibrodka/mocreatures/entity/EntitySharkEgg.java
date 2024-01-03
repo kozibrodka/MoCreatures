@@ -5,44 +5,44 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Living;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemInstance;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
+import net.minecraft.block.Material;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 
-public class EntitySharkEgg extends Living implements MobSpawnDataProvider
+public class EntitySharkEgg extends LivingEntity implements MobSpawnDataProvider
 {
 
-    public EntitySharkEgg(Level world)
+    public EntitySharkEgg(World world)
     {
         super(world);
-        setSize(0.25F, 0.25F);
+        setBoundingBoxSpacing(0.25F, 0.25F);
         tCounter = 0;
         lCounter = 0;
         texture = "/assets/mocreatures/stationapi/textures/mob/sharkeggt.png";
     }
 
-    public EntitySharkEgg(Level world, String graczol)
+    public EntitySharkEgg(World world, String graczol)
     {
         super(world);
-        setSize(0.25F, 0.25F);
+        setBoundingBoxSpacing(0.25F, 0.25F);
         tCounter = 0;
         lCounter = 0;
         texture = "/assets/mocreatures/stationapi/textures/mob/sharkeggt.png";
         ktoKto = graczol;
     }
 
-    public void writeCustomDataToTag(CompoundTag nbttagcompound)
+    public void writeNbt(NbtCompound nbttagcompound)
     {
-        nbttagcompound.put("Opiekun", ktoKto);
+        nbttagcompound.putString("Opiekun", ktoKto);
     }
 
-    public void readCustomDataFromTag(CompoundTag nbttagcompound)
+    public void readNbt(NbtCompound nbttagcompound)
     {
         ktoKto = nbttagcompound.getString("Opiekun");
     }
@@ -51,78 +51,78 @@ public class EntitySharkEgg extends Living implements MobSpawnDataProvider
     {
     }
 
-    public void updateDespawnCounter()
+    public void method_937()
     {
         field_1060 = 0.0F;
         field_1029 = 0.0F;
         field_1030 = 0.0F;
-        travel(field_1060, field_1029);
+        method_945(field_1060, field_1029);
     }
 
-    public void onPlayerCollision(PlayerBase entityplayer)
+    public void onPlayerInteraction(PlayerEntity entityplayer)
     {
-        if(level.isServerSide)
+        if(world.isRemote)
         {
             return;
         }
-        if(lCounter > 10 && entityplayer.inventory.addStack(new ItemInstance(mod_mocreatures.sharkegg, 1)))
+        if(lCounter > 10 && entityplayer.inventory.method_671(new ItemStack(mod_mocreatures.sharkegg, 1)))
         {
-            level.playSound(this, "random.pop", 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-            entityplayer.onItemPickup(this, 1);
-            remove();
+            world.playSound(this, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+            entityplayer.method_491(this, 1);
+            markDead();
         }
     }
 
     public void tick()
     {
         super.tick();
-        if(rand.nextInt(20) == 0)
+        if(random.nextInt(20) == 0)
         {
             lCounter++;
         }
-        if(field_1612 && rand.nextInt(20) == 0)
+        if(field_1612 && random.nextInt(20) == 0)
         {
             tCounter++;
             if(tCounter >= 50)
             {
-                EntityShark entityshark = new EntityShark(level);
+                EntityShark entityshark = new EntityShark(world);
                 entityshark.b = 0.3F;
                 entityshark.tamed = true;
                 entityshark.sharkOwner = ktoKto;
-                entityshark.setPosition(x, y, z);
-                level.spawnEntity(entityshark);
-                level.playSound(this, "mob.chickenplop", 1.0F, (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
-                remove();
+                entityshark.method_1340(x, y, z);
+                world.method_210(entityshark);
+                world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+                markDead();
             }
         }
     }
 
-    public boolean method_934()
+    public boolean canBreatheInWater()
     {
         return true;
     }
 
-    public boolean method_1393()
+    public boolean isSubmergedInWater()
     {
-        return level.method_170(boundingBox, Material.WATER, this);
+        return world.method_170(boundingBox, Material.WATER, this);
     }
 
-    protected String getAmbientSound()
-    {
-        return null;
-    }
-
-    protected String getHurtSound()
+    protected String method_911()
     {
         return null;
     }
 
-    protected String getDeathSound()
+    protected String method_912()
     {
         return null;
     }
 
-    protected float getSoundVolume()
+    protected String method_913()
+    {
+        return null;
+    }
+
+    protected float method_915()
     {
         return 0.4F;
     }

@@ -6,14 +6,14 @@ package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mixin.EntityBaseAccesor;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.Living;
-import net.minecraft.entity.animal.Wolf;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemBase;
-import net.minecraft.item.ItemInstance;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.WolfEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
@@ -22,11 +22,11 @@ import java.util.List;
 public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider
 {
 
-    public EntityFishy(Level world)
+    public EntityFishy(World world)
     {
         super(world);
         texture = "/assets/mocreatures/stationapi/textures/mob/fishy1.png";
-        setSize(0.3F, 0.3F);
+        setBoundingBoxSpacing(0.3F, 0.3F);
         health = 4;
         typeint = 0;
         typechosen = false;
@@ -46,10 +46,10 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider
         return tamed;
     }
 
-    public void updateDespawnCounter()
+    public void method_937()
     {
-        super.updateDespawnCounter();
-        if(!adult && rand.nextInt(100) == 0)
+        super.method_937();
+        if(!adult && random.nextInt(100) == 0)
         {
             b += 0.02F;
             if(b >= 1.0F)
@@ -62,10 +62,10 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider
             return;
         }
         int i = 0;
-        List list = level.getEntities(this, boundingBox.expand(4D, 3D, 4D));
+        List list = world.getEntities(this, boundingBox.expand(4D, 3D, 4D));
         for(int j = 0; j < list.size(); j++)
         {
-            EntityBase entity = (EntityBase)list.get(j);
+            Entity entity = (Entity)list.get(j);
             if(entity instanceof EntityFishy)
             {
                 i++;
@@ -76,10 +76,10 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider
         {
             return;
         }
-        List list1 = level.getEntities(this, boundingBox.expand(4D, 2D, 4D));
+        List list1 = world.getEntities(this, boundingBox.expand(4D, 2D, 4D));
         for(int k = 0; k < list.size(); k++)
         {
-            EntityBase entity1 = (EntityBase)list1.get(k);
+            Entity entity1 = (Entity)list1.get(k);
             if(!(entity1 instanceof EntityFishy) || entity1 == this)
             {
                 continue;
@@ -89,7 +89,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider
             {
                 continue;
             }
-            if(rand.nextInt(100) == 0)
+            if(random.nextInt(100) == 0)
             {
                 gestationtime++;
             }
@@ -97,13 +97,13 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider
             {
                 continue;
             }
-            int l = rand.nextInt(3) + 1;
+            int l = random.nextInt(3) + 1;
             for(int i1 = 0; i1 < l; i1++)
             {
-                EntityFishy entityfishy1 = new EntityFishy(level);
-                entityfishy1.setPosition(x, y, z);
-                level.spawnEntity(entityfishy1);
-                level.playSound(this, "mob.chickenplop", 1.0F, (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
+                EntityFishy entityfishy1 = new EntityFishy(world);
+                entityfishy1.method_1340(x, y, z);
+                world.method_210(entityfishy1);
+                world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
                 eaten = false;
                 entityfishy.eaten = false;
                 gestationtime = 0;
@@ -124,31 +124,31 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider
         return entityfishy.tamed && entityfishy.eaten && entityfishy.adult;
     }
 
-    protected void tickHandSwing(){
-        if(this.entity instanceof PlayerBase){
-            PlayerBase uciekinier = level.getClosestPlayerTo(this, 16D);
-            if(uciekinier == null && entity.isAlive()){
-                if(rand.nextInt(30) == 0)
+    protected void method_910(){
+        if(this.target instanceof PlayerEntity){
+            PlayerEntity uciekinier = world.method_186(this, 16D);
+            if(uciekinier == null && target.isAlive()){
+                if(random.nextInt(30) == 0)
                 {
-                    entity = null;
+                    target = null;
                 }
             }
         }
-        super.tickHandSwing();
+        super.method_910();
     }
 
-    protected EntityBase getAttackTarget()
+    protected Entity method_638()
     {
-        if(level.difficulty > 0 && b >= 1.0F && typeint == 10)
+        if(world.field_213 > 0 && b >= 1.0F && typeint == 10)
         {
-            PlayerBase entityplayer = level.getClosestPlayerTo(this, 16D);
+            PlayerEntity entityplayer = world.method_186(this, 16D);
             if(entityplayer != null && ((EntityBaseAccesor)entityplayer).getField_1612() && !tamed)
             {
                 return entityplayer;
             }
-            if(rand.nextInt(30) == 0)
+            if(random.nextInt(30) == 0)
             {
-                Living entityliving = FindTarget(this, 16D);
+                LivingEntity entityliving = FindTarget(this, 16D);
                 if(entityliving != null && ((EntityBaseAccesor)entityliving).getField_1612())
                 {
                     return entityliving;
@@ -158,52 +158,52 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider
         return null;
     }
 
-    public Living FindTarget(EntityBase entity, double d)
+    public LivingEntity FindTarget(Entity entity, double d)
     {
         double d1 = -1D;
-        Living entityliving = null;
-        List list = level.getEntities(this, boundingBox.expand(d, d, d));
+        LivingEntity entityliving = null;
+        List list = world.getEntities(this, boundingBox.expand(d, d, d));
         for(int i = 0; i < list.size(); i++)
         {
-            EntityBase entity1 = (EntityBase)list.get(i);
-            if(!(entity1 instanceof Living) || (entity1 instanceof EntityCustomWM) || (entity1 instanceof EntitySharkEgg) || (entity1 instanceof EntityFishyEgg) || (entity1 instanceof PlayerBase) || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof Wolf) && !mocr.mocreaturesGlass.huntercreatures.attackwolves)
+            Entity entity1 = (Entity)list.get(i);
+            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityCustomWM) || (entity1 instanceof EntitySharkEgg) || (entity1 instanceof EntityFishyEgg) || (entity1 instanceof PlayerEntity) || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves)
             {
                 continue;
             }
-            double d2 = entity1.squaredDistanceTo(entity.x, entity.y, entity.z);
-            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((Living)entity1).method_928(entity))
+            double d2 = entity1.method_1347(entity.x, entity.y, entity.z);
+            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).method_928(entity))
             {
                 d1 = d2;
-                entityliving = (Living)entity1;
+                entityliving = (LivingEntity)entity1;
             }
         }
 
         return entityliving;
     }
 
-    public void remove()
+    public void markDead()
     {
         if(tamed && health > 0)
         {
             return;
         } else
         {
-            super.remove();
+            super.markDead();
             return;
         }
     }
 
-    public boolean damage(EntityBase entityBase, int i)
+    public boolean damage(Entity entityBase, int i)
     {
         if(super.damage(entityBase, i))
         {
-            if(passenger == entityBase || vehicle == entityBase)
+            if(field_1594 == entityBase || field_1595 == entityBase)
             {
                 return true;
             }
             if(entityBase != this)
             {
-                entity = entityBase;
+                target = entityBase;
             }
             return true;
         } else
@@ -212,11 +212,11 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider
         }
     }
 
-    protected void tryAttack(EntityBase entity, float f)
+    protected void method_637(Entity entity, float f)
     {
         if((double)f < 2D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
         {
-            attackTime = 20;
+            field_1042 = 20;
             entity.damage(this, 1);
         }
     }
@@ -232,7 +232,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider
     {
         if(typeint == 0)
         {
-            int i = rand.nextInt(100);
+            int i = random.nextInt(100);
             if(i <= 9)
             {
                 typeint = 1;
@@ -323,35 +323,35 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider
         typechosen = true;
     }
 
-    protected void getDrops()
+    protected void method_933()
     {
-        int i = rand.nextInt(100);
+        int i = random.nextInt(100);
         if(i < 70 && adult)
         {
-            dropItem(new ItemInstance(ItemBase.rawFish.id, 1, 0), 0.0F);
+            method_1327(new ItemStack(Item.RAW_FISH.id, 1, 0), 0.0F);
         } else
         {
-            int j = rand.nextInt(2) + 1;
+            int j = random.nextInt(2) + 1;
             for(int k = 0; k < j; k++)
             {
-                dropItem(new ItemInstance(mod_mocreatures.fishyegg, 1, 0), 0.0F);
+                method_1327(new ItemStack(mod_mocreatures.fishyegg, 1, 0), 0.0F);
             }
 
         }
     }
 
-    public void writeCustomDataToTag(CompoundTag nbttagcompound)
+    public void writeNbt(NbtCompound nbttagcompound)
     {
-        super.writeCustomDataToTag(nbttagcompound);
-        nbttagcompound.put("Tamed", tamed);
-        nbttagcompound.put("TypeInt", typeint);
-        nbttagcompound.put("Age", b);
-        nbttagcompound.put("Adult", adult);
+        super.writeNbt(nbttagcompound);
+        nbttagcompound.putBoolean("Tamed", tamed);
+        nbttagcompound.putInt("TypeInt", typeint);
+        nbttagcompound.putFloat("Age", b);
+        nbttagcompound.putBoolean("Adult", adult);
     }
 
-    public void readCustomDataFromTag(CompoundTag nbttagcompound)
+    public void readNbt(NbtCompound nbttagcompound)
     {
-        super.readCustomDataFromTag(nbttagcompound);
+        super.readNbt(nbttagcompound);
         tamed = nbttagcompound.getBoolean("Tamed");
         typeint = nbttagcompound.getInt("TypeInt");
         b = nbttagcompound.getFloat("Age");

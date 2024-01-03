@@ -10,39 +10,39 @@ import net.kozibrodka.mocreatures.mixin.MonsterBaseAccesor;
 import net.kozibrodka.mocreatures.mixin.WalkingBaseAccesor;
 import net.kozibrodka.mocreatures.mocreatures.AnimalChest;
 import net.kozibrodka.mocreatures.mocreatures.MoCGUI;
-import net.minecraft.block.BlockBase;
-import net.minecraft.block.BlockSounds;
+import net.minecraft.block.Block;
 import net.minecraft.class_61;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.Item;
-import net.minecraft.entity.Living;
-import net.minecraft.entity.WalkingBase;
-import net.minecraft.entity.animal.AnimalBase;
-import net.minecraft.entity.animal.Wolf;
-import net.minecraft.entity.monster.MonsterBase;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.inventory.InventoryBase;
-import net.minecraft.item.ItemBase;
-import net.minecraft.item.ItemInstance;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
-import net.minecraft.util.io.ListTag;
-import net.minecraft.util.maths.MathHelper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.MonsterEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.WolfEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDataProvider
+public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnDataProvider
 {
 
-    public EntityHorse(Level world)
+    public EntityHorse(World world)
     {
         super(world);
         horseboolean = false;
-        setSize(1.4F, 1.6F);
+        setBoundingBoxSpacing(1.4F, 1.6F);
         health = 20;
         rideable = false;
         isjumping = false;
@@ -56,16 +56,16 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
         fwingb = 0.0F;
         fwingc = 0.0F;
         fwingh = 1.0F;
-        localstack = new ItemInstance[27];
-        localstackx54 = new ItemInstance[54];
-        cargoItems = new ItemInstance[1];
+        localstack = new ItemStack[27];
+        localstackx54 = new ItemStack[54];
+        cargoItems = new ItemStack[1];
         maxhealth = 20;
         hasreproduced = false;
         gestationtime = 0;
         eatenpumpkin = false;
         bred = false;
         nightmareInt = 0;
-        immuneToFire = false;
+        fireImmune = false;
         adult = true;
         b = 0.35F;
         roped = false;
@@ -77,14 +77,14 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
         horseOwner = "";
     }
 
-    public void remove()
+    public void markDead()
     {
         if((tamed || bred) && health > 0)
         {
             return;
         } else
         {
-            super.remove();
+            super.markDead();
             return;
         }
     }
@@ -101,11 +101,11 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
         int i = mocr.mocreaturesGlass.animals.pegasusChanceS;
         if(typeint == 0)
         {
-            if(rand.nextInt(5) == 0)
+            if(random.nextInt(5) == 0)
             {
                 adult = false;
             }
-            int j = rand.nextInt(100);
+            int j = random.nextInt(100);
             if(j <= 51 - i)
             {
                 typeint = 1;
@@ -179,7 +179,7 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
                 HorseJump = 0.59999999999999998D;
                 texture = "/assets/mocreatures/stationapi/textures/mob/horsenightb.png";
                 maxhealth = 50;
-                immuneToFire = true;
+                fireImmune = true;
             } else
             if(typeint == 8)
             {
@@ -187,7 +187,7 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
                 temper = 800;
                 texture = "/assets/mocreatures/stationapi/textures/mob/horsebpb.png";
                 maxhealth = 50;
-                immuneToFire = true;
+                fireImmune = true;
             }
             health = maxhealth;
         }
@@ -196,42 +196,42 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
 
     public void Riding()
     {
-        if(passenger != null && (passenger instanceof PlayerBase))
+        if(field_1594 != null && (field_1594 instanceof PlayerEntity))
         {
-            PlayerBase entityplayer = (PlayerBase)passenger;
-            List list = level.getEntities(this, boundingBox.expand(1.0D, 0.0D, 1.0D));
+            PlayerEntity entityplayer = (PlayerEntity)field_1594;
+            List list = world.getEntities(this, boundingBox.expand(1.0D, 0.0D, 1.0D));
             if(list != null)
             {
                 for(int i = 0; i < list.size(); i++)
                 {
-                    EntityBase entity = (EntityBase)list.get(i);
-                    if(entity.removed)
+                    Entity entity = (Entity)list.get(i);
+                    if(entity.dead)
                     {
                         continue;
                     }
-                    entity.onPlayerCollision(entityplayer);
-                    if(!(entity instanceof MonsterBase))
+                    entity.onPlayerInteraction(entityplayer);
+                    if(!(entity instanceof MonsterEntity))
                     {
                         continue;
                     }
-                    float f = distanceTo(entity);
-                    if(f < 2.0F && rand.nextInt(10) == 0)
+                    float f = method_1351(entity);
+                    if(f < 2.0F && random.nextInt(10) == 0)
                     {
-                        damage(entity, ((MonsterBaseAccesor)entity).getAttackDamage());
+                        damage(entity, ((MonsterBaseAccesor)entity).getField_547());
                     }
                 }
 
             }
             if(entityplayer.method_1373())
             {
-                entityplayer.startRiding(null);
+                entityplayer.method_1376(null);
             }
         }
     }
 
-    public void updateDespawnCounter()
+    public void method_937()
     {
-        if(rand.nextInt(300) == 0 && health < maxhealth && deathTime == 0)
+        if(random.nextInt(300) == 0 && health < maxhealth && field_1041 == 0)
         {
             health++;
         }
@@ -240,7 +240,7 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
         {
             fwinge = fwingb;
             fwingd = fwingc;
-            fwingc = (float)((double)fwingc + (double)(onGround ? -1 : 4) * 0.29999999999999999D);
+            fwingc = (float)((double)fwingc + (double)(field_1623 ? -1 : 4) * 0.29999999999999999D);
             if(fwingc < 0.0F)
             {
                 fwingc = 0.0F;
@@ -249,23 +249,23 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
             {
                 fwingc = 1.0F;
             }
-            if(!onGround && fwingh < 1.0F)
+            if(!field_1623 && fwingh < 1.0F)
             {
                 fwingh = 0.3F;
             }
             fwingh = (float)((double)fwingh * 0.90000000000000002D);
-            if(!onGround && velocityY < 0.0D)
+            if(!field_1623 && velocityY < 0.0D)
             {
                 velocityY *= 0.59999999999999998D;
             }
             fwingb += fwingh * 2.0F;
         }
-        super.updateDespawnCounter();
-        if(typeint == 7 && passenger != null && nightmareInt > 0 && rand.nextInt(2) == 0)
+        super.method_937();
+        if(typeint == 7 && field_1594 != null && nightmareInt > 0 && random.nextInt(2) == 0)
         {
             NightmareEffect();
         }
-        if(!adult && rand.nextInt(200) == 0)
+        if(!adult && random.nextInt(200) == 0)
         {
             b += 0.01F;
             if(b >= 1.0F)
@@ -278,10 +278,10 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
             return;
         }
         int i = 0;
-        List list = level.getEntities(this, boundingBox.expand(8D, 3D, 8D));
+        List list = world.getEntities(this, boundingBox.expand(8D, 3D, 8D));
         for(int j = 0; j < list.size(); j++)
         {
-            EntityBase entity = (EntityBase)list.get(j);
+            Entity entity = (Entity)list.get(j);
             if(entity instanceof EntityHorse)
             {
                 i++;
@@ -292,10 +292,10 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
         {
             return;
         }
-        List list1 = level.getEntities(this, boundingBox.expand(4D, 2D, 4D));
+        List list1 = world.getEntities(this, boundingBox.expand(4D, 2D, 4D));
         for(int k = 0; k < list.size(); k++)
         {
-            EntityBase entity1 = (EntityBase)list1.get(k);
+            Entity entity1 = (Entity)list1.get(k);
             if(!(entity1 instanceof EntityHorse) || entity1 == this)
             {
                 continue;
@@ -305,7 +305,7 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
             {
                 continue;
             }
-            if(rand.nextInt(100) == 0)
+            if(random.nextInt(100) == 0)
             {
                 gestationtime++;
             }
@@ -313,10 +313,10 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
             {
                 continue;
             }
-            EntityHorse entityhorse1 = new EntityHorse(level);
-            entityhorse1.setPosition(x, y, z);
-            level.spawnEntity(entityhorse1);
-            level.playSound(this, "mob.chickenplop", 1.0F, (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
+            EntityHorse entityhorse1 = new EntityHorse(world);
+            entityhorse1.method_1340(x, y, z);
+            world.method_210(entityhorse1);
+            world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
             eatenpumpkin = false;
             if(!(mocr.mocreaturesGlass.animals.easybreeding))
             {
@@ -334,15 +334,15 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
 
     }
 
-    protected void tickHandSwing()
+    protected void method_910()
     {
-        if(!field_1026 && passenger == null)
+        if(!field_1026 && field_1594 == null)
         {
-            super.tickHandSwing();
+            super.method_910();
         }
-        if(tamed && vehicle == null && roper != null)
+        if(tamed && field_1595 == null && roper != null)
         {
-            float f = roper.distanceTo(this);
+            float f = roper.method_1351(this);
             if(f > 5F)
             {
                 method_429(roper, f);
@@ -350,9 +350,9 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
         }
     }
 
-    private void method_429(EntityBase entity, float f)
+    private void method_429(Entity entity, float f)
     {
-        class_61 pathentity = level.method_192(this, entity, 16F);
+        class_61 pathentity = world.method_192(this, entity, 16F);
         if(pathentity == null && f > 12F)
         {
             int i = MathHelper.floor(entity.x) - 2;
@@ -362,9 +362,9 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
             {
                 for(int i1 = 0; i1 <= 4; i1++)
                 {
-                    if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && level.canSuffocate(i + l, k - 1, j + i1) && !level.canSuffocate(i + l, k, j + i1) && !level.canSuffocate(i + l, k + 1, j + i1))
+                    if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && world.method_1780(i + l, k - 1, j + i1) && !world.method_1780(i + l, k, j + i1) && !world.method_1780(i + l, k + 1, j + i1))
                     {
-                        setPositionAndAngles((float)(i + l) + 0.5F, k, (float)(j + i1) + 0.5F, yaw, pitch);
+                        method_1341((float)(i + l) + 0.5F, k, (float)(j + i1) + 0.5F, yaw, pitch);
                         return;
                     }
                 }
@@ -373,7 +373,7 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
 
         } else
         {
-            setTarget(pathentity);
+            method_635(pathentity);
         }
     }
 
@@ -382,8 +382,8 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
         int i = MathHelper.floor(x);
         int j = MathHelper.floor(boundingBox.minY);
         int k = MathHelper.floor(z);
-        level.setTile(i - 1, j, k - 1, BlockBase.FIRE.id);
-        PlayerBase entityplayer = (PlayerBase)passenger;
+        world.setBlock(i - 1, j, k - 1, Block.FIRE.id);
+        PlayerEntity entityplayer = (PlayerEntity)field_1594;
         if(entityplayer != null && entityplayer.fire > 0)
         {
             entityplayer.fire = 0;
@@ -393,7 +393,7 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
 
     public boolean ReadyforParenting(EntityHorse entityhorse)
     {
-        return entityhorse.passenger == null && entityhorse.vehicle == null && entityhorse.tamed && entityhorse.eatenpumpkin && !entityhorse.hasreproduced && entityhorse.adult;
+        return entityhorse.field_1594 == null && entityhorse.field_1595 == null && entityhorse.tamed && entityhorse.eatenpumpkin && !entityhorse.hasreproduced && entityhorse.adult;
     }
 
     private int HorseGenetics(EntityHorse entityhorse, EntityHorse entityhorse1)
@@ -404,7 +404,7 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
         }
         int i = entityhorse.typeint + entityhorse1.typeint;
         boolean flag = mocr.mocreaturesGlass.animals.easybreeding;
-        boolean flag1 = rand.nextInt(3) == 0;
+        boolean flag1 = random.nextInt(3) == 0;
         if(i == 7 && (flag || flag1))
         {
             return 6;
@@ -422,16 +422,16 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
         }
     }
 
-    public boolean damage(EntityBase entity, int i)
+    public boolean damage(Entity entity, int i)
     {
-        if(passenger != null && entity == passenger)
+        if(field_1594 != null && entity == field_1594)
         {
             return false;
         }
-        if(entity instanceof Wolf)
+        if(entity instanceof WolfEntity)
         {
-            WalkingBase entitycreature = (WalkingBase)entity;
-            ((WalkingBaseAccesor)entitycreature).setEntity(null);
+            MobEntity entitycreature = (MobEntity)entity;
+            ((WalkingBaseAccesor)entitycreature).setTarget(null);
 
             return false;
         } else
@@ -440,38 +440,38 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
         }
     }
 
-    public void travel(float f, float f1)
+    public void method_945(float f, float f1)
     {
-        if(method_1393())
+        if(isSubmergedInWater())
         {
-            if(passenger != null)
+            if(field_1594 != null)
             {
-                velocityX += passenger.velocityX * (HorseSpeed / 2D);
-                velocityZ += passenger.velocityZ * (HorseSpeed / 2D);
-                PlayerBase entityplayer = (PlayerBase)passenger;
+                velocityX += field_1594.velocityX * (HorseSpeed / 2D);
+                velocityZ += field_1594.velocityZ * (HorseSpeed / 2D);
+                PlayerEntity entityplayer = (PlayerEntity)field_1594;
                 if(((LivingAccesor)entityplayer).getJumping() && !isjumping)
                 {
                     velocityY += 0.5D;
                     isjumping = true;
                 }
                 move(velocityX, velocityY, velocityZ);
-                if(onGround)
+                if(field_1623)
                 {
                     isjumping = false;
                 }
-                pitch = passenger.pitch * 0.5F;
-                if(rand.nextInt(20) == 0)
+                pitch = field_1594.pitch * 0.5F;
+                if(random.nextInt(20) == 0)
                 {
-                    yaw = passenger.yaw;
+                    yaw = field_1594.yaw;
                 }
-                setRotation(yaw, pitch);
+                method_1342(yaw, pitch);
                 if(!tamed)
                 {
-                    passenger = null;
+                    field_1594 = null;
                 }
             }
             double d = y;
-            movementInputToVelocity(f, f1, 0.02F);
+            method_1324(f, f1, 0.02F);
             move(velocityX, velocityY, velocityZ);
             velocityX *= 0.80000001192092896D;
             velocityY *= 0.80000001192092896D;
@@ -484,34 +484,34 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
         } else
         if(method_1335())
         {
-            if(passenger != null)
+            if(field_1594 != null)
             {
-                velocityX += passenger.velocityX * (HorseSpeed / 2D);
-                velocityZ += passenger.velocityZ * (HorseSpeed / 2D);
-                PlayerBase entityplayer1 = (PlayerBase)passenger;
+                velocityX += field_1594.velocityX * (HorseSpeed / 2D);
+                velocityZ += field_1594.velocityZ * (HorseSpeed / 2D);
+                PlayerEntity entityplayer1 = (PlayerEntity)field_1594;
                 if(((LivingAccesor)entityplayer1).getJumping() && !isjumping)
                 {
                     velocityY += 0.5D;
                     isjumping = true;
                 }
                 move(velocityX, velocityY, velocityZ);
-                if(onGround)
+                if(field_1623)
                 {
                     isjumping = false;
                 }
-                pitch = passenger.pitch * 0.5F;
-                if(rand.nextInt(20) == 0)
+                pitch = field_1594.pitch * 0.5F;
+                if(random.nextInt(20) == 0)
                 {
-                    yaw = passenger.yaw;
+                    yaw = field_1594.yaw;
                 }
-                setRotation(yaw, pitch);
+                method_1342(yaw, pitch);
                 if(!tamed)
                 {
-                    passenger = null;
+                    field_1594 = null;
                 }
             }
             double d1 = y;
-            movementInputToVelocity(f, f1, 0.02F);
+            method_1324(f, f1, 0.02F);
             move(velocityX, velocityY, velocityZ);
             velocityX *= 0.5D;
             velocityY *= 0.5D;
@@ -524,73 +524,73 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
         } else
         {
             float f2 = 0.91F;
-            if(onGround)
+            if(field_1623)
             {
                 f2 = 0.5460001F;
-                int i = level.getTileId(MathHelper.floor(x), MathHelper.floor(boundingBox.minY) - 1, MathHelper.floor(z));
+                int i = world.getBlockId(MathHelper.floor(x), MathHelper.floor(boundingBox.minY) - 1, MathHelper.floor(z));
                 if(i > 0)
                 {
-                    f2 = BlockBase.BY_ID[i].slipperiness * 0.91F;
+                    f2 = Block.BLOCKS[i].slipperiness * 0.91F;
                 }
             }
             float f3 = 0.162771F / (f2 * f2 * f2);
-            movementInputToVelocity(f, f1, onGround ? 0.1F * f3 : 0.02F);
+            method_1324(f, f1, field_1623 ? 0.1F * f3 : 0.02F);
             f2 = 0.91F;
-            if(onGround)
+            if(field_1623)
             {
                 f2 = 0.5460001F;
-                int j = level.getTileId(MathHelper.floor(x), MathHelper.floor(boundingBox.minY) - 1, MathHelper.floor(z));
+                int j = world.getBlockId(MathHelper.floor(x), MathHelper.floor(boundingBox.minY) - 1, MathHelper.floor(z));
                 if(j > 0)
                 {
-                    f2 = BlockBase.BY_ID[j].slipperiness * 0.91F;
+                    f2 = Block.BLOCKS[j].slipperiness * 0.91F;
                 }
             }
             if(method_932())
             {
-                fallDistance = 0.0F;
+                field_1636 = 0.0F;
                 if(velocityY < -0.14999999999999999D)
                 {
                     velocityY = -0.14999999999999999D;
                 }
             }
-            if(passenger != null && !tamed)
+            if(field_1594 != null && !tamed)
             {
-                if(rand.nextInt(5) == 0 && !isjumping)
+                if(random.nextInt(5) == 0 && !isjumping)
                 {
                     velocityY += 0.40000000000000002D;
                     isjumping = true;
                 }
-                if(rand.nextInt(10) == 0)
+                if(random.nextInt(10) == 0)
                 {
-                    velocityX += rand.nextDouble() / 30D;
-                    velocityZ += rand.nextDouble() / 10D;
+                    velocityX += random.nextDouble() / 30D;
+                    velocityZ += random.nextDouble() / 10D;
                 }
                 move(velocityX, velocityY, velocityZ);
-                if(rand.nextInt(50) == 0)
+                if(random.nextInt(50) == 0)
                 {
-                    level.playSound(this, "mocreatures:horsemad", 1.0F, 1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
-                    passenger.velocityY += 0.90000000000000002D;
-                    passenger.velocityZ -= 0.29999999999999999D;
-                    passenger = null;
+                    world.playSound(this, "mocreatures:horsemad", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+                    field_1594.velocityY += 0.90000000000000002D;
+                    field_1594.velocityZ -= 0.29999999999999999D;
+                    field_1594 = null;
                 }
-                if(onGround)
+                if(field_1623)
                 {
                     isjumping = false;
                 }
-                if(rand.nextInt(temper * 8) == 0)
+                if(random.nextInt(temper * 8) == 0)
                 {
                     tamed = true;
-                    PlayerBase milosc = (PlayerBase)passenger;
+                    PlayerEntity milosc = (PlayerEntity)field_1594;
                     horseOwner = milosc.name;
                     setName(this);
                 }
             }
-            if(passenger != null && tamed)
+            if(field_1594 != null && tamed)
             {
-                boundingBox.maxY = passenger.boundingBox.maxY;
-                velocityX += passenger.velocityX * HorseSpeed;
-                velocityZ += passenger.velocityZ * HorseSpeed;
-                PlayerBase entityplayer2 = (PlayerBase)passenger;
+                boundingBox.maxY = field_1594.boundingBox.maxY;
+                velocityX += field_1594.velocityX * HorseSpeed;
+                velocityZ += field_1594.velocityZ * HorseSpeed;
+                PlayerEntity entityplayer2 = (PlayerEntity)field_1594;
                 if(((LivingAccesor)entityplayer2).getJumping() && !isjumping)
                 {
                     velocityY += HorseJump;
@@ -601,20 +601,20 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
                     velocityY += 0.10000000000000001D;
                 }
                 move(velocityX, velocityY, velocityZ);
-                if(onGround)
+                if(field_1623)
                 {
                     isjumping = false;
                 }
-                prevYaw = yaw = passenger.yaw;
-                pitch = passenger.pitch * 0.5F;
-                setRotation(yaw, pitch);
+                prevYaw = yaw = field_1594.yaw;
+                pitch = field_1594.pitch * 0.5F;
+                method_1342(yaw, pitch);
             }
             move(velocityX, velocityY, velocityZ);
             if(field_1624 && method_932())
             {
                 velocityY = 0.20000000000000001D;
             }
-            if((typeint == 5 || typeint == 8) && passenger != null && tamed)
+            if((typeint == 5 || typeint == 8) && field_1594 != null && tamed)
             {
                 velocityY -= 0.080000000000000002D;
                 velocityY *= 0.60000000000000009D;
@@ -626,7 +626,7 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
             velocityX *= f2;
             velocityZ *= f2;
         }
-        field_1048 = limbDistance;
+        field_1048 = field_1049;
         double d2 = x - prevX;
         double d3 = z - prevZ;
         float f4 = MathHelper.sqrt(d2 * d2 + d3 * d3) * 4F;
@@ -634,9 +634,9 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
         {
             f4 = 1.0F;
         }
-        limbDistance += (f4 - limbDistance) * 0.4F;
-        field_1050 += limbDistance;
-        if(mocr.mocreaturesGlass.balancesettings.horse_fuel && mc.currentScreen == null && Keyboard.isKeyDown(KeybindListener.keyBinding_horseFuel.key) && passenger != null)
+        field_1049 += (f4 - field_1049) * 0.4F;
+        field_1050 += field_1049;
+        if(mocr.mocreaturesGlass.balancesettings.horse_fuel && mc.currentScreen == null && Keyboard.isKeyDown(KeybindListener.keyBinding_horseFuel.code) && field_1594 != null)
         {
             openFuelGui();
         }
@@ -666,28 +666,28 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
     public void addFuel(){
         if(mocr.mocreaturesGlass.balancesettings.horse_fuel)
         {
-            if(animalFuel <= 0 && passenger != null && !level.isServerSide)
+            if(animalFuel <= 0 && field_1594 != null && !world.isRemote)
             {
-                if(cargoItems[0] != null && cargoItems[0].itemId == ItemBase.coal.id)  //PALIWO
+                if(cargoItems[0] != null && cargoItems[0].itemId == Item.COAL.id)  //PALIWO
                 {
                     animalFuel = 200; //plane.planeFuelAdd
-                    takeInventoryItem(0, 1);
+                    removeStack(0, 1);
                 }
             }
         }
     }
 
-    public ItemInstance takeInventoryItem(int i, int j)
+    public ItemStack removeStack(int i, int j)
     {
         if(cargoItems[i] != null)
         {
             if(cargoItems[i].count <= j)
             {
-                ItemInstance itemstack = cargoItems[i];
+                ItemStack itemstack = cargoItems[i];
                 cargoItems[i] = null;
                 return itemstack;
             }
-            ItemInstance itemstack1 = cargoItems[i].split(j);
+            ItemStack itemstack1 = cargoItems[i].split(j);
             if(cargoItems[i].count == 0)
             {
                 cargoItems[i] = null;
@@ -700,11 +700,11 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
     }
 
     public void openFuelGui(){
-        if(!level.isServerSide) {
+        if(!world.isRemote) {
             if (mc.currentScreen instanceof GuiHorseFuel) {
-                mc.openScreen(null);
-            } else if (passenger.vehicle instanceof EntityHorse) {
-                mc.openScreen(new GuiHorseFuel(((PlayerBase)passenger).inventory, (EntityHorse)passenger.vehicle));
+                mc.setScreen(null);
+            } else if (field_1594.field_1595 instanceof EntityHorse) {
+                mc.setScreen(new GuiHorseFuel(((PlayerEntity)field_1594).inventory, (EntityHorse)field_1594.field_1595));
             }
         }
     }
@@ -715,22 +715,22 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
         return (animalFuel * i) / 200;//return (planeFuel * i) / plane.planeFuelAdd;
     }
 
-    public int getInventorySize()
+    public int size()
     {
         return 1;
     }
 
-    public ItemInstance getInventoryItem(int i)
+    public ItemStack getStack(int i)
     {
         return cargoItems[i];
     }
 
-    public String getContainerName()
+    public String getName()
     {
         return "TESTOWY NA RAZIE";
     }
 
-    public int getMaxItemCount()
+    public int getMaxCountPerStack()
     {
         return 64;
     }
@@ -739,18 +739,18 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
     {
     }
 
-    public void setInventoryItem(int i, ItemInstance itemstack)
+    public void setStack(int i, ItemStack itemstack)
     {
         cargoItems[i] = itemstack;
-        if(itemstack != null && itemstack.count > getMaxItemCount())
+        if(itemstack != null && itemstack.count > getMaxCountPerStack())
         {
-            itemstack.count = getMaxItemCount();
+            itemstack.count = getMaxCountPerStack();
         }
     }
 
-    public boolean canPlayerUse(PlayerBase entityplayer)
+    public boolean canPlayerUse(PlayerEntity entityplayer)
     {
-        if(removed)
+        if(dead)
         {
             return false;
         } else
@@ -761,7 +761,7 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
 
     //TODO:EXTRA FUEL end
 
-    protected void handleFallDamage(float f)
+    protected void method_1389(float f)
     {
         int i = (int)Math.ceil(f - 3F);
         if(i > 0 && typeint != 5 && typeint != 8)
@@ -774,66 +774,66 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
             {
                 damage(this, i);
             }
-            if(passenger != null && i > 0)
+            if(field_1594 != null && i > 0)
             {
-                passenger.damage(null, i);
+                field_1594.damage(null, i);
             }
             if(typeint == 5 || typeint == 8)
             {
                 return;
             }
-            int j = level.getTileId(MathHelper.floor(x), MathHelper.floor(y - 0.20000000298023221D - (double)prevPitch), MathHelper.floor(z));
+            int j = world.getBlockId(MathHelper.floor(x), MathHelper.floor(y - 0.20000000298023221D - (double)prevPitch), MathHelper.floor(z));
             if(j > 0)
             {
-                BlockSounds stepsound = BlockBase.BY_ID[j].sounds;
-                level.playSound(this, stepsound.getWalkSound(), stepsound.getVolume() * 0.5F, stepsound.getPitch() * 0.75F);
+                BlockSoundGroup stepsound = Block.BLOCKS[j].soundGroup;
+                world.playSound(this, stepsound.getSound(), stepsound.method_1976() * 0.5F, stepsound.method_1977() * 0.75F);
             }
         }
     }
 
-    protected float getSoundVolume()
+    protected float method_915()
     {
         return 0.4F;
     }
 
     public boolean method_1356()
     {
-        return passenger == null;
+        return field_1594 == null;
     }
 
-    public boolean interact(PlayerBase entityplayer)
+    public boolean method_1323(PlayerEntity entityplayer)
     {
-        ItemInstance itemstack = entityplayer.inventory.getHeldItem();
+        ItemStack itemstack = entityplayer.inventory.getSelectedItem();
         if(tamed && !isHorsePublic && !entityplayer.name.equals(horseOwner))
         {
             return false;
         }
-        if(itemstack != null && tamed && entityplayer.name.equals(horseOwner) && (itemstack.itemId == ItemBase.goldSword.id || itemstack.itemId == ItemBase.stoneSword.id || itemstack.itemId == ItemBase.woodSword.id || itemstack.itemId == ItemBase.ironSword.id || itemstack.itemId == ItemBase.diamondSword.id))
+        if(itemstack != null && tamed && entityplayer.name.equals(horseOwner) && (itemstack.itemId == Item.GOLDEN_SWORD.id || itemstack.itemId == Item.STONE_SWORD.id || itemstack.itemId == Item.WOODEN_SWORD.id || itemstack.itemId == Item.IRON_SWORD.id || itemstack.itemId == Item.DIAMOND_SWORD.id))
         {
             if(isHorsePublic == true){
                 isHorsePublic = false;
                 for(int var3 = 0; var3 < 7; ++var3) {
-                    double var4 = this.rand.nextGaussian() * 0.02D;
-                    double var6 = this.rand.nextGaussian() * 0.02D;
-                    double var8 = this.rand.nextGaussian() * 0.02D;
-                    level.addParticle("heart", this.x + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.rand.nextFloat() * this.height), this.z + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
+                    double var4 = this.random.nextGaussian() * 0.02D;
+                    double var6 = this.random.nextGaussian() * 0.02D;
+                    double var8 = this.random.nextGaussian() * 0.02D;
+                    world.addParticle("heart", this.x + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, this.y + 0.5D + (double) (this.random.nextFloat() * this.spacingY), this.z + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, var4, var6, var8);
                 }
             }else{
                 isHorsePublic = true;
                 for(int var3 = 0; var3 < 7; ++var3) {
-                    double var4 = this.rand.nextGaussian() * 0.02D;
-                    double var6 = this.rand.nextGaussian() * 0.02D;
-                    double var8 = this.rand.nextGaussian() * 0.02D;
-                    level.addParticle("flame", this.x + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.rand.nextFloat() * this.height), this.z + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
+                    double var4 = this.random.nextGaussian() * 0.02D;
+                    double var6 = this.random.nextGaussian() * 0.02D;
+                    double var8 = this.random.nextGaussian() * 0.02D;
+                    world.addParticle("flame", this.x + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, this.y + 0.5D + (double) (this.random.nextFloat() * this.spacingY), this.z + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, var4, var6, var8);
                 }
             }
             return true;
         }
-        if(itemstack != null && itemstack.itemId == ItemBase.wheat.id)
+        if(itemstack != null && itemstack.itemId == Item.WHEAT.id)
         {
             if(--itemstack.count == 0)
             {
-                entityplayer.inventory.setInventoryItem(entityplayer.inventory.selectedHotbarSlot, null);
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
             if((temper -= 25) < 25)
             {
@@ -843,7 +843,7 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
             {
                 health = maxhealth;
             }
-            level.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
+            world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             if(!adult && b < 1.0F)
             {
                 b += 0.01F;
@@ -854,7 +854,7 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
         {
             if(--itemstack.count == 0)
             {
-                entityplayer.inventory.setInventoryItem(entityplayer.inventory.selectedHotbarSlot, null);
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
             if((temper -= 50) < 25)
             {
@@ -864,18 +864,18 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
             {
                 health = maxhealth;
             }
-            level.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
+            world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             if(!adult && b < 1.0F)
             {
                 b += 0.02F;
             }
             return true;
         }
-        if(itemstack != null && itemstack.itemId == ItemBase.bread.id)
+        if(itemstack != null && itemstack.itemId == Item.BREAD.id)
         {
             if(--itemstack.count == 0)
             {
-                entityplayer.inventory.setInventoryItem(entityplayer.inventory.selectedHotbarSlot, null);
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
             if((temper -= 100) < 25)
             {
@@ -885,22 +885,22 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
             {
                 health = maxhealth;
             }
-            level.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
+            world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             if(!adult && b < 1.0F)
             {
                 b += 0.03F;
             }
             return true;
         }
-        if(itemstack != null && (((mocr.mocreaturesGlass.balancesettings.balance_drop) && itemstack.itemId == mod_mocreatures.greenapple.id)  ||  (((itemstack.itemId == ItemBase.apple.id)||(itemstack.itemId == ItemBase.goldenApple.id)) && !mocr.mocreaturesGlass.balancesettings.balance_drop)))
+        if(itemstack != null && (((mocr.mocreaturesGlass.balancesettings.balance_drop) && itemstack.itemId == mod_mocreatures.greenapple.id)  ||  (((itemstack.itemId == Item.APPLE.id)||(itemstack.itemId == Item.GOLDEN_APPLE.id)) && !mocr.mocreaturesGlass.balancesettings.balance_drop)))
         {
             if(--itemstack.count == 0)
             {
-                entityplayer.inventory.setInventoryItem(entityplayer.inventory.selectedHotbarSlot, null);
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
             tamed = true;
             health = maxhealth;
-            level.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
+            world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             if(!adult && b < 1.0F)
             {
                 b += 0.05F;
@@ -909,7 +909,7 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
             setName(this);
             return true;
         }
-        if(itemstack != null && tamed && itemstack.itemId == BlockBase.CHEST.id && (typeint == 6 || typeint == 8))
+        if(itemstack != null && tamed && itemstack.itemId == Block.CHEST.id && (typeint == 6 || typeint == 8))
         {
             if(chestedhorse)
             {
@@ -917,59 +917,59 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
             }
             if(--itemstack.count == 0)
             {
-                entityplayer.inventory.setInventoryItem(entityplayer.inventory.selectedHotbarSlot, null);
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
             chestedhorse = true;
-            level.playSound(this, "mob.chickenplop", 1.0F, (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
+            world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
             return true;
         }
         if(itemstack != null && tamed && itemstack.itemId == mod_mocreatures.haystack.id)
         {
             if(--itemstack.count == 0)
             {
-                entityplayer.inventory.setInventoryItem(entityplayer.inventory.selectedHotbarSlot, null);
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
             eatinghaystack = true;
-            level.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
+            world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             health = maxhealth;
             return true;
         }
-        if(itemstack != null && (itemstack.itemId == ItemBase.stoneShovel.id || itemstack.itemId == BlockBase.TORCH.id) && chestedhorse)
+        if(itemstack != null && (itemstack.itemId == Item.STONE_SHOVEL.id || itemstack.itemId == Block.TORCH.id) && chestedhorse)
         {
             if(typeint == 8)
             {
                 localhorsechest = new AnimalChest(localstack, "Dark Pegasus chest", localstack.length);
-                entityplayer.openChestScreen(localhorsechest);
+                entityplayer.method_486(localhorsechest);
                 return true;
             }
             if(typeint == 6)
             {
                 localhorsechestx54 = new AnimalChest(localstackx54, "Pack Horse chest", localstackx54.length);
-                entityplayer.openChestScreen(localhorsechestx54);
+                entityplayer.method_486(localhorsechestx54);
                 return true;
             }
         }
-        if(itemstack != null && (itemstack.itemId == BlockBase.PUMPKIN.id || itemstack.itemId == ItemBase.mushroomStew.id || itemstack.itemId == ItemBase.cake.id))
+        if(itemstack != null && (itemstack.itemId == Block.PUMPKIN.id || itemstack.itemId == Item.MUSHROOM_STEW.id || itemstack.itemId == Item.CAKE.id))
         {
             if(hasreproduced || !adult)
             {
                 return false;
             }
-            if(itemstack.itemId == ItemBase.mushroomStew.id)
+            if(itemstack.itemId == Item.MUSHROOM_STEW.id)
             {
                 itemstack.count--;
-                entityplayer.inventory.addStack(new ItemInstance(ItemBase.bowl));
+                entityplayer.inventory.method_671(new ItemStack(Item.BOWL));
             } else
             if(--itemstack.count == 0)
             {
-                entityplayer.inventory.setInventoryItem(entityplayer.inventory.selectedHotbarSlot, null);
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
             eatenpumpkin = true;
             health = maxhealth;
-            level.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
+            world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             return true;
         }
-        if(itemstack != null && tamed && itemstack.itemId == ItemBase.redstoneDust.id && typeint == 7)
+        if(itemstack != null && tamed && itemstack.itemId == Item.REDSTONE.id && typeint == 7)
         {
             if(nightmareInt > 500)
             {
@@ -977,40 +977,40 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
             }
             if(--itemstack.count == 0)
             {
-                entityplayer.inventory.setInventoryItem(entityplayer.inventory.selectedHotbarSlot, null);
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
             nightmareInt = 500;
-            level.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
+            world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             return true;
         }
-        if(itemstack != null && itemstack.itemId == mod_mocreatures.whip.id && tamed && passenger == null)
+        if(itemstack != null && itemstack.itemId == mod_mocreatures.whip.id && tamed && field_1594 == null)
         {
             eatinghaystack = !eatinghaystack;
             return true;
         }
-        if(itemstack != null && passenger == null && roper == null && tamed && itemstack.itemId == mod_mocreatures.rope.id)
+        if(itemstack != null && field_1594 == null && roper == null && tamed && itemstack.itemId == mod_mocreatures.rope.id)
         {
             if(--itemstack.count == 0)
             {
-                entityplayer.inventory.setInventoryItem(entityplayer.inventory.selectedHotbarSlot, null);
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
-            level.playSound(this, "mocreatures:roping", 1.0F, 1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
+            world.playSound(this, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             roper = entityplayer;
             return true;
         }
         if(roper != null && tamed)
         {
-            entityplayer.inventory.addStack(new ItemInstance(mod_mocreatures.rope));
-            level.playSound(this, "mocreatures:roping", 1.0F, 1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
+            entityplayer.inventory.method_671(new ItemStack(mod_mocreatures.rope));
+            world.playSound(this, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             roper = null;
             return true;
         }
-        if(itemstack != null && tamed && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == ItemBase.book.id))
+        if(itemstack != null && tamed && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == Item.BOOK.id))
         {
             setName(this);
             return true;
         }
-        if(itemstack != null && tamed && (itemstack.itemId == ItemBase.diamondPickaxe.id || itemstack.itemId == ItemBase.woodPickaxe.id || itemstack.itemId == ItemBase.stonePickaxe.id || itemstack.itemId == ItemBase.ironPickaxe.id || itemstack.itemId == ItemBase.goldPickaxe.id))
+        if(itemstack != null && tamed && (itemstack.itemId == Item.DIAMOND_PICKAXE.id || itemstack.itemId == Item.WOODEN_PICKAXE.id || itemstack.itemId == Item.STONE_PICKAXE.id || itemstack.itemId == Item.IRON_PICKAXE.id || itemstack.itemId == Item.GOLDEN_PICKAXE.id))
         {
             displayname = !displayname;
             return true;
@@ -1020,7 +1020,7 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
             entityplayer.yaw = yaw;
             entityplayer.pitch = pitch;
             eatinghaystack = false;
-            entityplayer.startRiding(this);
+            entityplayer.method_1376(this);
             gestationtime = 0;
             if(typeint == 8)
             {
@@ -1033,65 +1033,65 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
         }
     }
 
-    public void onKilledBy(EntityBase entity)
+    public void method_938(Entity entity)
     {
         if(field_1024 >= 0 && entity != null)
         {
-            entity.onKilledOther(this, field_1024);
+            entity.method_1391(this, field_1024);
         }
         if(entity != null)
         {
-            entity.handleKilledEntity(this);
+            entity.method_1390(this);
         }
         field_1045 = true;
-        if(!level.isServerSide)
+        if(!world.isRemote)
         {
-            getDrops();
+            method_933();
         }
-        level.method_279(this, 3F);
+        world.method_279(this, 3F);
         if(chestedhorse && (typeint == 6 || typeint == 8))
         {
             int i = MathHelper.floor(x);
             int j = MathHelper.floor(boundingBox.minY);
             int k = MathHelper.floor(z);
-            HorseRemoval(level, i, j, k);
+            HorseRemoval(world, i, j, k);
         }
     }
 
-    public void HorseRemoval(Level world, int i, int j, int k)
+    public void HorseRemoval(World world, int i, int j, int k)
     {
         if(localstack != null)
         {
             localhorsechest = new AnimalChest(localstack, "HorseChest", localstack.length);
             label0:
-            for(int l = 0; l < localhorsechest.getInventorySize(); l++)
+            for(int l = 0; l < localhorsechest.size(); l++)
             {
-                ItemInstance itemstack = localhorsechest.getInventoryItem(l);
+                ItemStack itemstack = localhorsechest.getStack(l);
                 if(itemstack == null)
                 {
                     continue;
                 }
-                float f = rand.nextFloat() * 0.8F + 0.1F;
-                float f1 = rand.nextFloat() * 0.8F + 0.1F;
-                float f2 = rand.nextFloat() * 0.8F + 0.1F;
+                float f = random.nextFloat() * 0.8F + 0.1F;
+                float f1 = random.nextFloat() * 0.8F + 0.1F;
+                float f2 = random.nextFloat() * 0.8F + 0.1F;
                 do
                 {
                     if(itemstack.count <= 0)
                     {
                         continue label0;
                     }
-                    int i1 = rand.nextInt(21) + 10;
+                    int i1 = random.nextInt(21) + 10;
                     if(i1 > itemstack.count)
                     {
                         i1 = itemstack.count;
                     }
                     itemstack.count -= i1;
-                    Item entityitem = new Item(level, (float)i + f, (float)j + f1, (float)k + f2, new ItemInstance(itemstack.itemId, i1, itemstack.getDamage()));
+                    ItemEntity entityitem = new ItemEntity(world, (float)i + f, (float)j + f1, (float)k + f2, new ItemStack(itemstack.itemId, i1, itemstack.getDamage()));
                     float f3 = 0.05F;
-                    entityitem.velocityX = (float)rand.nextGaussian() * f3;
-                    entityitem.velocityY = (float)rand.nextGaussian() * f3 + 0.2F;
-                    entityitem.velocityZ = (float)rand.nextGaussian() * f3;
-                    level.spawnEntity(entityitem);
+                    entityitem.velocityX = (float)random.nextGaussian() * f3;
+                    entityitem.velocityY = (float)random.nextGaussian() * f3 + 0.2F;
+                    entityitem.velocityZ = (float)random.nextGaussian() * f3;
+                    world.method_210(entityitem);
                 } while(true);
             }
         }
@@ -1099,68 +1099,68 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
         {
             localhorsechestx54 = new AnimalChest(localstackx54, "HorseChest", localstackx54.length);
             label0:
-            for(int l = 0; l < localhorsechestx54.getInventorySize(); l++)
+            for(int l = 0; l < localhorsechestx54.size(); l++)
             {
-                ItemInstance itemstack = localhorsechestx54.getInventoryItem(l);
+                ItemStack itemstack = localhorsechestx54.getStack(l);
                 if(itemstack == null)
                 {
                     continue;
                 }
-                float f = rand.nextFloat() * 0.8F + 0.1F;
-                float f1 = rand.nextFloat() * 0.8F + 0.1F;
-                float f2 = rand.nextFloat() * 0.8F + 0.1F;
+                float f = random.nextFloat() * 0.8F + 0.1F;
+                float f1 = random.nextFloat() * 0.8F + 0.1F;
+                float f2 = random.nextFloat() * 0.8F + 0.1F;
                 do
                 {
                     if(itemstack.count <= 0)
                     {
                         continue label0;
                     }
-                    int i1 = rand.nextInt(21) + 10;
+                    int i1 = random.nextInt(21) + 10;
                     if(i1 > itemstack.count)
                     {
                         i1 = itemstack.count;
                     }
                     itemstack.count -= i1;
-                    Item entityitem = new Item(level, (float)i + f, (float)j + f1, (float)k + f2, new ItemInstance(itemstack.itemId, i1, itemstack.getDamage()));
+                    ItemEntity entityitem = new ItemEntity(world, (float)i + f, (float)j + f1, (float)k + f2, new ItemStack(itemstack.itemId, i1, itemstack.getDamage()));
                     float f3 = 0.05F;
-                    entityitem.velocityX = (float)rand.nextGaussian() * f3;
-                    entityitem.velocityY = (float)rand.nextGaussian() * f3 + 0.2F;
-                    entityitem.velocityZ = (float)rand.nextGaussian() * f3;
-                    level.spawnEntity(entityitem);
+                    entityitem.velocityX = (float)random.nextGaussian() * f3;
+                    entityitem.velocityY = (float)random.nextGaussian() * f3 + 0.2F;
+                    entityitem.velocityZ = (float)random.nextGaussian() * f3;
+                    world.method_210(entityitem);
                 } while(true);
             }
         }
     }
 
-    public void writeCustomDataToTag(CompoundTag nbttagcompound)
+    public void writeNbt(NbtCompound nbttagcompound)
     {
-        super.writeCustomDataToTag(nbttagcompound);
-        nbttagcompound.put("Saddle", rideable);
-        nbttagcompound.put("EatingHaystack", eatinghaystack);
-        nbttagcompound.put("Tamed", tamed);
-        nbttagcompound.put("HorseBoolean", horseboolean);
-        nbttagcompound.put("TypeInt", typeint);
-        nbttagcompound.put("ChestedHorse", chestedhorse);
-        nbttagcompound.put("HasReproduced", hasreproduced);
-        nbttagcompound.put("Bred", bred);
-        nbttagcompound.put("Adult", adult);
-        nbttagcompound.put("Age", b);
-        nbttagcompound.put("Name", name);
-        nbttagcompound.put("DisplayName", displayname);
-        nbttagcompound.put("GestationTime", gestationtime);
-        nbttagcompound.put("EatenPumpkin", eatenpumpkin);
-        nbttagcompound.put("PublicHorse", isHorsePublic);
-        nbttagcompound.put("HorseOwner", horseOwner);
+        super.writeNbt(nbttagcompound);
+        nbttagcompound.putBoolean("Saddle", rideable);
+        nbttagcompound.putBoolean("EatingHaystack", eatinghaystack);
+        nbttagcompound.putBoolean("Tamed", tamed);
+        nbttagcompound.putBoolean("HorseBoolean", horseboolean);
+        nbttagcompound.putInt("TypeInt", typeint);
+        nbttagcompound.putBoolean("ChestedHorse", chestedhorse);
+        nbttagcompound.putBoolean("HasReproduced", hasreproduced);
+        nbttagcompound.putBoolean("Bred", bred);
+        nbttagcompound.putBoolean("Adult", adult);
+        nbttagcompound.putFloat("Age", b);
+        nbttagcompound.putString("Name", name);
+        nbttagcompound.putBoolean("DisplayName", displayname);
+        nbttagcompound.putInt("GestationTime", gestationtime);
+        nbttagcompound.putBoolean("EatenPumpkin", eatenpumpkin);
+        nbttagcompound.putBoolean("PublicHorse", isHorsePublic);
+        nbttagcompound.putString("HorseOwner", horseOwner);
         if(typeint == 8)
         {
-            ListTag nbttaglist = new ListTag();
+            NbtList nbttaglist = new NbtList();
             for(int i = 0; i < localstack.length; i++)
             {
                 if(localstack[i] != null)
                 {
-                    CompoundTag nbttagcompound1 = new CompoundTag();
-                    nbttagcompound1.put("Slot", (byte)i);
-                    localstack[i].toTag(nbttagcompound1);
+                    NbtCompound nbttagcompound1 = new NbtCompound();
+                    nbttagcompound1.putByte("Slot", (byte)i);
+                    localstack[i].writeNbt(nbttagcompound1);
                     nbttaglist.add(nbttagcompound1);
                 }
             }
@@ -1170,14 +1170,14 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
 
         if(typeint == 6)
         {
-            ListTag nbttaglist = new ListTag();
+            NbtList nbttaglist = new NbtList();
             for(int i = 0; i < localstackx54.length; i++)
             {
                 if(localstackx54[i] != null)
                 {
-                    CompoundTag nbttagcompound1 = new CompoundTag();
-                    nbttagcompound1.put("Slot", (byte)i);
-                    localstackx54[i].toTag(nbttagcompound1);
+                    NbtCompound nbttagcompound1 = new NbtCompound();
+                    nbttagcompound1.putByte("Slot", (byte)i);
+                    localstackx54[i].writeNbt(nbttagcompound1);
                     nbttaglist.add(nbttagcompound1);
                 }
             }
@@ -1185,12 +1185,12 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
             nbttagcompound.put("Items", nbttaglist);
         }
         if(mocr.mocreaturesGlass.balancesettings.horse_fuel) {
-            ListTag fuelList = new ListTag();
+            NbtList fuelList = new NbtList();
             for (int i = 0; i < cargoItems.length; i++) {
                 if (cargoItems[i] != null) {
-                    CompoundTag comp2 = new CompoundTag();
-                    comp2.put("SlotFuel", (byte) i);
-                    cargoItems[i].toTag(comp2);
+                    NbtCompound comp2 = new NbtCompound();
+                    comp2.putByte("SlotFuel", (byte) i);
+                    cargoItems[i].writeNbt(comp2);
                     fuelList.add(comp2);
                 }
             }
@@ -1199,9 +1199,9 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
 
     }
 
-    public void readCustomDataFromTag(CompoundTag nbttagcompound)
+    public void readNbt(NbtCompound nbttagcompound)
     {
-        super.readCustomDataFromTag(nbttagcompound);
+        super.readNbt(nbttagcompound);
         rideable = nbttagcompound.getBoolean("Saddle");
         tamed = nbttagcompound.getBoolean("Tamed");
         eatinghaystack = nbttagcompound.getBoolean("EatingHaystack");
@@ -1220,15 +1220,15 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
         horseOwner = nbttagcompound.getString("HorseOwner");
         if(typeint == 8)
         {
-            ListTag nbttaglist = nbttagcompound.getListTag("Items");
-            localstack = new ItemInstance[27];
+            NbtList nbttaglist = nbttagcompound.getList("Items");
+            localstack = new ItemStack[27];
             for(int i = 0; i < nbttaglist.size(); i++)
             {
-                CompoundTag nbttagcompound1 = (CompoundTag)nbttaglist.get(i);
+                NbtCompound nbttagcompound1 = (NbtCompound)nbttaglist.get(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
                 if(j >= 0 && j < localstack.length)
                 {
-                    localstack[j] = new ItemInstance(nbttagcompound1);
+                    localstack[j] = new ItemStack(nbttagcompound1);
                 }
             }
 
@@ -1236,29 +1236,29 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
 
         if(typeint == 6)
         {
-            ListTag nbttaglist = nbttagcompound.getListTag("Items");
-            localstackx54 = new ItemInstance[54];
+            NbtList nbttaglist = nbttagcompound.getList("Items");
+            localstackx54 = new ItemStack[54];
             for(int i = 0; i < nbttaglist.size(); i++)
             {
-                CompoundTag nbttagcompound1 = (CompoundTag)nbttaglist.get(i);
+                NbtCompound nbttagcompound1 = (NbtCompound)nbttaglist.get(i);
                 int j = nbttagcompound1.getByte("Slot") & 0xff;
                 if(j >= 0 && j < localstackx54.length)
                 {
-                    localstackx54[j] = new ItemInstance(nbttagcompound1);
+                    localstackx54[j] = new ItemStack(nbttagcompound1);
                 }
             }
         }
 
         if(mocr.mocreaturesGlass.balancesettings.horse_fuel) {
-            ListTag nbttaglist2 = nbttagcompound.getListTag("Fuels");
-            cargoItems = new ItemInstance[1];
+            NbtList nbttaglist2 = nbttagcompound.getList("Fuels");
+            cargoItems = new ItemStack[1];
             for(int i = 0; i < nbttaglist2.size(); i++)
             {
-                CompoundTag nbttagcompound1 = (CompoundTag)nbttaglist2.get(i);
+                NbtCompound nbttagcompound1 = (NbtCompound)nbttaglist2.get(i);
                 int k = nbttagcompound1.getByte("SlotFuel") & 0xff;
                 if(k >= 0 && k < cargoItems.length)
                 {
-                    cargoItems[k] = new ItemInstance(nbttagcompound1);
+                    cargoItems[k] = new ItemStack(nbttagcompound1);
                 }
             }
         }
@@ -1268,46 +1268,46 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
 
     protected boolean method_640()
     {
-        return eatinghaystack || passenger != null;
+        return eatinghaystack || field_1594 != null;
     }
 
-    protected String getAmbientSound()
+    protected String method_911()
     {
         return "mocreatures:horsegrunt";
     }
 
-    protected String getHurtSound()
+    protected String method_912()
     {
         return "mocreatures:horsehurt";
     }
 
-    protected String getDeathSound()
+    protected String method_913()
     {
         return "mocreatures:horsedying";
     }
 
-    protected void getDrops()
+    protected void method_933()
     {
-        int i = rand.nextInt(3);
+        int i = random.nextInt(3);
         for(int j = 0; j < i; j++)
         {
-            dropItem(new ItemInstance(getMobDrops(), 1, 0), 0.0F);
+            method_1327(new ItemStack(method_914(), 1, 0), 0.0F);
         }
 
         if(rideable && mocr.mocreaturesGlass.balancesettings.horse_saddle) {
-            int k = rand.nextInt(2);
+            int k = random.nextInt(2);
             for (int j = 0; j < k; j++) {
-                dropItem(new ItemInstance(mod_mocreatures.horsesaddle, 1, 0), 0.0F);
+                method_1327(new ItemStack(mod_mocreatures.horsesaddle, 1, 0), 0.0F);
             }
         }
     }
 
-    protected int getMobDrops()
+    protected int method_914()
     {
-        return ItemBase.leather.id;
+        return Item.LEATHER.id;
     }
 
-    public int getLimitPerChunk()
+    public int method_916()
     {
         return 6;
     }
@@ -1319,7 +1319,7 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
 
     public boolean renderName()
     {
-        return displayname && passenger == null;
+        return displayname && field_1594 == null;
     }
 
     public String dajTexture(){
@@ -1329,7 +1329,7 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
     public static void setName(EntityHorse entityhorse)
     {
         entityhorse.displayname = true;
-        mc.openScreen(new MoCGUI(entityhorse, entityhorse.name));
+        mc.setScreen(new MoCGUI(entityhorse, entityhorse.name));
     }
 
     public static Minecraft mc = Minecraft.class.cast(FabricLoader.getInstance().getGameInstance());
@@ -1357,18 +1357,18 @@ public class EntityHorse extends AnimalBase implements InventoryBase, MobSpawnDa
     public float fwinge;
     public float fwingh;
     public boolean chestedhorse;
-    private InventoryBase localhorsechest;
-    public ItemInstance localstack[];
-    private InventoryBase localhorsechestx54;
-    public ItemInstance localstackx54[];
+    private Inventory localhorsechest;
+    public ItemStack localstack[];
+    private Inventory localhorsechestx54;
+    public ItemStack localstackx54[];
     public boolean eatinghaystack;
     public float b;
     public boolean adult;
     public boolean roped;
-    public Living roper;
+    public LivingEntity roper;
     public String name;
     public boolean displayname;
-    public ItemInstance cargoItems[];
+    public ItemStack cargoItems[];
     private int animalFuel;
     public boolean animalKeyDown;
 

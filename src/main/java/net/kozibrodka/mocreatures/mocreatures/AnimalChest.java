@@ -4,43 +4,43 @@
 
 package net.kozibrodka.mocreatures.mocreatures;
 
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.inventory.InventoryBase;
-import net.minecraft.item.ItemInstance;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemStack;
 
 public class AnimalChest
-    implements InventoryBase
+    implements Inventory
 {
 
-    public AnimalChest(ItemInstance aitemstack[], String s, int sizeUj)
+    public AnimalChest(ItemStack aitemstack[], String s, int sizeUj)
     {
         cheststack = aitemstack;
         localstring = s;
         setSize = sizeUj;
     }
 
-    public int getInventorySize()
+    public int size()
     {
         return setSize;
     }
 
-    public ItemInstance getInventoryItem(int i)
+    public ItemStack getStack(int i)
     {
         return cheststack[i];
     }
 
-    public ItemInstance takeInventoryItem(int i, int j)
+    public ItemStack removeStack(int i, int j)
     {
         if(cheststack[i] != null)
         {
             if(cheststack[i].count <= j)
             {
-                ItemInstance itemstack = cheststack[i];
+                ItemStack itemstack = cheststack[i];
                 cheststack[i] = null;
                 markDirty();
                 return itemstack;
             }
-            ItemInstance itemstack1 = cheststack[i].split(j);
+            ItemStack itemstack1 = cheststack[i].split(j);
             if(cheststack[i].count == 0)
             {
                 cheststack[i] = null;
@@ -53,23 +53,23 @@ public class AnimalChest
         }
     }
 
-    public void setInventoryItem(int i, ItemInstance itemstack)
+    public void setStack(int i, ItemStack itemstack)
     {
         cheststack[i] = itemstack;
-        if(itemstack != null && itemstack.count > getMaxItemCount())
+        if(itemstack != null && itemstack.count > getMaxCountPerStack())
         {
-            itemstack.count = getMaxItemCount();
+            itemstack.count = getMaxCountPerStack();
         }
         markDirty();
     }
 
-    public String getContainerName()
+    public String getName()
     {
         return localstring;
     }
 
 
-    public int getMaxItemCount()
+    public int getMaxCountPerStack()
     {
         return 64;
     }
@@ -78,7 +78,7 @@ public class AnimalChest
     {
     }
 
-    public boolean canPlayerUse(PlayerBase entityplayer)
+    public boolean canPlayerUse(PlayerEntity entityplayer)
     {
         return true;
     }
@@ -86,5 +86,5 @@ public class AnimalChest
 
     public int setSize;
     private String localstring;
-    public ItemInstance cheststack[];
+    public ItemStack cheststack[];
 }

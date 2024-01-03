@@ -5,23 +5,23 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.minecraft.block.BlockBase;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.Living;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemInstance;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
-import net.minecraft.util.maths.Box;
-import net.minecraft.util.maths.MathHelper;
+import net.minecraft.block.Block;
+import net.minecraft.block.Material;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
 {
 
-    public EntityPolarBear(Level world)
+    public EntityPolarBear(World world)
     {
         super(world);
         texture = "/assets/mocreatures/stationapi/textures/mob/polarbear.png";
@@ -29,40 +29,40 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
         health = 30;
     }
 
-    protected EntityBase getAttackTarget()
+    protected Entity method_638()
     {
-        if(level.difficulty > 0)
+        if(world.field_213 > 0)
         {
-            PlayerBase entityplayer = level.getClosestPlayerTo(this, attackRange);
-            if(entityplayer != null && level.difficulty > 0)
+            PlayerEntity entityplayer = world.method_186(this, attackRange);
+            if(entityplayer != null && world.field_213 > 0)
             {
                 return entityplayer;
             }
-            if(rand.nextInt(20) == 0)
+            if(random.nextInt(20) == 0)
             {
-                Living entityliving = getClosestTarget(this, 8D);
+                LivingEntity entityliving = getClosestTarget(this, 8D);
                 return entityliving;
             }
         }
         return null;
     }
 
-    public void updateDespawnCounter()
+    public void method_937()
     {
-        if(level.difficulty == 1)
+        if(world.field_213 == 1)
         {
             attackRange = 5D;
             force = 3;
         } else
-        if(level.difficulty > 1)
+        if(world.field_213 > 1)
         {
             attackRange = 8D;
             force = 5;
         }
-        super.updateDespawnCounter();
+        super.method_937();
     }
 
-    public boolean NearSnowWithDistance(EntityBase entity, Double double1)
+    public boolean NearSnowWithDistance(Entity entity, Double double1)
     {
         Box axisalignedbb = entity.boundingBox.expand(double1.doubleValue(), double1.doubleValue(), double1.doubleValue());
         int i = MathHelper.floor(axisalignedbb.minX);
@@ -77,8 +77,8 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
             {
                 for(int i2 = i1; i2 < j1; i2++)
                 {
-                    int j2 = level.getTileId(k1, l1, i2);
-                    if(j2 != 0 && BlockBase.BY_ID[j2].material == Material.SNOW)
+                    int j2 = world.getBlockId(k1, l1, i2);
+                    if(j2 != 0 && Block.BLOCKS[j2].material == Material.field_998)
                     {
                         return true;
                     }
@@ -91,39 +91,39 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
         return false;
     }
 
-    protected void getDrops()
+    protected void method_933()
     {
-        int i = rand.nextInt(3);
+        int i = random.nextInt(3);
         for(int j = 0; j < i; j++)
         {
-            dropItem(new ItemInstance(getMobDrops(), 1, 0), 0.0F);
+            method_1327(new ItemStack(method_914(), 1, 0), 0.0F);
         }
         if(mocr.mocreaturesGlass.balancesettings.balance_drop) {
-            int k = rand.nextInt(2);
+            int k = random.nextInt(2);
             for (int j = 0; j < k; j++) {
-                dropItem(new ItemInstance(mod_mocreatures.polarleather, 1, 0), 0.0F);
+                method_1327(new ItemStack(mod_mocreatures.polarleather, 1, 0), 0.0F);
             }
         }
     }
 
-    public int getLimitPerChunk()
+    public int method_916()
     {
         return 2;
     }
 
-    public void remove()
+    public void markDead()
     {
-        super.remove();
+        super.markDead();
     }
 
-    public void writeCustomDataToTag(CompoundTag nbttagcompound)
+    public void writeNbt(NbtCompound nbttagcompound)
     {
-        super.writeCustomDataToTag(nbttagcompound);
+        super.writeNbt(nbttagcompound);
     }
 
-    public void readCustomDataFromTag(CompoundTag nbttagcompound)
+    public void readNbt(NbtCompound nbttagcompound)
     {
-        super.readCustomDataFromTag(nbttagcompound);
+        super.readNbt(nbttagcompound);
     }
 
     public boolean canSpawn()

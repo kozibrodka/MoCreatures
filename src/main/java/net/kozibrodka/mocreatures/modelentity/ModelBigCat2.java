@@ -4,63 +4,63 @@
 
 package net.kozibrodka.mocreatures.modelentity;
 
-import net.minecraft.client.model.Cuboid;
-import net.minecraft.client.render.entity.model.EntityModelBase;
-import net.minecraft.util.maths.MathHelper;
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.util.math.MathHelper;
 
-public class ModelBigCat2 extends EntityModelBase
+public class ModelBigCat2 extends EntityModel
 {
 
     public ModelBigCat2()
     {
-        ears = new Cuboid(16, 25);
-        ears.method_1818(-4F, -7F, -3F, 8, 4, 1, 0.0F);
-        ears.setRotationPoint(0.0F, 4F, -8F);
-        head = new Cuboid(0, 0);
-        head.method_1818(-4F, -4F, -6F, 8, 8, 6, 0.0F);
-        head.setRotationPoint(0.0F, 4F, -8F);
-        snout = new Cuboid(14, 14);
-        snout.method_1818(-2F, 0.0F, -9F, 4, 4, 6, 0.0F);
-        snout.setRotationPoint(0.0F, 4F, -8F);
-        Collar = new Cuboid(24, 0);
-        Collar.method_1818(-2.5F, 4F, -3F, 5, 4, 1, 0.0F);
-        Collar.setRotationPoint(0.0F, 4F, -8F);
-        body = new Cuboid(28, 0);
-        body.method_1818(-5F, -10F, -7F, 10, 18, 8, 0.0F);
-        body.setRotationPoint(0.0F, 5F, 2.0F);
-        Tail = new Cuboid(26, 15);
-        Tail.method_1818(-5F, -5F, -2F, 3, 3, 14, 0.0F);
-        Tail.setRotationPoint(3.5F, 9.3F, 9F);
+        ears = new ModelPart(16, 25);
+        ears.addCuboid(-4F, -7F, -3F, 8, 4, 1, 0.0F);
+        ears.setPivot(0.0F, 4F, -8F);
+        head = new ModelPart(0, 0);
+        head.addCuboid(-4F, -4F, -6F, 8, 8, 6, 0.0F);
+        head.setPivot(0.0F, 4F, -8F);
+        snout = new ModelPart(14, 14);
+        snout.addCuboid(-2F, 0.0F, -9F, 4, 4, 6, 0.0F);
+        snout.setPivot(0.0F, 4F, -8F);
+        Collar = new ModelPart(24, 0);
+        Collar.addCuboid(-2.5F, 4F, -3F, 5, 4, 1, 0.0F);
+        Collar.setPivot(0.0F, 4F, -8F);
+        body = new ModelPart(28, 0);
+        body.addCuboid(-5F, -10F, -7F, 10, 18, 8, 0.0F);
+        body.setPivot(0.0F, 5F, 2.0F);
+        Tail = new ModelPart(26, 15);
+        Tail.addCuboid(-5F, -5F, -2F, 3, 3, 14, 0.0F);
+        Tail.setPivot(3.5F, 9.3F, 9F);
         Tail.pitch = -0.5235988F;
-        leg1 = new Cuboid(0, 16);
-        leg1.method_1818(-2F, 0.0F, -2F, 4, 12, 4, 0.0F);
-        leg1.setRotationPoint(-3F, 12F, 7F);
-        leg2 = new Cuboid(0, 16);
-        leg2.method_1818(-2F, 0.0F, -2F, 4, 12, 4, 0.0F);
-        leg2.setRotationPoint(3F, 12F, 7F);
-        leg3 = new Cuboid(0, 16);
-        leg3.method_1818(-2F, 0.0F, -2F, 4, 12, 4, 0.0F);
-        leg3.setRotationPoint(-3F, 12F, -5F);
-        leg4 = new Cuboid(0, 16);
-        leg4.method_1818(-2F, 0.0F, -2F, 4, 12, 4, 0.0F);
-        leg4.setRotationPoint(3F, 12F, -5F);
+        leg1 = new ModelPart(0, 16);
+        leg1.addCuboid(-2F, 0.0F, -2F, 4, 12, 4, 0.0F);
+        leg1.setPivot(-3F, 12F, 7F);
+        leg2 = new ModelPart(0, 16);
+        leg2.addCuboid(-2F, 0.0F, -2F, 4, 12, 4, 0.0F);
+        leg2.setPivot(3F, 12F, 7F);
+        leg3 = new ModelPart(0, 16);
+        leg3.addCuboid(-2F, 0.0F, -2F, 4, 12, 4, 0.0F);
+        leg3.setPivot(-3F, 12F, -5F);
+        leg4 = new ModelPart(0, 16);
+        leg4.addCuboid(-2F, 0.0F, -2F, 4, 12, 4, 0.0F);
+        leg4.setPivot(3F, 12F, -5F);
     }
 
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
         setAngles(f, f1, f2, f3, f4, f5);
-        snout.method_1815(f5);
-        Tail.method_1815(f5);
-        ears.method_1815(f5);
-        head.method_1815(f5);
-        body.method_1815(f5);
-        leg1.method_1815(f5);
-        leg2.method_1815(f5);
-        leg3.method_1815(f5);
-        leg4.method_1815(f5);
+        snout.render(f5);
+        Tail.render(f5);
+        ears.render(f5);
+        head.render(f5);
+        body.render(f5);
+        leg1.render(f5);
+        leg2.render(f5);
+        leg3.render(f5);
+        leg4.render(f5);
         if(tamed)
         {
-            Collar.method_1815(f5);
+            Collar.render(f5);
         }
     }
 
@@ -80,54 +80,54 @@ public class ModelBigCat2 extends EntityModelBase
         Collar.pitch = head.pitch;
         if(!sitting)
         {
-            body.rotationPointX = 0.0F;
-            body.rotationPointY = 5F;
-            body.rotationPointZ = 2.0F;
+            body.pivotX = 0.0F;
+            body.pivotY = 5F;
+            body.pivotZ = 2.0F;
             body.pitch = 1.570796F;
-            leg1.rotationPointX = -3F;
-            leg1.rotationPointZ = 7F;
-            leg2.rotationPointX = 3F;
-            leg2.rotationPointZ = 7F;
-            leg3.rotationPointX = -3F;
-            leg3.rotationPointZ = -5F;
-            leg4.rotationPointX = 3F;
-            leg4.rotationPointZ = -5F;
-            Tail.rotationPointX = 3.5F;
-            Tail.rotationPointY = 9.3F;
-            Tail.rotationPointZ = 9F;
+            leg1.pivotX = -3F;
+            leg1.pivotZ = 7F;
+            leg2.pivotX = 3F;
+            leg2.pivotZ = 7F;
+            leg3.pivotX = -3F;
+            leg3.pivotZ = -5F;
+            leg4.pivotX = 3F;
+            leg4.pivotZ = -5F;
+            Tail.pivotX = 3.5F;
+            Tail.pivotY = 9.3F;
+            Tail.pivotZ = 9F;
             Tail.pitch = -0.5235988F;
             Tail.yaw = MathHelper.cos(f * 0.6662F) * 0.7F * f1;
         } else
         {
             body.pitch = 0.8726646F;
-            body.rotationPointX = 0.0F;
-            body.rotationPointY = 12F;
-            body.rotationPointZ = 1.0F;
-            leg1.rotationPointX = -5F;
-            leg1.rotationPointZ = 0.0F;
-            leg2.rotationPointX = 5F;
-            leg2.rotationPointZ = 0.0F;
-            leg3.rotationPointX = -2F;
-            leg3.rotationPointZ = -8F;
-            leg4.rotationPointX = 2.0F;
-            leg4.rotationPointZ = -8F;
-            Tail.rotationPointX = 3.5F;
-            Tail.rotationPointY = 22F;
-            Tail.rotationPointZ = 8F;
+            body.pivotX = 0.0F;
+            body.pivotY = 12F;
+            body.pivotZ = 1.0F;
+            leg1.pivotX = -5F;
+            leg1.pivotZ = 0.0F;
+            leg2.pivotX = 5F;
+            leg2.pivotZ = 0.0F;
+            leg3.pivotX = -2F;
+            leg3.pivotZ = -8F;
+            leg4.pivotX = 2.0F;
+            leg4.pivotZ = -8F;
+            Tail.pivotX = 3.5F;
+            Tail.pivotY = 22F;
+            Tail.pivotZ = 8F;
             Tail.pitch = -0.1745329F;
         }
     }
 
-    Cuboid snout;
-    Cuboid Tail;
-    Cuboid head;
-    Cuboid body;
-    Cuboid ears;
-    Cuboid leg1;
-    Cuboid leg2;
-    Cuboid leg3;
-    Cuboid leg4;
-    Cuboid Collar;
+    ModelPart snout;
+    ModelPart Tail;
+    ModelPart head;
+    ModelPart body;
+    ModelPart ears;
+    ModelPart leg1;
+    ModelPart leg2;
+    ModelPart leg3;
+    ModelPart leg4;
+    ModelPart Collar;
     public boolean sitting;
     public boolean tamed;
 }

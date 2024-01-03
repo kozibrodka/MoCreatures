@@ -5,24 +5,24 @@
 package net.kozibrodka.mocreatures.modelentity;
 
 
-import net.minecraft.client.model.Cuboid;
-import net.minecraft.client.render.entity.model.EntityModelBase;
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.entity.model.EntityModel;
 
-public class ModelKittyBed2 extends EntityModelBase
+public class ModelKittyBed2 extends EntityModel
 {
 
     public ModelKittyBed2()
     {
         float f = 0.0F;
-        Sheet = new Cuboid(0, 15);
-        Sheet.method_1818(0.0F, 0.0F, 0.0F, 16, 3, 14, f);
-        Sheet.setRotationPoint(-8F, 21F, -7F);
+        Sheet = new ModelPart(0, 15);
+        Sheet.addCuboid(0.0F, 0.0F, 0.0F, 16, 3, 14, f);
+        Sheet.setPivot(-8F, 21F, -7F);
     }
 
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
-        Sheet.method_1815(f5);
+        Sheet.render(f5);
     }
 
-    Cuboid Sheet;
+    ModelPart Sheet;
 }

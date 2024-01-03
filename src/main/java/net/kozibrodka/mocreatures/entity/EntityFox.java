@@ -5,58 +5,58 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.Item;
-import net.minecraft.entity.Living;
-import net.minecraft.entity.animal.AnimalBase;
-import net.minecraft.entity.monster.MonsterBase;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemBase;
-import net.minecraft.item.ItemInstance;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.MonsterEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 
-public class EntityFox extends AnimalBase implements MobSpawnDataProvider
+public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
 {
 
-    public EntityFox(Level world)
+    public EntityFox(World world)
     {
         super(world);
         foxboolean = false;
         texture = "/assets/mocreatures/stationapi/textures/mob/fox.png";
-        setSize(0.9F, 1.3F);
+        setBoundingBoxSpacing(0.9F, 1.3F);
         health = 15;
         force = 2;
         attackRange = 4D;
     }
 
-    public void updateDespawnCounter()
+    public void method_937()
     {
-        super.updateDespawnCounter();
+        super.method_937();
     }
 
-    protected void tickHandSwing(){
-        if(this.entity instanceof PlayerBase){
-            PlayerBase uciekinier = level.getClosestPlayerTo(this, 16D);
-            if(uciekinier == null && entity.isAlive()){
-                if(rand.nextInt(30) == 0)
+    protected void method_910(){
+        if(this.target instanceof PlayerEntity){
+            PlayerEntity uciekinier = world.method_186(this, 16D);
+            if(uciekinier == null && target.isAlive()){
+                if(random.nextInt(30) == 0)
                 {
-                    entity = null;
+                    target = null;
                 }
             }
         }
-        super.tickHandSwing();
+        super.method_910();
     }
 
-    protected EntityBase getAttackTarget()
+    protected Entity method_638()
     {
-        if(rand.nextInt(80) == 0 && level.difficulty > 0)
+        if(random.nextInt(80) == 0 && world.field_213 > 0)
         {
-            Living entityliving = getClosestTarget(this, 8D);
+            LivingEntity entityliving = getClosestTarget(this, 8D);
             return entityliving;
         } else
         {
@@ -64,40 +64,40 @@ public class EntityFox extends AnimalBase implements MobSpawnDataProvider
         }
     }
 
-    public Living getClosestTarget(EntityBase entity, double d)
+    public LivingEntity getClosestTarget(Entity entity, double d)
     {
         double d1 = -1D;
-        Living entityliving = null;
-        List list = level.getEntities(this, boundingBox.expand(d, d, d));
+        LivingEntity entityliving = null;
+        List list = world.getEntities(this, boundingBox.expand(d, d, d));
         for(int i = 0; i < list.size(); i++)
         {
-            EntityBase entity1 = (EntityBase)list.get(i);
-            if(!(entity1 instanceof Living) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof PlayerBase) || (entity1 instanceof MonsterBase) || height <= entity1.height || width <= entity1.width)
+            Entity entity1 = (Entity)list.get(i);
+            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.field_1594 || entity1 == entity.field_1595 || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || spacingY <= entity1.spacingY || spacingXZ <= entity1.spacingXZ)
             {
                 continue;
             }
-            double d2 = entity1.squaredDistanceTo(entity.x, entity.y, entity.z);
-            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((Living)entity1).method_928(entity))
+            double d2 = entity1.method_1347(entity.x, entity.y, entity.z);
+            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).method_928(entity))
             {
                 d1 = d2;
-                entityliving = (Living)entity1;
+                entityliving = (LivingEntity)entity1;
             }
         }
 
         return entityliving;
     }
 
-    public boolean damage(EntityBase entitybase, int i)
+    public boolean damage(Entity entitybase, int i)
     {
         if(super.damage(entitybase, i))
         {
-            if(passenger == entitybase || vehicle == entitybase)
+            if(field_1594 == entitybase || field_1595 == entitybase)
             {
                 return true;
             }
-            if(entitybase != this && level.difficulty > 0)
+            if(entitybase != this && world.field_213 > 0)
             {
-                entity = entitybase;
+                target = entitybase;
             }
             return true;
         } else
@@ -106,101 +106,101 @@ public class EntityFox extends AnimalBase implements MobSpawnDataProvider
         }
     }
 
-    protected void tryAttack(EntityBase entity, float f)
+    protected void method_637(Entity entity, float f)
     {
         if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
         {
-            attackTime = 20;
+            field_1042 = 20;
             entity.damage(this, force);
-            if(!(entity instanceof PlayerBase))
+            if(!(entity instanceof PlayerEntity))
             {
                 destroyDrops(this, 3D);
             }
         }
     }
 
-    public void writeCustomDataToTag(CompoundTag nbttagcompound)
+    public void writeNbt(NbtCompound nbttagcompound)
     {
-        super.writeCustomDataToTag(nbttagcompound);
-        nbttagcompound.put("FoxBoolean", foxboolean);
+        super.writeNbt(nbttagcompound);
+        nbttagcompound.putBoolean("FoxBoolean", foxboolean);
     }
 
-    public void readCustomDataFromTag(CompoundTag nbttagcompound)
+    public void readNbt(NbtCompound nbttagcompound)
     {
-        super.readCustomDataFromTag(nbttagcompound);
+        super.readNbt(nbttagcompound);
         foxboolean = nbttagcompound.getBoolean("FoxBoolean");
     }
 
-    protected float getSoundVolume()
+    protected float method_915()
     {
         return 0.3F;
     }
 
-    protected String getAmbientSound()
+    protected String method_911()
     {
         return "mocreatures:foxcall";
     }
 
-    protected String getHurtSound()
+    protected String method_912()
     {
         return "mocreatures:foxhurt";
     }
 
-    protected String getDeathSound()
+    protected String method_913()
     {
         return "mocreatures:foxdying";
     }
 
-    protected void getDrops()
+    protected void method_933()
     {
-        int i = rand.nextInt(3);
+        int i = random.nextInt(3);
         for(int j = 0; j < i; j++)
         {
-            dropItem(new ItemInstance(getMobDrops(), 1, 0), 0.0F);
+            method_1327(new ItemStack(method_914(), 1, 0), 0.0F);
         }
         if(mocr.mocreaturesGlass.balancesettings.balance_drop) {
-            int a = rand.nextInt(10);
+            int a = random.nextInt(10);
             if (a < 8) {
-                int k = rand.nextInt(2);
+                int k = random.nextInt(2);
                 for (int j = 0; j < k; j++) {
-                    dropItem(new ItemInstance(mod_mocreatures.wildleather, 1, 0), 0.0F);
+                    method_1327(new ItemStack(mod_mocreatures.wildleather, 1, 0), 0.0F);
                 }
             }
         }
     }
 
-    protected int getMobDrops()
+    protected int method_914()
     {
-        return ItemBase.leather.id;
+        return Item.LEATHER.id;
     }
 
-    public int getLimitPerChunk()
+    public int method_916()
     {
         return 1;
     }
 
-    public void destroyDrops(EntityBase entity, double d)
+    public void destroyDrops(Entity entity, double d)
     {
-        List list = level.getEntities(entity, entity.boundingBox.expand(d, d, d));
+        List list = world.getEntities(entity, entity.boundingBox.expand(d, d, d));
         for(int i = 0; i < list.size(); i++)
         {
-            EntityBase entity1 = (EntityBase)list.get(i);
-            if(!(entity1 instanceof Item))
+            Entity entity1 = (Entity)list.get(i);
+            if(!(entity1 instanceof ItemEntity))
             {
                 continue;
             }
-            Item entityitem = (Item)entity1;
-            if(entityitem != null && entityitem.age < 50 && mocr.mocreaturesGlass.huntercreatures.destroyitems)
+            ItemEntity entityitem = (ItemEntity)entity1;
+            if(entityitem != null && entityitem.itemAge < 50 && mocr.mocreaturesGlass.huntercreatures.destroyitems)
             {
-                entityitem.remove();
+                entityitem.markDead();
             }
         }
 
     }
 
-    public void remove()
+    public void markDead()
     {
-        super.remove();
+        super.markDead();
     }
 
     public boolean canSpawn()

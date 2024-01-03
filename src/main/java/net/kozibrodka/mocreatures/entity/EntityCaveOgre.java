@@ -5,48 +5,48 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.monster.MonsterEntityType;
-import net.minecraft.item.ItemBase;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
-import net.minecraft.util.maths.MathHelper;
+import net.minecraft.class_65;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 public class EntityCaveOgre extends EntityOgre
-    implements MonsterEntityType, MobSpawnDataProvider
+    implements class_65, MobSpawnDataProvider
 {
 
-    public EntityCaveOgre(Level world)
+    public EntityCaveOgre(World world)
     {
         super(world);
-        attackDamage = 3;
+        field_547 = 3;
         attackRange = mocr.mocreaturesGlass.hostilemobs.ogrerange;
         ogreboolean = false;
         texture = "/assets/mocreatures/stationapi/textures/mob/caveogre.png";
-        setSize(1.5F, 4F);
+        setBoundingBoxSpacing(1.5F, 4F);
         health = 50;
         bogrefire = false;
         destroyForce = mocr.mocreaturesGlass.hostilemobs.cogreStrength;
-        immuneToFire = false;
+        fireImmune = false;
         frequencyA = 35;
     }
 
-    public void updateDespawnCounter()
+    public void method_937()
     {
-        getAttackTarget();
+        method_638();
         destroyForce = mocr.mocreaturesGlass.hostilemobs.ogreStrength;
         attackRange = mocr.mocreaturesGlass.hostilemobs.ogrerange;
-        if(ogrehasenemy && rand.nextInt(frequencyA) == 0)
+        if(ogrehasenemy && random.nextInt(frequencyA) == 0)
         {
             ogreattack = true;
-            attackTime = 15;
+            field_1042 = 15;
         }
-        if(level.isDaylight())
+        if(world.method_220())
         {
-            float f = getBrightnessAtEyes(1.0F);
-            if(f > 0.5F && level.isAboveGroundCached(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && rand.nextFloat() * 30F < (f - 0.4F) * 2.0F)
+            float f = method_1394(1.0F);
+            if(f > 0.5F && world.method_249(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && random.nextFloat() * 30F < (f - 0.4F) * 2.0F)
             {
                 health -= 5;
             }
@@ -57,9 +57,9 @@ public class EntityCaveOgre extends EntityOgre
     public boolean maxNumberReached()
     {
         int i = 0;
-        for(int j = 0; j < level.entities.size(); j++)
+        for(int j = 0; j < world.field_198.size(); j++)
         {
-            EntityBase entity = (EntityBase)level.entities.get(j);
+            Entity entity = (Entity)world.field_198.get(j);
             if(entity instanceof EntityCaveOgre)
             {
                 i++;
@@ -69,29 +69,29 @@ public class EntityCaveOgre extends EntityOgre
         return false;
     }
 
-    public void remove()
+    public void markDead()
     {
-        super.remove();
+        super.markDead();
     }
 
-    public void writeCustomDataToTag(CompoundTag nbttagcompound)
+    public void writeNbt(NbtCompound nbttagcompound)
     {
-        super.writeCustomDataToTag(nbttagcompound);
+        super.writeNbt(nbttagcompound);
     }
 
-    public void readCustomDataFromTag(CompoundTag nbttagcompound)
+    public void readNbt(NbtCompound nbttagcompound)
     {
-        super.readCustomDataFromTag(nbttagcompound);
+        super.readNbt(nbttagcompound);
     }
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.hostilemobs.cogrefreq > 0 && level.difficulty >= mocr.mocreaturesGlass.hostilemobs.cogreSpawnDifficulty + 1 && !level.isAboveGroundCached(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && y < 50D && super.d2();
+        return mocr.mocreaturesGlass.hostilemobs.cogrefreq > 0 && world.field_213 >= mocr.mocreaturesGlass.hostilemobs.cogreSpawnDifficulty + 1 && !world.method_249(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && y < 50D && super.d2();
     }
 
-    protected int getMobDrops()
+    protected int method_914()
     {
-        return ItemBase.diamond.id;
+        return Item.DIAMOND.id;
     }
 
     mod_mocreatures mocr = new mod_mocreatures();

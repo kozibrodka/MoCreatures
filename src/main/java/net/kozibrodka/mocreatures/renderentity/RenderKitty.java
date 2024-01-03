@@ -5,13 +5,13 @@ import net.kozibrodka.mocreatures.entity.EntityKitty;
 import net.kozibrodka.mocreatures.modelentity.ModelKitty;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.TextRenderer;
-import net.minecraft.client.render.entity.BipedEntityRenderer;
-import net.minecraft.entity.Living;
+import net.minecraft.client.render.entity.SkeletonEntityRenderer;
+import net.minecraft.entity.LivingEntity;
 import org.lwjgl.opengl.GL11;
 
-public class RenderKitty extends BipedEntityRenderer
+public class RenderKitty extends SkeletonEntityRenderer
 {
 
     public RenderKitty(ModelKitty modelkitty, float f)
@@ -20,12 +20,12 @@ public class RenderKitty extends BipedEntityRenderer
         pussy1 = modelkitty;
     }
 
-    protected void method_823(Living entityliving, float f)
+    protected void method_823(LivingEntity entityliving, float f)
     {
         EntityKitty entitykitty = (EntityKitty)entityliving;
         pussy1.isSitting = entitykitty.isSitting;
         pussy1.isSwinging = entitykitty.isSwinging;
-        pussy1.swingProgress = entitykitty.handSwingProgress;
+        pussy1.swingProgress = entitykitty.field_1035;
         pussy1.kittystate = entitykitty.kittystate;
         if(entitykitty.kittystate == 20)
         {
@@ -45,7 +45,7 @@ public class RenderKitty extends BipedEntityRenderer
         }
     }
 
-    public void doRenderLiving2(Living entityliving, double d, double d1, double d2,
+    public void doRenderLiving2(LivingEntity entityliving, double d, double d1, double d2,
             float f, float f1)
     {
         EntityKitty entitykitty = (EntityKitty)entityliving;
@@ -53,7 +53,7 @@ public class RenderKitty extends BipedEntityRenderer
         {
             entitykitty.chooseType();
         }
-        super.method_822(entitykitty, d, d1, d2, f, f1);
+        super.render(entitykitty, d, d1, d2, f, f1);
     }
 
     protected void stretch(EntityKitty entitykitty)
@@ -61,7 +61,7 @@ public class RenderKitty extends BipedEntityRenderer
         GL11.glScalef(entitykitty.edad, entitykitty.edad, entitykitty.edad);
     }
 
-    protected float method_828(Living entityliving, float f)
+    protected float method_828(LivingEntity entityliving, float f)
     {
         EntityKitty entitykitty = (EntityKitty)entityliving;
         if(!entitykitty.adult)
@@ -71,7 +71,7 @@ public class RenderKitty extends BipedEntityRenderer
         return (float)entityliving.field_1645 + f;
     }
 
-    public void method_822(Living entityliving, double d, double d1, double d2,
+    public void render(LivingEntity entityliving, double d, double d1, double d2,
             float f, float f1)
     {
         EntityKitty entitykitty = (EntityKitty)entityliving;
@@ -79,7 +79,7 @@ public class RenderKitty extends BipedEntityRenderer
         {
             entitykitty.chooseType();
         }
-        super.method_822(entitykitty, d, d1, d2, f, f1);
+        super.render(entitykitty, d, d1, d2, f, f1);
         boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entitykitty.name.isEmpty();
         boolean flag1 = mocr.mocreaturesGlass.othersettings.displayhealth;
         boolean flag2 = mocr.mocreaturesGlass.othersettings.displayemo;
@@ -87,7 +87,7 @@ public class RenderKitty extends BipedEntityRenderer
         {
             float f2 = 1.6F;
             float f3 = 0.01666667F * f2;
-            float f4 = entityliving.distanceTo(dispatcher.entity);
+            float f4 = entityliving.method_1351(dispatcher.field_2496);
             String s = "";
             s = (new StringBuilder()).append(s).append(entitykitty.name).toString();
             if(f4 < 12F)
@@ -123,7 +123,7 @@ public class RenderKitty extends BipedEntityRenderer
                     float f9 = 0.0F;
                     float f11 = 1.0F / (float)k;
                     float f12 = 1.0F / (float)k;
-                    tessellator.start();
+                    tessellator.startQuads();
                     tessellator.vertex(l, i + k, f9, 0.0D, (float)k * f12);
                     tessellator.vertex(l + k, i + k, f9, (float)k * f11, (float)k * f12);
                     tessellator.vertex(l + k, i, f9, (float)k * f11, 0.0D);
@@ -137,21 +137,21 @@ public class RenderKitty extends BipedEntityRenderer
                         byte0 += 8;
                     }
                     GL11.glDisable(3553 /*GL_TEXTURE_2D*/);
-                    tessellator.start();
+                    tessellator.startQuads();
                     float f6 = entitykitty.health;
                     float f7 = entitykitty.maxhealth;
                     float f8 = f6 / f7;
                     float f10 = 30F * f8;
-                    tessellator.colour(0.7F, 0.0F, 0.0F, 1.0F);
-                    tessellator.addVertex(-15F + f10, -8 + byte0, 0.0D);
-                    tessellator.addVertex(-15F + f10, -4 + byte0, 0.0D);
-                    tessellator.addVertex(15D, -4 + byte0, 0.0D);
-                    tessellator.addVertex(15D, -8 + byte0, 0.0D);
-                    tessellator.colour(0.0F, 0.7F, 0.0F, 1.0F);
-                    tessellator.addVertex(-15D, -8 + byte0, 0.0D);
-                    tessellator.addVertex(-15D, -4 + byte0, 0.0D);
-                    tessellator.addVertex(f10 - 15F, -4 + byte0, 0.0D);
-                    tessellator.addVertex(f10 - 15F, -8 + byte0, 0.0D);
+                    tessellator.color(0.7F, 0.0F, 0.0F, 1.0F);
+                    tessellator.vertex(-15F + f10, -8 + byte0, 0.0D);
+                    tessellator.vertex(-15F + f10, -4 + byte0, 0.0D);
+                    tessellator.vertex(15D, -4 + byte0, 0.0D);
+                    tessellator.vertex(15D, -8 + byte0, 0.0D);
+                    tessellator.color(0.0F, 0.7F, 0.0F, 1.0F);
+                    tessellator.vertex(-15D, -8 + byte0, 0.0D);
+                    tessellator.vertex(-15D, -4 + byte0, 0.0D);
+                    tessellator.vertex(f10 - 15F, -4 + byte0, 0.0D);
+                    tessellator.vertex(f10 - 15F, -8 + byte0, 0.0D);
                     tessellator.draw();
                     GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
                 }
@@ -162,19 +162,19 @@ public class RenderKitty extends BipedEntityRenderer
                     GL11.glEnable(3042 /*GL_BLEND*/);
                     GL11.glBlendFunc(770, 771);
                     GL11.glDisable(3553 /*GL_TEXTURE_2D*/);
-                    tessellator.start();
-                    int j = fontrenderer.getTextWidth(s) / 2;
-                    tessellator.colour(0.0F, 0.0F, 0.0F, 0.25F);
-                    tessellator.addVertex(-j - 1, -1 + byte0, 0.0D);
-                    tessellator.addVertex(-j - 1, 8 + byte0, 0.0D);
-                    tessellator.addVertex(j + 1, 8 + byte0, 0.0D);
-                    tessellator.addVertex(j + 1, -1 + byte0, 0.0D);
+                    tessellator.startQuads();
+                    int j = fontrenderer.getWidth(s) / 2;
+                    tessellator.color(0.0F, 0.0F, 0.0F, 0.25F);
+                    tessellator.vertex(-j - 1, -1 + byte0, 0.0D);
+                    tessellator.vertex(-j - 1, 8 + byte0, 0.0D);
+                    tessellator.vertex(j + 1, 8 + byte0, 0.0D);
+                    tessellator.vertex(j + 1, -1 + byte0, 0.0D);
                     tessellator.draw();
                     GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
-                    fontrenderer.drawText(s, -fontrenderer.getTextWidth(s) / 2, byte0, 0x20ffffff);
+                    fontrenderer.draw(s, -fontrenderer.getWidth(s) / 2, byte0, 0x20ffffff);
                     GL11.glEnable(2929 /*GL_DEPTH_TEST*/);
                     GL11.glDepthMask(true);
-                    fontrenderer.drawText(s, -fontrenderer.getTextWidth(s) / 2, byte0, -1);
+                    fontrenderer.draw(s, -fontrenderer.getWidth(s) / 2, byte0, -1);
                     GL11.glDisable(3042 /*GL_BLEND*/);
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                 }
@@ -184,27 +184,27 @@ public class RenderKitty extends BipedEntityRenderer
         }
     }
 
-    protected void rotateAnimal(Living entityliving)
+    protected void rotateAnimal(LivingEntity entityliving)
     {
-        if(!entityliving.onGround)
+        if(!entityliving.field_1623)
         {
             GL11.glRotatef(90F, -1F, 0.0F, 0.0F);
         }
     }
 
-    protected void upsideDown(Living entityliving)
+    protected void upsideDown(LivingEntity entityliving)
     {
         GL11.glRotatef(180F, 0.0F, 0.0F, -1F);
         GL11.glTranslatef(-0.35F, 0.0F, -0.55F);
     }
 
-    protected void onTheSide(Living entityliving)
+    protected void onTheSide(LivingEntity entityliving)
     {
         GL11.glRotatef(90F, 0.0F, 0.0F, -1F);
         GL11.glTranslatef(0.2F, 0.0F, -0.2F);
     }
 
-    protected void onMaBack(Living entityliving)
+    protected void onMaBack(LivingEntity entityliving)
     {
         GL11.glRotatef(90F, 0.0F, 0.0F, -1F);
         GL11.glTranslatef(0.1F, 0.2F, -0.2F);

@@ -1,20 +1,20 @@
 package net.kozibrodka.mocreatures.renderentity;
 import net.kozibrodka.mocreatures.entity.EntityDeer;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
-import net.minecraft.client.render.entity.model.EntityModelBase;
-import net.minecraft.entity.Living;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.entity.LivingEntity;
 import org.lwjgl.opengl.GL11;
 
 
 public class RenderDeer extends LivingEntityRenderer
 {
 
-    public RenderDeer(EntityModelBase modelbase, float f)
+    public RenderDeer(EntityModel modelbase, float f)
     {
         super(modelbase, f);
     }
 
-    public void method_822(Living entityliving, double d, double d1, double d2,
+    public void render(LivingEntity entityliving, double d, double d1, double d2,
                                float f, float f1)
     {
         EntityDeer entitydeer = (EntityDeer)entityliving;
@@ -22,7 +22,7 @@ public class RenderDeer extends LivingEntityRenderer
 //        {
 //            entitydeer.setType(entitydeer.getRandomRace());
 //        }
-        super.method_822(entitydeer, d, d1, d2, f, f1);
+        super.render(entitydeer, d, d1, d2, f, f1);
     }
 
     protected void stretch(EntityDeer entitydeer)
@@ -47,7 +47,7 @@ public class RenderDeer extends LivingEntityRenderer
         GL11.glScalef(f1, f1, f1);
     }
 
-    protected float method_828(Living entityliving, float f)
+    protected float method_828(LivingEntity entityliving, float f)
     {
         EntityDeer entitydeer = (EntityDeer)entityliving;
         stretch(entitydeer);
@@ -56,7 +56,7 @@ public class RenderDeer extends LivingEntityRenderer
 
     protected void rotateDeer(EntityDeer entitydeer)
     {
-        if(!entitydeer.onGround && entitydeer.dajszybkosc() > 2.0F)
+        if(!entitydeer.field_1623 && entitydeer.dajszybkosc() > 2.0F)
         {
             if(entitydeer.velocityY > 0.5D)
             {
@@ -72,7 +72,7 @@ public class RenderDeer extends LivingEntityRenderer
         }
     }
 
-    protected void method_823(Living entityliving, float f)
+    protected void method_823(LivingEntity entityliving, float f)
     {
         rotateDeer((EntityDeer)entityliving);
     }

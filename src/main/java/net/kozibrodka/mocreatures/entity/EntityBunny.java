@@ -3,23 +3,22 @@ package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mixin.WalkingBaseAccesor;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.animal.AnimalBase;
-import net.minecraft.entity.monster.MonsterBase;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemInstance;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.mob.MonsterEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 
 
-public class EntityBunny extends AnimalBase implements MobSpawnDataProvider
+public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider
 {
 
-    public EntityBunny(Level world)
+    public EntityBunny(World world)
     {
         super(world);
         a = false;
@@ -27,10 +26,10 @@ public class EntityBunny extends AnimalBase implements MobSpawnDataProvider
         edad = 0.5F;
         movementSpeed = 1.5F;
         texture = "/assets/mocreatures/stationapi/textures/mob/bunny.png";
-        standingEyeHeight = -0.16F;
-        setSize(0.4F, 0.4F);
+        eyeHeight = -0.16F;
+        setBoundingBoxSpacing(0.4F, 0.4F);
         health = 4;
-        j = rand.nextInt(64);
+        j = random.nextInt(64);
         i = 0;
         typeint = 0;
         typechosen = false;
@@ -48,7 +47,7 @@ public class EntityBunny extends AnimalBase implements MobSpawnDataProvider
     {
         if(typeint == 0)
         {
-            int k = rand.nextInt(100);
+            int k = random.nextInt(100);
             if(k <= 25)
             {
                 typeint = 1;
@@ -87,9 +86,9 @@ public class EntityBunny extends AnimalBase implements MobSpawnDataProvider
         typechosen = true;
     }
 
-    public void updateDespawnCounter()
+    public void method_937()
     {
-        if(!adult && rand.nextInt(200) == 0)
+        if(!adult && random.nextInt(200) == 0)
         {
             edad += 0.01F;
             if(edad >= 1.0F)
@@ -97,13 +96,13 @@ public class EntityBunny extends AnimalBase implements MobSpawnDataProvider
                 adult = true;
             }
         }
-        super.updateDespawnCounter();
+        super.method_937();
     }
 
     public void tick()
     {
         super.tick();
-        if(!tamed || !adult || vehicle != null)
+        if(!tamed || !adult || field_1595 != null)
         {
             return;
         }
@@ -117,10 +116,10 @@ public class EntityBunny extends AnimalBase implements MobSpawnDataProvider
         } else
         {
             int k = 0;
-            List list = level.getEntities(this, boundingBox.expand(16D, 16D, 16D));
+            List list = world.getEntities(this, boundingBox.expand(16D, 16D, 16D));
             for(int l = 0; l < list.size(); l++)
             {
-                EntityBase entity = (EntityBase)list.get(l);
+                Entity entity = (Entity)list.get(l);
                 if(entity instanceof EntityBunny)
                 {
                     k++;
@@ -132,25 +131,25 @@ public class EntityBunny extends AnimalBase implements MobSpawnDataProvider
                 proceed();
                 return;
             }
-            List list1 = level.getEntities(this, boundingBox.expand(1.0D, 1.0D, 1.0D));
+            List list1 = world.getEntities(this, boundingBox.expand(1.0D, 1.0D, 1.0D));
             boolean flag = false;
             for(int i1 = 0; i1 < list.size(); i1++)
             {
-                EntityBase entity1 = (EntityBase)list1.get(i1);
+                Entity entity1 = (Entity)list1.get(i1);
                 if(!(entity1 instanceof EntityBunny) || entity1 == this)
                 {
                     continue;
                 }
                 EntityBunny entitybunny = (EntityBunny)entity1;
-                if(entitybunny.vehicle != null || entitybunny.j < 1023 || !entitybunny.adult)
+                if(entitybunny.field_1595 != null || entitybunny.j < 1023 || !entitybunny.adult)
                 {
                     continue;
                 }
-                EntityBunny entitybunny1 = new EntityBunny(level);
-                entitybunny1.setPosition(x, y, z);
+                EntityBunny entitybunny1 = new EntityBunny(world);
+                entitybunny1.method_1340(x, y, z);
                 entitybunny1.adult = false;
-                level.spawnEntity(entitybunny1);
-                level.playSound(this, "mob.chickenplop", 1.0F, (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
+                world.method_210(entitybunny1);
+                world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
                 proceed();
                 entitybunny.proceed();
                 flag = true;
@@ -159,54 +158,54 @@ public class EntityBunny extends AnimalBase implements MobSpawnDataProvider
 
             if(!flag)
             {
-                k = rand.nextInt(16);
+                k = random.nextInt(16);
             }
         }
     }
 
-    protected void handleFallDamage(float f)
+    protected void method_1389(float f)
     {
     }
 
-    protected void tickHandSwing()
+    protected void method_910()
     {
-        if(onGround && (velocityX > 0.050000000000000003D || velocityZ > 0.050000000000000003D || velocityX < -0.050000000000000003D || velocityZ < -0.050000000000000003D))
+        if(field_1623 && (velocityX > 0.050000000000000003D || velocityZ > 0.050000000000000003D || velocityX < -0.050000000000000003D || velocityZ < -0.050000000000000003D))
         {
             velocityY = 0.45000000000000001D;
         }
         if(!h)
         {
-            super.tickHandSwing();
+            super.method_910();
         } else
-        if(onGround)
+        if(field_1623)
         {
             h = false;
-            level.playSound(this, "mocreatures:rabbitland", 1.0F, (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
-            List list = level.getEntities(this, boundingBox.expand(12D, 12D, 12D));
+            world.playSound(this, "mocreatures:rabbitland", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+            List list = world.getEntities(this, boundingBox.expand(12D, 12D, 12D));
             for(int k = 0; k < list.size(); k++)
             {
-                EntityBase entity = (EntityBase)list.get(k);
-                if(entity instanceof MonsterBase)
+                Entity entity = (Entity)list.get(k);
+                if(entity instanceof MonsterEntity)
                 {
-                    MonsterBase entitymob = (MonsterBase)entity;
-                    ((WalkingBaseAccesor)entitymob).setEntity(this);
+                    MonsterEntity entitymob = (MonsterEntity)entity;
+                    ((WalkingBaseAccesor)entitymob).setTarget(this);
                 }
             }
 
         }
     }
 
-    public boolean interact(PlayerBase entityplayer)
+    public boolean method_1323(PlayerEntity entityplayer)
     {
 //        ItemInstance itemstack = entityplayer.inventory.getHeldItem();
         yaw = entityplayer.yaw;
-        startRiding(entityplayer);
-        if(vehicle == null)
+        method_1376(entityplayer);
+        if(field_1595 == null)
         {
             h = true;
         } else
         {
-            level.playSound(this, "mocreatures:rabbitlift", 1.0F, (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
+            world.playSound(this, "mocreatures:rabbitlift", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
         }
         velocityX = entityplayer.velocityX * 5D;
         velocityY = entityplayer.velocityY / 2D + 0.5D;
@@ -215,18 +214,18 @@ public class EntityBunny extends AnimalBase implements MobSpawnDataProvider
         return true;
     }
 
-    public double getHeightOffset()
+    public double method_1385()
     {
-        if(vehicle instanceof PlayerBase)
+        if(field_1595 instanceof PlayerEntity)
         {
-            return (double)(standingEyeHeight - 1.15F);
+            return (double)(eyeHeight - 1.15F);
         } else
         {
-            return (double)standingEyeHeight;
+            return (double)eyeHeight;
         }
     }
 
-    protected String getAmbientSound()
+    protected String method_911()
     {
         return null;
     }
@@ -234,20 +233,20 @@ public class EntityBunny extends AnimalBase implements MobSpawnDataProvider
     public void proceed()
     {
         i = 0;
-        j = rand.nextInt(64);
+        j = random.nextInt(64);
     }
 
-    protected String getHurtSound()
+    protected String method_912()
     {
         return "mocreatures:rabbithurt";
     }
 
-    public void method_925(EntityBase entity, int k, double d, double d2)
+    public void method_925(Entity entity, int k, double d, double d2)
     {
         super.method_925(entity, k, d, d2);
     }
 
-    protected String getDeathSound()
+    protected String method_913()
     {
         return "mocreatures:rabbitdeath";
     }
@@ -255,9 +254,9 @@ public class EntityBunny extends AnimalBase implements MobSpawnDataProvider
     public boolean maxNumberReached()
     {
         int k = 0;
-        for(int l = 0; l < level.entities.size(); l++)
+        for(int l = 0; l < world.field_198.size(); l++)
         {
-            EntityBase entity = (EntityBase)level.entities.get(l);
+            Entity entity = (Entity)world.field_198.get(l);
             if(entity instanceof EntityBunny)
             {
                 k++;
@@ -267,23 +266,23 @@ public class EntityBunny extends AnimalBase implements MobSpawnDataProvider
         return false;
     }
 
-    public void remove()
+    public void markDead()
     {
-        super.remove();
+        super.markDead();
     }
 
-    public void writeCustomDataToTag(CompoundTag nbttagcompound)
+    public void writeNbt(NbtCompound nbttagcompound)
     {
-        super.writeCustomDataToTag(nbttagcompound);
-        nbttagcompound.put("TypeInt", typeint);
-        nbttagcompound.put("Tamed", tamed);
-        nbttagcompound.put("Edad", edad);
-        nbttagcompound.put("Adult", adult);
+        super.writeNbt(nbttagcompound);
+        nbttagcompound.putInt("TypeInt", typeint);
+        nbttagcompound.putBoolean("Tamed", tamed);
+        nbttagcompound.putFloat("Edad", edad);
+        nbttagcompound.putBoolean("Adult", adult);
     }
 
-    public void readCustomDataFromTag(CompoundTag nbttagcompound)
+    public void readNbt(NbtCompound nbttagcompound)
     {
-        super.readCustomDataFromTag(nbttagcompound);
+        super.readNbt(nbttagcompound);
         typeint = nbttagcompound.getInt("TypeInt");
         edad = nbttagcompound.getFloat("Edad");
         tamed = nbttagcompound.getBoolean("Tamed");

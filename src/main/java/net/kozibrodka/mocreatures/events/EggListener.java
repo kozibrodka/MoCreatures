@@ -2,7 +2,7 @@ package net.kozibrodka.mocreatures.events;
 
 import net.kozibrodka.mocreatures.item.MocreaturesEggItem;
 import net.mine_diver.unsafeevents.listener.EventListener;
-import net.minecraft.item.ItemBase;
+import net.minecraft.item.Item;
 import net.modificationstation.stationapi.api.client.texture.atlas.Atlas;
 import net.modificationstation.stationapi.api.event.registry.ItemRegistryEvent;
 import net.modificationstation.stationapi.api.mod.entrypoint.Entrypoint;
@@ -13,44 +13,42 @@ import net.modificationstation.stationapi.api.util.Null;
 
 public class EggListener {
 
-    public static ItemBase egg1;
-    public static ItemBase egg2;
-    public static ItemBase egg3;
-    public static ItemBase egg4;
-    public static ItemBase egg5;
-    public static ItemBase egg6;
-    public static ItemBase egg7;
-    public static ItemBase egg8;
-    public static ItemBase egg9;
-    public static ItemBase egg10;
-    public static ItemBase egg11;
-    public static ItemBase egg12;
-    public static ItemBase egg13;
-    public static ItemBase egg14;
-    public static ItemBase egg15;
-    public static ItemBase egg16;
-    public static ItemBase egg17;
-    public static ItemBase egg18;
-    public static ItemBase egg19;
-    public static ItemBase egg20;
-    public static ItemBase egg21;
-    public static ItemBase egg22;
-    public static ItemBase egg23;
-    public static ItemBase egg24;
-    public static ItemBase egg25;
-    public static ItemBase egg26;
-    public static ItemBase egg27;
-    public static ItemBase egg28;
+    public static Item egg1;
+    public static Item egg2;
+    public static Item egg3;
+    public static Item egg4;
+    public static Item egg5;
+    public static Item egg6;
+    public static Item egg7;
+    public static Item egg8;
+    public static Item egg9;
+    public static Item egg10;
+    public static Item egg11;
+    public static Item egg12;
+    public static Item egg13;
+    public static Item egg14;
+    public static Item egg15;
+    public static Item egg16;
+    public static Item egg17;
+    public static Item egg18;
+    public static Item egg19;
+    public static Item egg20;
+    public static Item egg21;
+    public static Item egg22;
+    public static Item egg23;
+    public static Item egg24;
+    public static Item egg25;
+    public static Item egg26;
+    public static Item egg27;
+    public static Item egg28;
 
-
-    public static boolean degubEgg = true;
 
 
     @Entrypoint.Namespace
     public static final Namespace MOD_ID = Null.get();
     @EventListener
     public void registerItems(ItemRegistryEvent event) {
-        if(degubEgg){
+        if(mod_mocreatures.mocreaturesGlass.balancesettings.spawn_eggs){
             egg1 = new MocreaturesEggItem(Identifier.of(MOD_ID, "Bear egg"), 1).setTranslationKey(MOD_ID, "Bear egg");
             egg2 = new MocreaturesEggItem(Identifier.of(MOD_ID, "BigCat egg"), 2).setTranslationKey(MOD_ID, "BigCat egg");
             egg3 = new MocreaturesEggItem(Identifier.of(MOD_ID, "Bird egg"), 3).setTranslationKey(MOD_ID, "Bird egg");

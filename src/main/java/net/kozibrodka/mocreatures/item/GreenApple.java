@@ -1,10 +1,10 @@
 package net.kozibrodka.mocreatures.item;
 
 
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemInstance;
-import net.minecraft.level.Level;
 import net.modificationstation.stationapi.api.util.Identifier;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.template.item.TemplateItem;
 
 public class GreenApple extends TemplateItem
@@ -13,14 +13,14 @@ public class GreenApple extends TemplateItem
     public GreenApple(Identifier i)
     {
         super(i);
-        maxStackSize = 1;
+        maxCount = 1;
         a = 42;
     }
 
-    public ItemInstance use(ItemInstance itemstack, Level world, PlayerBase entityplayer)
+    public ItemStack use(ItemStack itemstack, World world, PlayerEntity entityplayer)
     {
         itemstack.count--;
-        entityplayer.addHealth(a);
+        entityplayer.method_939(a);
         return itemstack;
     }
 

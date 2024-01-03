@@ -9,11 +9,10 @@ import net.glasslauncher.mods.api.gcapi.api.GConfig;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.mine_diver.unsafeevents.listener.ListenerPriority;
 import net.minecraft.achievement.Achievements;
-import net.minecraft.block.BlockBase;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.options.KeyBinding;
-import net.minecraft.item.ItemBase;
-import net.minecraft.item.ItemInstance;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.modificationstation.stationapi.api.client.event.option.KeyBindingRegisterEvent;
 import net.modificationstation.stationapi.api.event.achievement.AchievementRegisterEvent;
 import net.modificationstation.stationapi.api.event.container.slot.ItemUsedInCraftingEvent;
@@ -46,18 +45,18 @@ public class mod_mocreatures {
     public static Achievement WilfFlyingWest;
     public static Achievement RobertMaklowicz;
 
-    //TODO: horse faliing DMG crazy speed boost
+    //TODO: horse faliing DMG crazy speed boost, GUI HANDLERS
 
     @EventListener(priority = ListenerPriority.HIGHEST)
     public void registerAchievements(AchievementRegisterEvent event) {
-        Indiana = new Achievement(77, MOD_ID.id("indiana").toString(), -4, -4, mod_mocreatures.whip, Achievements.OPEN_INVENTORY).method_1041();
-        BunnyKilla = new Achievement(78, MOD_ID.id("bunnykilla").toString(), -5, -5, mod_mocreatures.whip, Achievements.OPEN_INVENTORY).method_1041();
+        Indiana = new Achievement(77, MOD_ID.id("indiana").toString(), -4, -4, mod_mocreatures.whip, Achievements.OPEN_INVENTORY).addStat();
+        BunnyKilla = new Achievement(78, MOD_ID.id("bunnykilla").toString(), -5, -5, mod_mocreatures.whip, Achievements.OPEN_INVENTORY).addStat();
         //TODO: extra example achievement, make not retarded names
 //        WilfFlyingWest = new Achievement(79, MOD_ID.id("wildflyingwest").toString(), -6, -6, mod_mocreatures.horsesaddle, Achievements.OPEN_INVENTORY).method_1041();
 //        RobertMaklowicz = new Achievement(80, MOD_ID.id("robertmaklowicz").toString(), -7, -7, BlockBase.FLOWING_WATER, Achievements.OPEN_INVENTORY).method_1041();
 
-        BunnyKilla.setUnusual();
-        Indiana.setUnusual();
+        BunnyKilla.challenge();
+        Indiana.challenge();
 //        WilfFlyingWest.setUnusual();
 //        RobertMaklowicz.setUnusual();
     }
@@ -94,40 +93,40 @@ public class mod_mocreatures {
     @EventListener
     public void registerRecipes(RecipeRegisterEvent event) {
 
-        CraftingRegistry.addShapedRecipe(new ItemInstance(mod_mocreatures.kittybed, 1, 14), "###", "#X#", "Z  ", '#', BlockBase.WOOD, 'X', new ItemInstance(BlockBase.WOOL, 1, 1), 'Z', ItemBase.ironIngot);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(mod_mocreatures.kittybed, 1, 13), "###", "#X#", "Z  ", '#', BlockBase.WOOD, 'X', new ItemInstance(BlockBase.WOOL, 1, 2), 'Z', ItemBase.ironIngot);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(mod_mocreatures.kittybed, 1, 12), "###", "#X#", "Z  ", '#', BlockBase.WOOD, 'X', new ItemInstance(BlockBase.WOOL, 1, 3), 'Z', ItemBase.ironIngot);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(mod_mocreatures.kittybed, 1, 11), "###", "#X#", "Z  ", '#', BlockBase.WOOD, 'X', new ItemInstance(BlockBase.WOOL, 1, 4), 'Z', ItemBase.ironIngot);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(mod_mocreatures.kittybed, 1, 10), "###", "#X#", "Z  ", '#', BlockBase.WOOD, 'X', new ItemInstance(BlockBase.WOOL, 1, 5), 'Z', ItemBase.ironIngot);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(mod_mocreatures.kittybed, 1, 9), "###", "#X#", "Z  ", '#', BlockBase.WOOD, 'X', new ItemInstance(BlockBase.WOOL, 1, 6), 'Z', ItemBase.ironIngot);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(mod_mocreatures.kittybed, 1, 8), "###", "#X#", "Z  ", '#', BlockBase.WOOD, 'X', new ItemInstance(BlockBase.WOOL, 1, 7), 'Z', ItemBase.ironIngot);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(mod_mocreatures.kittybed, 1, 7), "###", "#X#", "Z  ", '#', BlockBase.WOOD, 'X', new ItemInstance(BlockBase.WOOL, 1, 8), 'Z', ItemBase.ironIngot);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(mod_mocreatures.kittybed, 1, 6), "###", "#X#", "Z  ", '#', BlockBase.WOOD, 'X', new ItemInstance(BlockBase.WOOL, 1, 9), 'Z', ItemBase.ironIngot);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(mod_mocreatures.kittybed, 1, 5), "###", "#X#", "Z  ", '#', BlockBase.WOOD, 'X', new ItemInstance(BlockBase.WOOL, 1, 10), 'Z', ItemBase.ironIngot);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(mod_mocreatures.kittybed, 1, 4), "###", "#X#", "Z  ", '#', BlockBase.WOOD, 'X', new ItemInstance(BlockBase.WOOL, 1, 11), 'Z', ItemBase.ironIngot);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(mod_mocreatures.kittybed, 1, 3), "###", "#X#", "Z  ", '#', BlockBase.WOOD, 'X', new ItemInstance(BlockBase.WOOL, 1, 12), 'Z', ItemBase.ironIngot);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(mod_mocreatures.kittybed, 1, 2), "###", "#X#", "Z  ", '#', BlockBase.WOOD, 'X', new ItemInstance(BlockBase.WOOL, 1, 13), 'Z', ItemBase.ironIngot);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(mod_mocreatures.kittybed, 1, 1), "###", "#X#", "Z  ", '#', BlockBase.WOOD, 'X', new ItemInstance(BlockBase.WOOL, 1, 14), 'Z', ItemBase.ironIngot);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(mod_mocreatures.kittybed, 1, 0), "###", "#X#", "Z  ", '#', BlockBase.WOOD, 'X', new ItemInstance(BlockBase.WOOL, 1, 15), 'Z', ItemBase.ironIngot);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(mod_mocreatures.kittybed, 1, 15), "###", "#X#", "Z  ", '#', BlockBase.WOOD, 'X', new ItemInstance(BlockBase.WOOL, 1, 0), 'Z', ItemBase.ironIngot);
+        CraftingRegistry.addShapedRecipe(new ItemStack(mod_mocreatures.kittybed, 1, 14), "###", "#X#", "Z  ", '#', Block.PLANKS, 'X', new ItemStack(Block.WOOL, 1, 1), 'Z', Item.IRON_INGOT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(mod_mocreatures.kittybed, 1, 13), "###", "#X#", "Z  ", '#', Block.PLANKS, 'X', new ItemStack(Block.WOOL, 1, 2), 'Z', Item.IRON_INGOT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(mod_mocreatures.kittybed, 1, 12), "###", "#X#", "Z  ", '#', Block.PLANKS, 'X', new ItemStack(Block.WOOL, 1, 3), 'Z', Item.IRON_INGOT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(mod_mocreatures.kittybed, 1, 11), "###", "#X#", "Z  ", '#', Block.PLANKS, 'X', new ItemStack(Block.WOOL, 1, 4), 'Z', Item.IRON_INGOT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(mod_mocreatures.kittybed, 1, 10), "###", "#X#", "Z  ", '#', Block.PLANKS, 'X', new ItemStack(Block.WOOL, 1, 5), 'Z', Item.IRON_INGOT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(mod_mocreatures.kittybed, 1, 9), "###", "#X#", "Z  ", '#', Block.PLANKS, 'X', new ItemStack(Block.WOOL, 1, 6), 'Z', Item.IRON_INGOT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(mod_mocreatures.kittybed, 1, 8), "###", "#X#", "Z  ", '#', Block.PLANKS, 'X', new ItemStack(Block.WOOL, 1, 7), 'Z', Item.IRON_INGOT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(mod_mocreatures.kittybed, 1, 7), "###", "#X#", "Z  ", '#', Block.PLANKS, 'X', new ItemStack(Block.WOOL, 1, 8), 'Z', Item.IRON_INGOT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(mod_mocreatures.kittybed, 1, 6), "###", "#X#", "Z  ", '#', Block.PLANKS, 'X', new ItemStack(Block.WOOL, 1, 9), 'Z', Item.IRON_INGOT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(mod_mocreatures.kittybed, 1, 5), "###", "#X#", "Z  ", '#', Block.PLANKS, 'X', new ItemStack(Block.WOOL, 1, 10), 'Z', Item.IRON_INGOT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(mod_mocreatures.kittybed, 1, 4), "###", "#X#", "Z  ", '#', Block.PLANKS, 'X', new ItemStack(Block.WOOL, 1, 11), 'Z', Item.IRON_INGOT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(mod_mocreatures.kittybed, 1, 3), "###", "#X#", "Z  ", '#', Block.PLANKS, 'X', new ItemStack(Block.WOOL, 1, 12), 'Z', Item.IRON_INGOT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(mod_mocreatures.kittybed, 1, 2), "###", "#X#", "Z  ", '#', Block.PLANKS, 'X', new ItemStack(Block.WOOL, 1, 13), 'Z', Item.IRON_INGOT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(mod_mocreatures.kittybed, 1, 1), "###", "#X#", "Z  ", '#', Block.PLANKS, 'X', new ItemStack(Block.WOOL, 1, 14), 'Z', Item.IRON_INGOT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(mod_mocreatures.kittybed, 1, 0), "###", "#X#", "Z  ", '#', Block.PLANKS, 'X', new ItemStack(Block.WOOL, 1, 15), 'Z', Item.IRON_INGOT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(mod_mocreatures.kittybed, 1, 15), "###", "#X#", "Z  ", '#', Block.PLANKS, 'X', new ItemStack(Block.WOOL, 1, 0), 'Z', Item.IRON_INGOT);
 
-        CraftingRegistry.addShapedRecipe(new ItemInstance(rope, 1), "# #", " # ", "# #", '#', ItemBase.string);
-        CraftingRegistry.addShapelessRecipe(new ItemInstance(petfood, 4), new ItemInstance(ItemBase.rawFish, 1), new ItemInstance(ItemBase.rawPorkchop, 1));
-        CraftingRegistry.addShapedRecipe(new ItemInstance(woolball, 1), " # ", "# #", " # ", '#', ItemBase.string);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(litterbox, 1), "###", "#X#", "###", '#', BlockBase.WOOD, 'X', BlockBase.SAND);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(medallion, 1), "# #", "XZX", " X ", '#', ItemBase.leather, 'Z', ItemBase.diamond, 'X', ItemBase.goldIngot);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(medallion, 1), "# #", " X ", '#', ItemBase.leather, 'X', ItemBase.goldIngot);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(whip, 1), "#X#", "X X", "# Z", '#', bigcatclaw, 'X', ItemBase.leather, 'Z', ItemBase.ironIngot);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(haystack, 1), "XXX", "XXX", 'X', ItemBase.wheat);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(ItemBase.wheat, 6), "X", 'X', haystack);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(sugarlump, 1), "XX", "##", 'X', ItemBase.sugar, '#', ItemBase.sugar);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(ItemBase.chainChestplate, 1), "X X", "XXX", "XXX", 'X', sharkteeth);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(ItemBase.chainHelmet, 1), "XXX", "X X", 'X', sharkteeth);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(ItemBase.chainLeggings, 1), "XXX", "X X", "X X", 'X', sharkteeth);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(ItemBase.chainBoots, 1), "X X", "X X", 'X', sharkteeth);
+        CraftingRegistry.addShapedRecipe(new ItemStack(rope, 1), "# #", " # ", "# #", '#', Item.STRING);
+        CraftingRegistry.addShapelessRecipe(new ItemStack(petfood, 4), new ItemStack(Item.RAW_FISH, 1), new ItemStack(Item.RAW_PORKCHOP, 1));
+        CraftingRegistry.addShapedRecipe(new ItemStack(woolball, 1), " # ", "# #", " # ", '#', Item.STRING);
+        CraftingRegistry.addShapedRecipe(new ItemStack(litterbox, 1), "###", "#X#", "###", '#', Block.PLANKS, 'X', Block.SAND);
+        CraftingRegistry.addShapedRecipe(new ItemStack(medallion, 1), "# #", "XZX", " X ", '#', Item.LEATHER, 'Z', Item.DIAMOND, 'X', Item.GOLD_INGOT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(medallion, 1), "# #", " X ", '#', Item.LEATHER, 'X', Item.GOLD_INGOT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(whip, 1), "#X#", "X X", "# Z", '#', bigcatclaw, 'X', Item.LEATHER, 'Z', Item.IRON_INGOT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(haystack, 1), "XXX", "XXX", 'X', Item.WHEAT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(Item.WHEAT, 6), "X", 'X', haystack);
+        CraftingRegistry.addShapedRecipe(new ItemStack(sugarlump, 1), "XX", "##", 'X', Item.SUGAR, '#', Item.SUGAR);
+        CraftingRegistry.addShapedRecipe(new ItemStack(Item.CHAIN_CHESTPLATE, 1), "X X", "XXX", "XXX", 'X', sharkteeth);
+        CraftingRegistry.addShapedRecipe(new ItemStack(Item.CHAIN_HELMET, 1), "XXX", "X X", 'X', sharkteeth);
+        CraftingRegistry.addShapedRecipe(new ItemStack(Item.CHAIN_LEGGINGS, 1), "XXX", "X X", "X X", 'X', sharkteeth);
+        CraftingRegistry.addShapedRecipe(new ItemStack(Item.CHAIN_BOOTS, 1), "X X", "X X", 'X', sharkteeth);
 
-        CraftingRegistry.addShapedRecipe(new ItemInstance(horsesaddle, 1), "X", "#", 'X', ItemBase.saddle, '#', ItemBase.ironIngot);
-        CraftingRegistry.addShapedRecipe(new ItemInstance(horsesaddle, 1), "XXX", "X#X", "# #", '#', ItemBase.ironIngot, 'X', ItemBase.leather);
+        CraftingRegistry.addShapedRecipe(new ItemStack(horsesaddle, 1), "X", "#", 'X', Item.SADDLE, '#', Item.IRON_INGOT);
+        CraftingRegistry.addShapedRecipe(new ItemStack(horsesaddle, 1), "XXX", "X#X", "# #", '#', Item.IRON_INGOT, 'X', Item.LEATHER);
 
         //TODO: extra, now doesnt make sense, also make recipes for all items (delete json)
         if(mocreaturesGlass.balancesettings.balance_drop) {
@@ -142,11 +141,11 @@ public class mod_mocreatures {
 //            CraftingRegistry.addShapelessRecipe(new ItemInstance(ItemBase.dyePowder, 16, 0), new ItemInstance(ItemBase.dyePowder, 1, 0), new ItemInstance(sharkoil, 1));
 //            CraftingRegistry.addShapelessRecipe(new ItemInstance(ItemBase.dyePowder, 8, 3), new ItemInstance(ItemBase.dyePowder, 1, 3), new ItemInstance(sharkoil, 1));
 //            CraftingRegistry.addShapelessRecipe(new ItemInstance(ItemBase.dyePowder, 4, 4), new ItemInstance(ItemBase.dyePowder, 1, 4), new ItemInstance(sharkoil, 1));
-            CraftingRegistry.addShapelessRecipe(new ItemInstance(bigcatfood, 3), new ItemInstance(ItemBase.rawPorkchop, 1), new ItemInstance(ItemBase.egg, 1), new ItemInstance(ItemBase.rawFish, 1));
-            CraftingRegistry.addShapelessRecipe(new ItemInstance(sharkfood, 3), new ItemInstance(ItemBase.rawFish, 1), new ItemInstance(fishyegg, 1), new ItemInstance(ItemBase.rawFish, 1));
+            CraftingRegistry.addShapelessRecipe(new ItemStack(bigcatfood, 3), new ItemStack(Item.RAW_PORKCHOP, 1), new ItemStack(Item.EGG, 1), new ItemStack(Item.RAW_FISH, 1));
+            CraftingRegistry.addShapelessRecipe(new ItemStack(sharkfood, 3), new ItemStack(Item.RAW_FISH, 1), new ItemStack(fishyegg, 1), new ItemStack(Item.RAW_FISH, 1));
 
             if (!FabricLoader.getInstance().isModLoaded("aether")) {
-                CraftingRegistry.addShapedRecipe(new ItemInstance(horsesaddle, 1), "X", "#", 'X', ItemBase.saddle, '#', ItemBase.ironIngot);
+                CraftingRegistry.addShapedRecipe(new ItemStack(horsesaddle, 1), "X", "#", 'X', Item.SADDLE, '#', Item.IRON_INGOT);
             }
         }
     }
@@ -156,28 +155,28 @@ public class mod_mocreatures {
         return ~i & 0xf;
     }
 
-    public static ItemBase horsesaddle;
-    public static ItemBase haystack;
-    public static ItemBase sugarlump;
-    public static ItemBase sharkteeth;
-    public static ItemBase sharkegg;
-    public static ItemBase fishyegg;
-    public static ItemBase bigcatclaw;
-    public static ItemBase whip;
-    public static ItemBase medallion;
-    public static ItemBase litterbox;
-    public static ItemBase woolball;
-    public static ItemBase rope;
-    public static ItemBase petfood ;
-    public static ItemBase kittybed;
+    public static Item horsesaddle;
+    public static Item haystack;
+    public static Item sugarlump;
+    public static Item sharkteeth;
+    public static Item sharkegg;
+    public static Item fishyegg;
+    public static Item bigcatclaw;
+    public static Item whip;
+    public static Item medallion;
+    public static Item litterbox;
+    public static Item woolball;
+    public static Item rope;
+    public static Item petfood ;
+    public static Item kittybed;
 
-    public static ItemBase sharkoil;
-    public static ItemBase wildleather;
-    public static ItemBase polarleather;
-    public static ItemBase greenapple;
-    public static ItemBase bigcatfood;
-    public static ItemBase sharkfood;
-    public static ItemBase goldenshears;
+    public static Item sharkoil;
+    public static Item wildleather;
+    public static Item polarleather;
+    public static Item greenapple;
+    public static Item bigcatfood;
+    public static Item sharkfood;
+    public static Item goldenshears;
 
 
 }

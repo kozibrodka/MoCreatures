@@ -3,23 +3,23 @@ package net.kozibrodka.mocreatures.item;
 
 import net.kozibrodka.mocreatures.entity.*;
 import net.kozibrodka.mocreatures.events.TextureListener;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemInstance;
-import net.minecraft.level.Level;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.template.item.TemplateItem;
 
 public class MocreaturesEggItem extends TemplateItem {
     public MocreaturesEggItem(Identifier identifier, int i) {
         super(identifier);
-        this.maxStackSize = 16;
+        this.maxCount = 16;
         ide = i;
     }
 
-    public boolean useOnTile(ItemInstance arg, PlayerBase arg2, Level arg3, int i, int j, int k, int l) {
+    public boolean useOnBlock(ItemStack arg, PlayerEntity arg2, World arg3, int i, int j, int k, int l) {
 
-        if(arg3.isServerSide){
+        if(arg3.isRemote){
             return true;
         }
 
@@ -109,14 +109,14 @@ public class MocreaturesEggItem extends TemplateItem {
         }
 
 
-        huj.setPositionAndAngles(i, j, k, arg3.rand.nextFloat() * 360F, 0.0F);
-        huj.setPosition(i, j + 1, k);
-        arg3.spawnEntity(huj);
+        huj.method_1341(i, j, k, arg3.field_214.nextFloat() * 360F, 0.0F);
+        huj.method_1340(i, j + 1, k);
+        arg3.method_210(huj);
         --arg.count;
 
         return false;
     }
 
     public int ide;
-    EntityBase huj;
+    Entity huj;
 }

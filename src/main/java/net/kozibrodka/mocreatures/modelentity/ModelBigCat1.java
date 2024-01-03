@@ -4,20 +4,20 @@
 
 package net.kozibrodka.mocreatures.modelentity;
 
-import net.minecraft.client.model.Cuboid;
-import net.minecraft.client.render.entity.model.AnimalQuadrupedModelBase;
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.entity.model.QuadrupedEntityModel;
 
-public class ModelBigCat1 extends AnimalQuadrupedModelBase
+public class ModelBigCat1 extends QuadrupedEntityModel
 {
 
     public ModelBigCat1()
     {
         super(12, 0.0F);
-        cuboid1 = new Cuboid(20, 0);
-        cuboid1.method_1818(-7F, -8F, -2F, 14, 14, 8, 0.0F);
-        cuboid1.setRotationPoint(0.0F, 4F, -8F);
-        cuboid2 = new Cuboid(20, 0);
-        cuboid2.method_1818(-6F, -11F, -8F, 12, 10, 10, 0.0F);
-        cuboid2.setRotationPoint(0.0F, 5F, 2.0F);
+        head = new ModelPart(20, 0);
+        head.addCuboid(-7F, -8F, -2F, 14, 14, 8, 0.0F);
+        head.setPivot(0.0F, 4F, -8F);
+        body = new ModelPart(20, 0);
+        body.addCuboid(-6F, -11F, -8F, 12, 10, 10, 0.0F);
+        body.setPivot(0.0F, 5F, 2.0F);
     }
 }

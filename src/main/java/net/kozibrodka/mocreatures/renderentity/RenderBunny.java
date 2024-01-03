@@ -2,19 +2,19 @@ package net.kozibrodka.mocreatures.renderentity;
 
 import net.kozibrodka.mocreatures.entity.EntityBunny;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
-import net.minecraft.client.render.entity.model.EntityModelBase;
-import net.minecraft.entity.Living;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.entity.LivingEntity;
 import org.lwjgl.opengl.GL11;
 
 public class RenderBunny extends LivingEntityRenderer
 {
 
-    public RenderBunny(EntityModelBase modelbase, float f)
+    public RenderBunny(EntityModel modelbase, float f)
     {
         super(modelbase, f);
     }
 
-    public void method_822(Living entityliving, double d, double d1, double d2,
+    public void render(LivingEntity entityliving, double d, double d1, double d2,
                                float f, float f1)
     {
         EntityBunny entitybunny = (EntityBunny)entityliving;
@@ -22,12 +22,12 @@ public class RenderBunny extends LivingEntityRenderer
         {
             entitybunny.chooseType();
         }
-        super.method_822(entitybunny, d, d1, d2, f, f1);
+        super.render(entitybunny, d, d1, d2, f, f1);
     }
 
     protected void rotBunny(EntityBunny entitybunny)
     {
-        if(!entitybunny.onGround && entitybunny.vehicle == null)
+        if(!entitybunny.field_1623 && entitybunny.field_1595 == null)
         {
             if(entitybunny.velocityY > 0.5D)
             {
@@ -43,7 +43,7 @@ public class RenderBunny extends LivingEntityRenderer
         }
     }
 
-    protected float method_828(Living entityliving, float f)
+    protected float method_828(LivingEntity entityliving, float f)
     {
         EntityBunny entitybunny = (EntityBunny)entityliving;
         if(!entitybunny.adult)
@@ -53,7 +53,7 @@ public class RenderBunny extends LivingEntityRenderer
         return (float)entityliving.field_1645 + f;
     }
 
-    protected void method_823(Living entityliving, float f)
+    protected void method_823(LivingEntity entityliving, float f)
     {
         rotBunny((EntityBunny)entityliving);
     }

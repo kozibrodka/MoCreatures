@@ -4,7 +4,7 @@ import net.kozibrodka.mocreatures.modelentity.ModelKittyBed;
 import net.kozibrodka.mocreatures.modelentity.ModelKittyBed2;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
-import net.minecraft.entity.Living;
+import net.minecraft.entity.LivingEntity;
 import org.lwjgl.opengl.GL11;
 
 
@@ -15,10 +15,10 @@ public class RenderKittyBed extends LivingEntityRenderer
     {
         super(modelkittybed, f);
         kittybed = modelkittybed;
-        setModel(modelkittybed2);
+        method_815(modelkittybed2);
     }
 
-    protected void method_823(Living entityliving, float f)
+    protected void method_823(LivingEntity entityliving, float f)
     {
         EntityKittyBed entitykittybed = (EntityKittyBed)entityliving;
         mycolor = entitykittybed.sheetcolour;
@@ -28,12 +28,12 @@ public class RenderKittyBed extends LivingEntityRenderer
         kittybed.milklevel = entitykittybed.milklevel;
     }
 
-    protected boolean render(Living entityliving, int i, float f)
+    protected boolean method_825(LivingEntity entityliving, int i, float f)
     {
         return setWoolColorAndRender(entityliving, i, f);
     }
 
-    protected boolean setWoolColorAndRender(Living entityliving, int i, float f)
+    protected boolean setWoolColorAndRender(LivingEntity entityliving, int i, float f)
     {
         bindTexture("/assets/mocreatures/stationapi/textures/mob/kittybed.png");
         float f1 = 0.35F;

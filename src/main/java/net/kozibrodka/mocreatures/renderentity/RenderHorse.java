@@ -2,27 +2,27 @@ package net.kozibrodka.mocreatures.renderentity;
 import net.kozibrodka.mocreatures.entity.EntityHorse;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.modelentity.ModelHorse1;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.TextRenderer;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
-import net.minecraft.client.render.entity.model.EntityModelBase;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.Living;
-import net.minecraft.util.maths.MathHelper;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 
 public class RenderHorse extends LivingEntityRenderer
 {
 
-    public RenderHorse(EntityModelBase modelbase, EntityModelBase modelbase1)
+    public RenderHorse(EntityModel modelbase, EntityModel modelbase1)
     {
         super(modelbase1, 0.5F);
-        setModel(modelbase);
+        method_815(modelbase);
         modelhorse1 = (ModelHorse1)modelbase1;
     }
 
-    protected boolean render(Living entityliving, int i, float f)
+    protected boolean method_825(LivingEntity entityliving, int i, float f)
     {
         return setWoolColorAndRender((EntityHorse)entityliving, i);
     }
@@ -38,13 +38,13 @@ public class RenderHorse extends LivingEntityRenderer
         return (MathHelper.sin(f1) + 1.0F) * f2;
     }
 
-    protected void method_823(Living entityliving, float f)
+    protected void method_823(LivingEntity entityliving, float f)
     {
         EntityHorse entityhorse = (EntityHorse)entityliving;
         modelhorse1.chested = entityhorse.chestedhorse;
     }
 
-    public void render(EntityBase entity, double d, double d1, double d2,
+    public void render(Entity entity, double d, double d1, double d2,
                          float f, float f1)
     {
         doRenderHorse((EntityHorse)entity, d, d1, d2, f, f1);
@@ -53,7 +53,7 @@ public class RenderHorse extends LivingEntityRenderer
     public void doRenderHorse(EntityHorse entityhorse, double d, double d1, double d2, 
             float f, float f1)
     {
-        super.method_822(entityhorse, d, d1, d2, f, f1);
+        super.render(entityhorse, d, d1, d2, f, f1);
         boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entityhorse.name.isEmpty();
         boolean flag1 = mocr.mocreaturesGlass.othersettings.displayhealth;
         boolean flag2 = mocr.mocreaturesGlass.othersettings.displayemo;
@@ -61,7 +61,7 @@ public class RenderHorse extends LivingEntityRenderer
         {
             float f2 = 1.6F;
             float f3 = 0.01666667F * f2;
-            float f5 = entityhorse.distanceTo(dispatcher.entity);
+            float f5 = entityhorse.method_1351(dispatcher.field_2496);
             if(f5 < 16F)
             {
                 String s = "";
@@ -83,21 +83,21 @@ public class RenderHorse extends LivingEntityRenderer
                     {
                         byte0 += 8;
                     }
-                    tessellator1.start();
+                    tessellator1.startQuads();
                     float f8 = entityhorse.health;
                     float f9 = entityhorse.maxhealth;
                     float f10 = f8 / f9;
                     float f11 = 40F * f10;
-                    tessellator1.colour(0.7F, 0.0F, 0.0F, 1.0F);
-                    tessellator1.addVertex(-20F + f11, -10 + byte0, 0.0D);
-                    tessellator1.addVertex(-20F + f11, -6 + byte0, 0.0D);
-                    tessellator1.addVertex(20D, -6 + byte0, 0.0D);
-                    tessellator1.addVertex(20D, -10 + byte0, 0.0D);
-                    tessellator1.colour(0.0F, 0.7F, 0.0F, 1.0F);
-                    tessellator1.addVertex(-20D, -10 + byte0, 0.0D);
-                    tessellator1.addVertex(-20D, -6 + byte0, 0.0D);
-                    tessellator1.addVertex(f11 - 20F, -6 + byte0, 0.0D);
-                    tessellator1.addVertex(f11 - 20F, -10 + byte0, 0.0D);
+                    tessellator1.color(0.7F, 0.0F, 0.0F, 1.0F);
+                    tessellator1.vertex(-20F + f11, -10 + byte0, 0.0D);
+                    tessellator1.vertex(-20F + f11, -6 + byte0, 0.0D);
+                    tessellator1.vertex(20D, -6 + byte0, 0.0D);
+                    tessellator1.vertex(20D, -10 + byte0, 0.0D);
+                    tessellator1.color(0.0F, 0.7F, 0.0F, 1.0F);
+                    tessellator1.vertex(-20D, -10 + byte0, 0.0D);
+                    tessellator1.vertex(-20D, -6 + byte0, 0.0D);
+                    tessellator1.vertex(f11 - 20F, -6 + byte0, 0.0D);
+                    tessellator1.vertex(f11 - 20F, -10 + byte0, 0.0D);
                     tessellator1.draw();
                     GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
                 }
@@ -108,19 +108,19 @@ public class RenderHorse extends LivingEntityRenderer
                     GL11.glEnable(3042 /*GL_BLEND*/);
                     GL11.glBlendFunc(770, 771);
                     GL11.glDisable(3553 /*GL_TEXTURE_2D*/);
-                    tessellator1.start();
-                    int i = fontrenderer.getTextWidth(s) / 2;
-                    tessellator1.colour(0.0F, 0.0F, 0.0F, 0.25F);
-                    tessellator1.addVertex(-i - 1, -1 + byte0, 0.0D);
-                    tessellator1.addVertex(-i - 1, 8 + byte0, 0.0D);
-                    tessellator1.addVertex(i + 1, 8 + byte0, 0.0D);
-                    tessellator1.addVertex(i + 1, -1 + byte0, 0.0D);
+                    tessellator1.startQuads();
+                    int i = fontrenderer.getWidth(s) / 2;
+                    tessellator1.color(0.0F, 0.0F, 0.0F, 0.25F);
+                    tessellator1.vertex(-i - 1, -1 + byte0, 0.0D);
+                    tessellator1.vertex(-i - 1, 8 + byte0, 0.0D);
+                    tessellator1.vertex(i + 1, 8 + byte0, 0.0D);
+                    tessellator1.vertex(i + 1, -1 + byte0, 0.0D);
                     tessellator1.draw();
                     GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
-                    fontrenderer.drawText(s, -fontrenderer.getTextWidth(s) / 2, byte0, 0x20ffffff);
+                    fontrenderer.draw(s, -fontrenderer.getWidth(s) / 2, byte0, 0x20ffffff);
                     GL11.glEnable(2929 /*GL_DEPTH_TEST*/);
                     GL11.glDepthMask(true);
-                    fontrenderer.drawText(s, -fontrenderer.getTextWidth(s) / 2, byte0, -1);
+                    fontrenderer.draw(s, -fontrenderer.getWidth(s) / 2, byte0, -1);
                     GL11.glDisable(3042 /*GL_BLEND*/);
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                 }
@@ -151,12 +151,12 @@ public class RenderHorse extends LivingEntityRenderer
             for(double d16 = 0.0D; d16 < 0.029999999999999999D; d16 += 0.01D)
             {
                 tessellator.start(3);
-                tessellator.colour(0.5F, 0.4F, 0.3F, 1.0F);
+                tessellator.color(0.5F, 0.4F, 0.3F, 1.0F);
                 int j = 16;
                 for(int k = 0; k <= j; k++)
                 {
                     float f12 = (float)k / (float)j;
-                    tessellator.addVertex(d + d13 * (double)f12 + d16, d1 + d14 * (double)(f12 * f12 + f12) * 0.5D + (double)(((float)j - (float)k) / ((float)j * 0.75F) + 0.125F), d2 + d15 * (double)f12);
+                    tessellator.vertex(d + d13 * (double)f12 + d16, d1 + d14 * (double)(f12 * f12 + f12) * 0.5D + (double)(((float)j - (float)k) / ((float)j * 0.75F) + 0.125F), d2 + d15 * (double)f12);
                 }
 
                 tessellator.draw();
@@ -172,7 +172,7 @@ public class RenderHorse extends LivingEntityRenderer
         GL11.glScalef(entityhorse.b, entityhorse.b, entityhorse.b);
     }
 
-    protected float method_828(Living entityliving, float f)
+    protected float method_828(LivingEntity entityliving, float f)
     {
         return getWingRotation((EntityHorse)entityliving, f);
     }

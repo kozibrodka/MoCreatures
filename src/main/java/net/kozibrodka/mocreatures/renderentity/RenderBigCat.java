@@ -4,11 +4,11 @@ import net.kozibrodka.mocreatures.entity.EntityBigCat;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.modelentity.ModelBigCat1;
 import net.kozibrodka.mocreatures.modelentity.ModelBigCat2;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.TextRenderer;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
-import net.minecraft.entity.Living;
-import net.minecraft.util.maths.MathHelper;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 public class RenderBigCat extends LivingEntityRenderer
@@ -17,11 +17,11 @@ public class RenderBigCat extends LivingEntityRenderer
     public RenderBigCat(ModelBigCat2 modelbigcat2, ModelBigCat1 modelbigcat1, float f)
     {
         super(modelbigcat2, f);
-        setModel(modelbigcat1);
+        method_815(modelbigcat1);
         bigcat1 = modelbigcat2;
     }
 
-    protected void method_823(Living entityliving, float f)
+    protected void method_823(LivingEntity entityliving, float f)
     {
         EntityBigCat entitybigcat = (EntityBigCat)entityliving;
         bigcat1.sitting = entitybigcat.sitting;
@@ -40,12 +40,12 @@ public class RenderBigCat extends LivingEntityRenderer
         return i == 0 && !entitybigcat.lionboolean;
     }
 
-    protected boolean render(Living entityliving, int i, float f)
+    protected boolean method_825(LivingEntity entityliving, int i, float f)
     {
         return a((EntityBigCat)entityliving, i);
     }
 
-    public void method_822(Living entityliving, double d, double d1, double d2,
+    public void render(LivingEntity entityliving, double d, double d1, double d2,
             float f, float f1)
     {
         EntityBigCat entitybigcat = (EntityBigCat)entityliving;
@@ -53,7 +53,7 @@ public class RenderBigCat extends LivingEntityRenderer
         {
             entitybigcat.chooseType();
         }
-        super.method_822(entitybigcat, d, d1, d2, f, f1);
+        super.render(entitybigcat, d, d1, d2, f, f1);
         boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entitybigcat.name.isEmpty();
         boolean flag1 = mocr.mocreaturesGlass.othersettings.displayhealth;
         boolean flag2 = mocr.mocreaturesGlass.othersettings.displayemo;
@@ -61,7 +61,7 @@ public class RenderBigCat extends LivingEntityRenderer
         {
             float f2 = 1.6F;
             float f3 = 0.01666667F * f2;
-            float f5 = entitybigcat.distanceTo(dispatcher.entity);
+            float f5 = entitybigcat.method_1351(dispatcher.field_2496);
             if(f5 < 16F)
             {
                 String s = "";
@@ -83,21 +83,21 @@ public class RenderBigCat extends LivingEntityRenderer
                     {
                         byte0 += 8;
                     }
-                    tessellator1.start();
+                    tessellator1.startQuads();
                     float f8 = entitybigcat.health;
                     float f9 = entitybigcat.maxhealth;
                     float f10 = f8 / f9;
                     float f11 = 40F * f10;
-                    tessellator1.colour(0.7F, 0.0F, 0.0F, 1.0F);
-                    tessellator1.addVertex(-20F + f11, -10 + byte0, 0.0D);
-                    tessellator1.addVertex(-20F + f11, -6 + byte0, 0.0D);
-                    tessellator1.addVertex(20D, -6 + byte0, 0.0D);
-                    tessellator1.addVertex(20D, -10 + byte0, 0.0D);
-                    tessellator1.colour(0.0F, 0.7F, 0.0F, 1.0F);
-                    tessellator1.addVertex(-20D, -10 + byte0, 0.0D);
-                    tessellator1.addVertex(-20D, -6 + byte0, 0.0D);
-                    tessellator1.addVertex(f11 - 20F, -6 + byte0, 0.0D);
-                    tessellator1.addVertex(f11 - 20F, -10 + byte0, 0.0D);
+                    tessellator1.color(0.7F, 0.0F, 0.0F, 1.0F);
+                    tessellator1.vertex(-20F + f11, -10 + byte0, 0.0D);
+                    tessellator1.vertex(-20F + f11, -6 + byte0, 0.0D);
+                    tessellator1.vertex(20D, -6 + byte0, 0.0D);
+                    tessellator1.vertex(20D, -10 + byte0, 0.0D);
+                    tessellator1.color(0.0F, 0.7F, 0.0F, 1.0F);
+                    tessellator1.vertex(-20D, -10 + byte0, 0.0D);
+                    tessellator1.vertex(-20D, -6 + byte0, 0.0D);
+                    tessellator1.vertex(f11 - 20F, -6 + byte0, 0.0D);
+                    tessellator1.vertex(f11 - 20F, -10 + byte0, 0.0D);
                     tessellator1.draw();
                     GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
                 }
@@ -108,19 +108,19 @@ public class RenderBigCat extends LivingEntityRenderer
                     GL11.glEnable(3042 /*GL_BLEND*/);
                     GL11.glBlendFunc(770, 771);
                     GL11.glDisable(3553 /*GL_TEXTURE_2D*/);
-                    tessellator1.start();
-                    int i = fontrenderer.getTextWidth(s) / 2;
-                    tessellator1.colour(0.0F, 0.0F, 0.0F, 0.25F);
-                    tessellator1.addVertex(-i - 1, -1 + byte0, 0.0D);
-                    tessellator1.addVertex(-i - 1, 8 + byte0, 0.0D);
-                    tessellator1.addVertex(i + 1, 8 + byte0, 0.0D);
-                    tessellator1.addVertex(i + 1, -1 + byte0, 0.0D);
+                    tessellator1.startQuads();
+                    int i = fontrenderer.getWidth(s) / 2;
+                    tessellator1.color(0.0F, 0.0F, 0.0F, 0.25F);
+                    tessellator1.vertex(-i - 1, -1 + byte0, 0.0D);
+                    tessellator1.vertex(-i - 1, 8 + byte0, 0.0D);
+                    tessellator1.vertex(i + 1, 8 + byte0, 0.0D);
+                    tessellator1.vertex(i + 1, -1 + byte0, 0.0D);
                     tessellator1.draw();
                     GL11.glEnable(3553 /*GL_TEXTURE_2D*/);
-                    fontrenderer.drawText(s, -fontrenderer.getTextWidth(s) / 2, byte0, 0x20ffffff);
+                    fontrenderer.draw(s, -fontrenderer.getWidth(s) / 2, byte0, 0x20ffffff);
                     GL11.glEnable(2929 /*GL_DEPTH_TEST*/);
                     GL11.glDepthMask(true);
-                    fontrenderer.drawText(s, -fontrenderer.getTextWidth(s) / 2, byte0, -1);
+                    fontrenderer.draw(s, -fontrenderer.getWidth(s) / 2, byte0, -1);
                     GL11.glDisable(3042 /*GL_BLEND*/);
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                 }
@@ -156,12 +156,12 @@ public class RenderBigCat extends LivingEntityRenderer
             for(double d16 = 0.0D; d16 < 0.029999999999999999D; d16 += 0.01D)
             {
                 tessellator.start(3);
-                tessellator.colour(0.5F, 0.4F, 0.3F, 1.0F);
+                tessellator.color(0.5F, 0.4F, 0.3F, 1.0F);
                 int j = 16;
                 for(int k = 0; k <= j; k++)
                 {
                     float f12 = (float)k / (float)j;
-                    tessellator.addVertex(d + d13 * (double)f12 + d16, d1 + d14 * (double)(f12 * f12 + f12) * 0.5D + (double)(((float)j - (float)k) / ((float)j * 0.75F) + 0.125F), d2 + d15 * (double)f12);
+                    tessellator.vertex(d + d13 * (double)f12 + d16, d1 + d14 * (double)(f12 * f12 + f12) * 0.5D + (double)(((float)j - (float)k) / ((float)j * 0.75F) + 0.125F), d2 + d15 * (double)f12);
                 }
 
                 tessellator.draw();
@@ -182,7 +182,7 @@ public class RenderBigCat extends LivingEntityRenderer
         GL11.glScalef(f * entitybigcat.widthF, f * entitybigcat.heightF, f * entitybigcat.lengthF);
     }
 
-    protected float method_828(Living entityliving, float f)
+    protected float method_828(LivingEntity entityliving, float f)
     {
         EntityBigCat entitybigcat = (EntityBigCat)entityliving;
         stretch(entitybigcat);

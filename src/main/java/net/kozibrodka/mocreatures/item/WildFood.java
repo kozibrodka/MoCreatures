@@ -14,7 +14,7 @@ public class WildFood extends TemplateItem
     public WildFood(Identifier i)
     {
         super(i);
-        maxStackSize = 3;
+        maxCount = 3;
     }
 
 }

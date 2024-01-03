@@ -5,17 +5,17 @@
 package net.kozibrodka.mocreatures.mocreatures;
 
 import net.kozibrodka.mocreatures.entity.*;
-import net.minecraft.client.gui.screen.ScreenBase;
-import net.minecraft.client.gui.widgets.Button;
-import net.minecraft.entity.Living;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.CharacterUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-public class MoCGUI extends ScreenBase
+public class MoCGUI extends Screen
 {
 
-    public MoCGUI(Living entityliving, String s)
+    public MoCGUI(LivingEntity entityliving, String s)
     {
         xSize = 256;
         ySize = 181;
@@ -28,10 +28,10 @@ public class MoCGUI extends ScreenBase
     {
         buttons.clear();
         Keyboard.enableRepeatEvents(true);
-        buttons.add(new Button(0, width / 2 - 100, height / 4 + 120, "Done"));
+        buttons.add(new ButtonWidget(0, width / 2 - 100, height / 4 + 120, "Done"));
     }
 
-    public void onClose()
+    public void removed()
     {
         Keyboard.enableRepeatEvents(false);
     }
@@ -41,7 +41,7 @@ public class MoCGUI extends ScreenBase
         updateCounter++;
     }
 
-    protected void buttonClicked(Button guibutton)
+    protected void buttonClicked(ButtonWidget guibutton)
     {
         if(!guibutton.active)
         {
@@ -69,7 +69,7 @@ public class MoCGUI extends ScreenBase
             {
                 ((EntityShark)NamedEntity).name = NameToSet;
             }
-            minecraft.openScreen(null);
+            minecraft.setScreen(null);
         }
     }
 
@@ -104,14 +104,14 @@ public class MoCGUI extends ScreenBase
         minecraft.textureManager.bindTexture(k);
         int l = (width - xSize) / 2;
         int i1 = (height - (ySize + 16)) / 2;
-        blit(l, i1, 0, 0, xSize, ySize);
-        drawTextWithShadowCentred(textManager, screenTitle, width / 2, 100, 0xffffff);
-        drawTextWithShadowCentred(textManager, NameToSet, width / 2, 120, 0xffffff);
+        drawTexture(l, i1, 0, 0, xSize, ySize);
+        drawCenteredTextWithShadow(textRenderer, screenTitle, width / 2, 100, 0xffffff);
+        drawCenteredTextWithShadow(textRenderer, NameToSet, width / 2, 120, 0xffffff);
         super.render(i, j, f);
     }
 
     protected String screenTitle;
-    private Living NamedEntity;
+    private LivingEntity NamedEntity;
     private int updateCounter;
     private static final String allowedCharacters;
     private String NameToSet;
@@ -120,6 +120,6 @@ public class MoCGUI extends ScreenBase
 
     static
     {
-        allowedCharacters = CharacterUtils.validCharacters;
+        allowedCharacters = CharacterUtils.VALID_CHARACTERS;
     }
 }

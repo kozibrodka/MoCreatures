@@ -9,12 +9,12 @@ import net.kozibrodka.mocreatures.entity.EntityBunny;
 import net.kozibrodka.mocreatures.entity.EntityHorse;
 import net.kozibrodka.mocreatures.entity.EntityKitty;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.minecraft.block.BlockBase;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemInstance;
-import net.minecraft.level.Level;
-import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.block.Block;
+import net.minecraft.block.entity.SignBlockEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.template.item.TemplateItem;
 
@@ -26,29 +26,29 @@ public class ItemWhip extends TemplateItem
     public ItemWhip(Identifier i)
     {
         super(i);
-        maxStackSize = 1;
-        setDurability(24);
+        maxCount = 1;
+        setMaxDamage(24);
     }
 
-    public ItemInstance onItemRightClick2(ItemInstance itemstack, Level world, PlayerBase entityplayer)
+    public ItemStack onItemRightClick2(ItemStack itemstack, World world, PlayerEntity entityplayer)
     {
         return itemstack;
     }
 
-    public boolean useOnTile(ItemInstance itemstack, PlayerBase entityplayer, Level world, int i, int j, int k, int l)
+    public boolean useOnBlock(ItemStack itemstack, PlayerEntity entityplayer, World world, int i, int j, int k, int l)
     {
         int i1 = 0;
-        int j1 = world.getTileId(i, j, k);
-        int k1 = world.getTileId(i, j + 1, k);
-        if(l != 0 && k1 == 0 && j1 != 0 && j1 != BlockBase.STANDING_SIGN.id)
+        int j1 = world.getBlockId(i, j, k);
+        int k1 = world.getBlockId(i, j + 1, k);
+        if(l != 0 && k1 == 0 && j1 != 0 && j1 != Block.SIGN.id)
         {
             whipFX(world, i, j, k);
-            world.playSound(entityplayer, "mocreatures:whip", 0.5F, 0.4F / (rand.nextFloat() * 0.4F + 0.8F));
-            itemstack.applyDamage(1, entityplayer);
+            world.playSound(entityplayer, "mocreatures:whip", 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+            itemstack.damage(1, entityplayer);
             List list = world.getEntities(entityplayer, entityplayer.boundingBox.expand(12D, 12D, 12D));
             for(int l1 = 0; l1 < list.size(); l1++)
             {
-                EntityBase entity = (EntityBase)list.get(l1);
+                Entity entity = (Entity)list.get(l1);
                 if(entity instanceof EntityBigCat)
                 {
                     EntityBigCat entitybigcat = (EntityBigCat)entity;
@@ -57,7 +57,7 @@ public class ItemWhip extends TemplateItem
                         entitybigcat.sitting = !entitybigcat.sitting;
                         i1++;
                     } else
-                    if(world.difficulty > 0 && entitybigcat.adult)
+                    if(world.field_213 > 0 && entitybigcat.adult)
                     {
                         entitybigcat.ustawCel(entityplayer);
                     }
@@ -87,47 +87,47 @@ public class ItemWhip extends TemplateItem
             }
             return true;
         }
-        if(l != 0 && (k1 == BlockBase.STANDING_SIGN.id || j1 == BlockBase.STANDING_SIGN.id) && j1 != 0)
+        if(l != 0 && (k1 == Block.SIGN.id || j1 == Block.SIGN.id) && j1 != 0)
         {
-            TileEntitySign tileentitysign = (TileEntitySign)world.getTileEntity(i, j + 1, k);
+            SignBlockEntity tileentitysign = (SignBlockEntity)world.method_1777(i, j + 1, k);
             if(tileentitysign == null)
             {
-                tileentitysign = (TileEntitySign)world.getTileEntity(i, j, k);
+                tileentitysign = (SignBlockEntity)world.method_1777(i, j, k);
             }
             if(tileentitysign != null)
             {
                 int i2 = 0;
-                List list1 = world.getEntities();
+                List list1 = world.method_291();
                 for(int j2 = 0; j2 < list1.size(); j2++)
                 {
-                    EntityBase entity1 = (EntityBase)list1.get(j2);
+                    Entity entity1 = (Entity)list1.get(j2);
                     if(entity1 instanceof EntityBunny)
                     {
                         EntityBunny entitybunny = (EntityBunny)entity1;
                         i2++;
-                        entitybunny.remove();
+                        entitybunny.markDead();
                     }
                 }
 
                 String s = String.valueOf(i2);
-                tileentitysign.lines[0] = "";
-                tileentitysign.lines[1] = "R.I.P.";
-                tileentitysign.lines[2] = (new StringBuilder()).append(s).append(" Bunnies").toString();
-                tileentitysign.lines[3] = "";
+                tileentitysign.texts[0] = "";
+                tileentitysign.texts[1] = "R.I.P.";
+                tileentitysign.texts[2] = (new StringBuilder()).append(s).append(" Bunnies").toString();
+                tileentitysign.texts[3] = "";
                 if(i2 > 69)
                 {
                     entityplayer.incrementStat(mod_mocreatures.BunnyKilla);
                 }
                 whipFX(world, i, j, k);
-                world.playSound(entityplayer, "mocreatures:whip", 0.5F, 0.4F / (rand.nextFloat() * 0.4F + 0.8F));
-                itemstack.applyDamage(1, entityplayer);
+                world.playSound(entityplayer, "mocreatures:whip", 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+                itemstack.damage(1, entityplayer);
                 return true;
             }
         }
         return false;
     }
 
-    public void whipFX(Level world, int i, int j, int k)
+    public void whipFX(World world, int i, int j, int k)
     {
         double d = (float)i + 0.5F;
         double d1 = (float)j + 1.0F;

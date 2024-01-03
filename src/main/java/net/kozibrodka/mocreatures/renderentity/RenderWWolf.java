@@ -2,16 +2,16 @@ package net.kozibrodka.mocreatures.renderentity;
 
 import net.kozibrodka.mocreatures.entity.EntityWWolf;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
-import net.minecraft.client.render.entity.model.EntityModelBase;
-import net.minecraft.entity.Living;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.entity.LivingEntity;
 
 public class RenderWWolf extends LivingEntityRenderer
 {
 
-    public RenderWWolf(EntityModelBase modelbase, EntityModelBase modelbase1, float f)
+    public RenderWWolf(EntityModel modelbase, EntityModel modelbase1, float f)
     {
         super(modelbase, f);
-        setModel(modelbase1);
+        method_815(modelbase1);
     }
 
     protected boolean a(EntityWWolf entitywwolf, int i)
@@ -20,7 +20,7 @@ public class RenderWWolf extends LivingEntityRenderer
         return i == 0 && !entitywwolf.wolfboolean;
     }
 
-    protected boolean render(Living entityliving, int i, float f)
+    protected boolean method_825(LivingEntity entityliving, int i, float f)
     {
         return a((EntityWWolf)entityliving, i);
     }

@@ -5,79 +5,79 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.Item;
-import net.minecraft.entity.Living;
-import net.minecraft.entity.animal.Cow;
-import net.minecraft.entity.animal.Wolf;
-import net.minecraft.entity.monster.MonsterBase;
-import net.minecraft.entity.monster.MonsterEntityType;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemBase;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
-import net.minecraft.util.maths.MathHelper;
+import net.minecraft.class_65;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.MonsterEntity;
+import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.entity.passive.WolfEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 
 
-public class EntityWWolf extends MonsterBase
-    implements MonsterEntityType, MobSpawnDataProvider
+public class EntityWWolf extends MonsterEntity
+    implements class_65, MobSpawnDataProvider
 {
 
-    public EntityWWolf(Level world)
+    public EntityWWolf(World world)
     {
         super(world);
         wolfboolean = false;
         texture = "/assets/mocreatures/stationapi/textures/mob/wolfa.png";
-        setSize(0.9F, 1.3F);
-        attackDamage = 1;
+        setBoundingBoxSpacing(0.9F, 1.3F);
+        field_547 = 1;
     }
 
-    public void updateDespawnCounter()
+    public void method_937()
     {
-        if(level.difficulty == 1)
+        if(world.field_213 == 1)
         {
-            attackDamage = 3;
+            field_547 = 3;
         } else
-        if(level.difficulty > 1)
+        if(world.field_213 > 1)
         {
-            attackDamage = 5;
+            field_547 = 5;
         }
-        super.updateDespawnCounter();
+        super.method_937();
     }
 
-    public int getLimitPerChunk()
+    public int method_916()
     {
         return 6;
     }
 
-    protected void tickHandSwing(){
-        if(this.entity instanceof PlayerBase){
-            PlayerBase uciekinier = level.getClosestPlayerTo(this, 16D);
-            if(uciekinier == null && entity.isAlive()){
-                if(rand.nextInt(30) == 0)
+    protected void method_910(){
+        if(this.target instanceof PlayerEntity){
+            PlayerEntity uciekinier = world.method_186(this, 16D);
+            if(uciekinier == null && target.isAlive()){
+                if(random.nextInt(30) == 0)
                 {
-                    entity = null;
+                    target = null;
                 }
             }
         }
-        super.tickHandSwing();
+        super.method_910();
     }
 
-    protected EntityBase getAttackTarget()
+    protected Entity method_638()
     {
-        float f = getBrightnessAtEyes(1.0F);
+        float f = method_1394(1.0F);
         if(f < 0.5F)
         {
             double d = 16D;
-            return level.getClosestPlayerTo(this, d);
+            return world.method_186(this, d);
         }
-        if(rand.nextInt(80) == 0)
+        if(random.nextInt(80) == 0)
         {
-            Living entityliving = getClosestTarget(this, 10D);
+            LivingEntity entityliving = getClosestTarget(this, 10D);
             return entityliving;
         } else
         {
@@ -85,101 +85,101 @@ public class EntityWWolf extends MonsterBase
         }
     }
 
-    public Living getClosestTarget(EntityBase entity, double d)
+    public LivingEntity getClosestTarget(Entity entity, double d)
     {
         double d1 = -1D;
-        Living entityliving = null;
-        List list = level.getEntities(this, boundingBox.expand(d, d, d));
+        LivingEntity entityliving = null;
+        List list = world.getEntities(this, boundingBox.expand(d, d, d));
         for(int i = 0; i < list.size(); i++)
         {
-            EntityBase entity1 = (EntityBase)list.get(i);
-            if(!(entity1 instanceof Living) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof PlayerBase) || (entity1 instanceof MonsterBase) || (entity1 instanceof EntityBigCat) || (entity1 instanceof EntityBear) || (entity1 instanceof Cow) || (entity1 instanceof Wolf) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses)
+            Entity entity1 = (Entity)list.get(i);
+            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.field_1594 || entity1 == entity.field_1595 || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityBigCat) || (entity1 instanceof EntityBear) || (entity1 instanceof CowEntity) || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses)
             {
                 continue;
             }
-            double d2 = entity1.squaredDistanceTo(entity.x, entity.y, entity.z);
-            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((Living)entity1).method_928(entity))
+            double d2 = entity1.method_1347(entity.x, entity.y, entity.z);
+            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).method_928(entity))
             {
                 d1 = d2;
-                entityliving = (Living)entity1;
+                entityliving = (LivingEntity)entity1;
             }
         }
 
         return entityliving;
     }
 
-    protected void tryAttack(EntityBase entity, float f)
+    protected void method_637(Entity entity, float f)
     {
         if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
         {
-            attackTime = 20;
-            entity.damage(this, attackDamage);
-            if(!(entity instanceof PlayerBase))
+            field_1042 = 20;
+            entity.damage(this, field_547);
+            if(!(entity instanceof PlayerEntity))
             {
                 destroyDrops(this, 3D);
             }
         }
     }
 
-    public void writeCustomDataToTag(CompoundTag nbttagcompound)
+    public void writeNbt(NbtCompound nbttagcompound)
     {
-        super.writeCustomDataToTag(nbttagcompound);
-        nbttagcompound.put("WolfBoolean", wolfboolean);
+        super.writeNbt(nbttagcompound);
+        nbttagcompound.putBoolean("WolfBoolean", wolfboolean);
     }
 
-    public void readCustomDataFromTag(CompoundTag nbttagcompound)
+    public void readNbt(NbtCompound nbttagcompound)
     {
-        super.readCustomDataFromTag(nbttagcompound);
+        super.readNbt(nbttagcompound);
         wolfboolean = nbttagcompound.getBoolean("WolfBoolean");
     }
 
-    protected String getAmbientSound()
+    protected String method_911()
     {
         return "mocreatures:wolfgrunt";
     }
 
-    protected String getHurtSound()
+    protected String method_912()
     {
         return "mocreatures:wolfhurt";
     }
 
-    protected String getDeathSound()
+    protected String method_913()
     {
         return "mocreatures:wolfdeath";
     }
 
-    protected int getMobDrops()
+    protected int method_914()
     {
-        return ItemBase.leather.id;
+        return Item.LEATHER.id;
     }
 
-    public void destroyDrops(EntityBase entity, double d)
+    public void destroyDrops(Entity entity, double d)
     {
-        List list = level.getEntities(entity, entity.boundingBox.expand(d, d, d));
+        List list = world.getEntities(entity, entity.boundingBox.expand(d, d, d));
         for(int i = 0; i < list.size(); i++)
         {
-            EntityBase entity1 = (EntityBase)list.get(i);
-            if(!(entity1 instanceof Item))
+            Entity entity1 = (Entity)list.get(i);
+            if(!(entity1 instanceof ItemEntity))
             {
                 continue;
             }
-            Item entityitem = (Item)entity1;
-            if(entityitem != null && entityitem.age < 50 && mocr.mocreaturesGlass.huntercreatures.destroyitems)
+            ItemEntity entityitem = (ItemEntity)entity1;
+            if(entityitem != null && entityitem.itemAge < 50 && mocr.mocreaturesGlass.huntercreatures.destroyitems)
             {
-                entityitem.remove();
+                entityitem.markDead();
             }
         }
 
     }
 
-    public void remove()
+    public void markDead()
     {
-        super.remove();
+        super.markDead();
     }
 
     public boolean canSpawn()
     {
-        return level.isAboveGroundCached(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && mocr.mocreaturesGlass.hostilemobs.wwolffreq > 0 && super.canSpawn();
+        return world.method_249(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && mocr.mocreaturesGlass.hostilemobs.wwolffreq > 0 && super.canSpawn();
     }
 
     mod_mocreatures mocr = new mod_mocreatures();

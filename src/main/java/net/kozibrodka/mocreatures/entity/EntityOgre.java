@@ -6,92 +6,92 @@ package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.Destroyer;
-import net.minecraft.block.BlockBase;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.monster.MonsterBase;
-import net.minecraft.entity.monster.MonsterEntityType;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemInstance;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
+import net.minecraft.block.Block;
+import net.minecraft.class_65;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.mob.MonsterEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
-public class EntityOgre extends MonsterBase
-    implements MonsterEntityType, MobSpawnDataProvider
+public class EntityOgre extends MonsterEntity
+    implements class_65, MobSpawnDataProvider
 {
 
-    public EntityOgre(Level world)
+    public EntityOgre(World world)
     {
         super(world);
-        attackDamage = 3;
+        field_547 = 3;
         attackRange = mocr.mocreaturesGlass.hostilemobs.ogrerange;
         ogreboolean = false;
         texture = "/assets/mocreatures/stationapi/textures/mob/ogre.png";
-        setSize(1.5F, 4F);
+        setBoundingBoxSpacing(1.5F, 4F);
         health = 35;
         bogrefire = false;
         ogreattack = false;
         ogrehasenemy = false;
         destroyForce = mocr.mocreaturesGlass.hostilemobs.ogreStrength;
-        immuneToFire = false;
+        fireImmune = false;
         frequencyA = 30;
     }
 
-    public void writeCustomDataToTag(CompoundTag nbttagcompound)
+    public void writeNbt(NbtCompound nbttagcompound)
     {
-        super.writeCustomDataToTag(nbttagcompound);
-        nbttagcompound.put("OgreBoolean", ogreboolean);
-        nbttagcompound.put("OgreAttack", ogreattack);
+        super.writeNbt(nbttagcompound);
+        nbttagcompound.putBoolean("OgreBoolean", ogreboolean);
+        nbttagcompound.putBoolean("OgreAttack", ogreattack);
     }
 
-    public void readCustomDataFromTag(CompoundTag nbttagcompound)
+    public void readNbt(NbtCompound nbttagcompound)
     {
-        super.readCustomDataFromTag(nbttagcompound);
+        super.readNbt(nbttagcompound);
         ogreboolean = nbttagcompound.getBoolean("OgreBoolean");
         ogreattack = nbttagcompound.getBoolean("OgreAttack");
     }
 
-    protected String getAmbientSound()
+    protected String method_911()
     {
         return "mocreatures:ogre";
     }
 
-    protected String getHurtSound()
+    protected String method_912()
     {
         return "mocreatures:ogrehurt";
     }
 
-    protected String getDeathSound()
+    protected String method_913()
     {
         return "mocreatures:ogredying";
     }
 
-    protected int getMobDrops()
+    protected int method_914()
     {
-        return BlockBase.OBSIDIAN.id;
+        return Block.OBSIDIAN.id;
     }
 
-    protected void tickHandSwing(){
-        if(this.entity instanceof PlayerBase){
-            PlayerBase uciekinier = level.getClosestPlayerTo(this, 16D);
-            if(uciekinier == null && entity.isAlive()){
-                if(rand.nextInt(30) == 0)
+    protected void method_910(){
+        if(this.target instanceof PlayerEntity){
+            PlayerEntity uciekinier = world.method_186(this, 16D);
+            if(uciekinier == null && target.isAlive()){
+                if(random.nextInt(30) == 0)
                 {
-                    entity = null;
+                    target = null;
                 }
             }
         }
-        super.tickHandSwing();
+        super.method_910();
     }
 
-    protected EntityBase getAttackTarget()
+    protected Entity method_638()
     {
-        float f = getBrightnessAtEyes(1.0F);
+        float f = method_1394(1.0F);
         if(f < 0.5F)
         {
-            PlayerBase entityplayer = level.getClosestPlayerTo(this, attackRange);
-            if(entityplayer != null && level.difficulty > 0)
+            PlayerEntity entityplayer = world.method_186(this, attackRange);
+            if(entityplayer != null && world.field_213 > 0)
             {
                 ogrehasenemy = true;
                 return entityplayer;
@@ -101,17 +101,17 @@ public class EntityOgre extends MonsterBase
         return null;
     }
 
-    public boolean damage(EntityBase entityBase, int i)
+    public boolean damage(Entity entityBase, int i)
     {
         if(super.damage(entityBase, i))
         {
-            if(passenger == entityBase || vehicle == entityBase)
+            if(field_1594 == entityBase || field_1595 == entityBase)
             {
                 return true;
             }
-            if(entityBase != this && level.difficulty > 0)
+            if(entityBase != this && world.field_213 > 0)
             {
-                entity = entityBase;
+                target = entityBase;
                 ogrehasenemy = true;
             }
             return true;
@@ -121,44 +121,44 @@ public class EntityOgre extends MonsterBase
         }
     }
 
-    public void updateDespawnCounter()
+    public void method_937()
     {
         destroyForce = mocr.mocreaturesGlass.hostilemobs.ogreStrength;
         attackRange = mocr.mocreaturesGlass.hostilemobs.ogrerange;
-        if(ogrehasenemy && rand.nextInt(frequencyA) == 0)
+        if(ogrehasenemy && random.nextInt(frequencyA) == 0)
         {
             ogreattack = true;
-            attackTime = 15;
+            field_1042 = 15;
         }
-        super.updateDespawnCounter();
+        super.method_937();
     }
 
     public void onLivingUpdate2()
     {
-        super.updateDespawnCounter();
+        super.method_937();
     }
 
-    protected void tryAttack(EntityBase entity, float f)
+    protected void method_637(Entity entity, float f)
     {
-        if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY && level.difficulty > 0)
+        if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY && world.field_213 > 0)
         {
-            entity.damage(this, attackDamage);
+            entity.damage(this, field_547);
         }
     }
 
     public void DestroyingOgre()
     {
-        Destroyer.DestroyBlast(level, this, x, y + 1.0D, z, destroyForce, bogrefire, mocr.mocreaturesGlass.hostilemobs.igniteogre, mocr.mocreaturesGlass.hostilemobs.explodeogre, mocr.mocreaturesGlass.hostilemobs.explodecaveogre, mocr.mocreaturesGlass.hostilemobs.explodefireogre);
+        Destroyer.DestroyBlast(world, this, x, y + 1.0D, z, destroyForce, bogrefire, mocr.mocreaturesGlass.hostilemobs.igniteogre, mocr.mocreaturesGlass.hostilemobs.explodeogre, mocr.mocreaturesGlass.hostilemobs.explodecaveogre, mocr.mocreaturesGlass.hostilemobs.explodefireogre);
     }
 
-    public void remove()
+    public void markDead()
     {
-        super.remove();
+        super.markDead();
     }
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.hostilemobs.ogrefreq > 0 && level.difficulty >= mocr.mocreaturesGlass.hostilemobs.ogreSpawnDifficulty + 1 && super.canSpawn();
+        return mocr.mocreaturesGlass.hostilemobs.ogrefreq > 0 && world.field_213 >= mocr.mocreaturesGlass.hostilemobs.ogreSpawnDifficulty + 1 && super.canSpawn();
     }
 
     public boolean d2()
@@ -166,17 +166,17 @@ public class EntityOgre extends MonsterBase
         return super.canSpawn();
     }
 
-    public int getLimitPerChunk()
+    public int method_916()
     {
         return 3;
     }
 
-    protected void getDrops()
+    protected void method_933()
     {
-        int i = rand.nextInt(3) + 1;
+        int i = random.nextInt(3) + 1;
         for(int j = 0; j < i; j++)
         {
-            dropItem(new ItemInstance(getMobDrops(), 1, 0), 0.0F);
+            method_1327(new ItemStack(method_914(), 1, 0), 0.0F);
         }
 
     }

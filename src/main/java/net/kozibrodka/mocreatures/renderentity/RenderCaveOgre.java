@@ -2,15 +2,15 @@ package net.kozibrodka.mocreatures.renderentity;
 
 import net.kozibrodka.mocreatures.entity.EntityOgre;
 import net.kozibrodka.mocreatures.modelentity.ModelOgre2;
-import net.minecraft.client.render.entity.model.EntityModelBase;
+import net.minecraft.client.render.entity.model.EntityModel;
 
 public class RenderCaveOgre extends RenderOgre
 {
 
-    public RenderCaveOgre(ModelOgre2 modelogre2, EntityModelBase modelbase, float f)
+    public RenderCaveOgre(ModelOgre2 modelogre2, EntityModel modelbase, float f)
     {
         super(modelogre2, modelbase, f);
-        setModel(modelbase);
+        method_815(modelbase);
         tempOgre = modelogre2;
     }
 

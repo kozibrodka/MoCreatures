@@ -1,15 +1,15 @@
 package net.kozibrodka.mocreatures.mixin;
 
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.WalkingBase;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.mob.MobEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(WalkingBase.class)
+@Mixin(MobEntity.class)
 public interface WalkingBaseAccesor {
     @Accessor
-    EntityBase getEntity();
+    Entity getTarget();
 
     @Accessor
-    void setEntity(EntityBase entity);
+    void setTarget(Entity entity);
 }

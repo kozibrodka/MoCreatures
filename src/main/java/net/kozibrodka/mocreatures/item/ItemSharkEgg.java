@@ -5,9 +5,9 @@
 package net.kozibrodka.mocreatures.item;
 
 import net.kozibrodka.mocreatures.entity.EntitySharkEgg;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemInstance;
-import net.minecraft.level.Level;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.template.item.TemplateItem;
@@ -18,20 +18,20 @@ public class ItemSharkEgg extends TemplateItem
     public ItemSharkEgg(Identifier i)
     {
         super(i);
-        maxStackSize = 16;
+        maxCount = 16;
     }
 
-    public ItemInstance use(ItemInstance itemstack, Level world, PlayerBase entityplayer)
+    public ItemStack use(ItemStack itemstack, World world, PlayerEntity entityplayer)
     {
         itemstack.count--;
-        if(!world.isServerSide)
+        if(!world.isRemote)
         {
             EntitySharkEgg entitysharkegg = new EntitySharkEgg(world, entityplayer.name);
-            entitysharkegg.setPosition(entityplayer.x, entityplayer.y, entityplayer.z);
-            world.spawnEntity(entitysharkegg);
-            entitysharkegg.velocityY += world.rand.nextFloat() * 0.05F;
-            entitysharkegg.velocityX += (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F;
-            entitysharkegg.velocityZ += (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F;
+            entitysharkegg.method_1340(entityplayer.x, entityplayer.y, entityplayer.z);
+            world.method_210(entitysharkegg);
+            entitysharkegg.velocityY += world.field_214.nextFloat() * 0.05F;
+            entitysharkegg.velocityX += (world.field_214.nextFloat() - world.field_214.nextFloat()) * 0.3F;
+            entitysharkegg.velocityZ += (world.field_214.nextFloat() - world.field_214.nextFloat()) * 0.3F;
         }
         return itemstack;
     }

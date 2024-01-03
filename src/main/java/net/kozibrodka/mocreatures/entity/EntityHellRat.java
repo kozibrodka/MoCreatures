@@ -2,21 +2,21 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.minecraft.item.ItemBase;
-import net.minecraft.level.Level;
+import net.minecraft.item.Item;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 public class EntityHellRat extends EntityRat implements MobSpawnDataProvider
 {
 
-    public EntityHellRat(Level world)
+    public EntityHellRat(World world)
     {
         super(world);
         texture = "/assets/mocreatures/stationapi/textures/mob/hellrat.png";
-        setSize(0.7F, 0.7F);
+        setBoundingBoxSpacing(0.7F, 0.7F);
         health = 20;
-        attackDamage = 2;
-        immuneToFire = true;
+        field_547 = 2;
+        fireImmune = true;
     }
 
     public void chooseType()
@@ -24,9 +24,9 @@ public class EntityHellRat extends EntityRat implements MobSpawnDataProvider
         texture = "/assets/mocreatures/stationapi/textures/mob/hellrat.png";
     }
 
-    protected int getMobDrops()
+    protected int method_914()
     {
-        return ItemBase.redstoneDust.id;
+        return Item.REDSTONE.id;
     }
 
     public boolean canSpawn()

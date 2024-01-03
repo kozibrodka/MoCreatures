@@ -5,9 +5,9 @@
 package net.kozibrodka.mocreatures.item;
 
 import net.kozibrodka.mocreatures.entity.EntityFishyEgg;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemInstance;
-import net.minecraft.level.Level;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.template.item.TemplateItem;
 
@@ -17,20 +17,20 @@ public class ItemFishyEgg extends TemplateItem
     public ItemFishyEgg(Identifier i)
     {
         super(i);
-        maxStackSize = 16;
+        maxCount = 16;
     }
 
-    public ItemInstance use(ItemInstance itemstack, Level world, PlayerBase entityplayer)
+    public ItemStack use(ItemStack itemstack, World world, PlayerEntity entityplayer)
     {
         itemstack.count--;
-        if(!world.isServerSide)
+        if(!world.isRemote)
         {
             EntityFishyEgg entityfishyegg = new EntityFishyEgg(world);
-            entityfishyegg.setPosition(entityplayer.x, entityplayer.y, entityplayer.z);
-            world.spawnEntity(entityfishyegg);
-            entityfishyegg.velocityY += world.rand.nextFloat() * 0.05F;
-            entityfishyegg.velocityX += (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F;
-            entityfishyegg.velocityZ += (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F;
+            entityfishyegg.method_1340(entityplayer.x, entityplayer.y, entityplayer.z);
+            world.method_210(entityfishyegg);
+            entityfishyegg.velocityY += world.field_214.nextFloat() * 0.05F;
+            entityfishyegg.velocityX += (world.field_214.nextFloat() - world.field_214.nextFloat()) * 0.3F;
+            entityfishyegg.velocityZ += (world.field_214.nextFloat() - world.field_214.nextFloat()) * 0.3F;
         }
         return itemstack;
     }

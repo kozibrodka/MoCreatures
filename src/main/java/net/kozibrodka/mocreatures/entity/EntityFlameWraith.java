@@ -5,94 +5,94 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.monster.MonsterEntityType;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemBase;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
-import net.minecraft.util.maths.MathHelper;
+import net.minecraft.class_65;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 import net.modificationstation.stationapi.api.util.Identifier;
 
 public class EntityFlameWraith extends EntityWraith
-    implements MonsterEntityType, MobSpawnDataProvider
+    implements class_65, MobSpawnDataProvider
 {
 
-    public EntityFlameWraith(Level world)
+    public EntityFlameWraith(World world)
     {
         super(world);
         texture = "/assets/mocreatures/stationapi/textures/mob/flamewraith.png";
-        setSize(1.5F, 1.5F);
-        immuneToFire = true;
+        setBoundingBoxSpacing(1.5F, 1.5F);
+        fireImmune = true;
         burningTime = 30;
         health = 15;
         movementSpeed = 1.1F;
     }
 
-    protected int getMobDrops()
+    protected int method_914()
     {
-        return ItemBase.redstoneDust.id;
+        return Item.REDSTONE.id;
     }
 
-    public void updateDespawnCounter()
+    public void method_937()
     {
-        if(rand.nextInt(40) == 0)
+        if(random.nextInt(40) == 0)
         {
             fire = 2;
         }
-        if(level.isDaylight())
+        if(world.method_220())
         {
-            float f = getBrightnessAtEyes(1.0F);
-            if(f > 0.5F && level.isAboveGroundCached(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && rand.nextFloat() * 30F < (f - 0.4F) * 2.0F)
+            float f = method_1394(1.0F);
+            if(f > 0.5F && world.method_249(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && random.nextFloat() * 30F < (f - 0.4F) * 2.0F)
             {
                 health -= 2;
             }
         }
-        super.updateDespawnCounter();
+        super.method_937();
     }
 
-    protected void tryAttack(EntityBase entity, float f)
+    protected void method_637(Entity entity, float f)
     {
         if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
         {
-            attackTime = 20;
+            field_1042 = 20;
             entity.damage(this, 2);
             entity.fire = burningTime;
         }
     }
 
-    protected void tickHandSwing(){
-        if(this.entity instanceof PlayerBase){
-            PlayerBase uciekinier = level.getClosestPlayerTo(this, 20D);
-            if(uciekinier == null && entity.isAlive()){
-                if(rand.nextInt(30) == 0)
+    protected void method_910(){
+        if(this.target instanceof PlayerEntity){
+            PlayerEntity uciekinier = world.method_186(this, 20D);
+            if(uciekinier == null && target.isAlive()){
+                if(random.nextInt(30) == 0)
                 {
-                    entity = null;
+                    target = null;
                 }
             }
         }
-        super.tickHandSwing();
+        super.method_910();
     }
 
-    public void remove()
+    public void markDead()
     {
-        super.remove();
+        super.markDead();
     }
 
-    public void writeCustomDataToTag(CompoundTag nbttagcompound)
+    public void writeNbt(NbtCompound nbttagcompound)
     {
-        super.writeCustomDataToTag(nbttagcompound);
+        super.writeNbt(nbttagcompound);
     }
 
-    public void readCustomDataFromTag(CompoundTag nbttagcompound)
+    public void readNbt(NbtCompound nbttagcompound)
     {
-        super.readCustomDataFromTag(nbttagcompound);
+        super.readNbt(nbttagcompound);
     }
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.hostilemobs.fwraithfreq > 0 && level.difficulty >= mocr.mocreaturesGlass.hostilemobs.fwraithSpawnDifficulty + 1 && super.d2();
+        return mocr.mocreaturesGlass.hostilemobs.fwraithfreq > 0 && world.field_213 >= mocr.mocreaturesGlass.hostilemobs.fwraithSpawnDifficulty + 1 && super.d2();
     }
 
     mod_mocreatures mocr = new mod_mocreatures();

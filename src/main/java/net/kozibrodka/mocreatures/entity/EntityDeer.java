@@ -5,15 +5,15 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.minecraft.block.BlockBase;
+import net.minecraft.block.Block;
 import net.minecraft.class_61;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.Living;
-import net.minecraft.entity.animal.AnimalBase;
-import net.minecraft.item.ItemBase;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
-import net.minecraft.util.maths.MathHelper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.item.Item;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 //import net.modificationstation.stationapi.api.packet.Message;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.HasTrackingParameters;
@@ -23,15 +23,15 @@ import java.util.Arrays;
 import java.util.List;
 
 @HasTrackingParameters(trackingDistance = 160, updatePeriod = 2)
-public class EntityDeer extends AnimalBase implements MobSpawnDataProvider
+public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider
 {
 
-    public EntityDeer(Level world)
+    public EntityDeer(World world)
     {
         super(world);
         texture = "/assets/mocreatures/stationapi/textures/mob/deer.png";
         setAge(0.75F);
-        setSize(0.9F, 1.3F);
+        setBoundingBoxSpacing(0.9F, 1.3F);
         health = 10;
         setType(getRandomRace());
         movementSpeed = 1.7F;
@@ -39,9 +39,9 @@ public class EntityDeer extends AnimalBase implements MobSpawnDataProvider
 
     protected void initDataTracker() {
         super.initDataTracker();
-        dataTracker.startTracking(16, (byte) 0); //Type
-        dataTracker.startTracking(17, (byte) 0); //Age
-        dataTracker.startTracking(18, (byte) 0); //Adult
+        dataTracker.method_1502(16, (byte) 0); //Type
+        dataTracker.method_1502(17, (byte) 0); //Age
+        dataTracker.method_1502(18, (byte) 0); //Adult
     }
 
     public void chooseType(int type)
@@ -87,27 +87,27 @@ public class EntityDeer extends AnimalBase implements MobSpawnDataProvider
         movementSpeed = f;
     }
 
-    protected void handleFallDamage(float f)
+    protected void method_1389(float f)
     {
     }
 
-    public void updateDespawnCounter()
+    public void method_937()
     {
-        super.updateDespawnCounter();
-        if(getType() == 3 && !getAdult() && rand.nextInt(250) == 0)
+        super.method_937();
+        if(getType() == 3 && !getAdult() && random.nextInt(250) == 0)
         {
             setAge(getAge()+0.01F);
             if(getAge() >= 1.3F)
             {
                 setAdult(true);
-                this.dataTracker.setInt(16, (byte)(0));
+                this.dataTracker.method_1509(16, (byte)(0));
                 setType(getRandomRace());
 //                System.out.println("DORASTAM");;
             }
         }
-        if(rand.nextInt(5) == 0)
+        if(random.nextInt(5) == 0)
         {
-            Living entityliving = getBoogey(10D);
+            LivingEntity entityliving = getBoogey(10D);
             if(entityliving != null)
             {
                 setMySpeed(true, getType());
@@ -117,7 +117,7 @@ public class EntityDeer extends AnimalBase implements MobSpawnDataProvider
                 setMySpeed(false, getType());
             }
         }
-        if(level.isServerSide){
+        if(world.isRemote){
 //            System.out.println("HEJO " + this.y + " client: " + (double)this.clientY/32);
 //            this.y = (double)this.clientY/32;
         }else{
@@ -125,29 +125,29 @@ public class EntityDeer extends AnimalBase implements MobSpawnDataProvider
         }
     }
 
-    public Living getBoogey(double d)
+    public LivingEntity getBoogey(double d)
     {
         double d1 = -1D;
-        Living entityliving = null;
-        List list = level.getEntities(this, boundingBox.expand(d, 4D, d));
+        LivingEntity entityliving = null;
+        List list = world.getEntities(this, boundingBox.expand(d, 4D, d));
         for(int i = 0; i < list.size(); i++)
         {
-            EntityBase entity = (EntityBase)list.get(i);
-            if((entity instanceof Living) && !(entity instanceof EntityDeer) && ((double)entity.width >= 0.5D || (double)entity.height >= 0.5D))
+            Entity entity = (Entity)list.get(i);
+            if((entity instanceof LivingEntity) && !(entity instanceof EntityDeer) && ((double)entity.spacingXZ >= 0.5D || (double)entity.spacingY >= 0.5D))
             {
-                entityliving = (Living)entity;
+                entityliving = (LivingEntity)entity;
             }
         }
 
         return entityliving;
     }
 
-    public void runLikeHell(EntityBase entity)
+    public void runLikeHell(Entity entity)
     {
         double d = x - entity.x;
         double d1 = z - entity.z;
         double d2 = Math.atan2(d, d1);
-        d2 += (double)(rand.nextFloat() - rand.nextFloat()) * 0.75D;
+        d2 += (double)(random.nextFloat() - random.nextFloat()) * 0.75D;
         double d3 = x + Math.sin(d2) * 8D;
         double d4 = z + Math.cos(d2) * 8D;
         int i = MathHelper.floor(d3);
@@ -160,45 +160,45 @@ public class EntityDeer extends AnimalBase implements MobSpawnDataProvider
             {
                 break;
             }
-            int i1 = (i + rand.nextInt(4)) - rand.nextInt(4);
-            int j1 = (j + rand.nextInt(3)) - rand.nextInt(3);
-            int k1 = (k + rand.nextInt(4)) - rand.nextInt(4);
-            if(j1 > 4 && (level.getTileId(i1, j1, k1) == 0 || level.getTileId(i1, j1, k1) == BlockBase.SNOW.id) && level.getTileId(i1, j1 - 1, k1) != 0)
+            int i1 = (i + random.nextInt(4)) - random.nextInt(4);
+            int j1 = (j + random.nextInt(3)) - random.nextInt(3);
+            int k1 = (k + random.nextInt(4)) - random.nextInt(4);
+            if(j1 > 4 && (world.getBlockId(i1, j1, k1) == 0 || world.getBlockId(i1, j1, k1) == Block.SNOW.id) && world.getBlockId(i1, j1 - 1, k1) != 0)
             {
-                class_61 pathentity = level.method_189(this, i1, j1, k1, 16F);
-                setTarget(pathentity);
+                class_61 pathentity = world.method_189(this, i1, j1, k1, 16F);
+                method_635(pathentity);
                 break;
             }
             l++;
         } while(true);
     }
 
-    protected void tickHandSwing()
+    protected void method_910()
     {
-        if(movementSpeed > 2.0F && onGround && rand.nextInt(30) == 0 && (velocityX > 0.10000000000000001D || velocityZ > 0.10000000000000001D || velocityX < -0.10000000000000001D || velocityZ < -0.10000000000000001D))
+        if(movementSpeed > 2.0F && field_1623 && random.nextInt(30) == 0 && (velocityX > 0.10000000000000001D || velocityZ > 0.10000000000000001D || velocityX < -0.10000000000000001D || velocityZ < -0.10000000000000001D))
         {
             velocityY = 0.59999999999999998D;
         }
-        super.tickHandSwing();
+        super.method_910();
     }
 
-    public void writeCustomDataToTag(CompoundTag nbttagcompound)
+    public void writeNbt(NbtCompound nbttagcompound)
     {
-        super.writeCustomDataToTag(nbttagcompound);
-        nbttagcompound.put("TypeInt", getType());
-        nbttagcompound.put("Adult", getAdult());
-        nbttagcompound.put("Edad", getAge());
+        super.writeNbt(nbttagcompound);
+        nbttagcompound.putInt("TypeInt", getType());
+        nbttagcompound.putBoolean("Adult", getAdult());
+        nbttagcompound.putFloat("Edad", getAge());
     }
 
-    public void readCustomDataFromTag(CompoundTag nbttagcompound)
+    public void readNbt(NbtCompound nbttagcompound)
     {
-        super.readCustomDataFromTag(nbttagcompound);
+        super.readNbt(nbttagcompound);
         setAdult(nbttagcompound.getBoolean("Adult"));
         setType(nbttagcompound.getInt("TypeInt"));
         setAge(nbttagcompound.getFloat("Edad"));
     }
 
-    protected String getAmbientSound()
+    protected String method_911()
     {
         if(!getAdult())
         {
@@ -209,19 +209,19 @@ public class EntityDeer extends AnimalBase implements MobSpawnDataProvider
         }
     }
 
-    protected String getHurtSound()
+    protected String method_912()
     {
         return "mocreatures:deerhurt";
     }
 
-    protected String getDeathSound()
+    protected String method_913()
     {
         return "mocreatures:deerdying";
     }
 
-    protected int getMobDrops()
+    protected int method_914()
     {
-        return ItemBase.rawPorkchop.id;
+        return Item.RAW_PORKCHOP.id;
     }
 
     public float dajszybkosc(){
@@ -232,7 +232,7 @@ public class EntityDeer extends AnimalBase implements MobSpawnDataProvider
 
     public int getRandomRace()
     {
-        int i = rand.nextInt(100);
+        int i = random.nextInt(100);
         if(i <= 20)
         {
             return 1;
@@ -249,9 +249,9 @@ public class EntityDeer extends AnimalBase implements MobSpawnDataProvider
     //TYPE
     public void setType(int type)
     {
-        final byte by = this.dataTracker.getByte(16);
+        final byte by = this.dataTracker.method_1501(16);
 //        System.out.println("TEST DATA first: " + by);
-        this.dataTracker.setInt(16, (byte)(by & 0xF0 | type & 0xF));
+        this.dataTracker.method_1509(16, (byte)(by & 0xF0 | type & 0xF));
 
         chooseType(type);
         setMySpeed(false, type);
@@ -261,34 +261,34 @@ public class EntityDeer extends AnimalBase implements MobSpawnDataProvider
 
     public int getType()
     {
-        return dataTracker.getByte(16) & 0xF;
+        return dataTracker.method_1501(16) & 0xF;
     }
 
     //AGE
     public void setAge(float age)
     {
-        dataTracker.setInt(17, (byte) ((int) 100F * age));
+        dataTracker.method_1509(17, (byte) ((int) 100F * age));
     }
 
     public float getAge()
     {
-        return ((float) dataTracker.getByte(17)) / 100F;
+        return ((float) dataTracker.method_1501(17)) / 100F;
     }
 
     //ADULT
     public boolean getAdult()
     {
-        return (dataTracker.getByte(18) & 1) != 0;
+        return (dataTracker.method_1501(18) & 1) != 0;
     }
 
     public void setAdult(boolean flag)
     {
         if(flag)
         {
-            dataTracker.setInt(18, (byte) 1);
+            dataTracker.method_1509(18, (byte) 1);
         } else
         {
-            dataTracker.setInt(18, (byte) 0);
+            dataTracker.method_1509(18, (byte) 0);
         }
     }
 

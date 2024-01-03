@@ -7,12 +7,6 @@ import net.kozibrodka.mocreatures.entity.*;
 import net.kozibrodka.mocreatures.modelentity.*;
 import net.kozibrodka.mocreatures.renderentity.*;
 import net.mine_diver.unsafeevents.listener.EventListener;
-
-import net.minecraft.client.render.entity.BipedEntityRenderer;
-import net.minecraft.client.render.entity.ChickenRenderer;
-import net.minecraft.client.render.entity.PigRenderer;
-import net.minecraft.client.render.entity.model.Chicken;
-import net.minecraft.client.render.entity.model.Pig;
 import net.modificationstation.stationapi.api.client.event.render.entity.EntityRendererRegisterEvent;
 import net.modificationstation.stationapi.api.event.entity.EntityRegister;
 import net.modificationstation.stationapi.api.event.registry.MobHandlerRegistryEvent;

@@ -5,38 +5,38 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.Living;
-import net.minecraft.entity.monster.MonsterBase;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.entity.projectile.Arrow;
-import net.minecraft.item.ItemBase;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
-import net.minecraft.util.maths.Box;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.MonsterEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ArrowEntity;
+import net.minecraft.item.Item;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.Box;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.Iterator;
 import java.util.List;
 
-public class EntityRat extends MonsterBase implements MobSpawnDataProvider
+public class EntityRat extends MonsterEntity implements MobSpawnDataProvider
 {
 
-    public EntityRat(Level world)
+    public EntityRat(World world)
     {
         super(world);
         texture = "/assets/mocreatures/stationapi/textures/mob/blackrat.png";
-        setSize(0.5F, 0.5F);
+        setBoundingBoxSpacing(0.5F, 0.5F);
         health = 10;
-        attackDamage = 1;
+        field_547 = 1;
     }
 
     public void chooseType()
     {
         if(typeint == 0)
         {
-            int i = rand.nextInt(100);
+            int i = random.nextInt(100);
             if(i <= 65)
             {
                 typeint = 1;
@@ -67,21 +67,21 @@ public class EntityRat extends MonsterBase implements MobSpawnDataProvider
         typechosen = true;
     }
 
-    public boolean damage(EntityBase entityBase, int i)
+    public boolean damage(Entity entityBase, int i)
     {
         if(super.damage(entityBase, i))
         {
-            if(entityBase instanceof PlayerBase)
+            if(entityBase instanceof PlayerEntity)
             {
-                entity = entityBase;
+                target = entityBase;
             }
-            if((entityBase instanceof Arrow) && ((Arrow)entityBase).owner != null)
+            if((entityBase instanceof ArrowEntity) && ((ArrowEntity)entityBase).field_1576 != null)
             {
-                entityBase = ((Arrow)entityBase).owner;
+                entityBase = ((ArrowEntity)entityBase).field_1576;
             }
-            if(entityBase instanceof Living)
+            if(entityBase instanceof LivingEntity)
             {
-                List list = level.getEntities(EntityRat.class, Box.createButWasteMemory(x, y, z, x + 1.0D, y + 1.0D, z + 1.0D).expand(16D, 4D, 16D));
+                List list = world.method_175(EntityRat.class, Box.createCached(x, y, z, x + 1.0D, y + 1.0D, z + 1.0D).expand(16D, 4D, 16D));
                 Iterator iterator = list.iterator();
                 do
                 {
@@ -89,11 +89,11 @@ public class EntityRat extends MonsterBase implements MobSpawnDataProvider
                     {
                         break;
                     }
-                    EntityBase entity1 = (EntityBase)iterator.next();
+                    Entity entity1 = (Entity)iterator.next();
                     EntityRat entityrat = (EntityRat)entity1;
-                    if(entityrat != null && entityrat.entity == null)
+                    if(entityrat != null && entityrat.target == null)
                     {
-                        entityrat.entity = entityBase;
+                        entityrat.target = entityBase;
                     }
                 } while(true);
             }
@@ -104,59 +104,59 @@ public class EntityRat extends MonsterBase implements MobSpawnDataProvider
         }
     }
 
-    protected void tryAttack(EntityBase entityBase, float f)
+    protected void method_637(Entity entityBase, float f)
     {
-        float f1 = getBrightnessAtEyes(1.0F);
-        if(f1 > 0.5F && rand.nextInt(100) == 0)
+        float f1 = method_1394(1.0F);
+        if(f1 > 0.5F && random.nextInt(100) == 0)
         {
-            entity = null;
+            target = null;
             return;
         } else
         {
-            super.tryAttack(entityBase, f);
+            super.method_637(entityBase, f);
             return;
         }
     }
 
-    protected void tickHandSwing(){
-        if(this.entity instanceof PlayerBase){
-            PlayerBase uciekinier = level.getClosestPlayerTo(this, 16D);
-            if(uciekinier == null && entity.isAlive()){
-                if(rand.nextInt(30) == 0)
+    protected void method_910(){
+        if(this.target instanceof PlayerEntity){
+            PlayerEntity uciekinier = world.method_186(this, 16D);
+            if(uciekinier == null && target.isAlive()){
+                if(random.nextInt(30) == 0)
                 {
-                    entity = null;
+                    target = null;
                 }
             }
         }
-        super.tickHandSwing();
+        super.method_910();
     }
 
-    protected EntityBase getAttackTarget()
+    protected Entity method_638()
     {
-        float f = getBrightnessAtEyes(1.0F);
+        float f = method_1394(1.0F);
         if(f < 0.5F)
         {
-            return level.getClosestPlayerTo(this, 16D);
+            return world.method_186(this, 16D);
         } else
         {
             return null;
         }
     }
 
-    public int getLimitPerChunk()
+    public int method_916()
     {
         return 5;
     }
 
-    public void writeCustomDataToTag(CompoundTag nbttagcompound)
+    public void writeNbt(NbtCompound nbttagcompound)
     {
-        super.writeCustomDataToTag(nbttagcompound);
-        nbttagcompound.put("TypeInt", typeint);
+        super.writeNbt(nbttagcompound);
+        nbttagcompound.putInt("TypeInt", typeint);
     }
 
-    public void readCustomDataFromTag(CompoundTag nbttagcompound)
+    public void readNbt(NbtCompound nbttagcompound)
     {
-        super.readCustomDataFromTag(nbttagcompound);
+        super.readNbt(nbttagcompound);
         typeint = nbttagcompound.getInt("TypeInt");
     }
 
@@ -165,24 +165,24 @@ public class EntityRat extends MonsterBase implements MobSpawnDataProvider
         return mocr.mocreaturesGlass.hostilemobs.ratfreq > 0 && super.canSpawn();
     }
 
-    protected String getAmbientSound()
+    protected String method_911()
     {
         return "mocreatures:ratgrunt";
     }
 
-    protected String getHurtSound()
+    protected String method_912()
     {
         return "mocreatures:rathurt";
     }
 
-    protected String getDeathSound()
+    protected String method_913()
     {
         return "mocreatures:ratdying";
     }
 
-    protected int getMobDrops()
+    protected int method_914()
     {
-        return ItemBase.coal.id;
+        return Item.COAL.id;
     }
 
     public boolean method_932()
@@ -192,7 +192,7 @@ public class EntityRat extends MonsterBase implements MobSpawnDataProvider
 
     public boolean climbing()
     {
-        return !onGround && method_932();
+        return !field_1623 && method_932();
     }
 
     mod_mocreatures mocr = new mod_mocreatures();

@@ -5,9 +5,9 @@
 package net.kozibrodka.mocreatures.modelentity;
 
 
-import net.minecraft.client.render.entity.model.Biped;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
 
-public class ModelWereHuman extends Biped
+public class ModelWereHuman extends BipedEntityModel
 {
 
     public ModelWereHuman()

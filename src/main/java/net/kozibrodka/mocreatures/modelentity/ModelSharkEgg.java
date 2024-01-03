@@ -6,24 +6,24 @@ package net.kozibrodka.mocreatures.modelentity;
 
 
 
-import net.minecraft.client.model.Cuboid;
-import net.minecraft.client.render.entity.model.EntityModelBase;
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.entity.model.EntityModel;
 
-public class ModelSharkEgg extends EntityModelBase
+public class ModelSharkEgg extends EntityModel
 {
 
     public ModelSharkEgg()
     {
-        Egg = new Cuboid(0, 0);
-        Egg.method_1818(0.0F, 0.0F, 0.0F, 3, 1, 6, 0.0F);
-        Egg.setRotationPoint(-2F, 23F, -2F);
+        Egg = new ModelPart(0, 0);
+        Egg.addCuboid(0.0F, 0.0F, 0.0F, 3, 1, 6, 0.0F);
+        Egg.setPivot(-2F, 23F, -2F);
     }
 
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
         setAngles(f, f1, f2, f3, f4, f5);
-        Egg.method_1815(f5);
+        Egg.render(f5);
     }
 
-    public Cuboid Egg;
+    public ModelPart Egg;
 }

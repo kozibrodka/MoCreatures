@@ -4,11 +4,11 @@ import net.kozibrodka.mocreatures.entity.*;
 import net.kozibrodka.mocreatures.modelentity.*;
 import net.kozibrodka.mocreatures.renderentity.*;
 import net.mine_diver.unsafeevents.listener.EventListener;
-import net.minecraft.client.render.entity.BipedEntityRenderer;
-import net.minecraft.client.render.entity.ChickenRenderer;
-import net.minecraft.client.render.entity.PigRenderer;
-import net.minecraft.client.render.entity.model.Chicken;
-import net.minecraft.client.render.entity.model.Pig;
+import net.minecraft.client.render.entity.ChickenEntityRenderer;
+import net.minecraft.client.render.entity.PigEntityRenderer;
+import net.minecraft.client.render.entity.SkeletonEntityRenderer;
+import net.minecraft.client.render.entity.model.ChickenEntityModel;
+import net.minecraft.client.render.entity.model.PigEntityModel;
 import net.modificationstation.stationapi.api.client.event.render.entity.EntityRendererRegisterEvent;
 import net.modificationstation.stationapi.api.client.event.texture.TextureRegisterEvent;
 import net.modificationstation.stationapi.api.client.texture.atlas.Atlases;
@@ -47,7 +47,7 @@ public class TextureListener {
             mod_mocreatures.sharkfood.setTexture(Identifier.of(MOD_ID, "item/sharkfood"));
         }
 
-        if(EggListener.degubEgg) {
+        if(mod_mocreatures.mocreaturesGlass.balancesettings.spawn_eggs) {
             EggListener.egg1.setTexture(Identifier.of(MOD_ID, "item/egg/bear"));
             EggListener.egg2.setTexture(Identifier.of(MOD_ID, "item/egg/bigcat"));
             EggListener.egg3.setTexture(Identifier.of(MOD_ID, "item/egg/bird"));
@@ -81,15 +81,15 @@ public class TextureListener {
         event.renderers.put(EntityFireOgre.class, new RenderFireOgre(new ModelOgre2(), new ModelOgre1(), 1.5F));
         event.renderers.put(EntityCaveOgre.class, new RenderCaveOgre(new ModelOgre2(), new ModelOgre1(), 1.5F));
         event.renderers.put(EntityOgre.class, new RenderOgre(new ModelOgre2(), new ModelOgre1(), 1.5F));
-        event.renderers.put(EntityBoar.class, new PigRenderer(new Pig(), new Pig(0.5F), 0.7F));
+        event.renderers.put(EntityBoar.class, new PigEntityRenderer(new PigEntityModel(), new PigEntityModel(0.5F), 0.7F));
         event.renderers.put(EntityBear.class, new RenderBear(new ModelBear2(), new ModelBear1(), 0.7F));
-        event.renderers.put(EntityDuck.class, new ChickenRenderer(new Chicken(), 0.3F));
+        event.renderers.put(EntityDuck.class, new ChickenEntityRenderer(new ChickenEntityModel(), 0.3F));
         event.renderers.put(EntityBigCat.class, new RenderBigCat(new ModelBigCat2(), new ModelBigCat1(), 0.7F));
         event.renderers.put(EntityDeer.class, new RenderDeer(new ModelDeer(), 0.5F));
         event.renderers.put(EntityWWolf.class, new RenderWWolf(new ModelWolf2(), new ModelWolf1(), 0.7F));
         event.renderers.put(EntityPolarBear.class, new RenderPolarBear(new ModelBear2(), new ModelBear1(), 0.7F));
-        event.renderers.put(EntityWraith.class, new BipedEntityRenderer(new ModelWraith(), 0.5F));
-        event.renderers.put(EntityFlameWraith.class, new BipedEntityRenderer(new ModelWraith(), 0.5F));
+        event.renderers.put(EntityWraith.class, new SkeletonEntityRenderer(new ModelWraith(), 0.5F));
+        event.renderers.put(EntityFlameWraith.class, new SkeletonEntityRenderer(new ModelWraith(), 0.5F));
         event.renderers.put(EntityBunny.class, new RenderBunny(new ModelBunny(), 0.3F));
         event.renderers.put(EntityBird.class, new RenderBird(new ModelBird(), 0.3F));
         event.renderers.put(EntityFox.class, new RenderFox(new ModelFox()));

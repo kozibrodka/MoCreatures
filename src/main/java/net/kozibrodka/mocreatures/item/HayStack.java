@@ -14,6 +14,6 @@ public class HayStack extends TemplateItem
     public HayStack(Identifier i)
     {
         super(i);
-        maxStackSize = 16;
+        maxCount = 16;
     }
 }

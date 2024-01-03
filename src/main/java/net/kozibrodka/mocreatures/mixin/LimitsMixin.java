@@ -1,14 +1,14 @@
 package net.kozibrodka.mocreatures.mixin;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.minecraft.entity.EntityType;
+import net.minecraft.class_238;
 import org.spongepowered.asm.mixin.Mixin;
 
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 
-@Mixin(EntityType.class)
+@Mixin(class_238.class)
 public class LimitsMixin{
 
 

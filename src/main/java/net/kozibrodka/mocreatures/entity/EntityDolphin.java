@@ -11,15 +11,15 @@ import net.kozibrodka.mocreatures.mixin.LivingAccesor;
 import net.kozibrodka.mocreatures.mixin.MonsterBaseAccesor;
 import net.kozibrodka.mocreatures.mocreatures.MoCGUI;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.Item;
-import net.minecraft.entity.Living;
-import net.minecraft.entity.monster.MonsterBase;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemBase;
-import net.minecraft.item.ItemInstance;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.MonsterEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
@@ -28,12 +28,12 @@ import java.util.List;
 public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvider
 {
 
-    public EntityDolphin(Level world)
+    public EntityDolphin(World world)
     {
         super(world);
         texture = "/assets/mocreatures/stationapi/textures/mob/dolphin.png";
-        setSize(1.5F, 0.8F);
-        b = 0.8F + rand.nextFloat();
+        setBoundingBoxSpacing(1.5F, 0.8F);
+        b = 0.8F + random.nextFloat();
         adult = false;
         tamed = false;
         dolphinspeed = 1.3D;
@@ -77,7 +77,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     {
         if(typeint == 0)
         {
-            int i = rand.nextInt(100);
+            int i = random.nextInt(100);
             if(i <= 35)
             {
                 typeint = 1;
@@ -144,18 +144,18 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         typechosen = true;
     }
 
-    public boolean interact(PlayerBase entityplayer)
+    public boolean method_1323(PlayerEntity entityplayer)
     {
-        ItemInstance itemstack = entityplayer.inventory.getHeldItem();
+        ItemStack itemstack = entityplayer.inventory.getSelectedItem();
         if(tamed && !isDolphinPublic && !entityplayer.name.equals(dolphinOwner))
         {
             return false;
         }
-        if(itemstack != null && itemstack.itemId == ItemBase.rawFish.id)
+        if(itemstack != null && itemstack.itemId == Item.RAW_FISH.id)
         {
             if(--itemstack.count == 0)
             {
-                entityplayer.inventory.setInventoryItem(entityplayer.inventory.selectedHotbarSlot, null);
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
             if((temper -= 25) < 1)
             {
@@ -165,49 +165,49 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             {
                 health = maxhealth;
             }
-            level.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
+            world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             if(!adult)
             {
                 b += 0.01F;
             }
             return true;
         }
-        if(itemstack != null && itemstack.itemId == ItemBase.cookedFish.id && tamed && adult)
+        if(itemstack != null && itemstack.itemId == Item.COOKED_FISH.id && tamed && adult)
         {
             if(--itemstack.count == 0)
             {
-                entityplayer.inventory.setInventoryItem(entityplayer.inventory.selectedHotbarSlot, null);
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
             if((health += 25) > maxhealth)
             {
                 health = maxhealth;
             }
             eaten = true;
-            level.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F);
+            world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             return true;
         }
-        if(itemstack != null && tamed && entityplayer.name.equals(dolphinOwner) && (itemstack.itemId == ItemBase.goldSword.id || itemstack.itemId == ItemBase.stoneSword.id || itemstack.itemId == ItemBase.woodSword.id || itemstack.itemId == ItemBase.ironSword.id || itemstack.itemId == ItemBase.diamondSword.id))
+        if(itemstack != null && tamed && entityplayer.name.equals(dolphinOwner) && (itemstack.itemId == Item.GOLDEN_SWORD.id || itemstack.itemId == Item.STONE_SWORD.id || itemstack.itemId == Item.WOODEN_SWORD.id || itemstack.itemId == Item.IRON_SWORD.id || itemstack.itemId == Item.DIAMOND_SWORD.id))
         {
             if(isDolphinPublic == true){
                 isDolphinPublic = false;
                 for(int var3 = 0; var3 < 7; ++var3) {
-                    double var4 = this.rand.nextGaussian() * 0.02D;
-                    double var6 = this.rand.nextGaussian() * 0.02D;
-                    double var8 = this.rand.nextGaussian() * 0.02D;
-                    level.addParticle("heart", this.x + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.rand.nextFloat() * this.height), this.z + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
+                    double var4 = this.random.nextGaussian() * 0.02D;
+                    double var6 = this.random.nextGaussian() * 0.02D;
+                    double var8 = this.random.nextGaussian() * 0.02D;
+                    world.addParticle("heart", this.x + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, this.y + 0.5D + (double) (this.random.nextFloat() * this.spacingY), this.z + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, var4, var6, var8);
                 }
             }else{
                 isDolphinPublic = true;
                 for(int var3 = 0; var3 < 7; ++var3) {
-                    double var4 = this.rand.nextGaussian() * 0.02D;
-                    double var6 = this.rand.nextGaussian() * 0.02D;
-                    double var8 = this.rand.nextGaussian() * 0.02D;
-                    level.addParticle("flame", this.x + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.rand.nextFloat() * this.height), this.z + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
+                    double var4 = this.random.nextGaussian() * 0.02D;
+                    double var6 = this.random.nextGaussian() * 0.02D;
+                    double var8 = this.random.nextGaussian() * 0.02D;
+                    world.addParticle("flame", this.x + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, this.y + 0.5D + (double) (this.random.nextFloat() * this.spacingY), this.z + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, var4, var6, var8);
                 }
             }
             return true;
         }
-        if(itemstack != null && tamed && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == ItemBase.book.id))
+        if(itemstack != null && tamed && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == Item.BOOK.id))
         {
             if(dolphinOwner.equals(""))
             {
@@ -216,7 +216,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             setName(this);
             return true;
         }
-        if(itemstack != null && tamed && (itemstack.itemId == ItemBase.diamondPickaxe.id || itemstack.itemId == ItemBase.woodPickaxe.id || itemstack.itemId == ItemBase.stonePickaxe.id || itemstack.itemId == ItemBase.ironPickaxe.id || itemstack.itemId == ItemBase.goldPickaxe.id))
+        if(itemstack != null && tamed && (itemstack.itemId == Item.DIAMOND_PICKAXE.id || itemstack.itemId == Item.WOODEN_PICKAXE.id || itemstack.itemId == Item.STONE_PICKAXE.id || itemstack.itemId == Item.IRON_PICKAXE.id || itemstack.itemId == Item.GOLDEN_PICKAXE.id))
         {
             displayname = !displayname;
             return true;
@@ -226,7 +226,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             entityplayer.yaw = yaw;
             entityplayer.pitch = pitch;
             entityplayer.y = y;
-            entityplayer.startRiding(this);
+            entityplayer.method_1376(this);
             if(typeint == 6)
             {
                 entityplayer.incrementStat(mod_mocreatures.RobertMaklowicz);
@@ -240,48 +240,48 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
 
     public void Riding()
     {
-        if(passenger != null && (passenger instanceof PlayerBase))
+        if(field_1594 != null && (field_1594 instanceof PlayerEntity))
         {
-            PlayerBase entityplayer = (PlayerBase)passenger;
-            List list = level.getEntities(this, boundingBox.expand(1.0D, 0.0D, 1.0D));
+            PlayerEntity entityplayer = (PlayerEntity)field_1594;
+            List list = world.getEntities(this, boundingBox.expand(1.0D, 0.0D, 1.0D));
             if(list != null)
             {
                 for(int i = 0; i < list.size(); i++)
                 {
-                    EntityBase entity = (EntityBase)list.get(i);
-                    if(entity.removed)
+                    Entity entity = (Entity)list.get(i);
+                    if(entity.dead)
                     {
                         continue;
                     }
-                    entity.onPlayerCollision(entityplayer);
-                    if(!(entity instanceof MonsterBase))
+                    entity.onPlayerInteraction(entityplayer);
+                    if(!(entity instanceof MonsterEntity))
                     {
                         continue;
                     }
-                    float f = distanceTo(entity);
-                    if(f < 2.0F && rand.nextInt(10) == 0)
+                    float f = method_1351(entity);
+                    if(f < 2.0F && random.nextInt(10) == 0)
                     {
-                        damage(entity, ((MonsterBaseAccesor)entity).getAttackDamage());
+                        damage(entity, ((MonsterBaseAccesor)entity).getField_547());
                     }
                 }
 
             }
             if(entityplayer.method_1373())
             {
-                entityplayer.startRiding(null);
+                entityplayer.method_1376(null);
             }
         }
     }
 
     public boolean method_1356()
     {
-        return passenger == null;
+        return field_1594 == null;
     }
 
-    public void updateDespawnCounter()
+    public void method_937()
     {
-        super.updateDespawnCounter();
-        if(!adult && rand.nextInt(50) == 0)
+        super.method_937();
+        if(!adult && random.nextInt(50) == 0)
         {
             b += 0.01F;
             if(b >= 1.5F)
@@ -289,21 +289,21 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
                 adult = true;
             }
         }
-        if(!hungry && rand.nextInt(100) == 0)
+        if(!hungry && random.nextInt(100) == 0)
         {
             hungry = true;
         }
         Riding();
-        if(passenger != null && deathTime == 0 && (!tamed || hungry))
+        if(field_1594 != null && field_1041 == 0 && (!tamed || hungry))
         {
-            Item entityitem = getClosestFish(this, 12D);
+            ItemEntity entityitem = getClosestFish(this, 12D);
             if(entityitem != null)
             {
                 MoveToNextEntity(entityitem);
-                Item entityitem1 = getClosestFish(this, 2D);
-                if(rand.nextInt(20) == 0 && entityitem1 != null && deathTime == 0)
+                ItemEntity entityitem1 = getClosestFish(this, 2D);
+                if(random.nextInt(20) == 0 && entityitem1 != null && field_1041 == 0)
                 {
-                    entityitem1.remove();
+                    entityitem1.markDead();
                     if((temper -= 25) < 1)
                     {
                         temper = 1;
@@ -317,10 +317,10 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             return;
         }
         int i = 0;
-        List list = level.getEntities(this, boundingBox.expand(8D, 2D, 8D));
+        List list = world.getEntities(this, boundingBox.expand(8D, 2D, 8D));
         for(int j = 0; j < list.size(); j++)
         {
-            EntityBase entity = (EntityBase)list.get(j);
+            Entity entity = (Entity)list.get(j);
             if(entity instanceof EntityDolphin)
             {
                 i++;
@@ -331,10 +331,10 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         {
             return;
         }
-        List list1 = level.getEntities(this, boundingBox.expand(4D, 2D, 4D));
+        List list1 = world.getEntities(this, boundingBox.expand(4D, 2D, 4D));
         for(int k = 0; k < list.size(); k++)
         {
-            EntityBase entity1 = (EntityBase)list1.get(k);
+            Entity entity1 = (Entity)list1.get(k);
             if(!(entity1 instanceof EntityDolphin) || entity1 == this)
             {
                 continue;
@@ -344,7 +344,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             {
                 continue;
             }
-            if(rand.nextInt(100) == 0)
+            if(random.nextInt(100) == 0)
             {
                 gestationtime++;
             }
@@ -352,10 +352,10 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             {
                 continue;
             }
-            EntityDolphin entitydolphin1 = new EntityDolphin(level);
-            entitydolphin1.setPosition(x, y, z);
-            level.spawnEntity(entitydolphin1);
-            level.playSound(this, "mob.chickenplop", 1.0F, (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
+            EntityDolphin entitydolphin1 = new EntityDolphin(world);
+            entitydolphin1.method_1340(x, y, z);
+            world.method_210(entitydolphin1);
+            world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
             eaten = false;
             entitydolphin.eaten = false;
             gestationtime = 0;
@@ -372,7 +372,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
 
     public boolean ReadyforParenting(EntityDolphin entitydolphin)
     {
-        return entitydolphin.passenger == null && entitydolphin.vehicle == null && entitydolphin.tamed && entitydolphin.eaten && entitydolphin.adult;
+        return entitydolphin.field_1594 == null && entitydolphin.field_1595 == null && entitydolphin.tamed && entitydolphin.eaten && entitydolphin.adult;
     }
 
     private int Genetics(EntityDolphin entitydolphin, EntityDolphin entitydolphin1)
@@ -382,8 +382,8 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             return entitydolphin.typeint;
         }
         int i = entitydolphin.typeint + entitydolphin1.typeint;
-        boolean flag = rand.nextInt(3) == 0;
-        boolean flag1 = rand.nextInt(10) == 0;
+        boolean flag = random.nextInt(3) == 0;
+        boolean flag1 = random.nextInt(10) == 0;
         if(i < 5 && flag)
         {
             return i;
@@ -397,23 +397,23 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         }
     }
 
-    public void writeCustomDataToTag(CompoundTag nbttagcompound)
+    public void writeNbt(NbtCompound nbttagcompound)
     {
-        super.writeCustomDataToTag(nbttagcompound);
-        nbttagcompound.put("Tamed", tamed);
-        nbttagcompound.put("TypeInt", typeint);
-        nbttagcompound.put("Adult", adult);
-        nbttagcompound.put("Bred", bred);
-        nbttagcompound.put("Age", b);
-        nbttagcompound.put("Name", name);
-        nbttagcompound.put("DisplayName", displayname);
-        nbttagcompound.put("PublicDolphin", isDolphinPublic);
-        nbttagcompound.put("DolphinOwner", dolphinOwner);
+        super.writeNbt(nbttagcompound);
+        nbttagcompound.putBoolean("Tamed", tamed);
+        nbttagcompound.putInt("TypeInt", typeint);
+        nbttagcompound.putBoolean("Adult", adult);
+        nbttagcompound.putBoolean("Bred", bred);
+        nbttagcompound.putFloat("Age", b);
+        nbttagcompound.putString("Name", name);
+        nbttagcompound.putBoolean("DisplayName", displayname);
+        nbttagcompound.putBoolean("PublicDolphin", isDolphinPublic);
+        nbttagcompound.putString("DolphinOwner", dolphinOwner);
     }
 
-    public void readCustomDataFromTag(CompoundTag nbttagcompound)
+    public void readNbt(NbtCompound nbttagcompound)
     {
-        super.readCustomDataFromTag(nbttagcompound);
+        super.readNbt(nbttagcompound);
         tamed = nbttagcompound.getBoolean("Tamed");
         typeint = nbttagcompound.getInt("TypeInt");
         adult = nbttagcompound.getBoolean("Adult");
@@ -425,11 +425,11 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         dolphinOwner = nbttagcompound.getString("DolphinOwner");
     }
 
-    protected EntityBase getAttackTarget()
+    protected Entity method_638()
     {
-        if(level.difficulty > 0 && b >= 1.0F && mocr.mocreaturesGlass.watermobs.attackdolphins && rand.nextInt(50) == 0)
+        if(world.field_213 > 0 && b >= 1.0F && mocr.mocreaturesGlass.watermobs.attackdolphins && random.nextInt(50) == 0)
         {
-            Living entityliving = FindTarget(this, 12D);
+            LivingEntity entityliving = FindTarget(this, 12D);
             if(entityliving != null && ((EntityBaseAccesor)entityliving).getField_1612())
             {
                 return entityliving;
@@ -438,14 +438,14 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         return null;
     }
 
-    public Living FindTarget(EntityBase entity, double d)
+    public LivingEntity FindTarget(Entity entity, double d)
     {
         double d1 = -1D;
-        Living entityliving = null;
-        List list = level.getEntities(this, boundingBox.expand(d, d, d));
+        LivingEntity entityliving = null;
+        List list = world.getEntities(this, boundingBox.expand(d, d, d));
         for(int i = 0; i < list.size(); i++)
         {
-            EntityBase entity1 = (EntityBase)list.get(i);
+            Entity entity1 = (Entity)list.get(i);
             if(!(entity1 instanceof EntityShark) || !(mocr.mocreaturesGlass.watermobs.attackdolphins))
             {
                 continue;
@@ -456,28 +456,28 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
                 continue;
             }
 
-            double d2 = entity1.squaredDistanceTo(entity.x, entity.y, entity.z);
-            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((Living)entity1).method_928(entity))
+            double d2 = entity1.method_1347(entity.x, entity.y, entity.z);
+            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).method_928(entity))
             {
                 d1 = d2;
-                entityliving = (Living)entity1;
+                entityliving = (LivingEntity)entity1;
             }
         }
 
         return entityliving;
     }
 
-    public boolean damage(EntityBase entitybase, int i)
+    public boolean damage(Entity entitybase, int i)
     {
-        if(super.damage(entitybase, i) && level.difficulty > 0)
+        if(super.damage(entitybase, i) && world.field_213 > 0)
         {
-            if(passenger == entitybase || vehicle == entitybase)
+            if(field_1594 == entitybase || field_1595 == entitybase)
             {
                 return true;
             }
             if(entitybase != this)
             {
-                entity = entitybase;
+                target = entitybase;
             }
             return true;
         } else
@@ -486,18 +486,18 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         }
     }
 
-    protected void tryAttack(EntityBase entity, float f)
+    protected void method_637(Entity entity, float f)
     {
         if((double)f < 3.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY && b >= 1.0F)
         {
-            attackTime = 20;
+            field_1042 = 20;
             entity.damage(this, 5);
         }
     }
 
-    protected int getMobDrops()
+    protected int method_914()
     {
-        return ItemBase.rawFish.id;
+        return Item.RAW_FISH.id;
     }
 
     public boolean canSpawn()
@@ -505,14 +505,14 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         return mocr.mocreaturesGlass.watermobs.dolphinfreq > 0 && super.canSpawn();
     }
 
-    public void remove()
+    public void markDead()
     {
         if((tamed || bred) && health > 0)
         {
             return;
         } else
         {
-            super.remove();
+            super.markDead();
             return;
         }
     }
@@ -522,22 +522,22 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         return !tamed;
     }
 
-    protected String getAmbientSound()
+    protected String method_911()
     {
         return "mocreatures:dolphin";
     }
 
-    protected String getHurtSound()
+    protected String method_912()
     {
         return "mocreatures:dolphinhurt";
     }
 
-    protected String getDeathSound()
+    protected String method_913()
     {
         return "mocreatures:dolphindying";
     }
 
-    protected float getSoundVolume()
+    protected float method_915()
     {
         return 0.4F;
     }
@@ -549,13 +549,13 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
 
     public boolean renderName()
     {
-        return displayname && passenger == null;
+        return displayname && field_1594 == null;
     }
 
         public static void setName(EntityDolphin entitydolphin)
     {
         entitydolphin.displayname = true;
-        mc.openScreen(new MoCGUI(entitydolphin, entitydolphin.name));
+        mc.setScreen(new MoCGUI(entitydolphin, entitydolphin.name));
     }
 
     @SuppressWarnings("deprecation")

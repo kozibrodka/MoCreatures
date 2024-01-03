@@ -6,10 +6,9 @@ package net.kozibrodka.mocreatures.item;
 
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemBase;
-import net.minecraft.item.ItemInstance;
-import net.minecraft.level.Level;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.template.item.TemplateItem;
 
@@ -19,15 +18,15 @@ public class SugarLump extends TemplateItem
     public SugarLump(Identifier i)
     {
         super(i);
-        maxStackSize = 32;
+        maxCount = 32;
         a = 1;
     }
 
-    public ItemInstance use(ItemInstance itemstack, Level world, PlayerBase entityplayer)
+    public ItemStack use(ItemStack itemstack, World world, PlayerEntity entityplayer)
     {
         if(mod_mocreatures.mocreaturesGlass.balancesettings.sugar_lump) {
             itemstack.count--;
-            entityplayer.addHealth(a);
+            entityplayer.method_939(a);
         }
         return itemstack;
     }

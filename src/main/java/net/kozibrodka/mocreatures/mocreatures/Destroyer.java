@@ -10,14 +10,13 @@ import net.kozibrodka.mocreatures.entity.EntityFireOgre;
 import net.kozibrodka.mocreatures.entity.EntityOgre;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mixin.BlockBaseAccesor;
-import net.minecraft.block.BlockBase;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.level.Level;
-import net.minecraft.util.maths.Box;
-import net.minecraft.util.maths.MathHelper;
-import net.minecraft.util.maths.TilePos;
-import net.minecraft.util.maths.Vec3f;
-
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,10 +29,10 @@ public class Destroyer
     {
     }
 
-    public static void DestroyBlast(Level world, EntityBase entity, double d, double d1, double d2,
+    public static void DestroyBlast(World world, Entity entity, double d, double d1, double d2,
                                     float f, boolean flag, boolean igniteogre, boolean explodeogre, boolean explodecaveogre, boolean explodefireogre)
     {
-        world.playSound(d, d1, d2, "mocreatures:destroy", 4F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
+        world.playSound(d, d1, d2, "mocreatures:destroy", 4F, (1.0F + (world.field_214.nextFloat() - world.field_214.nextFloat()) * 0.2F) * 0.7F);
         HashSet hashset = new HashSet();
         float f1 = f;
         int i = 16;
@@ -55,7 +54,7 @@ label0:
                     d3 /= d6;
                     d4 /= d6;
                     d5 /= d6;
-                    float f2 = f * (0.7F + world.rand.nextFloat() * 0.6F);
+                    float f2 = f * (0.7F + world.field_214.nextFloat() * 0.6F);
                     double d8 = d;
                     double d10 = d1;
                     double d12 = d2;
@@ -70,16 +69,16 @@ label0:
                         int k5 = MathHelper.floor(d8);
                         int l5 = MathHelper.floor(d10);
                         int i6 = MathHelper.floor(d12);
-                        int j6 = world.getTileId(k5, l5, i6);
+                        int j6 = world.getBlockId(k5, l5, i6);
                         if(j6 > 0)
                         {
-                            f4 = ((BlockBaseAccesor)BlockBase.BY_ID[j6]).getHardness();
+                            f4 = ((BlockBaseAccesor)Block.BLOCKS[j6]).getHardness();
 //                            f4 = BlockBase.BY_ID[j6].hardness;
-                            f2 -= (BlockBase.BY_ID[j6].getBlastResistance(entity) + 0.3F) * (f3 / 10F);
+                            f2 -= (Block.BLOCKS[j6].getBlastResistance(entity) + 0.3F) * (f3 / 10F);
                         }
                         if(f2 > 0.0F && d10 > entity.y && f4 < 3F)
                         {
-                            hashset.add(new TilePos(k5, l5, i6));
+                            hashset.add(new BlockPos(k5, l5, i6));
                         }
                         d8 += d3 * (double)f3;
                         d10 += d4 * (double)f3;
@@ -99,12 +98,12 @@ label0:
         int l1 = MathHelper.floor(d1 + (double)f + 1.0D);
         int i2 = MathHelper.floor(d2 - (double)f - 1.0D);
         int j2 = MathHelper.floor(d2 + (double)f + 1.0D);
-        List list = world.getEntities(entity, Box.createButWasteMemory(k, k1, i2, i1, l1, j2));
-        Vec3f vec3d = Vec3f.from(d, d1, d2);
+        List list = world.getEntities(entity, Box.createCached(k, k1, i2, i1, l1, j2));
+        Vec3d vec3d = Vec3d.createCached(d, d1, d2);
         for(int k2 = 0; k2 < list.size(); k2++)
         {
-            EntityBase entity1 = (EntityBase)list.get(k2);
-            double d7 = entity1.distanceTo(d, d1, d2) / (double)f;
+            Entity entity1 = (Entity)list.get(k2);
+            double d7 = entity1.method_1350(d, d1, d2) / (double)f;
             if(d7 > 1.0D)
             {
                 continue;
@@ -133,16 +132,16 @@ label0:
         arraylist.addAll(hashset);
         for(int l2 = arraylist.size() - 1; l2 >= 0; l2--)
         {
-            TilePos chunkposition = (TilePos)arraylist.get(l2);
+            BlockPos chunkposition = (BlockPos)arraylist.get(l2);
             int j3 = chunkposition.x;
             int l3 = chunkposition.y;
             int j4 = chunkposition.z;
-            int l4 = world.getTileId(j3, l3, j4);
+            int l4 = world.getBlockId(j3, l3, j4);
             for(int j5 = 0; j5 < 5; j5++)
             {
-                double d14 = (float)j3 + world.rand.nextFloat();
-                double d16 = (float)l3 + world.rand.nextFloat();
-                double d18 = (float)j4 + world.rand.nextFloat();
+                double d14 = (float)j3 + world.field_214.nextFloat();
+                double d16 = (float)l3 + world.field_214.nextFloat();
+                double d18 = (float)j4 + world.field_214.nextFloat();
                 double d20 = d14 - d;
                 double d22 = d16 - d1;
                 double d23 = d18 - d2;
@@ -151,7 +150,7 @@ label0:
                 d22 /= d24;
                 d23 /= d24;
                 double d25 = 0.5D / (d24 / (double)f + 0.10000000000000001D);
-                d25 *= world.rand.nextFloat() * world.rand.nextFloat() + 0.3F;
+                d25 *= world.field_214.nextFloat() * world.field_214.nextFloat() + 0.3F;
                 d25--;
                 d20 *= d25;
                 d22 *= d25 - 1.0D;
@@ -165,9 +164,9 @@ label0:
             {
                 if(!(entity instanceof EntityCaveOgre) && !(entity instanceof EntityFireOgre) && explodeogre || entity instanceof EntityCaveOgre && explodecaveogre || entity instanceof EntityFireOgre && explodefireogre)
                 {
-                    BlockBase.BY_ID[l4].beforeDestroyedByExplosion(world, j3, l3, j4, world.getTileMeta(j3, l3, j4), 0.3F);
-                    world.setTile(j3, l3, j4, 0);
-                    BlockBase.BY_ID[l4].onDestroyedByExplosion(world, j3, l3, j4);
+                    Block.BLOCKS[l4].dropStacks(world, j3, l3, j4, world.getBlockMeta(j3, l3, j4), 0.3F);
+                    world.setBlock(j3, l3, j4, 0);
+                    Block.BLOCKS[l4].onDestroyedByExplosion(world, j3, l3, j4);
                 }
             }
         }
@@ -176,14 +175,14 @@ label0:
         {
             for(int i3 = arraylist.size() - 1; i3 >= 0; i3--)
             {
-                TilePos chunkposition1 = (TilePos)arraylist.get(i3);
+                BlockPos chunkposition1 = (BlockPos)arraylist.get(i3);
                 int k3 = chunkposition1.x;
                 int i4 = chunkposition1.y;
                 int k4 = chunkposition1.z;
-                int i5 = world.getTileId(k3, i4, k4);
-                if(i5 == 0 && world.rand.nextInt(8) == 0)
+                int i5 = world.getBlockId(k3, i4, k4);
+                if(i5 == 0 && world.field_214.nextInt(8) == 0)
                 {
-                    world.setTile(k3, i4, k4, BlockBase.FIRE.id);
+                    world.setBlock(k3, i4, k4, Block.FIRE.id);
                 }
             }
 

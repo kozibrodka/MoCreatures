@@ -5,28 +5,28 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.monster.MonsterBase;
-import net.minecraft.entity.monster.MonsterEntityType;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemBase;
-import net.minecraft.item.ItemInstance;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
-import net.minecraft.util.maths.MathHelper;
+import net.minecraft.class_65;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.mob.MonsterEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
-public class EntityWerewolf extends MonsterBase
-    implements MonsterEntityType, MobSpawnDataProvider
+public class EntityWerewolf extends MonsterEntity
+    implements class_65, MobSpawnDataProvider
 {
 
-    public EntityWerewolf(Level world)
+    public EntityWerewolf(World world)
     {
         super(world);
         wereboolean = false;
         texture = "/assets/mocreatures/stationapi/textures/mob/werehuman.png";
-        setSize(0.9F, 1.3F);
+        setBoundingBoxSpacing(0.9F, 1.3F);
         humanform = true;
         health = 15;
         transforming = false;
@@ -35,13 +35,13 @@ public class EntityWerewolf extends MonsterBase
         isUndead = true;
     }
 
-    protected EntityBase getAttackTarget()
+    protected Entity method_638()
     {
         if(humanform)
         {
             return null;
         }
-        PlayerBase entityplayer = level.getClosestPlayerTo(this, 16D);
+        PlayerEntity entityplayer = world.method_186(this, 16D);
         if(entityplayer != null && method_928(entityplayer))
         {
             return entityplayer;
@@ -51,33 +51,33 @@ public class EntityWerewolf extends MonsterBase
         }
     }
 
-    protected void tickHandSwing()
+    protected void method_910()
     {
-        if(this.entity instanceof PlayerBase){
-            PlayerBase uciekinier = level.getClosestPlayerTo(this, 16D);
-            if(uciekinier == null && entity.isAlive()){
-                if(rand.nextInt(30) == 0)
+        if(this.target instanceof PlayerEntity){
+            PlayerEntity uciekinier = world.method_186(this, 16D);
+            if(uciekinier == null && target.isAlive()){
+                if(random.nextInt(30) == 0)
                 {
-                    entity = null;
+                    target = null;
                 }
             }
         }
         if(!transforming)
         {
-            super.tickHandSwing();
+            super.method_910();
         }
     }
 
-    protected void tryAttack(EntityBase entity, float f)
+    protected void method_637(Entity entity, float f)
     {
         if(humanform)
         {
-            this.entity = null;
+            this.target = null;
             return;
         }
-        if(f > 2.0F && f < 6F && rand.nextInt(15) == 0)
+        if(f > 2.0F && f < 6F && random.nextInt(15) == 0)
         {
-            if(onGround)
+            if(field_1623)
             {
                 hunched = true;
                 double d = entity.x - x;
@@ -89,36 +89,36 @@ public class EntityWerewolf extends MonsterBase
             }
         } else
         {
-            super.tryAttack(entity, f);
+            super.method_637(entity, f);
         }
     }
 
-    public boolean damage(EntityBase entity, int i)
+    public boolean damage(Entity entity, int i)
     {
-        if(!humanform && entity != null && (entity instanceof PlayerBase))
+        if(!humanform && entity != null && (entity instanceof PlayerEntity))
         {
-            PlayerBase entityplayer = (PlayerBase)entity;
-            ItemInstance itemstack = entityplayer.getHeldItem();
+            PlayerEntity entityplayer = (PlayerEntity)entity;
+            ItemStack itemstack = entityplayer.getHand();
             if(itemstack != null)
             {
                 i = 1;
-                if(itemstack.itemId == ItemBase.goldHoe.id)
+                if(itemstack.itemId == Item.GOLDEN_HOE.id)
                 {
                     i = 6;
                 }
-                if(itemstack.itemId == ItemBase.goldShovel.id)
+                if(itemstack.itemId == Item.GOLDEN_SHOVEL.id)
                 {
                     i = 7;
                 }
-                if(itemstack.itemId == ItemBase.goldPickaxe.id)
+                if(itemstack.itemId == Item.GOLDEN_PICKAXE.id)
                 {
                     i = 8;
                 }
-                if(itemstack.itemId == ItemBase.goldAxe.id)
+                if(itemstack.itemId == Item.GOLDEN_AXE.id)
                 {
                     i = 9;
                 }
-                if(itemstack.itemId == ItemBase.goldSword.id)
+                if(itemstack.itemId == Item.GOLDEN_SWORD.id)
                 {
                     i = 10;
                 }
@@ -127,26 +127,26 @@ public class EntityWerewolf extends MonsterBase
         return super.damage(entity, i);
     }
 
-    public void updateDespawnCounter()
+    public void method_937()
     {
-        super.updateDespawnCounter();
-        if((IsNight() && humanform || !IsNight() && !humanform) && rand.nextInt(250) == 0)
+        super.method_937();
+        if((IsNight() && humanform || !IsNight() && !humanform) && random.nextInt(250) == 0)
         {
             transforming = true;
         }
-        if(humanform && entity != null)
+        if(humanform && target != null)
         {
-            entity = null;
+            target = null;
         }
-        if(entity != null && !humanform && entity.x - x > 3D && entity.z - z > 3D)
+        if(target != null && !humanform && target.x - x > 3D && target.z - z > 3D)
         {
             hunched = true;
         }
-        if(hunched && rand.nextInt(50) == 0)
+        if(hunched && random.nextInt(50) == 0)
         {
             hunched = false;
         }
-        if(transforming && rand.nextInt(3) == 0)
+        if(transforming && random.nextInt(3) == 0)
         {
             tcounter++;
             if(tcounter % 2 == 0)
@@ -161,7 +161,7 @@ public class EntityWerewolf extends MonsterBase
             }
             if(tcounter == 10)
             {
-                level.playSound(this, "mocreatures:weretransform", 1.0F, (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
+                world.playSound(this, "mocreatures:weretransform", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
             }
             if(tcounter > 30)
             {
@@ -170,34 +170,34 @@ public class EntityWerewolf extends MonsterBase
                 transforming = false;
             }
         }
-        if(rand.nextInt(300) == 0)
+        if(random.nextInt(300) == 0)
         {
-            despawnCounter -= 100 * level.difficulty;
-            if(despawnCounter < 0)
+            field_1059 -= 100 * world.field_213;
+            if(field_1059 < 0)
             {
-                despawnCounter = 0;
+                field_1059 = 0;
             }
         }
     }
 
     public boolean IsNight()
     {
-        return !level.isDaylight();
+        return !world.method_220();
     }
 
-    public void travel(float f, float f1)
+    public void method_945(float f, float f1)
     {
-        if(!humanform && onGround)
+        if(!humanform && field_1623)
         {
             velocityX *= 1.2D;
             velocityZ *= 1.2D;
         }
-        super.travel(f, f1);
+        super.method_945(f, f1);
     }
 
     private void Transform()
     {
-        if(deathTime > 0)
+        if(field_1041 > 0)
         {
             return;
         }
@@ -207,9 +207,9 @@ public class EntityWerewolf extends MonsterBase
         float f = 0.1F;
         for(int l = 0; l < 30; l++)
         {
-            double d = (float)i + level.rand.nextFloat();
-            double d1 = (float)j + level.rand.nextFloat();
-            double d2 = (float)k + level.rand.nextFloat();
+            double d = (float)i + world.field_214.nextFloat();
+            double d1 = (float)j + world.field_214.nextFloat();
+            double d2 = (float)k + world.field_214.nextFloat();
             double d3 = d - (double)i;
             double d4 = d1 - (double)j;
             double d5 = d2 - (double)k;
@@ -218,11 +218,11 @@ public class EntityWerewolf extends MonsterBase
             d4 /= d6;
             d5 /= d6;
             double d7 = 0.5D / (d6 / (double)f + 0.10000000000000001D);
-            d7 *= level.rand.nextFloat() * level.rand.nextFloat() + 0.3F;
+            d7 *= world.field_214.nextFloat() * world.field_214.nextFloat() + 0.3F;
             d3 *= d7;
             d4 *= d7;
             d5 *= d7;
-            level.addParticle("explode", (d + (double)i * 1.0D) / 2D, (d1 + (double)j * 1.0D) / 2D, (d2 + (double)k * 1.0D) / 2D, d3, d4, d5);
+            world.addParticle("explode", (d + (double)i * 1.0D) / 2D, (d1 + (double)j * 1.0D) / 2D, (d2 + (double)k * 1.0D) / 2D, d3, d4, d5);
         }
 
         if(humanform)
@@ -238,19 +238,19 @@ public class EntityWerewolf extends MonsterBase
         }
     }
 
-    public void writeCustomDataToTag(CompoundTag nbttagcompound)
+    public void writeNbt(NbtCompound nbttagcompound)
     {
-        super.writeCustomDataToTag(nbttagcompound);
-        nbttagcompound.put("HumanForm", humanform);
+        super.writeNbt(nbttagcompound);
+        nbttagcompound.putBoolean("HumanForm", humanform);
     }
 
-    public void readCustomDataFromTag(CompoundTag nbttagcompound)
+    public void readNbt(NbtCompound nbttagcompound)
     {
-        super.readCustomDataFromTag(nbttagcompound);
+        super.readNbt(nbttagcompound);
         humanform = nbttagcompound.getBoolean("HumanForm");
     }
 
-    protected String getAmbientSound()
+    protected String method_911()
     {
         if(humanform)
         {
@@ -261,7 +261,7 @@ public class EntityWerewolf extends MonsterBase
         }
     }
 
-    protected String getHurtSound()
+    protected String method_912()
     {
         if(humanform)
         {
@@ -272,7 +272,7 @@ public class EntityWerewolf extends MonsterBase
         }
     }
 
-    protected String getDeathSound()
+    protected String method_913()
     {
         if(humanform)
         {
@@ -283,108 +283,108 @@ public class EntityWerewolf extends MonsterBase
         }
     }
 
-    protected int getMobDrops()
+    protected int method_914()
     {
-        int i = rand.nextInt(12);
+        int i = random.nextInt(12);
         if(humanform)
         {
             switch(i)
             {
             case 0: // '\0'
-                return ItemBase.woodShovel.id;
+                return Item.WOODEN_SHOVEL.id;
 
             case 1: // '\001'
-                return ItemBase.woodAxe.id;
+                return Item.WOODEN_AXE.id;
 
             case 2: // '\002'
-                return ItemBase.woodSword.id;
+                return Item.WOODEN_SWORD.id;
 
             case 3: // '\003'
-                return ItemBase.woodHoe.id;
+                return Item.WOODEN_HOE.id;
 
             case 4: // '\004'
-                return ItemBase.woodPickaxe.id;
+                return Item.WOODEN_PICKAXE.id;
             }
-            return ItemBase.stick.id;
+            return Item.STICK.id;
         }
         switch(i)
         {
         case 0: // '\0'
-            return ItemBase.ironHoe.id;
+            return Item.IRON_HOE.id;
 
         case 1: // '\001'
-            return ItemBase.ironShovel.id;
+            return Item.IRON_SHOVEL.id;
 
         case 2: // '\002'
-            return ItemBase.ironAxe.id;
+            return Item.IRON_AXE.id;
 
         case 3: // '\003'
-            return ItemBase.ironPickaxe.id;
+            return Item.IRON_PICKAXE.id;
 
         case 4: // '\004'
-            return ItemBase.ironSword.id;
+            return Item.IRON_SWORD.id;
 
         case 5: // '\005'
-            return ItemBase.stoneHoe.id;
+            return Item.STONE_HOE.id;
 
         case 6: // '\006'
-            return ItemBase.stoneShovel.id;
+            return Item.STONE_SHOVEL.id;
 
         case 7: // '\007'
-            return ItemBase.stoneAxe.id;
+            return Item.STONE_HATCHET.id;
 
         case 8: // '\b'
-            return ItemBase.stonePickaxe.id;
+            return Item.STONE_PICKAXE.id;
 
         case 9: // '\t'
-            return ItemBase.stoneSword.id;
+            return Item.STONE_SWORD.id;
         }
         if(mocr.mocreaturesGlass.balancesettings.balance_drop){
             return mod_mocreatures.greenapple.id;
         }else{
-            return ItemBase.goldenApple.id;
+            return Item.GOLDEN_APPLE.id;
         }
     }
 
-    public void onKilledBy(EntityBase entity)
+    public void method_938(Entity entity)
     {
         if(field_1024 > 0 && entity != null)
         {
-            entity.onKilledOther(this, field_1024);
+            entity.method_1391(this, field_1024);
         }
         if(entity != null)
         {
-            entity.handleKilledEntity(this);
+            entity.method_1390(this);
         }
         field_1045 = true;
-        if(!level.isServerSide)
+        if(!world.isRemote)
         {
             for(int i = 0; i < 2; i++)
             {
-                int j = getMobDrops();
+                int j = method_914();
                 if(j > 0)
                 {
-                    dropItem(j, 1);
+                    method_1339(j, 1);
                 }
             }
 
         }
-        level.method_279(this, 3F);
+        world.method_279(this, 3F);
     }
 
-    public int getLimitPerChunk()
+    public int method_916()
     {
         return 1;
     }
 
-    public void remove()
+    public void markDead()
     {
-        super.remove();
+        super.markDead();
     }
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.hostilemobs.werewolffreq > 0 && level.difficulty >= mocr.mocreaturesGlass.hostilemobs.wereSpawnDifficulty + 1 && super.canSpawn();
+        return mocr.mocreaturesGlass.hostilemobs.werewolffreq > 0 && world.field_213 >= mocr.mocreaturesGlass.hostilemobs.wereSpawnDifficulty + 1 && super.canSpawn();
     }
 
     public void ustawTexture(String tex){

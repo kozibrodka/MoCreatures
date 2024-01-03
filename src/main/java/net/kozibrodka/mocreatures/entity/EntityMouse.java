@@ -5,30 +5,30 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.minecraft.block.BlockBase;
+import net.minecraft.block.Block;
 import net.minecraft.class_61;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.Living;
-import net.minecraft.entity.animal.AnimalBase;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemBase;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
-import net.minecraft.util.maths.Box;
-import net.minecraft.util.maths.MathHelper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 
-public class EntityMouse extends AnimalBase implements MobSpawnDataProvider
+public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider
 {
 
-    public EntityMouse(Level world)
+    public EntityMouse(World world)
     {
         super(world);
         texture = "/assets/mocreatures/stationapi/textures/mob/miceg.png";
-        setSize(0.3F, 0.3F);
+        setBoundingBoxSpacing(0.3F, 0.3F);
         health = 4;
         picked = false;
     }
@@ -37,7 +37,7 @@ public class EntityMouse extends AnimalBase implements MobSpawnDataProvider
     {
         if(typeint == 0)
         {
-            int i = rand.nextInt(100);
+            int i = random.nextInt(100);
             if(i <= 50)
             {
                 typeint = 1;
@@ -68,27 +68,27 @@ public class EntityMouse extends AnimalBase implements MobSpawnDataProvider
         typechosen = true;
     }
 
-    public void updateDespawnCounter()
+    public void method_937()
     {
-        super.updateDespawnCounter();
-        if(rand.nextInt(15) == 0)
+        super.method_937();
+        if(random.nextInt(15) == 0)
         {
-            Living entityliving = getBoogey(6D);
+            LivingEntity entityliving = getBoogey(6D);
             if(entityliving != null)
             {
                 runLikeHell(entityliving);
             }
         }
-        if(!onGround && vehicle != null)
+        if(!field_1623 && field_1595 != null)
         {
-            yaw = vehicle.yaw;
+            yaw = field_1595.yaw;
         }
     }
 
     private void checkFertility()
     {
         int i = 0;
-        List list = level.getEntities(EntityMouse.class, Box.createButWasteMemory(x, y, z, x + 1.0D, y + 1.0D, z + 1.0D).expand(16D, 4D, 16D));
+        List list = world.method_175(EntityMouse.class, Box.createCached(x, y, z, x + 1.0D, y + 1.0D, z + 1.0D).expand(16D, 4D, 16D));
         for(int j = 0; j < list.size(); j++)
         {
             i++;
@@ -114,16 +114,16 @@ public class EntityMouse extends AnimalBase implements MobSpawnDataProvider
         return true;
     }
 
-    public boolean interact(PlayerBase entityplayer)
+    public boolean method_1323(PlayerEntity entityplayer)
     {
         yaw = entityplayer.yaw;
-        startRiding(entityplayer);
-        if(vehicle != null)
+        method_1376(entityplayer);
+        if(field_1595 != null)
         {
             picked = true;
         } else
         {
-            level.playSound(this, "mob.chickenplop", 1.0F, (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
+            world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
             picked = false;
         }
         velocityX = entityplayer.velocityX * 5D;
@@ -132,57 +132,57 @@ public class EntityMouse extends AnimalBase implements MobSpawnDataProvider
         return true;
     }
 
-    public double getHeightOffset()
+    public double method_1385()
     {
-        if(vehicle instanceof PlayerBase)
+        if(field_1595 instanceof PlayerEntity)
         {
-            return (double)(standingEyeHeight - 1.7F);
+            return (double)(eyeHeight - 1.7F);
         } else
         {
-            return (double)standingEyeHeight;
+            return (double)eyeHeight;
         }
     }
 
-    public int getLimitPerChunk()
+    public int method_916()
     {
         return 6;
     }
 
-    public void writeCustomDataToTag(CompoundTag nbttagcompound)
+    public void writeNbt(NbtCompound nbttagcompound)
     {
-        super.writeCustomDataToTag(nbttagcompound);
-        nbttagcompound.put("TypeInt", typeint);
+        super.writeNbt(nbttagcompound);
+        nbttagcompound.putInt("TypeInt", typeint);
     }
 
-    public void readCustomDataFromTag(CompoundTag nbttagcompound)
+    public void readNbt(NbtCompound nbttagcompound)
     {
-        super.readCustomDataFromTag(nbttagcompound);
+        super.readNbt(nbttagcompound);
         typeint = nbttagcompound.getInt("TypeInt");
     }
 
-    public Living getBoogey(double d)
+    public LivingEntity getBoogey(double d)
     {
         double d1 = -1D;
-        Living entityliving = null;
-        List list = level.getEntities(this, boundingBox.expand(d, 4D, d));
+        LivingEntity entityliving = null;
+        List list = world.getEntities(this, boundingBox.expand(d, 4D, d));
         for(int i = 0; i < list.size(); i++)
         {
-            EntityBase entity = (EntityBase)list.get(i);
-            if((entity instanceof Living) && !(entity instanceof EntityMouse))
+            Entity entity = (Entity)list.get(i);
+            if((entity instanceof LivingEntity) && !(entity instanceof EntityMouse))
             {
-                entityliving = (Living)entity;
+                entityliving = (LivingEntity)entity;
             }
         }
 
         return entityliving;
     }
 
-    public void runLikeHell(EntityBase entity)
+    public void runLikeHell(Entity entity)
     {
         double d = x - entity.x;
         double d1 = z - entity.z;
         double d2 = Math.atan2(d, d1);
-        d2 += (double)(rand.nextFloat() - rand.nextFloat()) * 0.75D;
+        d2 += (double)(random.nextFloat() - random.nextFloat()) * 0.75D;
         double d3 = x + Math.sin(d2) * 8D;
         double d4 = z + Math.cos(d2) * 8D;
         int i = MathHelper.floor(d3);
@@ -195,13 +195,13 @@ public class EntityMouse extends AnimalBase implements MobSpawnDataProvider
             {
                 break;
             }
-            int i1 = (i + rand.nextInt(4)) - rand.nextInt(4);
-            int j1 = (j + rand.nextInt(3)) - rand.nextInt(3);
-            int k1 = (k + rand.nextInt(4)) - rand.nextInt(4);
-            if(j1 > 4 && (level.getTileId(i1, j1, k1) == 0 || level.getTileId(i1, j1, k1) == BlockBase.SNOW.id) && level.getTileId(i1, j1 - 1, k1) != 0)
+            int i1 = (i + random.nextInt(4)) - random.nextInt(4);
+            int j1 = (j + random.nextInt(3)) - random.nextInt(3);
+            int k1 = (k + random.nextInt(4)) - random.nextInt(4);
+            if(j1 > 4 && (world.getBlockId(i1, j1, k1) == 0 || world.getBlockId(i1, j1, k1) == Block.SNOW.id) && world.getBlockId(i1, j1 - 1, k1) != 0)
             {
-                class_61 pathentity = level.method_189(this, i1, j1, k1, 16F);
-                setTarget(pathentity);
+                class_61 pathentity = world.method_189(this, i1, j1, k1, 16F);
+                method_635(pathentity);
                 break;
             }
             l++;
@@ -210,7 +210,7 @@ public class EntityMouse extends AnimalBase implements MobSpawnDataProvider
 
     public boolean climbing()
     {
-        return !onGround && isOnLadder();
+        return !field_1623 && isOnLadder();
     }
 
     public boolean isOnLadder()
@@ -228,27 +228,27 @@ public class EntityMouse extends AnimalBase implements MobSpawnDataProvider
         int i = MathHelper.floor(x);
         int j = MathHelper.floor(boundingBox.minY);
         int k = MathHelper.floor(z);
-        return mocr.mocreaturesGlass.animals.micefreq > 0 && level.canSpawnEntity(boundingBox) && level.method_190(this, boundingBox).size() == 0 && !level.method_218(boundingBox) && level.getTileId(i, j - 1, k) == BlockBase.COBBLESTONE.id && mocr.mocreaturesGlass.animals.mouseinhouse || level.getTileId(i, j - 1, k) == BlockBase.WOOD.id && mocr.mocreaturesGlass.animals.mouseinhouse || level.getTileId(i, j - 1, k) == BlockBase.DIRT.id || level.getTileId(i, j - 1, k) == BlockBase.STONE.id  && mocr.mocreaturesGlass.animals.mouseinhouse || level.getTileId(i, j - 1, k) == BlockBase.GRASS.id;
+        return mocr.mocreaturesGlass.animals.micefreq > 0 && world.canSpawnEntity(boundingBox) && world.method_190(this, boundingBox).size() == 0 && !world.method_218(boundingBox) && world.getBlockId(i, j - 1, k) == Block.COBBLESTONE.id && mocr.mocreaturesGlass.animals.mouseinhouse || world.getBlockId(i, j - 1, k) == Block.PLANKS.id && mocr.mocreaturesGlass.animals.mouseinhouse || world.getBlockId(i, j - 1, k) == Block.DIRT.id || world.getBlockId(i, j - 1, k) == Block.STONE.id  && mocr.mocreaturesGlass.animals.mouseinhouse || world.getBlockId(i, j - 1, k) == Block.GRASS_BLOCK.id;
     }
 
-    protected String getAmbientSound()
+    protected String method_911()
     {
         return "mocreatures:micegrunt";
     }
 
-    protected String getHurtSound()
+    protected String method_912()
     {
         return "mocreatures:micehurt";
     }
 
-    protected String getDeathSound()
+    protected String method_913()
     {
         return "mocreatures:micedying";
     }
 
-    protected int getMobDrops()
+    protected int method_914()
     {
-        return ItemBase.seeds.id;
+        return Item.SEEDS.id;
     }
 
     mod_mocreatures mocr = new mod_mocreatures();

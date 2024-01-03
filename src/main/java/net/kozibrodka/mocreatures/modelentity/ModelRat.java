@@ -4,71 +4,71 @@
 
 package net.kozibrodka.mocreatures.modelentity;
 
-import net.minecraft.client.model.Cuboid;
-import net.minecraft.client.render.entity.model.EntityModelBase;
-import net.minecraft.util.maths.MathHelper;
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.util.math.MathHelper;
 
-public class ModelRat extends EntityModelBase
+public class ModelRat extends EntityModel
 {
 
     public ModelRat()
     {
-        Head = new Cuboid(0, 0);
-        Head.method_1818(-1.5F, -1F, -6F, 3, 4, 6, 0.0F);
-        Head.setRotationPoint(0.0F, 18F, -9F);
-        EarR = new Cuboid(16, 26);
-        EarR.method_1818(-3.5F, -3F, -2F, 3, 3, 1, 0.0F);
-        EarR.setRotationPoint(0.0F, 18F, -9F);
-        EarL = new Cuboid(24, 26);
-        EarL.method_1818(0.5F, -3F, -1F, 3, 3, 1, 0.0F);
-        EarL.setRotationPoint(0.0F, 18F, -10F);
-        WhiskerR = new Cuboid(24, 16);
-        WhiskerR.method_1818(-4.5F, -1F, -6F, 3, 3, 1, 0.0F);
-        WhiskerR.setRotationPoint(0.0F, 18F, -9F);
-        WhiskerL = new Cuboid(24, 20);
-        WhiskerL.method_1818(1.5F, -1F, -6F, 3, 3, 1, 0.0F);
-        WhiskerL.setRotationPoint(0.0F, 18F, -9F);
-        Body = new Cuboid(24, 0);
-        Body.method_1818(-4F, -3F, -3F, 8, 8, 8, 0.0F);
-        Body.setRotationPoint(0.0F, 19F, 0.0F);
+        Head = new ModelPart(0, 0);
+        Head.addCuboid(-1.5F, -1F, -6F, 3, 4, 6, 0.0F);
+        Head.setPivot(0.0F, 18F, -9F);
+        EarR = new ModelPart(16, 26);
+        EarR.addCuboid(-3.5F, -3F, -2F, 3, 3, 1, 0.0F);
+        EarR.setPivot(0.0F, 18F, -9F);
+        EarL = new ModelPart(24, 26);
+        EarL.addCuboid(0.5F, -3F, -1F, 3, 3, 1, 0.0F);
+        EarL.setPivot(0.0F, 18F, -10F);
+        WhiskerR = new ModelPart(24, 16);
+        WhiskerR.addCuboid(-4.5F, -1F, -6F, 3, 3, 1, 0.0F);
+        WhiskerR.setPivot(0.0F, 18F, -9F);
+        WhiskerL = new ModelPart(24, 20);
+        WhiskerL.addCuboid(1.5F, -1F, -6F, 3, 3, 1, 0.0F);
+        WhiskerL.setPivot(0.0F, 18F, -9F);
+        Body = new ModelPart(24, 0);
+        Body.addCuboid(-4F, -3F, -3F, 8, 8, 8, 0.0F);
+        Body.setPivot(0.0F, 19F, 0.0F);
         Body.pitch = 1.570796F;
-        Tail = new Cuboid(56, 0);
-        Tail.method_1818(-1F, 0.0F, -1F, 2, 18, 2, 0.0F);
-        Tail.setRotationPoint(0.0F, 19F, 5F);
+        Tail = new ModelPart(56, 0);
+        Tail.addCuboid(-1F, 0.0F, -1F, 2, 18, 2, 0.0F);
+        Tail.setPivot(0.0F, 19F, 5F);
         Tail.pitch = 1.570796F;
-        FrontL = new Cuboid(0, 18);
-        FrontL.method_1818(-2F, 0.0F, -3F, 2, 1, 4, 0.0F);
-        FrontL.setRotationPoint(3F, 22F, -7F);
-        FrontR = new Cuboid(0, 18);
-        FrontR.method_1818(0.0F, 0.0F, -3F, 2, 1, 4, 0.0F);
-        FrontR.setRotationPoint(-3F, 22F, -7F);
-        RearL = new Cuboid(0, 24);
-        RearL.method_1818(-2F, 0.0F, -4F, 2, 1, 5, 0.0F);
-        RearL.setRotationPoint(4F, 22F, 2.0F);
-        RearR = new Cuboid(0, 24);
-        RearR.method_1818(0.0F, 0.0F, -4F, 2, 1, 5, 0.0F);
-        RearR.setRotationPoint(-4F, 22F, 2.0F);
-        BodyF = new Cuboid(32, 16);
-        BodyF.method_1818(-3F, -3F, -7F, 6, 6, 6, 0.0F);
-        BodyF.setRotationPoint(0.0F, 19F, -2F);
+        FrontL = new ModelPart(0, 18);
+        FrontL.addCuboid(-2F, 0.0F, -3F, 2, 1, 4, 0.0F);
+        FrontL.setPivot(3F, 22F, -7F);
+        FrontR = new ModelPart(0, 18);
+        FrontR.addCuboid(0.0F, 0.0F, -3F, 2, 1, 4, 0.0F);
+        FrontR.setPivot(-3F, 22F, -7F);
+        RearL = new ModelPart(0, 24);
+        RearL.addCuboid(-2F, 0.0F, -4F, 2, 1, 5, 0.0F);
+        RearL.setPivot(4F, 22F, 2.0F);
+        RearR = new ModelPart(0, 24);
+        RearR.addCuboid(0.0F, 0.0F, -4F, 2, 1, 5, 0.0F);
+        RearR.setPivot(-4F, 22F, 2.0F);
+        BodyF = new ModelPart(32, 16);
+        BodyF.addCuboid(-3F, -3F, -7F, 6, 6, 6, 0.0F);
+        BodyF.setPivot(0.0F, 19F, -2F);
     }
 
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
         super.render(f, f1, f2, f3, f4, f5);
         setAngles(f, f1, f2, f3, f4, f5);
-        Head.method_1815(f5);
-        EarR.method_1815(f5);
-        EarL.method_1815(f5);
-        WhiskerR.method_1815(f5);
-        WhiskerL.method_1815(f5);
-        Body.method_1815(f5);
-        Tail.method_1815(f5);
-        FrontL.method_1815(f5);
-        FrontR.method_1815(f5);
-        RearL.method_1815(f5);
-        RearR.method_1815(f5);
-        BodyF.method_1815(f5);
+        Head.render(f5);
+        EarR.render(f5);
+        EarL.render(f5);
+        WhiskerR.render(f5);
+        WhiskerL.render(f5);
+        Body.render(f5);
+        Tail.render(f5);
+        FrontL.render(f5);
+        FrontR.render(f5);
+        RearL.render(f5);
+        RearR.render(f5);
+        BodyF.render(f5);
     }
 
     public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
@@ -90,16 +90,16 @@ public class ModelRat extends EntityModelBase
         Tail.yaw = FrontL.pitch * 0.625F;
     }
 
-    public Cuboid Head;
-    public Cuboid EarR;
-    public Cuboid EarL;
-    public Cuboid WhiskerR;
-    public Cuboid WhiskerL;
-    public Cuboid Body;
-    public Cuboid Tail;
-    public Cuboid FrontL;
-    public Cuboid FrontR;
-    public Cuboid RearL;
-    public Cuboid RearR;
-    public Cuboid BodyF;
+    public ModelPart Head;
+    public ModelPart EarR;
+    public ModelPart EarL;
+    public ModelPart WhiskerR;
+    public ModelPart WhiskerL;
+    public ModelPart Body;
+    public ModelPart Tail;
+    public ModelPart FrontL;
+    public ModelPart FrontR;
+    public ModelPart RearL;
+    public ModelPart RearR;
+    public ModelPart BodyF;
 }

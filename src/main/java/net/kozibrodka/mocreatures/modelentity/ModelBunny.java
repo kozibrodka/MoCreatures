@@ -5,65 +5,65 @@
 package net.kozibrodka.mocreatures.modelentity;
 
 
-import net.minecraft.client.model.Cuboid;
-import net.minecraft.client.render.entity.model.EntityModelBase;
-import net.minecraft.util.maths.MathHelper;
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.util.math.MathHelper;
 
-public class ModelBunny extends EntityModelBase
+public class ModelBunny extends EntityModel
 {
 
     public ModelBunny()
     {
         byte byte0 = 16;
-        a = new Cuboid(0, 0);
-        a.method_1818(-2F, -1F, -4F, 4, 4, 6, 0.0F);
-        a.setRotationPoint(0.0F, -1 + byte0, -4F);
-        onGround = new Cuboid(14, 0);
-        onGround.method_1818(-2F, -5F, -3F, 1, 4, 2, 0.0F);
-        onGround.setRotationPoint(0.0F, -1 + byte0, -4F);
-        g2 = new Cuboid(14, 0);
-        g2.method_1818(1.0F, -5F, -3F, 1, 4, 2, 0.0F);
-        g2.setRotationPoint(0.0F, -1 + byte0, -4F);
-        h = new Cuboid(20, 0);
-        h.method_1818(-4F, 0.0F, -3F, 2, 3, 2, 0.0F);
-        h.setRotationPoint(0.0F, -1 + byte0, -4F);
-        r2 = new Cuboid(20, 0);
-        r2.method_1818(2.0F, 0.0F, -3F, 2, 3, 2, 0.0F);
-        r2.setRotationPoint(0.0F, -1 + byte0, -4F);
-        b = new Cuboid(0, 10);
-        b.method_1818(-3F, -4F, -3F, 6, 8, 6, 0.0F);
-        b.setRotationPoint(0.0F, 0 + byte0, 0.0F);
-        b2 = new Cuboid(0, 24);
-        b2.method_1818(-2F, 4F, -2F, 4, 3, 4, 0.0F);
-        b2.setRotationPoint(0.0F, 0 + byte0, 0.0F);
-        e1 = new Cuboid(24, 16);
-        e1.method_1817(-2F, 0.0F, -1F, 2, 2, 2);
-        e1.setRotationPoint(3F, 3 + byte0, -3F);
-        e2 = new Cuboid(24, 16);
-        e2.method_1817(0.0F, 0.0F, -1F, 2, 2, 2);
-        e2.setRotationPoint(-3F, 3 + byte0, -3F);
-        l1 = new Cuboid(16, 24);
-        l1.method_1817(-2F, 0.0F, -4F, 2, 2, 4);
-        l1.setRotationPoint(3F, 3 + byte0, 4F);
-        n2 = new Cuboid(16, 24);
-        n2.method_1817(0.0F, 0.0F, -4F, 2, 2, 4);
-        n2.setRotationPoint(-3F, 3 + byte0, 4F);
+        a = new ModelPart(0, 0);
+        a.addCuboid(-2F, -1F, -4F, 4, 4, 6, 0.0F);
+        a.setPivot(0.0F, -1 + byte0, -4F);
+        onGround = new ModelPart(14, 0);
+        onGround.addCuboid(-2F, -5F, -3F, 1, 4, 2, 0.0F);
+        onGround.setPivot(0.0F, -1 + byte0, -4F);
+        g2 = new ModelPart(14, 0);
+        g2.addCuboid(1.0F, -5F, -3F, 1, 4, 2, 0.0F);
+        g2.setPivot(0.0F, -1 + byte0, -4F);
+        h = new ModelPart(20, 0);
+        h.addCuboid(-4F, 0.0F, -3F, 2, 3, 2, 0.0F);
+        h.setPivot(0.0F, -1 + byte0, -4F);
+        r2 = new ModelPart(20, 0);
+        r2.addCuboid(2.0F, 0.0F, -3F, 2, 3, 2, 0.0F);
+        r2.setPivot(0.0F, -1 + byte0, -4F);
+        b = new ModelPart(0, 10);
+        b.addCuboid(-3F, -4F, -3F, 6, 8, 6, 0.0F);
+        b.setPivot(0.0F, 0 + byte0, 0.0F);
+        b2 = new ModelPart(0, 24);
+        b2.addCuboid(-2F, 4F, -2F, 4, 3, 4, 0.0F);
+        b2.setPivot(0.0F, 0 + byte0, 0.0F);
+        e1 = new ModelPart(24, 16);
+        e1.addCuboid(-2F, 0.0F, -1F, 2, 2, 2);
+        e1.setPivot(3F, 3 + byte0, -3F);
+        e2 = new ModelPart(24, 16);
+        e2.addCuboid(0.0F, 0.0F, -1F, 2, 2, 2);
+        e2.setPivot(-3F, 3 + byte0, -3F);
+        l1 = new ModelPart(16, 24);
+        l1.addCuboid(-2F, 0.0F, -4F, 2, 2, 4);
+        l1.setPivot(3F, 3 + byte0, 4F);
+        n2 = new ModelPart(16, 24);
+        n2.addCuboid(0.0F, 0.0F, -4F, 2, 2, 4);
+        n2.setPivot(-3F, 3 + byte0, 4F);
     }
 
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
         setAngles(f, f1, f2, f3, f4, f5);
-        a.method_1815(f5);
-        onGround.method_1815(f5);
-        g2.method_1815(f5);
-        h.method_1815(f5);
-        r2.method_1815(f5);
-        b.method_1815(f5);
-        b2.method_1815(f5);
-        e1.method_1815(f5);
-        e2.method_1815(f5);
-        l1.method_1815(f5);
-        n2.method_1815(f5);
+        a.render(f5);
+        onGround.render(f5);
+        g2.render(f5);
+        h.render(f5);
+        r2.render(f5);
+        b.render(f5);
+        b2.render(f5);
+        e1.render(f5);
+        e2.render(f5);
+        l1.render(f5);
+        n2.render(f5);
     }
 
     public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
@@ -86,15 +86,15 @@ public class ModelBunny extends EntityModelBase
         n2.pitch = MathHelper.cos(f * 0.6662F + 3.141593F) * 1.2F * f1;
     }
 
-    public Cuboid a;
-    public Cuboid b;
-    public Cuboid b2;
-    public Cuboid e1;
-    public Cuboid e2;
-    public Cuboid l1;
-    public Cuboid n2;
-    public Cuboid onGround;
-    public Cuboid g2;
-    public Cuboid h;
-    public Cuboid r2;
+    public ModelPart a;
+    public ModelPart b;
+    public ModelPart b2;
+    public ModelPart e1;
+    public ModelPart e2;
+    public ModelPart l1;
+    public ModelPart n2;
+    public ModelPart onGround;
+    public ModelPart g2;
+    public ModelPart h;
+    public ModelPart r2;
 }

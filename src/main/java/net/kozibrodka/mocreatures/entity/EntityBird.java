@@ -3,32 +3,32 @@ package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mixin.EntityBaseAccesor;
-import net.minecraft.block.BlockBase;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.Item;
-import net.minecraft.entity.Living;
-import net.minecraft.entity.animal.AnimalBase;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemBase;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
-import net.minecraft.util.maths.Box;
-import net.minecraft.util.maths.MathHelper;
+import net.minecraft.block.Block;
+import net.minecraft.block.Material;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 
 
-public class EntityBird extends AnimalBase implements MobSpawnDataProvider
+public class EntityBird extends AnimalEntity implements MobSpawnDataProvider
 {
 
-    public EntityBird(Level world)
+    public EntityBird(World world)
     {
         super(world);
         texture = "/assets/mocreatures/stationapi/textures/mob/birdblue.png";
-        setSize(0.4F, 0.3F);
+        setBoundingBoxSpacing(0.4F, 0.3F);
         health = 2;
         field_1625 = true;
         wingb = 0.0F;
@@ -42,21 +42,21 @@ public class EntityBird extends AnimalBase implements MobSpawnDataProvider
         field_1045 = true;
     }
 
-    protected void handleFallDamage(float f)
+    protected void method_1389(float f)
     {
     }
 
-    public int getLimitPerChunk()
+    public int method_916()
     {
         return 6;
     }
 
-    public void updateDespawnCounter()
+    public void method_937()
     {
-        super.updateDespawnCounter();
+        super.method_937();
         winge = wingb;
         wingd = wingc;
-        wingc = (float)((double)wingc + (double)(onGround ? -1 : 4) * 0.29999999999999999D);
+        wingc = (float)((double)wingc + (double)(field_1623 ? -1 : 4) * 0.29999999999999999D);
         if(wingc < 0.0F)
         {
             wingc = 0.0F;
@@ -65,22 +65,22 @@ public class EntityBird extends AnimalBase implements MobSpawnDataProvider
         {
             wingc = 1.0F;
         }
-        if(!onGround && wingh < 1.0F)
+        if(!field_1623 && wingh < 1.0F)
         {
             wingh = 1.0F;
         }
         wingh = (float)((double)wingh * 0.90000000000000002D);
-        if(!onGround && velocityY < 0.0D)
+        if(!field_1623 && velocityY < 0.0D)
         {
             velocityY *= 0.80000000000000004D;
         }
         wingb += wingh * 2.0F;
-        Living entityliving = getClosestEntityLiving(this, 4D);
+        LivingEntity entityliving = getClosestEntityLiving(this, 4D);
         if(entityliving != null && !tamed && method_928(entityliving))
         {
             fleeing = true;
         }
-        if(rand.nextInt(300) == 0)
+        if(random.nextInt(300) == 0)
         {
             fleeing = true;
         }
@@ -100,40 +100,40 @@ public class EntityBird extends AnimalBase implements MobSpawnDataProvider
 
                 fleeing = false;
             }
-            if(rand.nextInt(50) == 0)
+            if(random.nextInt(50) == 0)
             {
                 fleeing = false;
             }
         }
         if(!fleeing)
         {
-            Item entityitem = getClosestSeeds(this, 12D);
+            ItemEntity entityitem = getClosestSeeds(this, 12D);
             if(entityitem != null)
             {
                 FlyToNextEntity(entityitem);
-                Item entityitem1 = getClosestSeeds(this, 1.0D);
-                if(rand.nextInt(50) == 0 && entityitem1 != null)
+                ItemEntity entityitem1 = getClosestSeeds(this, 1.0D);
+                if(random.nextInt(50) == 0 && entityitem1 != null)
                 {
-                    entityitem1.remove();
+                    entityitem1.markDead();
                     tamed = true;
                 }
             }
         }
     }
 
-    protected void tickHandSwing()
+    protected void method_910()
     {
-        if(onGround && rand.nextInt(10) == 0 && (velocityX > 0.050000000000000003D || velocityZ > 0.050000000000000003D || velocityX < -0.050000000000000003D || velocityZ < -0.050000000000000003D))
+        if(field_1623 && random.nextInt(10) == 0 && (velocityX > 0.050000000000000003D || velocityZ > 0.050000000000000003D || velocityX < -0.050000000000000003D || velocityZ < -0.050000000000000003D))
         {
             velocityY = 0.25D;
         }
-        if(vehicle != null && (vehicle instanceof PlayerBase))
+        if(field_1595 != null && (field_1595 instanceof PlayerEntity))
         {
-            PlayerBase entityplayer = (PlayerBase)vehicle;
+            PlayerEntity entityplayer = (PlayerEntity)field_1595;
             if(entityplayer != null)
             {
                 yaw = entityplayer.yaw;
-                ((EntityBaseAccesor)entityplayer).setFallDistance(0.0F);
+                ((EntityBaseAccesor)entityplayer).setField_1636(0.0F);
                 if(entityplayer.velocityY < -0.10000000000000001D)
                 {
                     entityplayer.velocityY = -0.10000000000000001D;
@@ -142,40 +142,40 @@ public class EntityBird extends AnimalBase implements MobSpawnDataProvider
         }
         if(!fleeing || !picked)
         {
-            super.tickHandSwing();
+            super.method_910();
         } else
-        if(onGround)
+        if(field_1623)
         {
             picked = false;
         }
     }
 
-    public void remove()
+    public void markDead()
     {
         if(tamed && health > 0)
         {
             return;
         } else
         {
-            super.remove();
+            super.markDead();
             return;
         }
     }
 
-    public boolean interact(PlayerBase entityplayer)
+    public boolean method_1323(PlayerEntity entityplayer)
     {
         if(!tamed)
         {
             return false;
         }
         yaw = entityplayer.yaw;
-        startRiding(entityplayer);
-        if(vehicle != null)
+        method_1376(entityplayer);
+        if(field_1595 != null)
         {
             picked = true;
         } else
         {
-            level.playSound(this, "mob.chickenplop", 1.0F, (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
+            world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
         }
         velocityX = entityplayer.velocityX * 5D;
         velocityY = entityplayer.velocityY / 2D + 0.5D;
@@ -183,35 +183,35 @@ public class EntityBird extends AnimalBase implements MobSpawnDataProvider
         return true;
     }
 
-    public double getHeightOffset()
+    public double method_1385()
     {
-        if(vehicle instanceof PlayerBase)
+        if(field_1595 instanceof PlayerEntity)
         {
-            return (double)(standingEyeHeight - 1.15F);
+            return (double)(eyeHeight - 1.15F);
         } else
         {
-            return (double)standingEyeHeight;
+            return (double)eyeHeight;
         }
     }
 
-    private Item getClosestSeeds(EntityBase entity, double d)
+    private ItemEntity getClosestSeeds(Entity entity, double d)
     {
         double d1 = -1D;
-        Item entityitem = null;
-        List list = level.getEntities(this, boundingBox.expand(d, d, d));
+        ItemEntity entityitem = null;
+        List list = world.getEntities(this, boundingBox.expand(d, d, d));
         for(int i = 0; i < list.size(); i++)
         {
-            EntityBase entity1 = (EntityBase)list.get(i);
-            if(!(entity1 instanceof Item))
+            Entity entity1 = (Entity)list.get(i);
+            if(!(entity1 instanceof ItemEntity))
             {
                 continue;
             }
-            Item entityitem1 = (Item)entity1;
-            if(entityitem1.item.itemId != ItemBase.seeds.id)
+            ItemEntity entityitem1 = (ItemEntity)entity1;
+            if(entityitem1.stack.itemId != Item.SEEDS.id)
             {
                 continue;
             }
-            double d2 = entityitem1.squaredDistanceTo(entity.x, entity.y, entity.z);
+            double d2 = entityitem1.method_1347(entity.x, entity.y, entity.z);
             if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1))
             {
                 d1 = d2;
@@ -222,30 +222,30 @@ public class EntityBird extends AnimalBase implements MobSpawnDataProvider
         return entityitem;
     }
 
-    private Living getClosestEntityLiving(EntityBase entity, double d)
+    private LivingEntity getClosestEntityLiving(Entity entity, double d)
     {
         double d1 = -1D;
-        Living entityliving = null;
-        List list = level.getEntities(this, boundingBox.expand(d, d, d));
+        LivingEntity entityliving = null;
+        List list = world.getEntities(this, boundingBox.expand(d, d, d));
         for(int i = 0; i < list.size(); i++)
         {
-            EntityBase entity1 = (EntityBase)list.get(i);
-            if(!(entity1 instanceof Living) || (entity1 instanceof EntityBird))
+            Entity entity1 = (Entity)list.get(i);
+            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityBird))
             {
                 continue;
             }
-            double d2 = entity1.squaredDistanceTo(entity.x, entity.y, entity.z);
-            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((Living)entity1).method_928(entity))
+            double d2 = entity1.method_1347(entity.x, entity.y, entity.z);
+            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).method_928(entity))
             {
                 d1 = d2;
-                entityliving = (Living)entity1;
+                entityliving = (LivingEntity)entity1;
             }
         }
 
         return entityliving;
     }
 
-    private boolean FlyToNextEntity(EntityBase entity)
+    private boolean FlyToNextEntity(Entity entity)
     {
         if(entity != null)
         {
@@ -297,19 +297,19 @@ public class EntityBird extends AnimalBase implements MobSpawnDataProvider
     private void WingFlap()
     {
         velocityY += 0.050000000000000003D;
-        if(rand.nextInt(30) == 0)
+        if(random.nextInt(30) == 0)
         {
             velocityX += 0.20000000000000001D;
         }
-        if(rand.nextInt(30) == 0)
+        if(random.nextInt(30) == 0)
         {
             velocityX -= 0.20000000000000001D;
         }
-        if(rand.nextInt(30) == 0)
+        if(random.nextInt(30) == 0)
         {
             velocityZ += 0.20000000000000001D;
         }
-        if(rand.nextInt(30) == 0)
+        if(random.nextInt(30) == 0)
         {
             velocityZ -= 0.20000000000000001D;
         }
@@ -369,7 +369,7 @@ public class EntityBird extends AnimalBase implements MobSpawnDataProvider
     {
         if(typeint == 0)
         {
-            int i = rand.nextInt(100);
+            int i = random.nextInt(100);
             if(i <= 15)
             {
                 typeint = 1;
@@ -468,8 +468,8 @@ public class EntityBird extends AnimalBase implements MobSpawnDataProvider
             label0:
             for(int j2 = i1; j2 < l1; j2++)
             {
-                int k2 = level.getTileId(i2, j, j2);
-                if(k2 == 0 || BlockBase.BY_ID[k2].material != Material.WOOD)
+                int k2 = world.getBlockId(i2, j, j2);
+                if(k2 == 0 || Block.BLOCKS[k2].material != Material.WOOD)
                 {
                     continue;
                 }
@@ -480,7 +480,7 @@ public class EntityBird extends AnimalBase implements MobSpawnDataProvider
                     {
                         continue label0;
                     }
-                    int i3 = level.getTileId(i2, l2, j2);
+                    int i3 = world.getBlockId(i2, l2, j2);
                     if(i3 == 0)
                     {
                         return (new int[] {
@@ -498,7 +498,7 @@ public class EntityBird extends AnimalBase implements MobSpawnDataProvider
         });
     }
 
-    public int[] ReturnNearestMaterialCoord(EntityBase entity, Material material, Double double1)
+    public int[] ReturnNearestMaterialCoord(Entity entity, Material material, Double double1)
     {
         Box axisalignedbb = entity.boundingBox.expand(double1.doubleValue(), double1.doubleValue(), double1.doubleValue());
         int i = MathHelper.floor(axisalignedbb.minX);
@@ -513,8 +513,8 @@ public class EntityBird extends AnimalBase implements MobSpawnDataProvider
             {
                 for(int i2 = i1; i2 < j1; i2++)
                 {
-                    int j2 = level.getTileId(k1, l1, i2);
-                    if(j2 != 0 && BlockBase.BY_ID[j2].material == material)
+                    int j2 = world.getBlockId(k1, l1, i2);
+                    if(j2 != 0 && Block.BLOCKS[j2].material == material)
                     {
                         return (new int[] {
                                 k1, l1, i2
@@ -531,34 +531,34 @@ public class EntityBird extends AnimalBase implements MobSpawnDataProvider
         });
     }
 
-    protected int getMobDrops()
+    protected int method_914()
     {
-        if(rand.nextInt(2) == 0)
+        if(random.nextInt(2) == 0)
         {
-            return ItemBase.feather.id;
+            return Item.FEATHER.id;
         } else
         {
-            return ItemBase.seeds.id;
+            return Item.SEEDS.id;
         }
     }
 
-    public void writeCustomDataToTag(CompoundTag nbttagcompound)
+    public void writeNbt(NbtCompound nbttagcompound)
     {
-        super.writeCustomDataToTag(nbttagcompound);
-        nbttagcompound.put("TypeInt", typeint);
-        nbttagcompound.put("HasReproduced", hasreproduced);
-        nbttagcompound.put("Tamed", tamed);
+        super.writeNbt(nbttagcompound);
+        nbttagcompound.putInt("TypeInt", typeint);
+        nbttagcompound.putBoolean("HasReproduced", hasreproduced);
+        nbttagcompound.putBoolean("Tamed", tamed);
     }
 
-    public void readCustomDataFromTag(CompoundTag nbttagcompound)
+    public void readNbt(NbtCompound nbttagcompound)
     {
-        super.readCustomDataFromTag(nbttagcompound);
+        super.readNbt(nbttagcompound);
         hasreproduced = nbttagcompound.getBoolean("HasReproduced");
         tamed = nbttagcompound.getBoolean("Tamed");
         typeint = nbttagcompound.getInt("TypeInt");
     }
 
-    protected String getAmbientSound()
+    protected String method_911()
     {
         if(typeint == 1)
         {
@@ -585,12 +585,12 @@ public class EntityBird extends AnimalBase implements MobSpawnDataProvider
         }
     }
 
-    protected String getHurtSound()
+    protected String method_912()
     {
         return "mocreatures:birdhurt";
     }
 
-    protected String getDeathSound()
+    protected String method_913()
     {
         return "mocreatures:birddying";
     }

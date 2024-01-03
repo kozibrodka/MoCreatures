@@ -9,15 +9,15 @@ import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mixin.EntityBaseAccesor;
 import net.kozibrodka.mocreatures.mocreatures.MoCGUI;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.Item;
-import net.minecraft.entity.Living;
-import net.minecraft.entity.animal.Wolf;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemBase;
-import net.minecraft.item.ItemInstance;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.WolfEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
@@ -27,12 +27,12 @@ import java.util.List;
 public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
 {
 
-    public EntityShark(Level world)
+    public EntityShark(World world)
     {
         super(world);
         texture = "/assets/mocreatures/stationapi/textures/mob/shark.png";
-        setSize(1.8F, 1.3F);
-        b = 1.0F + rand.nextFloat();
+        setBoundingBoxSpacing(1.8F, 1.3F);
+        b = 1.0F + random.nextFloat();
         adult = false;
         tamed = false;
         health = 25;
@@ -43,10 +43,10 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
         protectFromPlayers = true;
     }
 
-    public void updateDespawnCounter()
+    public void method_937()
     {
-        super.updateDespawnCounter();
-        if(!adult && rand.nextInt(50) == 0)
+        super.method_937();
+        if(!adult && random.nextInt(50) == 0)
         {
             b += 0.01F;
             if(b >= 2.0F)
@@ -56,31 +56,31 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
         }
     }
 
-    protected void tickHandSwing(){
-        if(this.entity instanceof Living){
-            PlayerBase uciekinier = level.getClosestPlayerTo(this, 16D);
-            if(uciekinier == null && entity.isAlive()){
-                if(rand.nextInt(30) == 0)
+    protected void method_910(){
+        if(this.target instanceof LivingEntity){
+            PlayerEntity uciekinier = world.method_186(this, 16D);
+            if(uciekinier == null && target.isAlive()){
+                if(random.nextInt(30) == 0)
                 {
-                    entity = null;
+                    target = null;
                 }
             }
         }
-        super.tickHandSwing();
+        super.method_910();
     }
 
-    protected EntityBase getAttackTarget()
+    protected Entity method_638()
     {
-        if(level.difficulty > 0 && b >= 1.0F)
+        if(world.field_213 > 0 && b >= 1.0F)
         {
-            PlayerBase entityplayer = level.getClosestPlayerTo(this, 16D);
+            PlayerEntity entityplayer = world.method_186(this, 16D);
             if(entityplayer != null && ((EntityBaseAccesor)entityplayer).getField_1612() && !tamed)
             {
                 return entityplayer;
             }
-            if(rand.nextInt(30) == 0)
+            if(random.nextInt(30) == 0)
             {
-                Living entityliving = FindTarget(this, 16D);
+                LivingEntity entityliving = FindTarget(this, 16D);
                 if(entityliving != null && ((EntityBaseAccesor)entityliving).getField_1612())
                 {
                     return entityliving;
@@ -90,48 +90,48 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
         return null;
     }
 
-    public Living FindTarget(EntityBase entity, double d)
+    public LivingEntity FindTarget(Entity entity, double d)
     {
         double d1 = -1D;
-        Living entityliving = null;
-        List list = level.getEntities(this, boundingBox.expand(d, d, d));
+        LivingEntity entityliving = null;
+        List list = world.getEntities(this, boundingBox.expand(d, d, d));
         for(int i = 0; i < list.size(); i++)
         {
-            EntityBase entity1 = (EntityBase)list.get(i);
-            if(!(entity1 instanceof Living) || (entity1 instanceof EntityShark) || (entity1 instanceof EntitySharkEgg) || (entity1 instanceof PlayerBase) || (entity1 instanceof Wolf) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof EntityDolphin) && (tamed || !mocr.mocreaturesGlass.watermobs.attackdolphins) || (entity1 instanceof EntityHorse) && tamed && ((EntityHorse) entity1).tamed || (entity1 instanceof EntityBigCat) && tamed && ((EntityBigCat) entity1).tamed)
+            Entity entity1 = (Entity)list.get(i);
+            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityShark) || (entity1 instanceof EntitySharkEgg) || (entity1 instanceof PlayerEntity) || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof EntityDolphin) && (tamed || !mocr.mocreaturesGlass.watermobs.attackdolphins) || (entity1 instanceof EntityHorse) && tamed && ((EntityHorse) entity1).tamed || (entity1 instanceof EntityBigCat) && tamed && ((EntityBigCat) entity1).tamed)
             {
                 continue;
             }
-            double d2 = entity1.squaredDistanceTo(entity.x, entity.y, entity.z);
-            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((Living)entity1).method_928(entity))
+            double d2 = entity1.method_1347(entity.x, entity.y, entity.z);
+            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).method_928(entity))
             {
                 d1 = d2;
-                entityliving = (Living)entity1;
+                entityliving = (LivingEntity)entity1;
             }
         }
 
         return entityliving;
     }
 
-    public boolean damage(EntityBase entitybase, int i)
+    public boolean damage(Entity entitybase, int i)
     {
-        if(super.damage(entitybase, i) && level.difficulty > 0)
+        if(super.damage(entitybase, i) && world.field_213 > 0)
         {
-            if(passenger == entitybase || vehicle == entitybase)
+            if(field_1594 == entitybase || field_1595 == entitybase)
             {
                 return true;
             }
-            if(tamed && entitybase instanceof PlayerBase)
+            if(tamed && entitybase instanceof PlayerEntity)
             {
-                PlayerBase gracz = (PlayerBase)entitybase;
+                PlayerEntity gracz = (PlayerEntity)entitybase;
                 if(!gracz.name.equals(sharkOwner) && protectFromPlayers)
                 {
-                    entity = entitybase;
+                    target = entitybase;
                 }
             }
             if(entitybase != this)
             {
-                entity = entitybase;
+                target = entitybase;
             }
             return true;
         } else
@@ -140,32 +140,32 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
         }
     }
 
-    protected void tryAttack(EntityBase entity, float f)
+    protected void method_637(Entity entity, float f)
     {
         if((double)f < 3.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY && b >= 1.0F)
         {
-            attackTime = 20;
+            field_1042 = 20;
             entity.damage(this, 5);
-            if(!(entity instanceof PlayerBase))
+            if(!(entity instanceof PlayerEntity))
             {
                 destroyDrops(this, 3D);
             }
         }
     }
 
-    public void writeCustomDataToTag(CompoundTag nbttagcompound)
+    public void writeNbt(NbtCompound nbttagcompound)
     {
-        super.writeCustomDataToTag(nbttagcompound);
-        nbttagcompound.put("Tamed", tamed);
-        nbttagcompound.put("Adult", adult);
-        nbttagcompound.put("Age", b);
-        nbttagcompound.put("Name", name);
-        nbttagcompound.put("DisplayName", displayname);
+        super.writeNbt(nbttagcompound);
+        nbttagcompound.putBoolean("Tamed", tamed);
+        nbttagcompound.putBoolean("Adult", adult);
+        nbttagcompound.putFloat("Age", b);
+        nbttagcompound.putString("Name", name);
+        nbttagcompound.putBoolean("DisplayName", displayname);
     }
 
-    public void readCustomDataFromTag(CompoundTag nbttagcompound)
+    public void readNbt(NbtCompound nbttagcompound)
     {
-        super.readCustomDataFromTag(nbttagcompound);
+        super.readNbt(nbttagcompound);
         tamed = nbttagcompound.getBoolean("Tamed");
         adult = nbttagcompound.getBoolean("Adult");
         b = nbttagcompound.getFloat("Age");
@@ -183,78 +183,78 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
         return !tamed;
     }
 
-    protected void getDrops()
+    protected void method_933()
     {
-        int i = rand.nextInt(100);
+        int i = random.nextInt(100);
         if(i < 90)
         {
-            int j = rand.nextInt(3) + 1;
+            int j = random.nextInt(3) + 1;
             for(int l = 0; l < j; l++)
             {
-                dropItem(new ItemInstance(mod_mocreatures.sharkteeth, 1, 0), 0.0F);
+                method_1327(new ItemStack(mod_mocreatures.sharkteeth, 1, 0), 0.0F);
             }
             if(mocr.mocreaturesGlass.balancesettings.balance_drop) {
-                int j1 = rand.nextInt(2);
+                int j1 = random.nextInt(2);
                 for (int l1 = 0; l1 < j1; l1++) {
-                    dropItem(new ItemInstance(mod_mocreatures.sharkoil, 1, 0), 0.0F);
+                    method_1327(new ItemStack(mod_mocreatures.sharkoil, 1, 0), 0.0F);
                 }
             }
 
         } else
-        if(level.difficulty > 0 && b > 1.5F)
+        if(world.field_213 > 0 && b > 1.5F)
         {
-            int k = rand.nextInt(3) + 1;
+            int k = random.nextInt(3) + 1;
             for(int i1 = 0; i1 < k; i1++)
             {
-                dropItem(new ItemInstance(mod_mocreatures.sharkegg, 1, 0), 0.0F);
+                method_1327(new ItemStack(mod_mocreatures.sharkegg, 1, 0), 0.0F);
             }
 
         }
     }
 
-    public void destroyDrops(EntityBase entity, double d)
+    public void destroyDrops(Entity entity, double d)
     {
-        List list = level.getEntities(entity, entity.boundingBox.expand(d, d, d));
+        List list = world.getEntities(entity, entity.boundingBox.expand(d, d, d));
         for(int i = 0; i < list.size(); i++)
         {
-            EntityBase entity1 = (EntityBase)list.get(i);
-            if(!(entity1 instanceof Item))
+            Entity entity1 = (Entity)list.get(i);
+            if(!(entity1 instanceof ItemEntity))
             {
                 continue;
             }
-            Item entityitem = (Item)entity1;
-            if(entityitem != null && entityitem.age < 50 && mocr.mocreaturesGlass.huntercreatures.destroyitems)
+            ItemEntity entityitem = (ItemEntity)entity1;
+            if(entityitem != null && entityitem.itemAge < 50 && mocr.mocreaturesGlass.huntercreatures.destroyitems)
             {
-                entityitem.remove();
+                entityitem.markDead();
             }
         }
 
     }
 
-    public boolean interact(PlayerBase entityplayer)
+    public boolean method_1323(PlayerEntity entityplayer)
     {
-        ItemInstance itemstack = entityplayer.inventory.getHeldItem();
+        ItemStack itemstack = entityplayer.inventory.getSelectedItem();
         if(tamed && !protectFromPlayers && !entityplayer.name.equals(sharkOwner))
         {
             return false;
         }
-        if(itemstack != null && tamed && entityplayer.name.equals(sharkOwner) && (itemstack.itemId == ItemBase.goldSword.id || itemstack.itemId == ItemBase.stoneSword.id || itemstack.itemId == ItemBase.woodSword.id || itemstack.itemId == ItemBase.ironSword.id || itemstack.itemId == ItemBase.diamondSword.id))
+        if(itemstack != null && tamed && entityplayer.name.equals(sharkOwner) && (itemstack.itemId == Item.GOLDEN_SWORD.id || itemstack.itemId == Item.STONE_SWORD.id || itemstack.itemId == Item.WOODEN_SWORD.id || itemstack.itemId == Item.IRON_SWORD.id || itemstack.itemId == Item.DIAMOND_SWORD.id))
         {
             if(protectFromPlayers == true){
                 protectFromPlayers = false;
                 for(int var3 = 0; var3 < 7; ++var3) {
-                    double var4 = this.rand.nextGaussian() * 0.02D;
-                    double var6 = this.rand.nextGaussian() * 0.02D;
-                    double var8 = this.rand.nextGaussian() * 0.02D;
-                    level.addParticle("heart", this.x + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.rand.nextFloat() * this.height), this.z + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
+                    double var4 = this.random.nextGaussian() * 0.02D;
+                    double var6 = this.random.nextGaussian() * 0.02D;
+                    double var8 = this.random.nextGaussian() * 0.02D;
+                    world.addParticle("heart", this.x + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, this.y + 0.5D + (double) (this.random.nextFloat() * this.spacingY), this.z + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, var4, var6, var8);
                 }
             }else{
                 protectFromPlayers = true;
                 for(int var3 = 0; var3 < 7; ++var3) {
-                    double var4 = this.rand.nextGaussian() * 0.02D;
-                    double var6 = this.rand.nextGaussian() * 0.02D;
-                    double var8 = this.rand.nextGaussian() * 0.02D;
-                    level.addParticle("flame", this.x + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.rand.nextFloat() * this.height), this.z + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
+                    double var4 = this.random.nextGaussian() * 0.02D;
+                    double var6 = this.random.nextGaussian() * 0.02D;
+                    double var8 = this.random.nextGaussian() * 0.02D;
+                    world.addParticle("flame", this.x + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, this.y + 0.5D + (double) (this.random.nextFloat() * this.spacingY), this.z + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, var4, var6, var8);
                 }
             }
             return true;
@@ -263,7 +263,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
         {
             if(--itemstack.count == 0)
             {
-                entityplayer.inventory.setInventoryItem(entityplayer.inventory.selectedHotbarSlot, null);
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
             if(health + 15 > maxhealth)
             {
@@ -273,12 +273,12 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
             }
             return true;
         }
-        if(itemstack != null && tamed && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == ItemBase.book.id))
+        if(itemstack != null && tamed && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == Item.BOOK.id))
         {
             setName(this);
             return true;
         }
-        if(itemstack != null && tamed && (itemstack.itemId == ItemBase.diamondPickaxe.id || itemstack.itemId == ItemBase.woodPickaxe.id || itemstack.itemId == ItemBase.stonePickaxe.id || itemstack.itemId == ItemBase.ironPickaxe.id || itemstack.itemId == ItemBase.goldPickaxe.id))
+        if(itemstack != null && tamed && (itemstack.itemId == Item.DIAMOND_PICKAXE.id || itemstack.itemId == Item.WOODEN_PICKAXE.id || itemstack.itemId == Item.STONE_PICKAXE.id || itemstack.itemId == Item.IRON_PICKAXE.id || itemstack.itemId == Item.GOLDEN_PICKAXE.id))
         {
             displayname = !displayname;
             return true;
@@ -288,24 +288,24 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
         }
     }
 
-    public void remove()
+    public void markDead()
     {
         if(tamed && health > 0)
         {
             return;
         } else
         {
-            super.remove();
+            super.markDead();
             return;
         }
     }
 
-    protected String getHurtSound()
+    protected String method_912()
     {
         return "mocreatures:sharkhurt";
     }
 
-    protected String getDeathSound()
+    protected String method_913()
     {
         return "mocreatures:sharkhurt";
     }
@@ -318,13 +318,13 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.watermobs.sharkfreq > 0 && level.difficulty >= mocr.mocreaturesGlass.watermobs.sharkSpawnDifficulty + 1 && super.canSpawn();
+        return mocr.mocreaturesGlass.watermobs.sharkfreq > 0 && world.field_213 >= mocr.mocreaturesGlass.watermobs.sharkSpawnDifficulty + 1 && super.canSpawn();
     }
 
     public static void setName(EntityShark entityshark)
     {
         entityshark.displayname = true;
-        mc.openScreen(new MoCGUI(entityshark, entityshark.name));
+        mc.setScreen(new MoCGUI(entityshark, entityshark.name));
     }
 
     @SuppressWarnings("deprecation")

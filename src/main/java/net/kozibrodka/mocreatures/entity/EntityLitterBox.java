@@ -7,16 +7,16 @@ package net.kozibrodka.mocreatures.entity;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mixin.CreeperAccesor;
 import net.kozibrodka.mocreatures.mixin.WalkingBaseAccesor;
-import net.minecraft.block.BlockBase;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.Living;
-import net.minecraft.entity.monster.Creeper;
-import net.minecraft.entity.monster.MonsterBase;
-import net.minecraft.entity.player.PlayerBase;
-import net.minecraft.item.ItemBase;
-import net.minecraft.item.ItemInstance;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.CreeperEntity;
+import net.minecraft.entity.mob.MonsterEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.HasTrackingParameters;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
@@ -24,41 +24,41 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 import java.util.List;
 
 @HasTrackingParameters(trackingDistance = 160, updatePeriod = 2)
-public class EntityLitterBox extends Living implements MobSpawnDataProvider
+public class EntityLitterBox extends LivingEntity implements MobSpawnDataProvider
 {
 
-    public EntityLitterBox(Level world)
+    public EntityLitterBox(World world)
     {
         super(world);
-        setSize(1.0F, 0.3F);
+        setBoundingBoxSpacing(1.0F, 0.3F);
     }
 
     public void tick()
     {
         super.tick();
-        if(onGround)
+        if(field_1623)
         {
             pickedUp = false;
         }
         if(usedlitter)
         {
             littertime++;
-            level.addParticle("smoke", x, y, z, 0.0D, 0.0D, 0.0D);
-            List list = level.getEntities(this, boundingBox.expand(12D, 4D, 12D));
+            world.addParticle("smoke", x, y, z, 0.0D, 0.0D, 0.0D);
+            List list = world.getEntities(this, boundingBox.expand(12D, 4D, 12D));
             for(int i = 0; i < list.size(); i++)
             {
-                EntityBase entity = (EntityBase)list.get(i);
-                if(!(entity instanceof MonsterBase))
+                Entity entity = (Entity)list.get(i);
+                if(!(entity instanceof MonsterEntity))
                 {
                     continue;
                 }
-                MonsterBase entitymob = (MonsterBase)entity;
+                MonsterEntity entitymob = (MonsterEntity)entity;
 //                entitymob.entity = this;
-                ((WalkingBaseAccesor)entitymob).setEntity(this);
-                if(entitymob instanceof Creeper)
+                ((WalkingBaseAccesor)entitymob).setTarget(this);
+                if(entitymob instanceof CreeperEntity)
                 {
 //                    ((Creeper)entitymob).currentFuseTime = 5;
-                    ((CreeperAccesor)(Creeper)entitymob).setCurrentFuseTime(5);
+                    ((CreeperAccesor)(CreeperEntity)entitymob).setField_350(5);
                 }
                 if(entitymob instanceof EntityOgre)
                 {
@@ -75,30 +75,30 @@ public class EntityLitterBox extends Living implements MobSpawnDataProvider
 
     public void move(double d, double d1, double d2)
     {
-        if(vehicle != null || !onGround || !mocr.mocreaturesGlass.othersettings.staticlitter)
+        if(field_1595 != null || !field_1623 || !mocr.mocreaturesGlass.othersettings.staticlitter)
         {
             super.move(d, d1, d2);
         }
     }
 
-    public void writeCustomDataToTag(CompoundTag nbttagcompound)
+    public void writeNbt(NbtCompound nbttagcompound)
     {
-        nbttagcompound.put("UsedLitter", usedlitter);
+        nbttagcompound.putBoolean("UsedLitter", usedlitter);
     }
 
-    public void readCustomDataFromTag(CompoundTag nbttagcompound)
+    public void readNbt(NbtCompound nbttagcompound)
     {
         usedlitter = nbttagcompound.getBoolean("UsedLitter");
     }
 
     public boolean method_1356()
     {
-        return !removed;
+        return !dead;
     }
 
     public boolean method_1380()
     {
-        return !removed;
+        return !dead;
     }
 
     protected boolean method_940()
@@ -106,43 +106,43 @@ public class EntityLitterBox extends Living implements MobSpawnDataProvider
         return false;
     }
 
-    public void handleStatus(byte byte0)
+    public void method_1313(byte byte0)
     {
     }
 
-    protected void tickHandSwing()
+    protected void method_910()
     {
     }
 
-    protected void handleFallDamage(float f)
+    protected void method_1389(float f)
     {
     }
 
-    public boolean damage(EntityBase entity, int i)
+    public boolean damage(Entity entity, int i)
     {
         return false;
     }
 
-    public String getTextured()
+    public String method_1314()
     {
         return "/assets/mocreatures/stationapi/textures/mob/litterbox.png";
     }
 
-    public boolean interact(PlayerBase entityplayer)
+    public boolean method_1323(PlayerEntity entityplayer)
     {
-        ItemInstance itemstack = entityplayer.inventory.getHeldItem();
-        if(itemstack != null && (itemstack.itemId == ItemBase.stonePickaxe.id || itemstack.itemId == ItemBase.woodPickaxe.id || itemstack.itemId == ItemBase.ironPickaxe.id || itemstack.itemId == ItemBase.goldPickaxe.id || itemstack.itemId == ItemBase.diamondPickaxe.id))
+        ItemStack itemstack = entityplayer.inventory.getSelectedItem();
+        if(itemstack != null && (itemstack.itemId == Item.STONE_PICKAXE.id || itemstack.itemId == Item.WOODEN_PICKAXE.id || itemstack.itemId == Item.IRON_PICKAXE.id || itemstack.itemId == Item.GOLDEN_PICKAXE.id || itemstack.itemId == Item.DIAMOND_PICKAXE.id))
         {
-            entityplayer.inventory.addStack(new ItemInstance(mod_mocreatures.litterbox));
-            level.playSound(this, "random.pop", 0.2F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-            remove();
+            entityplayer.inventory.method_671(new ItemStack(mod_mocreatures.litterbox));
+            world.playSound(this, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+            markDead();
             return true;
         }
-        if(itemstack != null && itemstack.itemId == BlockBase.SAND.id)
+        if(itemstack != null && itemstack.itemId == Block.SAND.id)
         {
             if(--itemstack.count == 0)
             {
-                entityplayer.inventory.setInventoryItem(entityplayer.inventory.selectedHotbarSlot, null);
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
             usedlitter = false;
             littertime = 0;
@@ -150,45 +150,45 @@ public class EntityLitterBox extends Living implements MobSpawnDataProvider
         } else
         {
             yaw = entityplayer.yaw;
-            startRiding(entityplayer);
-            level.playSound(this, "mob.chickenplop", 1.0F, (rand.nextFloat() - rand.nextFloat()) * 0.2F + 1.0F);
+            method_1376(entityplayer);
+            world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
             return true;
         }
     }
 
-    public double getHeightOffset()
+    public double method_1385()
     {
-        if(vehicle instanceof PlayerBase)
+        if(field_1595 instanceof PlayerEntity)
         {
             pickedUp = true;
-            return (double)(standingEyeHeight - 1.15F);
+            return (double)(eyeHeight - 1.15F);
         } else
         {
-            return (double)standingEyeHeight;
+            return (double)eyeHeight;
         }
     }
 
-    protected float getSoundVolume()
+    protected float method_915()
     {
         return 0.0F;
     }
 
-    protected String getAmbientSound()
+    protected String method_911()
     {
         return null;
     }
 
-    protected String getHurtSound()
+    protected String method_912()
     {
         return null;
     }
 
-    protected String getDeathSound()
+    protected String method_913()
     {
         return null;
     }
 
-    public boolean method_934()
+    public boolean canBreatheInWater()
     {
         return true;
     }

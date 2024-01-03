@@ -5,90 +5,90 @@
 package net.kozibrodka.mocreatures.modelentity;
 
 
-import net.minecraft.client.model.Cuboid;
-import net.minecraft.client.render.entity.model.EntityModelBase;
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.entity.model.EntityModel;
 
-public class ModelKittyBed extends EntityModelBase
+public class ModelKittyBed extends EntityModel
 {
 
     public ModelKittyBed()
     {
         float f = 0.0F;
-        TableL = new Cuboid(30, 8);
-        TableL.method_1818(-8F, 0.0F, 7F, 16, 6, 1, f);
-        TableL.setRotationPoint(0.0F, 18F, 0.0F);
-        TableR = new Cuboid(30, 8);
-        TableR.method_1818(-8F, 18F, -8F, 16, 6, 1, f);
-        TableR.setRotationPoint(0.0F, 0.0F, 0.0F);
-        Table_B = new Cuboid(30, 0);
-        Table_B.method_1818(-8F, -3F, 0.0F, 16, 6, 1, f);
-        Table_B.setRotationPoint(8F, 21F, 0.0F);
+        TableL = new ModelPart(30, 8);
+        TableL.addCuboid(-8F, 0.0F, 7F, 16, 6, 1, f);
+        TableL.setPivot(0.0F, 18F, 0.0F);
+        TableR = new ModelPart(30, 8);
+        TableR.addCuboid(-8F, 18F, -8F, 16, 6, 1, f);
+        TableR.setPivot(0.0F, 0.0F, 0.0F);
+        Table_B = new ModelPart(30, 0);
+        Table_B.addCuboid(-8F, -3F, 0.0F, 16, 6, 1, f);
+        Table_B.setPivot(8F, 21F, 0.0F);
         Table_B.yaw = 1.5708F;
-        FoodT = new Cuboid(14, 0);
-        FoodT.method_1818(1.0F, 1.0F, 1.0F, 4, 1, 4, f);
-        FoodT.setRotationPoint(-16F, 22F, 0.0F);
-        FoodTraySide = new Cuboid(0, 0);
-        FoodTraySide.method_1818(-16F, 21F, 5F, 5, 3, 1, f);
-        FoodTraySide.setRotationPoint(0.0F, 0.0F, 0.0F);
-        FoodTraySideB = new Cuboid(0, 0);
-        FoodTraySideB.method_1818(-15F, 21F, 0.0F, 5, 3, 1, f);
-        FoodTraySideB.setRotationPoint(0.0F, 0.0F, 0.0F);
-        FoodTraySideC = new Cuboid(0, 0);
-        FoodTraySideC.method_1818(-3F, -1F, 0.0F, 5, 3, 1, f);
-        FoodTraySideC.setRotationPoint(-16F, 22F, 2.0F);
+        FoodT = new ModelPart(14, 0);
+        FoodT.addCuboid(1.0F, 1.0F, 1.0F, 4, 1, 4, f);
+        FoodT.setPivot(-16F, 22F, 0.0F);
+        FoodTraySide = new ModelPart(0, 0);
+        FoodTraySide.addCuboid(-16F, 21F, 5F, 5, 3, 1, f);
+        FoodTraySide.setPivot(0.0F, 0.0F, 0.0F);
+        FoodTraySideB = new ModelPart(0, 0);
+        FoodTraySideB.addCuboid(-15F, 21F, 0.0F, 5, 3, 1, f);
+        FoodTraySideB.setPivot(0.0F, 0.0F, 0.0F);
+        FoodTraySideC = new ModelPart(0, 0);
+        FoodTraySideC.addCuboid(-3F, -1F, 0.0F, 5, 3, 1, f);
+        FoodTraySideC.setPivot(-16F, 22F, 2.0F);
         FoodTraySideC.yaw = 1.5708F;
-        FoodTraySideD = new Cuboid(0, 0);
-        FoodTraySideD.method_1818(-3F, -1F, 0.0F, 5, 3, 1, f);
-        FoodTraySideD.setRotationPoint(-11F, 22F, 3F);
+        FoodTraySideD = new ModelPart(0, 0);
+        FoodTraySideD.addCuboid(-3F, -1F, 0.0F, 5, 3, 1, f);
+        FoodTraySideD.setPivot(-11F, 22F, 3F);
         FoodTraySideD.yaw = 1.5708F;
-        Milk = new Cuboid(14, 9);
-        Milk.method_1818(0.0F, 0.0F, 0.0F, 4, 1, 4, f);
-        Milk.setRotationPoint(-15F, 21F, 1.0F);
-        PetFood = new Cuboid(0, 9);
-        PetFood.method_1818(0.0F, 0.0F, 0.0F, 4, 1, 4, f);
-        PetFood.setRotationPoint(-15F, 21F, 1.0F);
-        Bottom = new Cuboid(16, 15);
-        Bottom.method_1818(-10F, 0.0F, -7F, 16, 1, 14, f);
-        Bottom.setRotationPoint(2.0F, 23F, 0.0F);
+        Milk = new ModelPart(14, 9);
+        Milk.addCuboid(0.0F, 0.0F, 0.0F, 4, 1, 4, f);
+        Milk.setPivot(-15F, 21F, 1.0F);
+        PetFood = new ModelPart(0, 9);
+        PetFood.addCuboid(0.0F, 0.0F, 0.0F, 4, 1, 4, f);
+        PetFood.setPivot(-15F, 21F, 1.0F);
+        Bottom = new ModelPart(16, 15);
+        Bottom.addCuboid(-10F, 0.0F, -7F, 16, 1, 14, f);
+        Bottom.setPivot(2.0F, 23F, 0.0F);
     }
 
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
-        TableL.method_1815(f5);
-        TableR.method_1815(f5);
-        Table_B.method_1815(f5);
-        Bottom.method_1815(f5);
+        TableL.render(f5);
+        TableR.render(f5);
+        Table_B.render(f5);
+        Bottom.render(f5);
         if(!pickedUp)
         {
-            FoodT.method_1815(f5);
-            FoodTraySide.method_1815(f5);
-            FoodTraySideB.method_1815(f5);
-            FoodTraySideC.method_1815(f5);
-            FoodTraySideD.method_1815(f5);
+            FoodT.render(f5);
+            FoodTraySide.render(f5);
+            FoodTraySideB.render(f5);
+            FoodTraySideC.render(f5);
+            FoodTraySideD.render(f5);
             if(hasMilk)
             {
-                Milk.rotationPointY = 21F + milklevel;
-                Milk.method_1815(f5);
+                Milk.pivotY = 21F + milklevel;
+                Milk.render(f5);
             }
             if(hasFood)
             {
-                PetFood.rotationPointY = 21F + milklevel;
-                PetFood.method_1815(f5);
+                PetFood.pivotY = 21F + milklevel;
+                PetFood.render(f5);
             }
         }
     }
 
-    Cuboid TableL;
-    Cuboid TableR;
-    Cuboid Table_B;
-    Cuboid FoodT;
-    Cuboid FoodTraySide;
-    Cuboid FoodTraySideB;
-    Cuboid FoodTraySideC;
-    Cuboid FoodTraySideD;
-    Cuboid Milk;
-    Cuboid PetFood;
-    Cuboid Bottom;
+    ModelPart TableL;
+    ModelPart TableR;
+    ModelPart Table_B;
+    ModelPart FoodT;
+    ModelPart FoodTraySide;
+    ModelPart FoodTraySideB;
+    ModelPart FoodTraySideC;
+    ModelPart FoodTraySideD;
+    ModelPart Milk;
+    ModelPart PetFood;
+    ModelPart Bottom;
     public boolean hasMilk;
     public boolean hasFood;
     public boolean pickedUp;

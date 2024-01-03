@@ -5,47 +5,47 @@
 package net.kozibrodka.mocreatures.modelentity;
 
 
-import net.minecraft.client.model.Cuboid;
-import net.minecraft.client.render.entity.model.EntityModelBase;
-import net.minecraft.util.maths.MathHelper;
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.util.math.MathHelper;
 
-public class ModelDolphin extends EntityModelBase
+public class ModelDolphin extends EntityModel
 {
 
     public ModelDolphin()
     {
-        Body = new Cuboid(4, 6);
-        Body.method_1818(0.0F, 0.0F, 0.0F, 6, 8, 18, 0.0F);
-        Body.setRotationPoint(-4F, 17F, -10F);
-        UHead = new Cuboid(0, 0);
-        UHead.method_1818(0.0F, 0.0F, 0.0F, 5, 7, 8, 0.0F);
-        UHead.setRotationPoint(-3.5F, 18F, -16.5F);
-        DHead = new Cuboid(50, 0);
-        DHead.method_1818(0.0F, 0.0F, 0.0F, 3, 3, 4, 0.0F);
-        DHead.setRotationPoint(-2.5F, 21.5F, -20.5F);
-        PTail = new Cuboid(34, 9);
-        PTail.method_1818(0.0F, 0.0F, 0.0F, 5, 5, 10, 0.0F);
-        PTail.setRotationPoint(-3.5F, 19F, 8F);
-        UpperFin = new Cuboid(4, 12);
-        UpperFin.method_1818(0.0F, 0.0F, 0.0F, 1, 4, 8, 0.0F);
-        UpperFin.setRotationPoint(-1.5F, 18F, -4F);
+        Body = new ModelPart(4, 6);
+        Body.addCuboid(0.0F, 0.0F, 0.0F, 6, 8, 18, 0.0F);
+        Body.setPivot(-4F, 17F, -10F);
+        UHead = new ModelPart(0, 0);
+        UHead.addCuboid(0.0F, 0.0F, 0.0F, 5, 7, 8, 0.0F);
+        UHead.setPivot(-3.5F, 18F, -16.5F);
+        DHead = new ModelPart(50, 0);
+        DHead.addCuboid(0.0F, 0.0F, 0.0F, 3, 3, 4, 0.0F);
+        DHead.setPivot(-2.5F, 21.5F, -20.5F);
+        PTail = new ModelPart(34, 9);
+        PTail.addCuboid(0.0F, 0.0F, 0.0F, 5, 5, 10, 0.0F);
+        PTail.setPivot(-3.5F, 19F, 8F);
+        UpperFin = new ModelPart(4, 12);
+        UpperFin.addCuboid(0.0F, 0.0F, 0.0F, 1, 4, 8, 0.0F);
+        UpperFin.setPivot(-1.5F, 18F, -4F);
         UpperFin.pitch = 0.7853981F;
-        LTailFin = new Cuboid(34, 0);
-        LTailFin.method_1818(0.0F, 0.0F, 0.0F, 4, 1, 8, 0.3F);
-        LTailFin.setRotationPoint(-2F, 21.5F, 18F);
+        LTailFin = new ModelPart(34, 0);
+        LTailFin.addCuboid(0.0F, 0.0F, 0.0F, 4, 1, 8, 0.3F);
+        LTailFin.setPivot(-2F, 21.5F, 18F);
         LTailFin.yaw = 0.7853981F;
-        RTailFin = new Cuboid(34, 0);
-        RTailFin.method_1818(0.0F, 0.0F, 0.0F, 4, 1, 8, 0.3F);
-        RTailFin.setRotationPoint(-3F, 21.5F, 15F);
+        RTailFin = new ModelPart(34, 0);
+        RTailFin.addCuboid(0.0F, 0.0F, 0.0F, 4, 1, 8, 0.3F);
+        RTailFin.setPivot(-3F, 21.5F, 15F);
         RTailFin.yaw = -0.7853981F;
-        LeftFin = new Cuboid(14, 0);
-        LeftFin.method_1818(0.0F, 0.0F, 0.0F, 8, 1, 4, 0.0F);
-        LeftFin.setRotationPoint(2.0F, 24F, -7F);
+        LeftFin = new ModelPart(14, 0);
+        LeftFin.addCuboid(0.0F, 0.0F, 0.0F, 8, 1, 4, 0.0F);
+        LeftFin.setPivot(2.0F, 24F, -7F);
         LeftFin.yaw = -0.5235988F;
         LeftFin.roll = 0.5235988F;
-        RightFin = new Cuboid(14, 0);
-        RightFin.method_1818(0.0F, 0.0F, 0.0F, 8, 1, 4, 0.0F);
-        RightFin.setRotationPoint(-10F, 27.5F, -3F);
+        RightFin = new ModelPart(14, 0);
+        RightFin.addCuboid(0.0F, 0.0F, 0.0F, 8, 1, 4, 0.0F);
+        RightFin.setPivot(-10F, 27.5F, -3F);
         RightFin.yaw = 0.5235988F;
         RightFin.roll = -0.5235988F;
     }
@@ -53,15 +53,15 @@ public class ModelDolphin extends EntityModelBase
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
         setAngles(f, f1, f2, f3, f4, f5);
-        Body.method_1815(f5);
-        PTail.method_1815(f5);
-        UHead.method_1815(f5);
-        DHead.method_1815(f5);
-        UpperFin.method_1815(f5);
-        LTailFin.method_1815(f5);
-        RTailFin.method_1815(f5);
-        LeftFin.method_1815(f5);
-        RightFin.method_1815(f5);
+        Body.render(f5);
+        PTail.render(f5);
+        UHead.render(f5);
+        DHead.render(f5);
+        UpperFin.render(f5);
+        LTailFin.render(f5);
+        RTailFin.render(f5);
+        LeftFin.render(f5);
+        RightFin.render(f5);
     }
 
     public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
@@ -70,16 +70,16 @@ public class ModelDolphin extends EntityModelBase
         LTailFin.pitch = MathHelper.cos(f * 0.6662F) * f1;
     }
 
-    public Cuboid UHead;
-    public Cuboid DHead;
-    public Cuboid RTail;
-    public Cuboid LTail;
-    public Cuboid PTail;
-    public Cuboid Body;
-    public Cuboid UpperFin;
-    public Cuboid RTailFin;
-    public Cuboid LTailFin;
-    public Cuboid LowerFin;
-    public Cuboid RightFin;
-    public Cuboid LeftFin;
+    public ModelPart UHead;
+    public ModelPart DHead;
+    public ModelPart RTail;
+    public ModelPart LTail;
+    public ModelPart PTail;
+    public ModelPart Body;
+    public ModelPart UpperFin;
+    public ModelPart RTailFin;
+    public ModelPart LTailFin;
+    public ModelPart LowerFin;
+    public ModelPart RightFin;
+    public ModelPart LeftFin;
 }
