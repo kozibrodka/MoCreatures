@@ -14,8 +14,8 @@ import net.minecraft.item.ItemBase;
 import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
 import net.minecraft.util.maths.MathHelper;
-import net.modificationstation.stationapi.api.packet.Message;
-import net.modificationstation.stationapi.api.registry.Identifier;
+//import net.modificationstation.stationapi.api.packet.Message;
+import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.HasTrackingParameters;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
@@ -250,13 +250,13 @@ public class EntityDeer extends AnimalBase implements MobSpawnDataProvider
     public void setType(int type)
     {
         final byte by = this.dataTracker.getByte(16);
-        System.out.println("TEST DATA first: " + by);
+//        System.out.println("TEST DATA first: " + by);
         this.dataTracker.setInt(16, (byte)(by & 0xF0 | type & 0xF));
 
         chooseType(type);
         setMySpeed(false, type);
 
-        System.out.println(this.entityId + "RASA: " + type +" AGE: " +getAge());
+//        System.out.println(this.entityId + "RASA: " + type +" AGE: " +getAge());
     }
 
     public int getType()
@@ -297,23 +297,23 @@ public class EntityDeer extends AnimalBase implements MobSpawnDataProvider
         return Identifier.of(mod_mocreatures.MOD_ID, "Deer");
     }
 
-    @Override
-    public void writeToMessage(Message message)
-    {
-        // message.ints.length is 4, so let's add a fifth
-        int[] newInts = Arrays.copyOf(message.ints, message.ints.length + 1);
-        newInts[newInts.length - 1] = getType();
-        message.ints = newInts;
-
-//        System.out.println("TEST MESSEGA");
-    }
-
-    @Override
-    public void readFromMessage(Message message)
-    {
-//        System.out.println("MESSAGE: " + message.ints[4]);
-        this.dataTracker.setInt(16, (byte)(message.ints[4]));
-        chooseType(message.ints[4]);
-        setMySpeed(false, message.ints[4]);
-    }
+//    @Override
+//    public void writeToMessage(Message message)
+//    {
+//        // message.ints.length is 4, so let's add a fifth
+//        int[] newInts = Arrays.copyOf(message.ints, message.ints.length + 1);
+//        newInts[newInts.length - 1] = getType();
+//        message.ints = newInts;
+//
+////        System.out.println("TEST MESSEGA");
+//    }
+//
+//    @Override
+//    public void readFromMessage(Message message)
+//    {
+////        System.out.println("MESSAGE: " + message.ints[4]);
+//        this.dataTracker.setInt(16, (byte)(message.ints[4]));
+//        chooseType(message.ints[4]);
+//        setMySpeed(false, message.ints[4]);
+//    }
 }

@@ -5,10 +5,10 @@
 package net.kozibrodka.mocreatures.item;
 
 
-import net.modificationstation.stationapi.api.registry.Identifier;
-import net.modificationstation.stationapi.api.template.item.TemplateItemBase;
+import net.modificationstation.stationapi.api.util.Identifier;
+import net.modificationstation.stationapi.api.template.item.TemplateItem;
 
-public class WildFood extends TemplateItemBase
+public class WildFood extends TemplateItem
 {
 
     public WildFood(Identifier i)

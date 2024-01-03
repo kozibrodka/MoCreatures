@@ -8,14 +8,11 @@ import net.kozibrodka.mocreatures.entity.EntitySharkEgg;
 import net.minecraft.entity.player.PlayerBase;
 import net.minecraft.item.ItemInstance;
 import net.minecraft.level.Level;
-import net.modificationstation.stationapi.api.registry.Identifier;
-import net.modificationstation.stationapi.api.template.item.TemplateItemBase;
+import net.modificationstation.stationapi.api.util.Identifier;
+import net.modificationstation.stationapi.api.util.Identifier;
+import net.modificationstation.stationapi.api.template.item.TemplateItem;
 
-// Referenced classes of package net.minecraft.src:
-//            Item, ItemStack, World, EntitySharkEgg, 
-//            EntityPlayer
-
-public class ItemSharkEgg extends TemplateItemBase
+public class ItemSharkEgg extends TemplateItem
 {
 
     public ItemSharkEgg(Identifier i)

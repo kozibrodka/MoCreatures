@@ -7,10 +7,10 @@ package net.kozibrodka.mocreatures.item;
 import net.kozibrodka.mocreatures.entity.EntityHorse;
 import net.minecraft.entity.Living;
 import net.minecraft.item.ItemInstance;
-import net.modificationstation.stationapi.api.registry.Identifier;
-import net.modificationstation.stationapi.api.template.item.TemplateItemBase;
+import net.modificationstation.stationapi.api.template.item.TemplateItem;
+import net.modificationstation.stationapi.api.util.Identifier;
 
-public class HorseSaddle extends TemplateItemBase
+public class HorseSaddle extends TemplateItem
 {
 
     public HorseSaddle(Identifier i)

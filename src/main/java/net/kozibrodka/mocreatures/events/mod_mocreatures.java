@@ -21,9 +21,11 @@ import net.modificationstation.stationapi.api.event.recipe.RecipeRegisterEvent;
 import net.modificationstation.stationapi.api.event.registry.ItemRegistryEvent;
 import net.modificationstation.stationapi.api.mod.entrypoint.Entrypoint;
 import net.modificationstation.stationapi.api.recipe.CraftingRegistry;
-import net.modificationstation.stationapi.api.registry.Identifier;
-import net.modificationstation.stationapi.api.registry.ModID;
-import net.modificationstation.stationapi.api.template.item.TemplateItemBase;
+
+import net.modificationstation.stationapi.api.template.item.TemplateItem;
+
+import net.modificationstation.stationapi.api.util.Identifier;
+import net.modificationstation.stationapi.api.util.Namespace;
 import net.modificationstation.stationapi.api.util.Null;
 import net.minecraft.achievement.Achievement;
 import org.lwjgl.input.Keyboard;
@@ -36,8 +38,8 @@ public class mod_mocreatures {
     @GConfig(value = "MocreaturesCFG", visibleName = "Mo' Creatures Config")
     public static final MocreaturesCFG mocreaturesGlass = new MocreaturesCFG();
 
-    @Entrypoint.ModID
-    public static final ModID MOD_ID = Null.get();
+    @Entrypoint.Namespace
+    public static final Namespace MOD_ID = Null.get();
 
     public static Achievement Indiana;
     public static Achievement BunnyKilla;
@@ -65,23 +67,23 @@ public class mod_mocreatures {
         horsesaddle = new HorseSaddle(Identifier.of(MOD_ID, "horsesaddle")).setTranslationKey(MOD_ID, "horsesaddle");
         haystack = new HayStack(Identifier.of(MOD_ID, "haystack")).setTranslationKey(MOD_ID, "haystack");
         sugarlump = new SugarLump(Identifier.of(MOD_ID, "sugarlump")).setTranslationKey(MOD_ID, "sugarlump");
-        sharkteeth = new TemplateItemBase(Identifier.of(MOD_ID, "sharkteeth")).setTranslationKey(MOD_ID, "sharkteeth");
+        sharkteeth = new TemplateItem(Identifier.of(MOD_ID, "sharkteeth")).setTranslationKey(MOD_ID, "sharkteeth");
         sharkegg = new ItemSharkEgg(Identifier.of(MOD_ID, "sharkegg")).setTranslationKey(MOD_ID, "sharkegg");
         fishyegg = new ItemFishyEgg(Identifier.of(MOD_ID, "fishyegg")).setTranslationKey(MOD_ID, "fishyegg");
-        bigcatclaw = new TemplateItemBase(Identifier.of(MOD_ID, "bigcatclaw")).setTranslationKey(MOD_ID, "bigcatclaw");
+        bigcatclaw = new TemplateItem(Identifier.of(MOD_ID, "bigcatclaw")).setTranslationKey(MOD_ID, "bigcatclaw");
         whip = new ItemWhip(Identifier.of(MOD_ID, "whip")).setTranslationKey(MOD_ID, "whip");
-        medallion = new TemplateItemBase(Identifier.of(MOD_ID, "medallion")).setTranslationKey(MOD_ID, "medallion");
+        medallion = new TemplateItem(Identifier.of(MOD_ID, "medallion")).setTranslationKey(MOD_ID, "medallion");
         kittybed = new ItemKittyBed(Identifier.of(MOD_ID, "kittybed")).setTranslationKey(MOD_ID, "kittybed");
         litterbox = new ItemLitterBox(Identifier.of(MOD_ID, "litterbox")).setTranslationKey(MOD_ID, "litterbox");
-        woolball = new TemplateItemBase(Identifier.of(MOD_ID, "woolball")).setTranslationKey(MOD_ID, "woolball");
-        rope = new TemplateItemBase(Identifier.of(MOD_ID, "rope")).setTranslationKey(MOD_ID, "rope");
-        petfood = new TemplateItemBase(Identifier.of(MOD_ID, "petfood")).setTranslationKey(MOD_ID, "petfood");
+        woolball = new TemplateItem(Identifier.of(MOD_ID, "woolball")).setTranslationKey(MOD_ID, "woolball");
+        rope = new TemplateItem(Identifier.of(MOD_ID, "rope")).setTranslationKey(MOD_ID, "rope");
+        petfood = new TemplateItem(Identifier.of(MOD_ID, "petfood")).setTranslationKey(MOD_ID, "petfood");
 
         //TODO: extra items, optional for balance propably going to remove some of it
         if(mocreaturesGlass.balancesettings.balance_drop) {
-            sharkoil = new TemplateItemBase(Identifier.of(MOD_ID, "sharkoil")).setTranslationKey(MOD_ID, "sharkoil");
-            wildleather = new TemplateItemBase(Identifier.of(MOD_ID, "wildleather")).setTranslationKey(MOD_ID, "wildleather");
-            polarleather = new TemplateItemBase(Identifier.of(MOD_ID, "polarleather")).setTranslationKey(MOD_ID, "polarleather");
+            sharkoil = new TemplateItem(Identifier.of(MOD_ID, "sharkoil")).setTranslationKey(MOD_ID, "sharkoil");
+            wildleather = new TemplateItem(Identifier.of(MOD_ID, "wildleather")).setTranslationKey(MOD_ID, "wildleather");
+            polarleather = new TemplateItem(Identifier.of(MOD_ID, "polarleather")).setTranslationKey(MOD_ID, "polarleather");
             greenapple = new GreenApple(Identifier.of(MOD_ID, "greenapple")).setTranslationKey(MOD_ID, "greenapple");
             bigcatfood = new WildFood(Identifier.of(MOD_ID, "bigcatfood")).setTranslationKey(MOD_ID, "bigcatfood");
             sharkfood = new WildFood(Identifier.of(MOD_ID, "sharkfood")).setTranslationKey(MOD_ID, "sharkfood");

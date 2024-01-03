@@ -7,10 +7,10 @@ import net.minecraft.entity.EntityBase;
 import net.minecraft.entity.player.PlayerBase;
 import net.minecraft.item.ItemInstance;
 import net.minecraft.level.Level;
-import net.modificationstation.stationapi.api.registry.Identifier;
-import net.modificationstation.stationapi.api.template.item.TemplateItemBase;
+import net.modificationstation.stationapi.api.util.Identifier;
+import net.modificationstation.stationapi.api.template.item.TemplateItem;
 
-public class MocreaturesEggItem extends TemplateItemBase {
+public class MocreaturesEggItem extends TemplateItem {
     public MocreaturesEggItem(Identifier identifier, int i) {
         super(identifier);
         this.maxStackSize = 16;

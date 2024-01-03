@@ -14,7 +14,7 @@ import net.minecraft.entity.monster.MonsterBase;
 import net.minecraft.entity.player.PlayerBase;
 import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
-import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;

@@ -5,11 +5,10 @@
 package net.kozibrodka.mocreatures.item;
 
 
-import net.minecraft.item.ItemBase;
-import net.modificationstation.stationapi.api.registry.Identifier;
-import net.modificationstation.stationapi.api.template.item.TemplateItemBase;
+import net.modificationstation.stationapi.api.util.Identifier;
+import net.modificationstation.stationapi.api.template.item.TemplateItem;
 
-public class HayStack extends TemplateItemBase
+public class HayStack extends TemplateItem
 {
 
     public HayStack(Identifier i)

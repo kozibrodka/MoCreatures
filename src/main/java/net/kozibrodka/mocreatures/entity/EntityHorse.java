@@ -29,7 +29,7 @@ import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
 import net.minecraft.util.io.ListTag;
 import net.minecraft.util.maths.MathHelper;
-import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 import org.lwjgl.input.Keyboard;
 

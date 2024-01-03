@@ -24,7 +24,7 @@ import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
 import net.minecraft.util.maths.Box;
 import net.minecraft.util.maths.MathHelper;
-import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;

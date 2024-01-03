@@ -10,10 +10,10 @@ import net.minecraft.block.BlockBase;
 import net.minecraft.entity.Living;
 import net.minecraft.item.ItemBase;
 import net.minecraft.item.ItemInstance;
-import net.modificationstation.stationapi.api.registry.Identifier;
-import net.modificationstation.stationapi.api.template.item.TemplateItemBase;
+import net.modificationstation.stationapi.api.util.Identifier;
+import net.modificationstation.stationapi.api.template.item.TemplateItem;
 
-public class GoldenShears extends TemplateItemBase {
+public class GoldenShears extends TemplateItem {
 
     public GoldenShears(Identifier i) {
         super(i);

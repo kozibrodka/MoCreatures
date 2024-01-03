@@ -6,7 +6,8 @@ import net.mine_diver.unsafeevents.listener.EventListener;
 import net.minecraft.client.options.KeyBinding;
 import net.modificationstation.stationapi.api.client.event.option.KeyBindingRegisterEvent;
 import net.modificationstation.stationapi.api.mod.entrypoint.Entrypoint;
-import net.modificationstation.stationapi.api.registry.ModID;
+import net.modificationstation.stationapi.api.util.Identifier;
+import net.modificationstation.stationapi.api.util.Namespace;
 import net.modificationstation.stationapi.api.util.Null;
 import org.lwjgl.input.Keyboard;
 
@@ -14,8 +15,8 @@ import java.util.List;
 
 public class KeybindListener {
 
-    @Entrypoint.ModID
-    public static final ModID MOD_ID = Null.get();
+    @Entrypoint.Namespace
+    public static final Namespace MOD_ID = Null.get();
 
     @EventListener
     public void registerKeyBindings(KeyBindingRegisterEvent event) {
