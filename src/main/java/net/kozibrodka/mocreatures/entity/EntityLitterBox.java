@@ -18,10 +18,12 @@ import net.minecraft.item.ItemInstance;
 import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
 import net.modificationstation.stationapi.api.registry.Identifier;
+import net.modificationstation.stationapi.api.server.entity.HasTrackingParameters;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 
+@HasTrackingParameters(trackingDistance = 160, updatePeriod = 2)
 public class EntityLitterBox extends Living implements MobSpawnDataProvider
 {
 

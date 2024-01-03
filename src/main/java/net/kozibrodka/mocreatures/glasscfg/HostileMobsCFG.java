@@ -1,42 +1,43 @@
 package net.kozibrodka.mocreatures.glasscfg;
 
-import blue.endless.jankson.Comment;
+
 import net.glasslauncher.mods.api.gcapi.api.ConfigName;
 import net.glasslauncher.mods.api.gcapi.api.MaxLength;
+import org.checkerframework.framework.qual.CFComment;
 
 public class HostileMobsCFG {
     @ConfigName("Spawn Ogre Difficulty")
-    @Comment("0 - easy, 1 - normal, 2 - hard")
+    @CFComment("0 - easy, 1 - normal, 2 - hard")
     @MaxLength(
             value = 2
     )
     public Integer ogreSpawnDifficulty = 1;
     @ConfigName("Spawn FireOgre Difficulty")
-    @Comment("0 - easy, 1 - normal, 2 - hard")
+    @CFComment("0 - easy, 1 - normal, 2 - hard")
     @MaxLength(
             value = 2
     )
     public Integer fogreSpawnDifficulty = 2;
     @ConfigName("Spawn CaveOgre Difficulty")
-    @Comment("0 - easy, 1 - normal, 2 - hard")
+    @CFComment("0 - easy, 1 - normal, 2 - hard")
     @MaxLength(
             value = 2
     )
     public Integer cogreSpawnDifficulty = 1;
     @ConfigName("Spawn WereWolf Difficulty")
-    @Comment("0 - easy, 1 - normal, 2 - hard")
+    @CFComment("0 - easy, 1 - normal, 2 - hard")
     @MaxLength(
             value = 2
     )
     public Integer wereSpawnDifficulty = 1;
     @ConfigName("Spawn Wraith Difficulty")
-    @Comment("0 - easy, 1 - normal, 2 - hard")
+    @CFComment("0 - easy, 1 - normal, 2 - hard")
     @MaxLength(
             value = 2
     )
     public Integer wraithSpawnDifficulty = 1;
     @ConfigName("Spawn FlameWraith Difficulty")
-    @Comment("0 - easy, 1 - normal, 2 - hard")
+    @CFComment("0 - easy, 1 - normal, 2 - hard")
     @MaxLength(
             value = 2
     )
@@ -93,19 +94,19 @@ public class HostileMobsCFG {
     )
     public Integer ogrerange = 12;
     @ConfigName("Ogre Strength")
-    @Comment("maximum 5.0F")
+    @CFComment("maximum 5.0F")
     @MaxLength(
             value = 5
     )
     public Float ogreStrength = 2.5F;
     @ConfigName("Fire Ogre Strength")
-    @Comment("maximum 5.0F")
+    @CFComment("maximum 5.0F")
     @MaxLength(
             value = 5
     )
     public Float fogreStrength = 2.0F;
     @ConfigName("Cave Ogre Strength")
-    @Comment("maximum 5.0F")
+    @CFComment("maximum 5.0F")
     @MaxLength(
             value = 5
     )

@@ -1,6 +1,6 @@
 package net.kozibrodka.mocreatures.glasscfg;
 
-import blue.endless.jankson.Comment;
+
 import net.glasslauncher.mods.api.gcapi.api.ConfigName;
 import net.glasslauncher.mods.api.gcapi.api.MaxLength;
 

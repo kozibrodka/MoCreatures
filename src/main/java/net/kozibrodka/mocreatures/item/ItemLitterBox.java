@@ -23,6 +23,9 @@ public class ItemLitterBox extends TemplateItemBase
 
     public ItemInstance use(ItemInstance itemstack, Level world, PlayerBase entityplayer)
     {
+        if(world.isServerSide){
+            return itemstack;
+        }
         itemstack.count--;
         EntityLitterBox entitylitterbox = new EntityLitterBox(world);
         entitylitterbox.setPosition(entityplayer.x, entityplayer.y, entityplayer.z);

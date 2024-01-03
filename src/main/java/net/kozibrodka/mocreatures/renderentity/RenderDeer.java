@@ -18,29 +18,29 @@ public class RenderDeer extends LivingEntityRenderer
                                float f, float f1)
     {
         EntityDeer entitydeer = (EntityDeer)entityliving;
-        if(!entitydeer.typechosen)
-        {
-            entitydeer.chooseType();
-        }
+//        if(!entitydeer.typechosen)
+//        {
+//            entitydeer.setType(entitydeer.getRandomRace());
+//        }
         super.method_822(entitydeer, d, d1, d2, f, f1);
     }
 
     protected void stretch(EntityDeer entitydeer)
     {
-        float f = entitydeer.edad;
+        float f = entitydeer.getAge();
         float f1 = 0.0F;
-        if(entitydeer.typeint == 1)
+        if(entitydeer.getType() == 1)
         {
             f1 = 1.7F;
         } else
-        if(entitydeer.typeint == 2)
+        if(entitydeer.getType() == 2)
         {
             f1 = 1.3F;
         } else
         {
             f1 = f;
         }
-        if(entitydeer.adult)
+        if(entitydeer.getAdult())
         {
             f = 1.0F;
         }

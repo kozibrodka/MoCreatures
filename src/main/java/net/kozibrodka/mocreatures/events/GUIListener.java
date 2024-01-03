@@ -30,7 +30,7 @@ public class GUIListener {
 //
 //    @Environment(EnvType.CLIENT)
 //    public ScreenBase openTamePaper(PlayerBase player, InventoryBase inventoryBase) {
-//        return new MoCGUI(player.inventory, (FCTileEntityHopper) inventoryBase);
+//        return new MoCGUI(player.inventory);
 //    }
 
 }

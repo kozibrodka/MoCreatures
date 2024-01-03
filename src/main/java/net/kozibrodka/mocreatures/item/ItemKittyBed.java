@@ -30,8 +30,10 @@ public class ItemKittyBed extends TemplateItemBase
     public ItemInstance use(ItemInstance itemstack, Level world, PlayerBase entityplayer)
     {
         itemstack.count--;
-        if(!world.isServerSide)
-        {
+        if(world.isServerSide){
+            return itemstack;
+        }
+
             EntityKittyBed entitykittybed = new EntityKittyBed(world, itemstack.getDamage());
 //            EntityKittyBed entitykittybed = new EntityKittyBed(world, itemcolor);
             entitykittybed.setPosition(entityplayer.x, entityplayer.y, entityplayer.z);
@@ -39,7 +41,7 @@ public class ItemKittyBed extends TemplateItemBase
             entitykittybed.velocityY += world.rand.nextFloat() * 0.05F;
             entitykittybed.velocityX += (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F;
             entitykittybed.velocityZ += (world.rand.nextFloat() - world.rand.nextFloat()) * 0.3F;
-        }
+
         return itemstack;
     }
 

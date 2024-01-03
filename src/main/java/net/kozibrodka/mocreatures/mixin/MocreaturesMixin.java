@@ -31,7 +31,7 @@ public class MocreaturesMixin{
         this.creatures.add(new EntityEntry(EntityBird.class, mocr.mocreaturesGlass.animals.birdfreq));
         this.creatures.add(new EntityEntry(EntityBoar.class, mocr.mocreaturesGlass.huntercreatures.boarfreq));
         this.creatures.add(new EntityEntry(EntityBunny.class, mocr.mocreaturesGlass.animals.bunnyfreq));
-        this.creatures.add(new EntityEntry(EntityDeer.class, mocr.mocreaturesGlass.animals.deerfreq));
+//        this.creatures.add(new EntityEntry(EntityDeer.class, mocr.mocreaturesGlass.animals.deerfreq));
         this.creatures.add(new EntityEntry(EntityDuck.class, mocr.mocreaturesGlass.animals.duckfreq));
         this.creatures.add(new EntityEntry(EntityFox.class, mocr.mocreaturesGlass.huntercreatures.foxfreq));
 //        this.creatures.add(new EntityEntry(EntityHorse.class, mocr.mocreaturesGlass.animals.horsefreq)); //TODO GUI
