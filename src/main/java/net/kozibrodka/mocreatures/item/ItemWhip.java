@@ -52,12 +52,12 @@ public class ItemWhip extends TemplateItem
                 if(entity instanceof EntityBigCat)
                 {
                     EntityBigCat entitybigcat = (EntityBigCat)entity;
-                    if(entitybigcat.tamed && entityplayer.name.equals(entitybigcat.tigerOwner))
+                    if(entitybigcat.getTamed() && entityplayer.name.equals(entitybigcat.getOwner()))
                     {
-                        entitybigcat.sitting = !entitybigcat.sitting;
+                        entitybigcat.setSitting(!entitybigcat.getSitting());
                         i1++;
                     } else
-                    if(world.field_213 > 0 && entitybigcat.adult)
+                    if(world.field_213 > 0 && entitybigcat.getAdult())
                     {
                         entitybigcat.ustawCel(entityplayer);
                     }

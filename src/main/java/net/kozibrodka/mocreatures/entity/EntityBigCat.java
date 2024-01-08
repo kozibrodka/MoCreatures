@@ -3,8 +3,10 @@ package net.kozibrodka.mocreatures.entity;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.mixin.DataTrackerAccessor;
 import net.kozibrodka.mocreatures.mixin.WalkingBaseAccesor;
 import net.kozibrodka.mocreatures.mocreatures.MoCGUI;
+import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.class_61;
@@ -30,92 +32,43 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 import java.util.List;
 
 
-public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
+public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial
 {
 
     public EntityBigCat(World world)
     {
         super(world);
-        lionboolean = false;
-        texture = "/assets/mocreatures/stationapi/textures/mob/lionf.png";
-        edad = 0.35F;
+        setAge(0.35F);
+        setHungry(true);
         setBoundingBoxSpacing(0.9F, 1.3F);
         health = 25;
         force = 1;
         attackRange = 1.0D;
-        adult = true;
-        hungry = true;
-        tamed = false;
-        sitting = false;
-        name = "";
-        displayname = false;
         maxhealth = 25;
-        tigerOwner = "";
-        protectFromPlayers = true;
+        typechosen = false;
     }
 
     protected void initDataTracker()
     {
         super.initDataTracker();
-        dataTracker.method_1502(16, Byte.valueOf((byte)0)); //Type
-        dataTracker.method_1502(17, Byte.valueOf((byte)0)); //Age
-        dataTracker.method_1502(18, Byte.valueOf((byte)0)); //Adult
-
-        dataTracker.method_1502(20, Byte.valueOf((byte)0)); //Tamed
-        dataTracker.method_1502(21, Byte.valueOf((byte)0)); //Sitting
-        dataTracker.method_1502(22, Byte.valueOf((byte)0)); //Hungry
-        dataTracker.method_1502(23, Byte.valueOf((byte)0)); //Render Health
+        dataTracker.method_1502(16, (byte) 0); //Type
+        dataTracker.method_1502(17, (byte) 0); //Age
+        dataTracker.method_1502(18, (byte) 0); //Adult
+        dataTracker.method_1502(19, (byte) 0); //Eaten
+        dataTracker.method_1502(20, (byte) 0); //Tamed
+        dataTracker.method_1502(21, (byte) 0); //Sitting
+        dataTracker.method_1502(22, (byte) 0); //Hungry
+        dataTracker.method_1502(23, (byte) 0); //Protect From Players
+        dataTracker.method_1502(24, (byte) 0); //Display Name
+        dataTracker.method_1502(30, ""); //Owner
+        dataTracker.method_1502(31, ""); //Name
     }
 
-    public void setType(int i)
-    {
-        typeint = i;
-        typechosen = false;
-        if(random.nextInt(4) == 0)
-        {
-            adult = false;
-            field_1045 = true;
-        }
-        chooseType();
-    }
 
-    public void chooseType()
+    public void chooseType(int type)
     {
-        if(typeint == 0)
-        {
-            if(random.nextInt(4) == 0)
-            {
-                adult = false;
-                field_1045 = true;
-            }
-            int i = random.nextInt(100);
-            if(i <= 5)
-            {
-                typeint = 1;
-            } else
-            if(i <= 25)
-            {
-                typeint = 2;
-            } else
-            if(i <= 50)
-            {
-                typeint = 3;
-            } else
-            if(i <= 70)
-            {
-                typeint = 4;
-            } else
-            if(i <= 75)
-            {
-                typeint = 7;
-            } else
-            {
-                typeint = 5;
-            }
-        }
-        if(!typechosen)
-        {
-            if(typeint == 1)
+        System.out.println("SPAWN TIGER 3");
+            if(type == 1)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/lionf.png";
                 widthF = 1.0F;
@@ -126,7 +79,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
                 force = 5;
                 maxhealth = 25;
             } else
-            if(typeint == 2)
+            if(type == 2)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/lionf.png";
                 widthF = 1.1F;
@@ -137,7 +90,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
                 force = 5;
                 maxhealth = 30;
             }
-            if(typeint == 3)
+            if(type == 3)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/panther.png";
                 widthF = 0.9F;
@@ -148,7 +101,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
                 force = 4;
                 maxhealth = 20;
             } else
-            if(typeint == 4)
+            if(type == 4)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/cheetah.png";
                 widthF = 0.8F;
@@ -159,7 +112,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
                 force = 3;
                 maxhealth = 20;
             } else
-            if(typeint == 5)
+            if(type == 5)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/tiger.png";
                 widthF = 1.1F;
@@ -170,7 +123,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
                 force = 6;
                 maxhealth = 35;
             } else
-            if(typeint == 6)
+            if(type == 6)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/leopard.png";
                 widthF = 0.8F;
@@ -181,7 +134,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
                 force = 3;
                 maxhealth = 25;
             } else
-            if(typeint == 7)
+            if(type == 7)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/tigerw.png";
                 widthF = 1.2F;
@@ -193,60 +146,81 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
                 maxhealth = 40;
             }
             health = maxhealth;
+    }
+
+    public int getRandomRace()
+    {
+        int i = random.nextInt(100);
+        if(i <= 5)
+        {
+            return 1;
+        } else
+        if(i <= 25)
+        {
+            return 2;
+        } else
+        if(i <= 50)
+        {
+            return 3;
+        } else
+        if(i <= 70)
+        {
+            return 4;
+        } else
+        if(i <= 75)
+        {
+            return 7;
+        } else
+        {
+            return 5;
         }
-        typechosen = true;
     }
 
     public void method_937()
     {
         super.method_937();
-        if(!adult && random.nextInt(250) == 0)
-        {
-            edad += 0.01F;
-            if(edad >= 1.0F)
-            {
-                adult = true;
-                field_1045 = false;
-            }
+        if(!typechosen && world.isRemote && getType() != 0){
+            typechosen = true;
+            chooseType(getType());
         }
-        if(!hungry && !sitting && random.nextInt(200) == 0)
-        {
-            hungry = true;
-        }
-        if(roper != null && random.nextInt(20) == 0)
-        {
-            float f = roper.method_1351(this);
-            if(f > 8F && !sitting)
-            {
-                method_429(roper, f);
+        if(!world.isRemote) {
+            if (!getAdult() && random.nextInt(250) == 0 && !world.isRemote) {
+                setAge(getAge() + 0.01F);
+                if (getAge() >= 1.0F) {
+                    setAdult(true);
+                    field_1045 = false;
+                }
             }
-            if((f > 18F) & sitting)
-            {
-                roper = null;
+            if (!getHungry() && !getSitting() && random.nextInt(200) == 0) {
+                setHungry(true);
             }
-        }
-        if(field_1041 == 0 && hungry && !sitting)
-        {
-            ItemEntity entityitem = getClosestItem(this, 12D, Item.RAW_PORKCHOP.id, Item.RAW_FISH.id);
-            if(entityitem != null)
-            {
-                MoveToNextEntity(entityitem);
-                ItemEntity entityitem1 = getClosestItem(this, 2D, Item.RAW_PORKCHOP.id, Item.RAW_FISH.id);
-                if(random.nextInt(80) == 0 && entityitem1 != null && field_1041 == 0)
-                {
-                    entityitem1.markDead();
-                    if(health + 10 > maxhealth)
-                    {
-                        health = maxhealth;
-                    }else{
-                        health += 10;
+            if (roper != null && random.nextInt(20) == 0) {
+                float f = roper.method_1351(this);
+                if (f > 8F && !getSitting()) {
+                    method_429(roper, f);
+                }
+                if ((f > 18F) & getSitting()) {
+                    roper = null;
+                }
+            }
+            if (field_1041 == 0 && getHungry() && !getSitting()) {
+                ItemEntity entityitem = getClosestItem(this, 12D, Item.RAW_PORKCHOP.id, Item.RAW_FISH.id);
+                if (entityitem != null) {
+                    MoveToNextEntity(entityitem);
+                    ItemEntity entityitem1 = getClosestItem(this, 2D, Item.RAW_PORKCHOP.id, Item.RAW_FISH.id);
+                    if (random.nextInt(80) == 0 && entityitem1 != null && field_1041 == 0) {
+                        entityitem1.markDead();
+                        if (health + 10 > maxhealth) {
+                            health = maxhealth;
+                        } else {
+                            health += 10;
+                        }
+                        if (!getAdult() && getAge() < 0.8F) {
+                            setEaten(true);
+                        }
+                        world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+                        setHungry(true);
                     }
-                    if(!adult && edad < 0.8F)
-                    {
-                        eaten = true;
-                    }
-                    world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-                    hungry = false;
                 }
             }
         }
@@ -254,7 +228,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
 
     protected boolean method_640()
     {
-        return sitting;
+        return getSitting();
     }
 
     private void method_429(Entity entity, float f)
@@ -406,23 +380,23 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
         if(world.field_213 > 0)
         {
             PlayerEntity entityplayer = world.method_186(this, 12D);
-            if(!tamed && entityplayer != null && adult && hungry)
+            if(!getTamed() && entityplayer != null && getAdult() && getHungry())
             {
-                if(typeint == 1 || typeint == 5 || typeint == 7)
+                if(getType() == 1 || getType() == 5 || getType() == 7)
                 {
-                    hungry = false;
+                    setHungry(false);
                     return entityplayer;
                 }
                 if(random.nextInt(30) == 0)
                 {
-                    hungry = false;
+                    setHungry(false);
                     return entityplayer;
                 }
             }
-            if(random.nextInt(80) == 0 && hungry)
+            if(random.nextInt(80) == 0 && getHungry())
             {
                 LivingEntity entityliving = getClosestTarget(this, 10D);
-                hungry = false;
+                setHungry(false);
                 return entityliving;
             }
         }
@@ -437,18 +411,18 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.field_1594 || entity1 == entity.field_1595 || (entity1 instanceof PlayerEntity) || !adult && ((double)entity1.spacingXZ > 0.5D || (double)entity1.spacingY > 0.5D) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof MonsterEntity) && (!tamed || !adult) || tamed && (entity1 instanceof EntityKitty) && ((EntityKitty)entity1).kittystate > 2 || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof EntityHorse) && tamed && ((EntityHorse) entity1).tamed || (entity1 instanceof EntityShark) && ((EntityShark)entity1).tamed && tamed || (entity1 instanceof EntityDolphin) && ((EntityDolphin)entity1).tamed && tamed || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves)
+            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.field_1594 || entity1 == entity.field_1595 || (entity1 instanceof PlayerEntity) || !getAdult() && ((double)entity1.spacingXZ > 0.5D || (double)entity1.spacingY > 0.5D) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof MonsterEntity) && (!getTamed() || !getAdult()) || getTamed() && (entity1 instanceof EntityKitty) && ((EntityKitty)entity1).kittystate > 2 || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof EntityHorse) && getTamed() && ((EntityHorse) entity1).tamed || (entity1 instanceof EntityShark) && ((EntityShark)entity1).tamed && getTamed() || (entity1 instanceof EntityDolphin) && ((EntityDolphin)entity1).tamed && getTamed() || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves)
             {
                 continue;
             }
             if(entity1 instanceof EntityBigCat)
             {
-                if(!adult)
+                if(!getAdult())
                 {
                     continue;
                 }
                 EntityBigCat entitybigcat = (EntityBigCat)entity1;
-                if(tamed && entitybigcat.tamed || entitybigcat.typeint == 7 || typeint != 2 && typeint == entitybigcat.typeint || typeint == 2 && entitybigcat.typeint == 1 || health < entitybigcat.health)
+                if(getTamed() && entitybigcat.getTamed() || entitybigcat.getType() == 7 || getType() != 2 && getType() == entitybigcat.getType() || getType() == 2 && entitybigcat.getType() == 1 || health < entitybigcat.health)
                 {
                     continue;
                 }
@@ -494,15 +468,15 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
             {
                 return true;
             }
-            if(tamed && entitybase instanceof PlayerEntity)
+            if(getTamed() && entitybase instanceof PlayerEntity)
             {
                 PlayerEntity gracz = (PlayerEntity)entitybase;
-                if(!gracz.name.equals(tigerOwner) && protectFromPlayers)
+                if(!gracz.name.equals(getOwner()) && getProtect())
                 {
                     target = entitybase;
                 }
             }
-            if(entitybase != this && world.field_213 > 0 && !tamed)
+            if(entitybase != this && world.field_213 > 0 && !getTamed())
             {
                 target = entitybase;
             }
@@ -541,122 +515,123 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
-        nbttagcompound.putBoolean("LionBoolean", lionboolean);
-        nbttagcompound.putInt("TypeInt", typeint);
-        nbttagcompound.putBoolean("Adult", adult);
-        nbttagcompound.putBoolean("Tamed", tamed);
-        nbttagcompound.putBoolean("Sitting", sitting);
-        nbttagcompound.putFloat("Edad", edad);
-        nbttagcompound.putString("Name", name);
-        nbttagcompound.putBoolean("DisplayName", displayname);
-        nbttagcompound.putString("TigerOwner", tigerOwner);
-        nbttagcompound.putBoolean("ProtectFromPlayers", protectFromPlayers);
+        nbttagcompound.putInt("TypeInt", getType());
+        nbttagcompound.putBoolean("Adult", getAdult());
+        nbttagcompound.putBoolean("Tamed", getTamed());
+        nbttagcompound.putBoolean("Sitting", getSitting());
+        nbttagcompound.putFloat("Edad", getAge());
+        nbttagcompound.putString("Name", getName());
+        nbttagcompound.putBoolean("DisplayName", getDisplayName());
+        nbttagcompound.putString("TigerOwner", getOwner());
+        nbttagcompound.putBoolean("ProtectFromPlayers", getProtect());
+        nbttagcompound.putBoolean("Hungry", getProtect());
+        nbttagcompound.putBoolean("Eaten", getProtect());
     }
 
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
-        lionboolean = nbttagcompound.getBoolean("LionBoolean");
-        adult = nbttagcompound.getBoolean("Adult");
-        typeint = nbttagcompound.getInt("TypeInt");
-        edad = nbttagcompound.getFloat("Edad");
-        tamed = nbttagcompound.getBoolean("Tamed");
-        sitting = nbttagcompound.getBoolean("Sitting");
-        name = nbttagcompound.getString("Name");
-        displayname = nbttagcompound.getBoolean("DisplayName");
-        tigerOwner = nbttagcompound.getString("TigerOwner");
-        protectFromPlayers = nbttagcompound.getBoolean("ProtectFromPlayers");
+        setType(nbttagcompound.getInt("TypeInt"));
+        setAdult(nbttagcompound.getBoolean("Adult"));
+        setTamed(nbttagcompound.getBoolean("Tamed"));
+        setSitting(nbttagcompound.getBoolean("Sitting"));
+        setAge(nbttagcompound.getFloat("Edad"));
+        setTamed(nbttagcompound.getBoolean("Tamed"));
+        setDisplayName(nbttagcompound.getBoolean("DisplayName"));
+        setOwner(nbttagcompound.getString("TigerOwner"));
+        setProtect(nbttagcompound.getBoolean("ProtectFromPlayers"));
+        setHungry(nbttagcompound.getBoolean("Hungry"));
+        setEaten(nbttagcompound.getBoolean("Eaten"));
     }
 
     public boolean method_1323(PlayerEntity entityplayer)
     {
-        ItemStack itemstack = entityplayer.inventory.getSelectedItem();
-        if(itemstack !=null && mocr.mocreaturesGlass.balancesettings.balance_drop && entityplayer.name.equals(tigerOwner) && tamed && itemstack.itemId == mod_mocreatures.bigcatfood.id)
-        {
-            if(--itemstack.count == 0)
-            {
-                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
-            }
-            if(health + 15 > maxhealth)
-            {
-                health = maxhealth;
-            }else{
-                health += 15;
-            }
-            return true;
-        }
-        if(itemstack != null && tamed && entityplayer.name.equals(tigerOwner) && (itemstack.itemId == Item.GOLDEN_SWORD.id || itemstack.itemId == Item.STONE_SWORD.id || itemstack.itemId == Item.WOODEN_SWORD.id || itemstack.itemId == Item.IRON_SWORD.id || itemstack.itemId == Item.DIAMOND_SWORD.id))
-        {
-            if(protectFromPlayers == true){
-                protectFromPlayers = false;
-                for(int var3 = 0; var3 < 7; ++var3) {
-                    double var4 = this.random.nextGaussian() * 0.02D;
-                    double var6 = this.random.nextGaussian() * 0.02D;
-                    double var8 = this.random.nextGaussian() * 0.02D;
-                    world.addParticle("heart", this.x + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, this.y + 0.5D + (double) (this.random.nextFloat() * this.spacingY), this.z + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, var4, var6, var8);
+        if(!world.isRemote) {
+            ItemStack itemstack = entityplayer.inventory.getSelectedItem();
+            if (itemstack != null && mocr.mocreaturesGlass.balancesettings.balance_drop && entityplayer.name.equals(getOwner()) && getTamed() && itemstack.itemId == mod_mocreatures.bigcatfood.id) {
+                if (--itemstack.count == 0) {
+                    entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
                 }
-            }else{
-                protectFromPlayers = true;
-                for(int var3 = 0; var3 < 7; ++var3) {
-                    double var4 = this.random.nextGaussian() * 0.02D;
-                    double var6 = this.random.nextGaussian() * 0.02D;
-                    double var8 = this.random.nextGaussian() * 0.02D;
-                    world.addParticle("flame", this.x + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, this.y + 0.5D + (double) (this.random.nextFloat() * this.spacingY), this.z + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, var4, var6, var8);
+                if (health + 15 > maxhealth) {
+                    health = maxhealth;
+                } else {
+                    health += 15;
                 }
+                return true;
             }
-            return true;
-        }
-        if(itemstack != null && !tamed && eaten && itemstack.itemId == mod_mocreatures.medallion.id)
-        {
-            if(--itemstack.count == 0)
+            if (itemstack != null && getTamed() && entityplayer.name.equals(getOwner()) && (itemstack.itemId == Item.GOLDEN_SWORD.id || itemstack.itemId == Item.STONE_SWORD.id || itemstack.itemId == Item.WOODEN_SWORD.id || itemstack.itemId == Item.IRON_SWORD.id || itemstack.itemId == Item.DIAMOND_SWORD.id)) {
+                if (getProtect()) {
+                    setProtect(false);
+                    for (int var3 = 0; var3 < 7; ++var3) {
+                        double var4 = this.random.nextGaussian() * 0.02D;
+                        double var6 = this.random.nextGaussian() * 0.02D;
+                        double var8 = this.random.nextGaussian() * 0.02D;
+                        world.addParticle("heart", this.x + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, this.y + 0.5D + (double) (this.random.nextFloat() * this.spacingY), this.z + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, var4, var6, var8);
+                    }
+                } else {
+                    setProtect(true);
+                    for (int var3 = 0; var3 < 7; ++var3) {
+                        double var4 = this.random.nextGaussian() * 0.02D;
+                        double var6 = this.random.nextGaussian() * 0.02D;
+                        double var8 = this.random.nextGaussian() * 0.02D;
+                        world.addParticle("flame", this.x + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, this.y + 0.5D + (double) (this.random.nextFloat() * this.spacingY), this.z + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, var4, var6, var8);
+                    }
+                }
+                return true;
+            }
+            if (itemstack != null && !getTamed() && getEaten() && itemstack.itemId == mod_mocreatures.medallion.id) {
+                if (--itemstack.count == 0) {
+                    entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
+                }
+                setTamed(true);
+                setOwner(entityplayer.name);
+                setName(this);
+                return true;
+            }
+            if (itemstack != null && entityplayer.name.equals(getOwner()) && getTamed() && itemstack.itemId == mod_mocreatures.whip.id) {
+                setSitting(!getSitting());
+                return true;
+            }
+            if (itemstack != null && entityplayer.name.equals(getOwner()) && getTamed() && (itemstack.itemId == Item.DIAMOND_PICKAXE.id || itemstack.itemId == Item.WOODEN_PICKAXE.id || itemstack.itemId == Item.STONE_PICKAXE.id || itemstack.itemId == Item.IRON_PICKAXE.id || itemstack.itemId == Item.GOLDEN_PICKAXE.id)) {
+                setDisplayName(!getDisplayName());
+                return true;
+            }
+            if (itemstack != null && entityplayer.name.equals(getOwner()) && getTamed() && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == Item.BOOK.id)) {
+                setName(this);
+                return true;
+            }
+            if (itemstack != null && entityplayer.name.equals(getOwner()) && field_1594 == null && roper == null && getTamed() && itemstack.itemId == mod_mocreatures.rope.id) {
+                if (--itemstack.count == 0) {
+                    entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
+                }
+                world.playSound(this, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+                roper = entityplayer;
+                return true;
+            }
+            //
+            if(itemstack != null && itemstack.itemId == Item.DIAMOND_HOE.id)
             {
-                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
+                System.out.println("TYPE: " + getType());
+                System.out.println("ADULT? " + getAdult());
+                System.out.println("AGE: " + getAge());
+                return true;
             }
-            tamed = true;
-            tigerOwner = entityplayer.name;
-            setName(this);
-            return true;
-        }
-        if(itemstack != null && entityplayer.name.equals(tigerOwner) && tamed && itemstack.itemId == mod_mocreatures.whip.id)
-        {
-            sitting = !sitting;
-            return true;
-        }
-        if(itemstack != null  && entityplayer.name.equals(tigerOwner) &&  tamed && (itemstack.itemId == Item.DIAMOND_PICKAXE.id || itemstack.itemId == Item.WOODEN_PICKAXE.id || itemstack.itemId == Item.STONE_PICKAXE.id || itemstack.itemId == Item.IRON_PICKAXE.id || itemstack.itemId == Item.GOLDEN_PICKAXE.id))
-        {
-            displayname = !displayname;
-            return true;
-        }
-        if(itemstack != null && entityplayer.name.equals(tigerOwner) && tamed && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == Item.BOOK.id))
-        {
-            setName(this);
-            return true;
-        }
-        if(itemstack != null && entityplayer.name.equals(tigerOwner) && field_1594 == null && roper == null && tamed && itemstack.itemId == mod_mocreatures.rope.id)
-        {
-            if(--itemstack.count == 0)
-            {
-                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
+            //
+            if (roper != null && getTamed()) {
+                entityplayer.inventory.method_671(new ItemStack(mod_mocreatures.rope));
+                world.playSound(this, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+                roper = null;
+                return true;
+            } else {
+                return false;
             }
-            world.playSound(this, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-            roper = entityplayer;
-            return true;
         }
-        if(roper != null && tamed)
-        {
-            entityplayer.inventory.method_671(new ItemStack(mod_mocreatures.rope));
-            world.playSound(this, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-            roper = null;
-            return true;
-        } else
-        {
-            return false;
-        }
+        return false;
     }
 
     protected String method_911()
     {
-        if(adult)
+        if(getAdult())
         {
             return "mocreatures:liongrunt";
         } else
@@ -667,7 +642,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
 
     protected String method_912()
     {
-        if(adult)
+        if(getAdult())
         {
             return "mocreatures:lionhurt";
         } else
@@ -678,7 +653,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
 
     protected String method_913()
     {
-        if(adult)
+        if(getAdult())
         {
             return "mocreatures:liondeath";
         } else
@@ -694,7 +669,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
 
     public void destroyDrops(Entity entity, double d)
     {
-        if(tamed)
+        if(getTamed())
         {
             return;
         }
@@ -722,12 +697,12 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
 
     protected boolean method_940()
     {
-        return !tamed;
+        return !getTamed();
     }
 
     public void markDead()
     {
-        if(tamed && health > 0)
+        if(getTamed() && health > 0)
         {
             return;
         } else
@@ -747,7 +722,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
             if(entity != this && (entity instanceof EntityBigCat))
             {
                 EntityBigCat entitybigcat = (EntityBigCat)entity;
-                int i = entitybigcat.typeint;
+                int i = entitybigcat.getType();
                 if(i == 2)
                 {
                     i = 1;
@@ -790,25 +765,12 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
 
     public boolean canSpawn()
     {
-        int i = 0;
-        if(NearSnowWithDistance(this, Double.valueOf(1.0D)))
-        {
-            i = 6;
-        } else
-        {
-            i = checkNearBigKitties(12D);
-            if(i == 7)
-            {
-                i = 5;
-            }
-        }
-        setType(i);
         return mocr.mocreaturesGlass.huntercreatures.lionfreq > 0 && super.canSpawn();
     }
 
     public boolean renderName()
     {
-        return !name.isEmpty() && displayname && mocr.mocreaturesGlass.othersettings.displayname;
+        return !getName().isEmpty() && getDisplayName() && mocr.mocreaturesGlass.othersettings.displayname;
     }
 
     public Entity ustawCel(LivingEntity gracz)
@@ -819,43 +781,245 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider
 
     public void wstanSzybko()
     {
-        this.sitting = false;
+        setSitting(false);
     }
 
     public static void setName(EntityBigCat entitybigcat)
     {
-        entitybigcat.displayname = true;
-        mc.setScreen(new MoCGUI(entitybigcat, entitybigcat.name));
+        entitybigcat.setDisplayName(true);
+        mc.setScreen(new MoCGUI(entitybigcat, entitybigcat.getName()));
 //        GuiHelper.openGUI(entityPlayer, Identifier.of("mocreatures:openTamePaper"), null, null, entitybigcat.name);
     }
 
     @SuppressWarnings("deprecation")
     public static Minecraft mc = Minecraft.class.cast(FabricLoader.getInstance().getGameInstance());
     mod_mocreatures mocr = new mod_mocreatures();
-    public boolean protectFromPlayers;
-    public String tigerOwner;
-    public boolean lionboolean;
     protected int force;
     protected double attackRange;
-    public int typeint;
     public boolean typechosen;
-    public boolean adult;
-    public float edad;
     public float heightF;
     public float widthF;
     public float lengthF;
-    public boolean hungry;
-    public boolean tamed;
-    public boolean sitting;
-    public boolean eaten;
-    public String name;
-    public boolean displayname;
     public int maxhealth;
     public LivingEntity roper;
+
+//    public boolean protectFromPlayers;
+//    public String tigerOwner;
+//    public boolean lionboolean;
+//    public int typeint;
+//    public boolean adult;
+//    public float edad;
+//    public boolean tamed;
+//    public boolean sitting;
+//    public String name;
+//    public boolean displayname;
+//    public boolean eaten;
+//    public boolean hungry;
+
+
 
     @Override
     public Identifier getHandlerIdentifier() {
         return Identifier.of(mod_mocreatures.MOD_ID, "BigCat");
+    }
+
+    //TYPE
+    public void setTypeSpawn() {
+        if (!world.isRemote) {
+            System.out.println("SPAWN TIGER 1");
+            int i = 0;
+            //
+            if(NearSnowWithDistance(this, Double.valueOf(1.0D)))
+            {
+                i = 6;
+            } else
+            {
+                i = checkNearBigKitties(12D);
+                if(i == 7)
+                {
+                    i = 5;
+                }
+            }
+            if(i == 0){
+                i = getRandomRace();
+            }
+            //
+            if (random.nextInt(4) == 0) {
+                setAdult(false);
+                field_1045 = true;
+            }else{
+                setAdult(true);
+            }
+            setType(i);
+        }
+    }
+
+    public void setType(int type)
+    {
+        if(!world.isRemote) {
+            System.out.println("SPAWN TIGER 2");
+            dataTracker.method_1509(16, (byte) type);
+            chooseType(type);
+        }
+    }
+
+    public int getType()
+    {
+        return dataTracker.method_1501(16);
+    }
+
+    //AGE //TODO: FLOAT HOW TO????
+    public void setAge(float age)
+    {
+//        dataTracker.method_1509(17, Byte.valueOf((byte)((int)(100F*age))));
+        dataTracker.method_1509(17, (float)(age));
+    }
+
+    public float getAge()
+    {
+//        return ((float) dataTracker.method_1501(17)) / 100F;
+        return (float) ((DataTrackerAccessor) dataTracker).getField_1741().get(17).method_963();
+    }
+
+    //ADULT
+    public boolean getAdult()
+    {
+        return (dataTracker.method_1501(18) & 1) != 0;
+    }
+
+    public void setAdult(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(18, Byte.valueOf((byte)1));
+        } else
+        {
+            dataTracker.method_1509(18, Byte.valueOf((byte)0));
+        }
+    }
+
+    //TAMED
+    public boolean getTamed()
+    {
+        return (dataTracker.method_1501(20) & 1) != 0;
+    }
+
+    public void setTamed(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(20, Byte.valueOf((byte)1));
+        } else
+        {
+            dataTracker.method_1509(20, Byte.valueOf((byte)0));
+        }
+    }
+
+    //SITTING
+    public boolean getSitting()
+    {
+        return (dataTracker.method_1501(21) & 1) != 0;
+    }
+
+    public void setSitting(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(21, Byte.valueOf((byte)1));
+        } else
+        {
+            dataTracker.method_1509(21, Byte.valueOf((byte)0));
+        }
+    }
+
+    //HUNGRY
+    public boolean getHungry()
+    {
+        return (dataTracker.method_1501(22) & 1) != 0;
+    }
+
+    public void setHungry(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(22, Byte.valueOf((byte)1));
+        } else
+        {
+            dataTracker.method_1509(22, Byte.valueOf((byte)0));
+        }
+    }
+
+    //EATEN
+    public boolean getEaten()
+    {
+        return (dataTracker.method_1501(19) & 1) != 0;
+    }
+
+    public void setEaten(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(19, Byte.valueOf((byte)1));
+        } else
+        {
+            dataTracker.method_1509(19, Byte.valueOf((byte)0));
+        }
+    }
+
+    //PROTECT FROM PLAYERES
+    public boolean getProtect()
+    {
+        return (dataTracker.method_1501(23) & 1) != 0;
+    }
+
+    public void setProtect(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(23, Byte.valueOf((byte)1));
+        } else
+        {
+            dataTracker.method_1509(23, Byte.valueOf((byte)0));
+        }
+    }
+
+    //DISPLAY NAME
+    public boolean getDisplayName()
+    {
+        return (dataTracker.method_1501(24) & 1) != 0;
+    }
+
+    public void setDisplayName(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(24, Byte.valueOf((byte)1));
+        } else
+        {
+            dataTracker.method_1509(24, Byte.valueOf((byte)0));
+        }
+    }
+
+    //OWNER
+    public void setOwner(String owner)
+    {
+        this.dataTracker.method_1509(30, owner);
+    }
+
+    public String getOwner()
+    {
+        return this.dataTracker.method_1510(30);
+    }
+
+    //NAME
+    public void setName(String name)
+    {
+        this.dataTracker.method_1509(31, name);
+    }
+
+    public String getName()
+    {
+        return this.dataTracker.method_1510(31);
     }
 }
 

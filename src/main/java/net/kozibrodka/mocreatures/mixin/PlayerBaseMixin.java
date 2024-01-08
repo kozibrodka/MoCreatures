@@ -63,7 +63,7 @@ public class PlayerBaseMixin extends LivingEntity{
         if(entityliving instanceof EntityBigCat)
         {
             EntityBigCat tygrys = (EntityBigCat)entityliving;
-            if(tygrys.tamed && name.equals(tygrys.tigerOwner))
+            if(tygrys.getTamed() && name.equals(tygrys.getOwner()))
             {
                 return;
             }
@@ -88,9 +88,9 @@ public class PlayerBaseMixin extends LivingEntity{
             }
             Entity entity = (Entity)iterator.next();
             EntityBigCat entitybigcat = (EntityBigCat)entity;
-            if(entitybigcat.tamed && entitybigcat.adult && entitybigcat.getTarget() == null && name.equals(entitybigcat.tigerOwner) && (!flag || !entitybigcat.sitting))
+            if(entitybigcat.getTamed() && entitybigcat.getAdult() && entitybigcat.getTarget() == null && name.equals(entitybigcat.getOwner()) && (!flag || !entitybigcat.getSitting()))
             {
-                if(!(entityliving instanceof PlayerEntity && !entitybigcat.protectFromPlayers))
+                if(!(entityliving instanceof PlayerEntity && !entitybigcat.getProtect()))
                 {
                     entitybigcat.wstanSzybko();
                     entitybigcat.ustawCel(entityliving);

@@ -5,12 +5,16 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.mixin.DataTrackerAccessor;
+import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.block.Block;
 import net.minecraft.class_61;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -19,22 +23,22 @@ import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.HasTrackingParameters;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
-import java.util.Arrays;
 import java.util.List;
 
 @HasTrackingParameters(trackingDistance = 160, updatePeriod = 2)
-public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider
+public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial
 {
 
     public EntityDeer(World world)
     {
         super(world);
-        texture = "/assets/mocreatures/stationapi/textures/mob/deer.png";
-        setAge(0.75F);
+        setAge(1.29F); //0.75F
         setBoundingBoxSpacing(0.9F, 1.3F);
         health = 10;
-        setType(getRandomRace());
+//        System.out.println("JESTEM+ " +  this.getType());
+//        setType(getRandomRace());
         movementSpeed = 1.7F;
+        typechosen = false;
     }
 
     protected void initDataTracker() {
@@ -51,19 +55,32 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider
                 texture = "/assets/mocreatures/stationapi/textures/mob/deer.png";
                 health = 15;
                 setAdult(true);
+                setAge(0.75F);
             } else
             if(type == 2)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/deerf.png";
                 health = 15;
                 setAdult(true);
-            } else
+                setAge(0.75F);
+            }
+            if(type == 3)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/deerb.png";
                 health = 5;
                 setAdult(false);
             }
 
+    }
+
+    public void setMyTexture(int i){
+        if(i == 1){
+            texture = "/assets/mocreatures/stationapi/textures/mob/deer.png";
+        }else if(i == 2){
+            texture = "/assets/mocreatures/stationapi/textures/mob/deerf.png";
+        }else if(i == 3){
+            texture = "/assets/mocreatures/stationapi/textures/mob/deerb.png";
+        }
     }
 
     public void setMySpeed(boolean flag, int type)
@@ -94,34 +111,32 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider
     public void method_937()
     {
         super.method_937();
-        if(getType() == 3 && !getAdult() && random.nextInt(250) == 0)
+        if(!typechosen && world.isRemote && getType() != 0){
+            typechosen = true;
+            setMyTexture(getType()); //TODO: POMYSL Z RENDEREM od tigera
+        }
+        if(getType() == 3 && !getAdult() && random.nextInt(250) == 0 && !world.isRemote)
         {
             setAge(getAge()+0.01F);
             if(getAge() >= 1.3F)
             {
-                setAdult(true);
-                this.dataTracker.method_1509(16, (byte)(0));
+//                System.out.println("DOROSLEM");
+//                setAdult(true);
+//                this.dataTracker.method_1509(16, (byte)(0));
                 setType(getRandomRace());
-//                System.out.println("DORASTAM");;
             }
         }
-        if(random.nextInt(5) == 0)
+        if(random.nextInt(5) == 0 && !world.isRemote)
         {
             LivingEntity entityliving = getBoogey(10D);
             if(entityliving != null)
             {
                 setMySpeed(true, getType());
-                runLikeHell(entityliving);
+//                runLikeHell(entityliving); //TODO:DDDDDd
             } else
             {
                 setMySpeed(false, getType());
             }
-        }
-        if(world.isRemote){
-//            System.out.println("HEJO " + this.y + " client: " + (double)this.clientY/32);
-//            this.y = (double)this.clientY/32;
-        }else{
-//            System.out.println("HOSCIK: " + this.y);
         }
     }
 
@@ -196,6 +211,11 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider
         setAdult(nbttagcompound.getBoolean("Adult"));
         setType(nbttagcompound.getInt("TypeInt"));
         setAge(nbttagcompound.getFloat("Edad"));
+//        if(!world.isRemote){
+//            System.out.println("servi: " + (nbttagcompound.getInt("TypeInt")) + "  ID:" + id);
+//        }else{
+//            System.out.println("client: " + (nbttagcompound.getInt("TypeInt")) + "  ID:" + id);
+//        }
     }
 
     protected String method_911()
@@ -228,8 +248,6 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider
         return movementSpeed;
     }
 
-//    public boolean typechosen;
-
     public int getRandomRace()
     {
         int i = random.nextInt(100);
@@ -249,14 +267,25 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider
     //TYPE
     public void setType(int type)
     {
-        final byte by = this.dataTracker.method_1501(16);
-//        System.out.println("TEST DATA first: " + by);
-        this.dataTracker.method_1509(16, (byte)(by & 0xF0 | type & 0xF));
+        if(!world.isRemote){
+            /**
+            Zostaw jak jest bo ładnie działa, dodaj dodatkowe TYPEINT DLA DZIECI i elo. wszędzie jak u jelenia
+             */
+//            System.out.println("LADUJE SIE + " + getType() + "  id:" + id);
+//            final byte by = this.dataTracker.method_1501(16);
+//            this.dataTracker.method_1509(16, (byte)(by & 0xF0 | type & 0xF));
+            this.dataTracker.method_1509(16, (byte)(type));
+            chooseType(type);
+            setMySpeed(false, type);
+        }
+    }
 
-        chooseType(type);
-        setMySpeed(false, type);
-
-//        System.out.println(this.entityId + "RASA: " + type +" AGE: " +getAge());
+    public void setTypeSpawn()
+    {
+        if(!world.isRemote){
+            int type = getRandomRace();
+            setType(type);
+        }
     }
 
     public int getType()
@@ -267,12 +296,15 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider
     //AGE
     public void setAge(float age)
     {
-        dataTracker.method_1509(17, (byte) ((int) 100F * age));
+//        dataTracker.method_1509(17, (byte) ((int) 100F * age));
+//        ((DataTrackerAccessor) dataTracker).getField_1741().get(17).method_961(age);
+        dataTracker.method_1509(17, (float)(age));
     }
 
     public float getAge()
     {
-        return ((float) dataTracker.method_1501(17)) / 100F;
+//        return ((float) dataTracker.method_1501(17)) / 100F;
+       return (float) ((DataTrackerAccessor) dataTracker).getField_1741().get(17).method_963();
     }
 
     //ADULT
@@ -297,23 +329,28 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider
         return Identifier.of(mod_mocreatures.MOD_ID, "Deer");
     }
 
-//    @Override
-//    public void writeToMessage(Message message)
-//    {
-//        // message.ints.length is 4, so let's add a fifth
-//        int[] newInts = Arrays.copyOf(message.ints, message.ints.length + 1);
-//        newInts[newInts.length - 1] = getType();
-//        message.ints = newInts;
-//
-////        System.out.println("TEST MESSEGA");
-//    }
-//
-//    @Override
-//    public void readFromMessage(Message message)
-//    {
-////        System.out.println("MESSAGE: " + message.ints[4]);
-//        this.dataTracker.setInt(16, (byte)(message.ints[4]));
-//        chooseType(message.ints[4]);
-//        setMySpeed(false, message.ints[4]);
-//    }
+    public boolean method_1323(PlayerEntity entityplayer)
+    {
+        ItemStack itemstack = entityplayer.inventory.getSelectedItem();
+        if(itemstack != null && itemstack.itemId == Item.DIAMOND_HOE.id)
+        {
+            System.out.println("TYPE: " + getType());
+            System.out.println("ADULT? " + getAdult());
+            System.out.println("AGE: " + getAge());
+//            System.out.println("AGE: " + typechoosen);
+            return true;
+        }
+        if(itemstack != null && itemstack.itemId == Item.GOLDEN_HOE.id && !world.isRemote)
+        {
+//            typechoosen = true;
+        }
+        return false;
+    }
+    public boolean canSpawn()
+    {
+        return mocr.mocreaturesGlass.animals.deerfreq > 0 && super.canSpawn();
+    }
+
+    mod_mocreatures mocr = new mod_mocreatures();
+    public boolean typechosen;
 }

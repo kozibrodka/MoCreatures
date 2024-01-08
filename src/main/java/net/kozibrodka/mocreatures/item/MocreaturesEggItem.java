@@ -113,6 +113,9 @@ public class MocreaturesEggItem extends TemplateItem {
         huj.method_1340(i, j + 1, k);
         arg3.method_210(huj);
         --arg.count;
+        if(ide == 7){
+            ((EntityDeer)huj).setType(3);
+        }
 
         return false;
     }

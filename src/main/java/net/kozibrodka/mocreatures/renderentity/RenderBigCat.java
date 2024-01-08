@@ -24,37 +24,33 @@ public class RenderBigCat extends LivingEntityRenderer
     protected void method_823(LivingEntity entityliving, float f)
     {
         EntityBigCat entitybigcat = (EntityBigCat)entityliving;
-        bigcat1.sitting = entitybigcat.sitting;
-        bigcat1.tamed = entitybigcat.tamed;
+        bigcat1.sitting = entitybigcat.getSitting();
+        bigcat1.tamed = entitybigcat.getTamed();
     }
 
-    protected boolean a(EntityBigCat entitybigcat, int i)
-    {
-        if(entitybigcat.typeint == 2 && entitybigcat.adult)
-        {
-            bindTexture("/assets/mocreatures/stationapi/textures/mob/lionb.png");
-        } else
-        {
-            bindTexture("/assets/mocreatures/stationapi/textures/mob/lionc.png");
-        }
-        return i == 0 && !entitybigcat.lionboolean;
-    }
+//    protected boolean a(EntityBigCat entitybigcat, int i)
+//    {
+//        if(entitybigcat.getType() == 2 && entitybigcat.getAdult())
+//        {
+//            bindTexture("/assets/mocreatures/stationapi/textures/mob/lionb.png");
+//        } else
+//        {
+//            bindTexture("/assets/mocreatures/stationapi/textures/mob/lionc.png");
+//        }
+//        return i == 0;
+//    }
 
-    protected boolean method_825(LivingEntity entityliving, int i, float f)
-    {
-        return a((EntityBigCat)entityliving, i);
-    }
+//    protected boolean method_825(LivingEntity entityliving, int i, float f)
+//    {
+//        return a((EntityBigCat)entityliving, i);
+//    }
 
     public void render(LivingEntity entityliving, double d, double d1, double d2,
             float f, float f1)
     {
         EntityBigCat entitybigcat = (EntityBigCat)entityliving;
-        if(!entitybigcat.typechosen)
-        {
-            entitybigcat.chooseType();
-        }
         super.render(entitybigcat, d, d1, d2, f, f1);
-        boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entitybigcat.name.isEmpty();
+        boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entitybigcat.getName().isEmpty();
         boolean flag1 = mocr.mocreaturesGlass.othersettings.displayhealth;
         boolean flag2 = mocr.mocreaturesGlass.othersettings.displayemo;
         if(entitybigcat.renderName())
@@ -65,7 +61,7 @@ public class RenderBigCat extends LivingEntityRenderer
             if(f5 < 16F)
             {
                 String s = "";
-                s = (new StringBuilder()).append(s).append(entitybigcat.name).toString();
+                s = (new StringBuilder()).append(s).append(entitybigcat.getName()).toString();
                 float f7 = 0.1F;
                 TextRenderer fontrenderer = method_2023();
                 GL11.glPushMatrix();
@@ -131,11 +127,11 @@ public class RenderBigCat extends LivingEntityRenderer
         if(entitybigcat.roper != null)
         {
             Tessellator tessellator = Tessellator.INSTANCE;
-            if(entitybigcat.adult)
+            if(entitybigcat.getAdult())
             {
-                entitybigcat.edad = 1.0F;
+                entitybigcat.setAge(1.0F); //TODO: does it work?
             }
-            d1 -= 0.40000000000000002D / (double)entitybigcat.edad;
+            d1 -= 0.40000000000000002D / (double)entitybigcat.getAge();
             float f4 = ((entitybigcat.roper.prevYaw + (entitybigcat.roper.yaw - entitybigcat.roper.prevYaw) * f1 * 0.5F) * 3.141593F) / 180F;
             float f6 = ((entitybigcat.roper.prevPitch + (entitybigcat.roper.pitch - entitybigcat.roper.prevPitch) * f1 * 0.5F) * 3.141593F) / 180F;
             double d3 = MathHelper.sin(f4);
@@ -174,8 +170,8 @@ public class RenderBigCat extends LivingEntityRenderer
 
     protected void stretch(EntityBigCat entitybigcat)
     {
-        float f = entitybigcat.edad;
-        if(entitybigcat.adult)
+        float f = entitybigcat.getAge();
+        if(entitybigcat.getAdult())
         {
             f = 1.0F;
         }
