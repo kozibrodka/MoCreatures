@@ -5,6 +5,7 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.block.Block;
 import net.minecraft.class_61;
 import net.minecraft.entity.Entity;
@@ -21,7 +22,7 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 
 import java.util.List;
 
-public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider
+public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial
 {
 
     public EntityMouse(World world)
@@ -71,6 +72,10 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider
     public void method_937()
     {
         super.method_937();
+        if(!typechosen && world.isRemote && getType() != 0){
+            typechosen = true;
+            chooseType(getType());
+        }
         if(random.nextInt(15) == 0)
         {
             LivingEntity entityliving = getBoogey(6D);

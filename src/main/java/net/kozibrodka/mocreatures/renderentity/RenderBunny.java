@@ -18,10 +18,6 @@ public class RenderBunny extends LivingEntityRenderer
                                float f, float f1)
     {
         EntityBunny entitybunny = (EntityBunny)entityliving;
-        if(!entitybunny.typechosen)
-        {
-            entitybunny.chooseType();
-        }
         super.render(entitybunny, d, d1, d2, f, f1);
     }
 

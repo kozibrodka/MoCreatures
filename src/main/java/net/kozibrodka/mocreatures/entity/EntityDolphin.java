@@ -10,6 +10,7 @@ import net.kozibrodka.mocreatures.mixin.EntityBaseAccesor;
 import net.kozibrodka.mocreatures.mixin.LivingAccesor;
 import net.kozibrodka.mocreatures.mixin.MonsterBaseAccesor;
 import net.kozibrodka.mocreatures.mocreatures.MoCGUI;
+import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
@@ -25,7 +26,7 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 
 import java.util.List;
 
-public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvider
+public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvider, MoCreatureRacial
 {
 
     public EntityDolphin(World world)
@@ -281,6 +282,10 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     public void method_937()
     {
         super.method_937();
+        if(!typechosen && world.isRemote && getType() != 0){
+            typechosen = true;
+            chooseType(getType());
+        }
         if(!adult && random.nextInt(50) == 0)
         {
             b += 0.01F;

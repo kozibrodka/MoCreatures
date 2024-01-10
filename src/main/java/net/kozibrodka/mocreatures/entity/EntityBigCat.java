@@ -52,7 +52,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
     {
         super.initDataTracker();
         dataTracker.method_1502(16, (byte) 0); //Type
-        dataTracker.method_1502(17, (byte) 0); //Age
+        dataTracker.method_1502(17, (int) 0); //Age
         dataTracker.method_1502(18, (byte) 0); //Adult
         dataTracker.method_1502(19, (byte) 0); //Eaten
         dataTracker.method_1502(20, (byte) 0); //Tamed
@@ -857,7 +857,6 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
     public void setType(int type)
     {
         if(!world.isRemote) {
-            System.out.println("SPAWN TIGER 2");
             dataTracker.method_1509(16, (byte) type);
             chooseType(type);
         }
@@ -868,17 +867,15 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         return dataTracker.method_1501(16);
     }
 
-    //AGE //TODO: FLOAT HOW TO????
+    //AGE
     public void setAge(float age)
     {
-//        dataTracker.method_1509(17, Byte.valueOf((byte)((int)(100F*age))));
-        dataTracker.method_1509(17, (float)(age));
+        dataTracker.method_1509(17, Float.floatToRawIntBits(age));
     }
 
     public float getAge()
     {
-//        return ((float) dataTracker.method_1501(17)) / 100F;
-        return (float) ((DataTrackerAccessor) dataTracker).getField_1741().get(17).method_963();
+        return Float.intBitsToFloat(dataTracker.method_1508(17));
     }
 
     //ADULT

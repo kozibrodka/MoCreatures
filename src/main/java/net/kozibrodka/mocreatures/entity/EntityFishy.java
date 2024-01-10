@@ -6,6 +6,7 @@ package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mixin.EntityBaseAccesor;
+import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.WolfEntity;
@@ -19,7 +20,7 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 
 import java.util.List;
 
-public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider
+public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider, MoCreatureRacial
 {
 
     public EntityFishy(World world)
@@ -49,6 +50,10 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider
     public void method_937()
     {
         super.method_937();
+        if(!typechosen && world.isRemote && getType() != 0){
+            typechosen = true;
+            chooseType(getType());
+        }
         if(!adult && random.nextInt(100) == 0)
         {
             b += 0.02F;

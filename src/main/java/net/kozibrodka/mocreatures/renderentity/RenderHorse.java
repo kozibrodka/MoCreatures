@@ -179,10 +179,6 @@ public class RenderHorse extends LivingEntityRenderer
 
     protected boolean setWoolColorAndRender(EntityHorse entityhorse, int i)
     {
-        if(!entityhorse.typechosen)
-        {
-            entityhorse.chooseType();
-        }
         if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horseb.png")
         {
             if(!entityhorse.rideable)

@@ -10,6 +10,7 @@ import net.kozibrodka.mocreatures.mixin.MonsterBaseAccesor;
 import net.kozibrodka.mocreatures.mixin.WalkingBaseAccesor;
 import net.kozibrodka.mocreatures.mocreatures.AnimalChest;
 import net.kozibrodka.mocreatures.mocreatures.MoCGUI;
+import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.block.Block;
 import net.minecraft.class_61;
 import net.minecraft.client.Minecraft;
@@ -35,7 +36,7 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnDataProvider
+public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnDataProvider, MoCreatureRacial
 {
 
     public EntityHorse(World world)
@@ -231,6 +232,10 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
 
     public void method_937()
     {
+        if(!typechosen && world.isRemote && getType() != 0){
+            typechosen = true;
+            chooseType(getType());
+        }
         if(random.nextInt(300) == 0 && health < maxhealth && field_1041 == 0)
         {
             health++;

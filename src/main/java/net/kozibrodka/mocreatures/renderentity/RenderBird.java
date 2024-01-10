@@ -18,10 +18,6 @@ public class RenderBird extends LivingEntityRenderer
                                float f, float f1)
     {
         EntityBird entitybird = (EntityBird)entityliving;
-        if(!entitybird.typechosen)
-        {
-            entitybird.chooseType();
-        }
         super.render(entityliving, d, d1, d2, f, f1);
     }
 

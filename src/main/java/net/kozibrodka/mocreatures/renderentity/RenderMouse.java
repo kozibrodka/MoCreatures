@@ -18,10 +18,6 @@ public class RenderMouse extends LivingEntityRenderer
                                float f, float f1)
     {
         EntityMouse entitymouse = (EntityMouse)entityliving;
-        if(!entitymouse.typechosen)
-        {
-            entitymouse.chooseType();
-        }
         super.render(entitymouse, d, d1, d2, f, f1);
     }
 

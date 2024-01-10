@@ -7,6 +7,7 @@ package net.kozibrodka.mocreatures.entity;
 import net.fabricmc.loader.api.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCGUI;
+import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.class_61;
@@ -29,7 +30,7 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 
 import java.util.List;
 
-public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider
+public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial
 {
 
     public EntityKitty(World world)
@@ -282,6 +283,10 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider
 
     public void method_937()
     {
+        if(!typechosen && world.isRemote && getType() != 0){
+            typechosen = true;
+            chooseType(getType());
+        }
         if(!adult && kittystate != 10)
         {
             kittystate = 10;

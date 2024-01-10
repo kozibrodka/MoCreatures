@@ -19,10 +19,6 @@ public class RenderFishy extends LivingEntityRenderer
                                float f, float f1)
     {
         EntityFishy entityfishy = (EntityFishy)entityliving;
-        if(!entityfishy.typechosen)
-        {
-            entityfishy.chooseType();
-        }
         super.render(entityfishy, d, d1, d2, f, f1);
     }
 

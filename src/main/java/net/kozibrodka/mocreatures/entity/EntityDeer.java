@@ -32,7 +32,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
     public EntityDeer(World world)
     {
         super(world);
-        setAge(1.29F); //0.75F
+        setAge(0.75F); //0.75F
         setBoundingBoxSpacing(0.9F, 1.3F);
         health = 10;
 //        System.out.println("JESTEM+ " +  this.getType());
@@ -44,7 +44,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
     protected void initDataTracker() {
         super.initDataTracker();
         dataTracker.method_1502(16, (byte) 0); //Type
-        dataTracker.method_1502(17, (byte) 0); //Age
+        dataTracker.method_1502(17, (int) 0); //Age
         dataTracker.method_1502(18, (byte) 0); //Adult
     }
 
@@ -108,12 +108,23 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
     {
     }
 
+    public boolean debugTexture(){
+        if (texture == "/assets/mocreatures/stationapi/textures/mob/deerb.png") {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public void method_937()
     {
         super.method_937();
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
-            setMyTexture(getType()); //TODO: POMYSL Z RENDEREM od tigera
+            setMyTexture(getType());
+        }
+        if(world.isRemote && getType() != 3 && debugTexture()){
+            chooseType(getType());
         }
         if(getType() == 3 && !getAdult() && random.nextInt(250) == 0 && !world.isRemote)
         {
@@ -123,6 +134,9 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
 //                System.out.println("DOROSLEM");
 //                setAdult(true);
 //                this.dataTracker.method_1509(16, (byte)(0));
+                //TODO: Jedyny taki MOB, wszysyko działa ale tekstura zaktualizuje się dopiero po reconnect Klienta. No logiczne bo chooseType
+                //TODO: odpala tylko na servie w tym przypadku
+                //TODO: SHOULD BE FIXED with debugTex()
                 setType(getRandomRace());
             }
         }
@@ -268,13 +282,10 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
     public void setType(int type)
     {
         if(!world.isRemote){
-            /**
-            Zostaw jak jest bo ładnie działa, dodaj dodatkowe TYPEINT DLA DZIECI i elo. wszędzie jak u jelenia
-             */
 //            System.out.println("LADUJE SIE + " + getType() + "  id:" + id);
 //            final byte by = this.dataTracker.method_1501(16);
 //            this.dataTracker.method_1509(16, (byte)(by & 0xF0 | type & 0xF));
-            this.dataTracker.method_1509(16, (byte)(type));
+            dataTracker.method_1509(16, (byte)(type));
             chooseType(type);
             setMySpeed(false, type);
         }
@@ -296,15 +307,12 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
     //AGE
     public void setAge(float age)
     {
-//        dataTracker.method_1509(17, (byte) ((int) 100F * age));
-//        ((DataTrackerAccessor) dataTracker).getField_1741().get(17).method_961(age);
-        dataTracker.method_1509(17, (float)(age));
+        dataTracker.method_1509(17, Float.floatToRawIntBits(age));
     }
 
     public float getAge()
     {
-//        return ((float) dataTracker.method_1501(17)) / 100F;
-       return (float) ((DataTrackerAccessor) dataTracker).getField_1741().get(17).method_963();
+        return Float.intBitsToFloat(dataTracker.method_1508(17));
     }
 
     //ADULT
@@ -329,6 +337,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         return Identifier.of(mod_mocreatures.MOD_ID, "Deer");
     }
 
+    //INTERACT
     public boolean method_1323(PlayerEntity entityplayer)
     {
         ItemStack itemstack = entityplayer.inventory.getSelectedItem();

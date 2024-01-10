@@ -21,10 +21,6 @@ public class RenderDolphin extends LivingEntityRenderer
                                float f, float f1)
     {
         EntityDolphin entitydolphin = (EntityDolphin)entityliving;
-        if(!entitydolphin.typechosen)
-        {
-            entitydolphin.chooseType();
-        }
         super.render(entitydolphin, d, d1, d2, f, f1);
         boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entitydolphin.name.isEmpty();
         boolean flag1 = mocr.mocreaturesGlass.othersettings.displayhealth;

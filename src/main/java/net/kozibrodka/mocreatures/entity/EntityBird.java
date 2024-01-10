@@ -3,6 +3,7 @@ package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mixin.EntityBaseAccesor;
+import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.entity.Entity;
@@ -21,29 +22,39 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 import java.util.List;
 
 
-public class EntityBird extends AnimalEntity implements MobSpawnDataProvider
+public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial
 {
 
     public EntityBird(World world)
     {
         super(world);
-        texture = "/assets/mocreatures/stationapi/textures/mob/birdblue.png";
+//        texture = "/assets/mocreatures/stationapi/textures/mob/birdblue.png";
         setBoundingBoxSpacing(0.4F, 0.3F);
         health = 2;
         field_1625 = true;
         wingb = 0.0F;
         wingc = 0.0F;
         wingh = 1.0F;
-        fleeing = false;
-        tamed = false;
-        typeint = 0;
-        typechosen = false;
-        hasreproduced = false;
+//        fleeing = false;
+//        tamed = false;
+//        typeint = 0;
+//        typechosen = false;
+//        hasreproduced = false;
         field_1045 = true;
     }
 
     protected void method_1389(float f)
     {
+    }
+
+    protected void initDataTracker()
+    {
+        super.initDataTracker();
+        dataTracker.method_1502(16, (byte) 0); //Type
+        dataTracker.method_1502(17, (byte) 0); //Tamed
+        dataTracker.method_1502(18, (byte) 0); //Picked
+        dataTracker.method_1502(19, (byte) 0); //HasReproduced
+        dataTracker.method_1502(20, (byte) 0); //Fleeing
     }
 
     public int method_916()
@@ -54,6 +65,10 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider
     public void method_937()
     {
         super.method_937();
+        if(!typechosen && world.isRemote && getType() != 0){
+            typechosen = true;
+            chooseType(getType());
+        }
         winge = wingb;
         wingd = wingc;
         wingc = (float)((double)wingc + (double)(field_1623 ? -1 : 4) * 0.29999999999999999D);
@@ -76,19 +91,19 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider
         }
         wingb += wingh * 2.0F;
         LivingEntity entityliving = getClosestEntityLiving(this, 4D);
-        if(entityliving != null && !tamed && method_928(entityliving))
+        if(entityliving != null && !getTamed() && method_928(entityliving))
         {
-            fleeing = true;
+            setFleeing(true);
         }
         if(random.nextInt(300) == 0)
         {
-            fleeing = true;
+            setFleeing(true);
         }
-        if(fleeing)
+        if(getFleeing())
         {
             if(FlyToNextTree())
             {
-                fleeing = false;
+                setFleeing(false);
             }
             int ai[] = ReturnNearestMaterialCoord(this, Material.LEAVES, Double.valueOf(16D));
             if(ai[0] == -1)
@@ -98,14 +113,14 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider
                     WingFlap();
                 }
 
-                fleeing = false;
+                setFleeing(false);
             }
             if(random.nextInt(50) == 0)
             {
-                fleeing = false;
+                setFleeing(false);
             }
         }
-        if(!fleeing)
+        if(!getFleeing())
         {
             ItemEntity entityitem = getClosestSeeds(this, 12D);
             if(entityitem != null)
@@ -115,7 +130,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider
                 if(random.nextInt(50) == 0 && entityitem1 != null)
                 {
                     entityitem1.markDead();
-                    tamed = true;
+                    setTamed(true);
                 }
             }
         }
@@ -140,19 +155,19 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider
                 }
             }
         }
-        if(!fleeing || !picked)
+        if(!getFleeing() || !getPicked())
         {
             super.method_910();
         } else
         if(field_1623)
         {
-            picked = false;
+            setPicked(false);
         }
     }
 
     public void markDead()
     {
-        if(tamed && health > 0)
+        if(getTamed() && health > 0)
         {
             return;
         } else
@@ -164,7 +179,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider
 
     public boolean method_1323(PlayerEntity entityplayer)
     {
-        if(!tamed)
+        if(!getTamed())
         {
             return false;
         }
@@ -172,7 +187,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider
         method_1376(entityplayer);
         if(field_1595 != null)
         {
-            picked = true;
+            setPicked(true);
         } else
         {
             world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
@@ -358,48 +373,8 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider
         return false;
     }
 
-    public void setType(int i)
+    public void chooseType(int typeint)
     {
-        typeint = i;
-        typechosen = false;
-        chooseType();
-    }
-
-    public void chooseType()
-    {
-        if(typeint == 0)
-        {
-            int i = random.nextInt(100);
-            if(i <= 15)
-            {
-                typeint = 1;
-            } else
-            if(i <= 30)
-            {
-                typeint = 2;
-            } else
-            if(i <= 45)
-            {
-                typeint = 3;
-            } else
-            if(i <= 60)
-            {
-                typeint = 4;
-            } else
-            if(i <= 75)
-            {
-                typeint = 5;
-            } else
-            if(i <= 90)
-            {
-                typeint = 6;
-            } else
-            {
-                typeint = 2;
-            }
-        }
-        if(!typechosen)
-        {
             if(typeint == 1)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/birdwhite.png";
@@ -424,8 +399,37 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/birdred.png";
             }
+    }
+
+    public int getRandomRace(){
+        int i = random.nextInt(100);
+        if(i <= 15)
+        {
+            return 1;
+        } else
+        if(i <= 30)
+        {
+            return 2;
+        } else
+        if(i <= 45)
+        {
+            return 3;
+        } else
+        if(i <= 60)
+        {
+            return 4;
+        } else
+        if(i <= 75)
+        {
+            return 5;
+        } else
+        if(i <= 90)
+        {
+            return 6;
+        } else
+        {
+            return 2;
         }
-        typechosen = true;
     }
 
     public void faceTreeTop(int i, int j, int k, float f)
@@ -545,38 +549,38 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
-        nbttagcompound.putInt("TypeInt", typeint);
-        nbttagcompound.putBoolean("HasReproduced", hasreproduced);
-        nbttagcompound.putBoolean("Tamed", tamed);
+        nbttagcompound.putInt("TypeInt", getType());
+        nbttagcompound.putBoolean("HasReproduced", getReproduced());
+        nbttagcompound.putBoolean("Tamed", getTamed());
     }
 
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
-        hasreproduced = nbttagcompound.getBoolean("HasReproduced");
-        tamed = nbttagcompound.getBoolean("Tamed");
-        typeint = nbttagcompound.getInt("TypeInt");
+        setReproduced(nbttagcompound.getBoolean("HasReproduced"));
+        setTamed(nbttagcompound.getBoolean("Tamed"));
+        setType(nbttagcompound.getInt("TypeInt"));
     }
 
     protected String method_911()
     {
-        if(typeint == 1)
+        if(getType() == 1)
         {
             return "mocreatures:birdwhite";
         }
-        if(typeint == 2)
+        if(getType() == 2)
         {
             return "mocreatures:birdblack";
         }
-        if(typeint == 3)
+        if(getType() == 3)
         {
             return "mocreatures:birdgreen";
         }
-        if(typeint == 4)
+        if(getType() == 4)
         {
             return "mocreatures:birdblue";
         }
-        if(typeint == 5)
+        if(getType() == 5)
         {
             return "mocreatures:birdyellow";
         } else
@@ -601,21 +605,111 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
-    private boolean hasreproduced;
-    public int typeint;
-    public boolean typechosen;
-    private boolean fleeing;
+
     public float wingb;
     public float wingc;
     public float wingd;
     public float winge;
     public float wingh;
-    public boolean tamed;
-    public boolean picked;
+
+//    public boolean tamed;
+//    public boolean picked;
+//    private boolean hasreproduced;
+//    public int typeint;
+//    private boolean fleeing;
+
+    public boolean typechosen;
 
     @Override
     public Identifier getHandlerIdentifier() {
         return Identifier.of(mod_mocreatures.MOD_ID, "Bird");
+    }
+
+    //TYPE
+    public void setTypeSpawn()
+    {
+        if(!world.isRemote){
+            int type = getRandomRace();
+            setType(type);
+        }
+    }
+
+    public void setType(int type)
+    {
+        if(!world.isRemote) {
+            dataTracker.method_1509(16, (byte) type);
+            chooseType(type);
+        }
+    }
+
+    public int getType()
+    {
+        return dataTracker.method_1501(16);
+    }
+
+    //Tamed
+    public boolean getTamed()
+    {
+        return (dataTracker.method_1501(17) & 1) != 0;
+    }
+
+    public void setTamed(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(17, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(17, (byte) 0);
+        }
+    }
+    //Picked
+    public boolean getPicked()
+    {
+        return (dataTracker.method_1501(18) & 1) != 0;
+    }
+
+    public void setPicked(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(18, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(18, (byte) 0);
+        }
+    }
+    //Picked
+    public boolean getReproduced()
+    {
+        return (dataTracker.method_1501(19) & 1) != 0;
+    }
+
+    public void setReproduced(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(19, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(19, (byte) 0);
+        }
+    }
+    //Picked
+    public boolean getFleeing()
+    {
+        return (dataTracker.method_1501(20) & 1) != 0;
+    }
+
+    public void setFleeing(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(20, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(20, (byte) 0);
+        }
     }
 }
 

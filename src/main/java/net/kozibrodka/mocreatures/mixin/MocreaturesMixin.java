@@ -27,7 +27,7 @@ public class MocreaturesMixin{
     private void Injected(CallbackInfo ci) {
         mod_mocreatures mocr = new mod_mocreatures();
 //        this.field_894.add(new class_288(EntityBear.class, mocr.mocreaturesGlass.huntercreatures.bearfreq));
-        this.field_894.add(new class_288(EntityBigCat.class, mocr.mocreaturesGlass.huntercreatures.lionfreq)); //TODO GUI
+//        this.field_894.add(new class_288(EntityBigCat.class, mocr.mocreaturesGlass.huntercreatures.lionfreq)); //TODO GUI
 //        this.field_894.add(new class_288(EntityBird.class, mocr.mocreaturesGlass.animals.birdfreq));
 //        this.field_894.add(new class_288(EntityBoar.class, mocr.mocreaturesGlass.huntercreatures.boarfreq));
 //        this.field_894.add(new class_288(EntityBunny.class, mocr.mocreaturesGlass.animals.bunnyfreq));

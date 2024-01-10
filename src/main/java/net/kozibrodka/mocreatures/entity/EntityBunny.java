@@ -3,6 +3,7 @@ package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mixin.WalkingBaseAccesor;
+import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -15,57 +16,29 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 import java.util.List;
 
 
-public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider
+public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial
 {
 
     public EntityBunny(World world)
     {
         super(world);
         a = false;
-        adult = true;
-        edad = 0.5F;
+//        adult = true;
+        setAge(0.5F);
         movementSpeed = 1.5F;
-        texture = "/assets/mocreatures/stationapi/textures/mob/bunny.png";
+//        texture = "/assets/mocreatures/stationapi/textures/mob/bunny.png";
         eyeHeight = -0.16F;
         setBoundingBoxSpacing(0.4F, 0.4F);
         health = 4;
         j = random.nextInt(64);
         i = 0;
-        typeint = 0;
+//        typeint = 0;
         typechosen = false;
         field_1045 = true;
     }
 
-    public void setType(int k)
+    public void chooseType(int typeint)
     {
-        typeint = k;
-        typechosen = false;
-        chooseType();
-    }
-
-    public void chooseType()
-    {
-        if(typeint == 0)
-        {
-            int k = random.nextInt(100);
-            if(k <= 25)
-            {
-                typeint = 1;
-            } else
-            if(k <= 50)
-            {
-                typeint = 2;
-            } else
-            if(k <= 75)
-            {
-                typeint = 3;
-            } else
-            {
-                typeint = 4;
-            }
-        }
-        if(!typechosen)
-        {
             if(typeint == 1)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/bunny.png";
@@ -82,18 +55,40 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/bunnyd.png";
             }
+    }
+
+    public int getRandomRace(){
+        int k = random.nextInt(100);
+        if(k <= 25)
+        {
+            return 1;
+        } else
+        if(k <= 50)
+        {
+            return 2;
+        } else
+        if(k <= 75)
+        {
+            return 3;
+        } else
+        {
+            return 4;
         }
-        typechosen = true;
     }
 
     public void method_937()
     {
-        if(!adult && random.nextInt(200) == 0)
+        if(!typechosen && world.isRemote && getType() != 0){
+            typechosen = true;
+            chooseType(getType());
+        }
+        if(!getAdult() && random.nextInt(200) == 0 && !world.isRemote)
         {
-            edad += 0.01F;
-            if(edad >= 1.0F)
+            setAge(getAge()+0.01F);
+            if(getAge() >= 1.0F)
             {
-                adult = true;
+                setAdult(true);
+                //TODO: DORASTANIE? manioulate age for if statemtnt
             }
         }
         super.method_937();
@@ -102,7 +97,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider
     public void tick()
     {
         super.tick();
-        if(!tamed || !adult || field_1595 != null)
+        if(!getTamed() || !getAdult() || field_1595 != null)
         {
             return;
         }
@@ -141,13 +136,13 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider
                     continue;
                 }
                 EntityBunny entitybunny = (EntityBunny)entity1;
-                if(entitybunny.field_1595 != null || entitybunny.j < 1023 || !entitybunny.adult)
+                if(entitybunny.field_1595 != null || entitybunny.j < 1023 || !entitybunny.getAdult())
                 {
                     continue;
                 }
                 EntityBunny entitybunny1 = new EntityBunny(world);
                 entitybunny1.method_1340(x, y, z);
-                entitybunny1.adult = false;
+                entitybunny1.setAdult(false);
                 world.method_210(entitybunny1);
                 world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
                 proceed();
@@ -210,7 +205,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider
         velocityX = entityplayer.velocityX * 5D;
         velocityY = entityplayer.velocityY / 2D + 0.5D;
         velocityZ = entityplayer.velocityZ * 5D;
-        tamed = true;
+        setTamed(true);
         return true;
     }
 
@@ -274,19 +269,27 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
-        nbttagcompound.putInt("TypeInt", typeint);
-        nbttagcompound.putBoolean("Tamed", tamed);
-        nbttagcompound.putFloat("Edad", edad);
-        nbttagcompound.putBoolean("Adult", adult);
+        nbttagcompound.putInt("TypeInt", getType());
+        nbttagcompound.putBoolean("Tamed", getTamed());
+        nbttagcompound.putFloat("Edad", getAge());
+        nbttagcompound.putBoolean("Adult", getAdult());
     }
 
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
-        typeint = nbttagcompound.getInt("TypeInt");
-        edad = nbttagcompound.getFloat("Edad");
-        tamed = nbttagcompound.getBoolean("Tamed");
-        adult = nbttagcompound.getBoolean("Adult");
+        setType(nbttagcompound.getInt("TypeInt"));
+        setAge(nbttagcompound.getFloat("Edad"));
+        setTamed(nbttagcompound.getBoolean("Tamed"));
+        setAdult(nbttagcompound.getBoolean("Adult"));
+    }
+
+    protected void initDataTracker() {
+        super.initDataTracker();
+        dataTracker.method_1502(16, (byte) 0); //Type
+        dataTracker.method_1502(17, (int) 0); //Age
+        dataTracker.method_1502(18, (byte) 0); //Adult
+        dataTracker.method_1502(19, (byte) 0); //Tamed
     }
 
     public boolean canSpawn()
@@ -296,7 +299,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider
 
     protected boolean method_940()
     {
-        return !tamed;
+        return !getTamed();
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
@@ -305,14 +308,80 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider
     public boolean h;
     public int j;
     public int i;
-    public int typeint;
+
+//    public int typeint;
+//    public float edad;
+//    public boolean tamed;
+//    public boolean adult;
+
     public boolean typechosen;
-    public boolean tamed;
-    public boolean adult;
-    public float edad;
 
     @Override
     public Identifier getHandlerIdentifier() {
         return Identifier.of(mod_mocreatures.MOD_ID, "Bunny");
+    }
+
+    //TYPE
+    public void setTypeSpawn()
+    {
+        if(!world.isRemote){
+            int type = getRandomRace();
+            setType(type);
+        }
+    }
+
+    public void setType(int type)
+    {
+        if(!world.isRemote) {
+            dataTracker.method_1509(16, (byte) type);
+            chooseType(type);
+        }
+    }
+
+    public int getType()
+    {
+        return dataTracker.method_1501(16);
+    }
+    //AGE
+    public void setAge(float age)
+    {
+        dataTracker.method_1509(17, Float.floatToRawIntBits(age));
+    }
+
+    public float getAge()
+    {
+        return Float.intBitsToFloat(dataTracker.method_1508(17));
+    }
+    //ADULT
+    public boolean getAdult()
+    {
+        return (dataTracker.method_1501(18) & 1) != 0;
+    }
+
+    public void setAdult(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(18, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(18, (byte) 0);
+        }
+    }
+    //TAMED
+    public boolean getTamed()
+    {
+        return (dataTracker.method_1501(19) & 1) != 0;
+    }
+
+    public void setTamed(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(19, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(19, (byte) 0);
+        }
     }
 }

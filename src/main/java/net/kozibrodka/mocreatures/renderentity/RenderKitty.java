@@ -49,10 +49,6 @@ public class RenderKitty extends SkeletonEntityRenderer
             float f, float f1)
     {
         EntityKitty entitykitty = (EntityKitty)entityliving;
-        if(!entitykitty.typechosen)
-        {
-            entitykitty.chooseType();
-        }
         super.render(entitykitty, d, d1, d2, f, f1);
     }
 
