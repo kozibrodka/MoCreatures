@@ -26,26 +26,26 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
     public EntityFishy(World world)
     {
         super(world);
-        texture = "/assets/mocreatures/stationapi/textures/mob/fishy1.png";
+//        texture = "/assets/mocreatures/stationapi/textures/mob/fishy1.png";
         setBoundingBoxSpacing(0.3F, 0.3F);
         health = 4;
-        typeint = 0;
+//        typeint = 0;
         typechosen = false;
-        b = 1.0F;
-        adult = false;
-        tamed = false;
+        setAge(1.0F);
+//        adult = false;
+//        tamed = false;
         field_1045 = true;
     }
 
-    public void setTame()
-    {
-        tamed = true;
-    }
-
-    public boolean istamed()
-    {
-        return tamed;
-    }
+//    public void setTame()
+//    {
+//        setTamed(true);
+//    }
+//
+//    public boolean istamed()
+//    {
+//        return getTamed();
+//    }
 
     public void method_937()
     {
@@ -54,12 +54,12 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
             typechosen = true;
             chooseType(getType());
         }
-        if(!adult && random.nextInt(100) == 0)
+        if(!getAdult() && random.nextInt(100) == 0)
         {
-            b += 0.02F;
-            if(b >= 1.0F)
+            setAge(getAge()+0.02F);
+            if(getAge() >= 1.0F)
             {
-                adult = true;
+                setAdult(true);
             }
         }
         if(!ReadyforParenting(this))
@@ -90,7 +90,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
                 continue;
             }
             EntityFishy entityfishy = (EntityFishy)entity1;
-            if(!ReadyforParenting(this) || !ReadyforParenting(entityfishy) || typeint != entityfishy.typeint)
+            if(!ReadyforParenting(this) || !ReadyforParenting(entityfishy) || getType() != entityfishy.getType())
             {
                 continue;
             }
@@ -113,10 +113,10 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
                 entityfishy.eaten = false;
                 gestationtime = 0;
                 entityfishy.gestationtime = 0;
-                entityfishy1.tamed = true;
-                entityfishy1.b = 0.2F;
-                entityfishy1.adult = false;
-                entityfishy1.setType(typeint);
+                entityfishy1.setTamed(true);
+                entityfishy1.setAge(0.2F);
+                entityfishy1.setAdult(false);
+                entityfishy1.setType(getType());
             }
 
             break;
@@ -126,7 +126,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
 
     public boolean ReadyforParenting(EntityFishy entityfishy)
     {
-        return entityfishy.tamed && entityfishy.eaten && entityfishy.adult;
+        return entityfishy.getTamed() && entityfishy.eaten && entityfishy.getAdult();
     }
 
     protected void method_910(){
@@ -144,10 +144,10 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
 
     protected Entity method_638()
     {
-        if(world.field_213 > 0 && b >= 1.0F && typeint == 10)
+        if(world.field_213 > 0 && getAge() >= 1.0F && getType() == 10)
         {
             PlayerEntity entityplayer = world.method_186(this, 16D);
-            if(entityplayer != null && ((EntityBaseAccesor)entityplayer).getField_1612() && !tamed)
+            if(entityplayer != null && ((EntityBaseAccesor)entityplayer).getField_1612() && !getTamed())
             {
                 return entityplayer;
             }
@@ -188,7 +188,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
 
     public void markDead()
     {
-        if(tamed && health > 0)
+        if(getTamed() && health > 0)
         {
             return;
         } else
@@ -226,64 +226,56 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         }
     }
 
-    public void setType(int i)
+    public int getRandomRace()
     {
-        typeint = i;
-        typechosen = false;
-        chooseType();
-    }
-
-    public void chooseType()
-    {
-        if(typeint == 0)
+        int i = random.nextInt(100);
+        if(i <= 9)
         {
-            int i = random.nextInt(100);
-            if(i <= 9)
-            {
-                typeint = 1;
-            } else
-            if(i <= 19)
-            {
-                typeint = 2;
-            } else
-            if(i <= 29)
-            {
-                typeint = 3;
-            } else
-            if(i <= 39)
-            {
-                typeint = 4;
-            } else
-            if(i <= 49)
-            {
-                typeint = 5;
-            } else
-            if(i <= 59)
-            {
-                typeint = 6;
-            } else
-            if(i <= 69)
-            {
-                typeint = 7;
-            } else
-            if(i <= 79)
-            {
-                typeint = 8;
-            } else
-            if(i <= 89)
-            {
-                typeint = 9;
-            } else
-            {
-                typeint = 10;
-            }
-            if(mocr.mocreaturesGlass.watermobs.spawnpiranha && typeint == 10)
-            {
-                typeint = 1;
+            return 1;
+        } else
+        if(i <= 19)
+        {
+            return 2;
+        } else
+        if(i <= 29)
+        {
+            return 3;
+        } else
+        if(i <= 39)
+        {
+            return 4;
+        } else
+        if(i <= 49)
+        {
+            return 5;
+        } else
+        if(i <= 59)
+        {
+            return 6;
+        } else
+        if(i <= 69)
+        {
+            return 7;
+        } else
+        if(i <= 79)
+        {
+            return 8;
+        } else
+        if(i <= 89)
+        {
+            return 9;
+        } else
+        {
+            if(mocr.mocreaturesGlass.watermobs.spawnpiranha){
+                return 10;
+            }else{
+                return 1;
             }
         }
-        if(!typechosen)
-        {
+    }
+
+    public void chooseType(int typeint)
+    {
             if(typeint == 1)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/fishy1.png";
@@ -324,14 +316,12 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/fishy10.png";
             }
-        }
-        typechosen = true;
     }
 
     protected void method_933()
     {
         int i = random.nextInt(100);
-        if(i < 70 && adult)
+        if(i < 70 && getAdult())
         {
             method_1327(new ItemStack(Item.RAW_FISH.id, 1, 0), 0.0F);
         } else
@@ -348,19 +338,19 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
-        nbttagcompound.putBoolean("Tamed", tamed);
-        nbttagcompound.putInt("TypeInt", typeint);
-        nbttagcompound.putFloat("Age", b);
-        nbttagcompound.putBoolean("Adult", adult);
+        nbttagcompound.putBoolean("Tamed", getTamed());
+        nbttagcompound.putInt("TypeInt", getType());
+        nbttagcompound.putFloat("Age", getAge());
+        nbttagcompound.putBoolean("Adult", getAdult());
     }
 
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
-        tamed = nbttagcompound.getBoolean("Tamed");
-        typeint = nbttagcompound.getInt("TypeInt");
-        b = nbttagcompound.getFloat("Age");
-        adult = nbttagcompound.getBoolean("Adult");
+        setTamed(nbttagcompound.getBoolean("Tamed"));
+        setType(nbttagcompound.getInt("TypeInt"));
+        setAge(nbttagcompound.getFloat("Age"));
+        setAdult(nbttagcompound.getBoolean("Adult"));
     }
 
     public boolean canSpawn()
@@ -368,19 +358,92 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         return mocr.mocreaturesGlass.watermobs.fishfreq > 0 && super.canSpawn();
     }
 
+    protected void initDataTracker() {
+        super.initDataTracker();
+        dataTracker.method_1502(16, (byte) 0); //Type
+        dataTracker.method_1502(17, (int) 0); //Age
+        dataTracker.method_1502(18, (byte) 0); //Adult
+        dataTracker.method_1502(19, (byte) 0); //Tamed
+    }
+
     mod_mocreatures mocr = new mod_mocreatures();
 
-    public int typeint;
-    public boolean typechosen;
-    public float b;
-    public boolean adult;
-    public boolean tamed;
     public int gestationtime;
     public boolean eaten;
-    public boolean hungry;
+
+//    public int typeint;
+//    public float b;
+//    public boolean adult;
+//    public boolean tamed;
+
+    public boolean typechosen;
 
     @Override
     public Identifier getHandlerIdentifier() {
         return Identifier.of(mod_mocreatures.MOD_ID, "Fishy");
+    }
+
+    //TYPE
+    public void setTypeSpawn()
+    {
+        if(!world.isRemote){
+            int type = getRandomRace();
+            setType(type);
+        }
+    }
+
+    public void setType(int type)
+    {
+        if(!world.isRemote) {
+            dataTracker.method_1509(16, (byte) type);
+            chooseType(type);
+        }
+    }
+
+    public int getType()
+    {
+        return dataTracker.method_1501(16);
+    }
+    //AGE
+    public void setAge(float age)
+    {
+        dataTracker.method_1509(17, Float.floatToRawIntBits(age));
+    }
+
+    public float getAge()
+    {
+        return Float.intBitsToFloat(dataTracker.method_1508(17));
+    }
+    //ADULT
+    public boolean getAdult()
+    {
+        return (dataTracker.method_1501(18) & 1) != 0;
+    }
+
+    public void setAdult(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(18, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(18, (byte) 0);
+        }
+    }
+    //TAMED
+    public boolean getTamed()
+    {
+        return (dataTracker.method_1501(19) & 1) != 0;
+    }
+
+    public void setTamed(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(19, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(19, (byte) 0);
+        }
     }
 }

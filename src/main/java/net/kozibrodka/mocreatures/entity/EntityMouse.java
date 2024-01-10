@@ -28,31 +28,29 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
     public EntityMouse(World world)
     {
         super(world);
-        texture = "/assets/mocreatures/stationapi/textures/mob/miceg.png";
+//        texture = "/assets/mocreatures/stationapi/textures/mob/miceg.png";
         setBoundingBoxSpacing(0.3F, 0.3F);
         health = 4;
-        picked = false;
+//        picked = false;
     }
 
-    public void chooseType()
-    {
-        if(typeint == 0)
+    public int getRandomRace(){
+        int i = random.nextInt(100);
+        if(i <= 50)
         {
-            int i = random.nextInt(100);
-            if(i <= 50)
-            {
-                typeint = 1;
-            } else
-            if(i <= 80)
-            {
-                typeint = 2;
-            } else
-            {
-                typeint = 3;
-            }
+            return  1;
+        } else
+        if(i <= 80)
+        {
+            return 2;
+        } else
+        {
+            return 3;
         }
-        if(!typechosen)
-        {
+    }
+
+    public void chooseType(int typeint)
+    {
             if(typeint == 1)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/miceg.png";
@@ -65,8 +63,6 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/micew.png";
             }
-        }
-        typechosen = true;
     }
 
     public void method_937()
@@ -125,11 +121,11 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         method_1376(entityplayer);
         if(field_1595 != null)
         {
-            picked = true;
+            setPicked(true);
         } else
         {
             world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-            picked = false;
+            setPicked(false);
         }
         velocityX = entityplayer.velocityX * 5D;
         velocityY = entityplayer.velocityY / 2D + 0.5D;
@@ -156,13 +152,13 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
-        nbttagcompound.putInt("TypeInt", typeint);
+        nbttagcompound.putInt("TypeInt", getType());
     }
 
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
-        typeint = nbttagcompound.getInt("TypeInt");
+        setType(nbttagcompound.getInt("TypeInt"));
     }
 
     public LivingEntity getBoogey(double d)
@@ -225,7 +221,7 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
 
     public boolean upsideDown()
     {
-        return picked;
+        return getPicked();
     }
 
     public boolean canSpawn()
@@ -256,15 +252,61 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         return Item.SEEDS.id;
     }
 
+    protected void initDataTracker() {
+        super.initDataTracker();
+        dataTracker.method_1502(16, (byte) 0); //Type
+        dataTracker.method_1502(17, (byte) 0); //Picked
+    }
+
     mod_mocreatures mocr = new mod_mocreatures();
-    public int typeint;
-    public boolean typechosen;
-    public boolean picked;
     private boolean fertile;
     private int micetimer;
+
+//    public int typeint;
+//    public boolean picked;
+
+    public boolean typechosen;
 
     @Override
     public Identifier getHandlerIdentifier() {
         return Identifier.of(mod_mocreatures.MOD_ID, "Mouse");
+    }
+
+    //TYPE
+    public void setTypeSpawn()
+    {
+        if(!world.isRemote){
+            int type = getRandomRace();
+            setType(type);
+        }
+    }
+
+    public void setType(int type)
+    {
+        if(!world.isRemote) {
+            dataTracker.method_1509(16, (byte) type);
+            chooseType(type);
+        }
+    }
+
+    public int getType()
+    {
+        return dataTracker.method_1501(16);
+    }
+    //ADULT
+    public boolean getPicked()
+    {
+        return (dataTracker.method_1501(17) & 1) != 0;
+    }
+
+    public void setPicked(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(17, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(17, (byte) 0);
+        }
     }
 }

@@ -42,7 +42,7 @@ public class RenderBunny extends LivingEntityRenderer
     protected float method_828(LivingEntity entityliving, float f)
     {
         EntityBunny entitybunny = (EntityBunny)entityliving;
-        if(!entitybunny.adult)
+        if(!entitybunny.getAdult())
         {
             stretch(entitybunny);
         }
@@ -56,7 +56,7 @@ public class RenderBunny extends LivingEntityRenderer
 
     protected void stretch(EntityBunny entitybunny)
     {
-        float f = entitybunny.edad;
+        float f = entitybunny.getAge();
         GL11.glScalef(f, f, f);
     }
 }
