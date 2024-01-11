@@ -32,24 +32,19 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     public EntityDolphin(World world)
     {
         super(world);
-        texture = "/assets/mocreatures/stationapi/textures/mob/dolphin.png";
+//        texture = "/assets/mocreatures/stationapi/textures/mob/dolphin.png";
         setBoundingBoxSpacing(1.5F, 0.8F);
-        b = 0.8F + random.nextFloat();
-        adult = false;
-        tamed = false;
+        setAge(0.8F + random.nextFloat()); //TODO: to chyba powinno być w setTypeSpawn.
+//        adult = false;
+//        tamed = false;
         dolphinspeed = 1.3D;
         maxhealth = 30;
         temper = 50;
         field_1045 = true;
-        name = "";
+//        name = "";
         displayname = false;
-        isDolphinPublic = false;
-        dolphinOwner = "";
-    }
-
-    public void setTame()
-    {
-        tamed = true;
+//        isDolphinPublic = false;
+//        dolphinOwner = "";
     }
 
     public double speed()
@@ -62,49 +57,36 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         return temper;
     }
 
-    public boolean istamed()
+    public int getRandomRace()
     {
-        return tamed;
-    }
-
-    public void setType(int i)
-    {
-        typeint = i;
-        typechosen = false;
-        chooseType();
-    }
-
-    public void chooseType()
-    {
-        if(typeint == 0)
+        int i = random.nextInt(100);
+        if(i <= 35)
         {
-            int i = random.nextInt(100);
-            if(i <= 35)
-            {
-                typeint = 1;
-            } else
-            if(i <= 60)
-            {
-                typeint = 2;
-            } else
-            if(i <= 85)
-            {
-                typeint = 3;
-            } else
-            if(i <= 96)
-            {
-                typeint = 4;
-            } else
-            if(i <= 98)
-            {
-                typeint = 5;
-            } else
-            {
-                typeint = 6;
-            }
+            return  1;
+        } else
+        if(i <= 60)
+        {
+            return 2;
+        } else
+        if(i <= 85)
+        {
+            return 3;
+        } else
+        if(i <= 96)
+        {
+            return 4;
+        } else
+        if(i <= 98)
+        {
+            return 5;
+        } else
+        {
+            return 6;
         }
-        if(!typechosen)
-        {
+    }
+
+    public void chooseType(int typeint)
+    {
             if(typeint == 1)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/dolphin.png";
@@ -141,14 +123,12 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
                 dolphinspeed = 6.5D;
                 temper = 300;
             }
-        }
-        typechosen = true;
     }
 
     public boolean method_1323(PlayerEntity entityplayer)
     {
         ItemStack itemstack = entityplayer.inventory.getSelectedItem();
-        if(tamed && !isDolphinPublic && !entityplayer.name.equals(dolphinOwner))
+        if(getTamed() && !getPublic() && !entityplayer.name.equals(getOwner()))
         {
             return false;
         }
@@ -167,13 +147,13 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
                 health = maxhealth;
             }
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-            if(!adult)
+            if(!getAdult())
             {
-                b += 0.01F;
+                setAge(getAge()+0.01F);
             }
             return true;
         }
-        if(itemstack != null && itemstack.itemId == Item.COOKED_FISH.id && tamed && adult)
+        if(itemstack != null && itemstack.itemId == Item.COOKED_FISH.id && getTamed() && getAdult())
         {
             if(--itemstack.count == 0)
             {
@@ -183,14 +163,14 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             {
                 health = maxhealth;
             }
-            eaten = true;
+            setEaten(true);
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             return true;
         }
-        if(itemstack != null && tamed && entityplayer.name.equals(dolphinOwner) && (itemstack.itemId == Item.GOLDEN_SWORD.id || itemstack.itemId == Item.STONE_SWORD.id || itemstack.itemId == Item.WOODEN_SWORD.id || itemstack.itemId == Item.IRON_SWORD.id || itemstack.itemId == Item.DIAMOND_SWORD.id))
+        if(itemstack != null && getTamed() && entityplayer.name.equals(getOwner()) && (itemstack.itemId == Item.GOLDEN_SWORD.id || itemstack.itemId == Item.STONE_SWORD.id || itemstack.itemId == Item.WOODEN_SWORD.id || itemstack.itemId == Item.IRON_SWORD.id || itemstack.itemId == Item.DIAMOND_SWORD.id))
         {
-            if(isDolphinPublic == true){
-                isDolphinPublic = false;
+            if(getPublic()){
+                setPublic(false);
                 for(int var3 = 0; var3 < 7; ++var3) {
                     double var4 = this.random.nextGaussian() * 0.02D;
                     double var6 = this.random.nextGaussian() * 0.02D;
@@ -198,7 +178,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
                     world.addParticle("heart", this.x + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, this.y + 0.5D + (double) (this.random.nextFloat() * this.spacingY), this.z + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, var4, var6, var8);
                 }
             }else{
-                isDolphinPublic = true;
+                setPublic(true);
                 for(int var3 = 0; var3 < 7; ++var3) {
                     double var4 = this.random.nextGaussian() * 0.02D;
                     double var6 = this.random.nextGaussian() * 0.02D;
@@ -208,27 +188,27 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             }
             return true;
         }
-        if(itemstack != null && tamed && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == Item.BOOK.id))
+        if(itemstack != null && getTamed() && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == Item.BOOK.id))
         {
-            if(dolphinOwner.equals(""))
+            if(getOwner().equals(""))
             {
-                dolphinOwner = entityplayer.name;
+                setOwner(entityplayer.name);
             }
             setName(this);
             return true;
         }
-        if(itemstack != null && tamed && (itemstack.itemId == Item.DIAMOND_PICKAXE.id || itemstack.itemId == Item.WOODEN_PICKAXE.id || itemstack.itemId == Item.STONE_PICKAXE.id || itemstack.itemId == Item.IRON_PICKAXE.id || itemstack.itemId == Item.GOLDEN_PICKAXE.id))
+        if(itemstack != null && getTamed() && (itemstack.itemId == Item.DIAMOND_PICKAXE.id || itemstack.itemId == Item.WOODEN_PICKAXE.id || itemstack.itemId == Item.STONE_PICKAXE.id || itemstack.itemId == Item.IRON_PICKAXE.id || itemstack.itemId == Item.GOLDEN_PICKAXE.id))
         {
             displayname = !displayname;
             return true;
         }
-        if(adult)
+        if(getAdult())
         {
             entityplayer.yaw = yaw;
             entityplayer.pitch = pitch;
             entityplayer.y = y;
             entityplayer.method_1376(this);
-            if(typeint == 6)
+            if(getType() == 6)
             {
                 entityplayer.incrementStat(mod_mocreatures.RobertMaklowicz);
             }
@@ -286,12 +266,12 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             typechosen = true;
             chooseType(getType());
         }
-        if(!adult && random.nextInt(50) == 0)
+        if(!getAdult() && random.nextInt(50) == 0 && !world.isRemote)
         {
-            b += 0.01F;
-            if(b >= 1.5F)
+            setAge(getAge()+0.01F);
+            if(getAge() >= 1.5F)
             {
-                adult = true;
+                setAdult(true);
             }
         }
         if(!hungry && random.nextInt(100) == 0)
@@ -299,7 +279,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             hungry = true;
         }
         Riding();
-        if(field_1594 != null && field_1041 == 0 && (!tamed || hungry))
+        if(field_1594 != null && field_1041 == 0 && (!getTamed() || hungry))
         {
             ItemEntity entityitem = getClosestFish(this, 12D);
             if(entityitem != null)
@@ -361,14 +341,14 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             entitydolphin1.method_1340(x, y, z);
             world.method_210(entitydolphin1);
             world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-            eaten = false;
-            entitydolphin.eaten = false;
+            setEaten(false);
+            entitydolphin.setEaten(false);
             gestationtime = 0;
             entitydolphin.gestationtime = 0;
             int l = Genetics(this, entitydolphin);
-            entitydolphin1.bred = true;
-            entitydolphin1.b = 0.35F;
-            entitydolphin1.adult = false;
+            entitydolphin1.setBred(true);
+            entitydolphin1.setAge(0.35F);
+            entitydolphin1.setAdult(false);
             entitydolphin1.setType(l);
             break;
         }
@@ -377,16 +357,16 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
 
     public boolean ReadyforParenting(EntityDolphin entitydolphin)
     {
-        return entitydolphin.field_1594 == null && entitydolphin.field_1595 == null && entitydolphin.tamed && entitydolphin.eaten && entitydolphin.adult;
+        return entitydolphin.field_1594 == null && entitydolphin.field_1595 == null && entitydolphin.getTamed() && entitydolphin.getEaten() && entitydolphin.getAdult();
     }
 
     private int Genetics(EntityDolphin entitydolphin, EntityDolphin entitydolphin1)
     {
-        if(entitydolphin.typeint == entitydolphin1.typeint)
+        if(entitydolphin.getType() == entitydolphin1.getType())
         {
-            return entitydolphin.typeint;
+            return entitydolphin.getType();
         }
-        int i = entitydolphin.typeint + entitydolphin1.typeint;
+        int i = entitydolphin.getType() + entitydolphin1.getType();
         boolean flag = random.nextInt(3) == 0;
         boolean flag1 = random.nextInt(10) == 0;
         if(i < 5 && flag)
@@ -405,34 +385,34 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
-        nbttagcompound.putBoolean("Tamed", tamed);
-        nbttagcompound.putInt("TypeInt", typeint);
-        nbttagcompound.putBoolean("Adult", adult);
-        nbttagcompound.putBoolean("Bred", bred);
-        nbttagcompound.putFloat("Age", b);
-        nbttagcompound.putString("Name", name);
+        nbttagcompound.putBoolean("Tamed", getTamed());
+        nbttagcompound.putInt("TypeInt", getType());
+        nbttagcompound.putBoolean("Adult", getAdult());
+        nbttagcompound.putBoolean("Bred", getBred());
+        nbttagcompound.putFloat("Age", getAge());
+        nbttagcompound.putString("Name", getName());
         nbttagcompound.putBoolean("DisplayName", displayname);
-        nbttagcompound.putBoolean("PublicDolphin", isDolphinPublic);
-        nbttagcompound.putString("DolphinOwner", dolphinOwner);
+        nbttagcompound.putBoolean("PublicDolphin", getPublic());
+        nbttagcompound.putString("DolphinOwner", getOwner());
     }
 
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
-        tamed = nbttagcompound.getBoolean("Tamed");
-        typeint = nbttagcompound.getInt("TypeInt");
-        adult = nbttagcompound.getBoolean("Adult");
-        bred = nbttagcompound.getBoolean("Bred");
-        b = nbttagcompound.getFloat("Age");
-        name = nbttagcompound.getString("Name");
+        setTamed(nbttagcompound.getBoolean("Tamed"));
+        setType(nbttagcompound.getInt("TypeInt"));
+        setAdult(nbttagcompound.getBoolean("Adult"));
+        setBred(nbttagcompound.getBoolean("Bred"));
+        setAge(nbttagcompound.getFloat("Age"));
+        setName(nbttagcompound.getString("Name"));
         displayname = nbttagcompound.getBoolean("DisplayName");
-        isDolphinPublic = nbttagcompound.getBoolean("PublicDolphin");
-        dolphinOwner = nbttagcompound.getString("DolphinOwner");
+        setPublic(nbttagcompound.getBoolean("PublicDolphin"));
+        setOwner(nbttagcompound.getString("DolphinOwner"));
     }
 
     protected Entity method_638()
     {
-        if(world.field_213 > 0 && b >= 1.0F && mocr.mocreaturesGlass.watermobs.attackdolphins && random.nextInt(50) == 0)
+        if(world.field_213 > 0 && getAge() >= 1.0F && mocr.mocreaturesGlass.watermobs.attackdolphins && random.nextInt(50) == 0)
         {
             LivingEntity entityliving = FindTarget(this, 12D);
             if(entityliving != null && ((EntityBaseAccesor)entityliving).getField_1612())
@@ -456,7 +436,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
                 continue;
             }
 
-            if (tamed && ((EntityShark)entity1).tamed)
+            if (getTamed() && ((EntityShark)entity1).tamed)
             {
                 continue;
             }
@@ -493,7 +473,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
 
     protected void method_637(Entity entity, float f)
     {
-        if((double)f < 3.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY && b >= 1.0F)
+        if((double)f < 3.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY && getAge() >= 1.0F)
         {
             field_1042 = 20;
             entity.damage(this, 5);
@@ -512,7 +492,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
 
     public void markDead()
     {
-        if((tamed || bred) && health > 0)
+        if((getTamed() || getBred()) && health > 0)
         {
             return;
         } else
@@ -524,7 +504,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
 
     protected boolean method_940()
     {
-        return !tamed;
+        return !getTamed();
     }
 
     protected String method_911()
@@ -560,31 +540,186 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         public static void setName(EntityDolphin entitydolphin)
     {
         entitydolphin.displayname = true;
-        mc.setScreen(new MoCGUI(entitydolphin, entitydolphin.name));
+        mc.setScreen(new MoCGUI(entitydolphin, entitydolphin.getName()));
     }
 
     @SuppressWarnings("deprecation")
     public static Minecraft mc = Minecraft.class.cast(FabricLoader.getInstance().getGameInstance());
     mod_mocreatures mocr = new mod_mocreatures();
-    public String dolphinOwner;
-    public boolean isDolphinPublic;
     public int gestationtime;
-    public boolean bred;
-    public float b;
-    public boolean adult;
-    public boolean tamed;
-    public int typeint;
     private double dolphinspeed;
     public int maxhealth;
     private int temper;
-    private boolean eaten;
-    public boolean typechosen;
     public boolean hungry;
-    public String name;
     public boolean displayname;
+
+//    public int typeint;
+//    public float b;
+//    public boolean adult;
+//    private boolean eaten;
+//    public boolean tamed;
+//    public boolean isDolphinPublic;
+//    public boolean bred;
+//    public String dolphinOwner;
+//    public String name;
+
+    public boolean typechosen;
+
+    protected void initDataTracker()
+    {
+        super.initDataTracker();
+        dataTracker.method_1502(16, (byte) 0); //Type
+        dataTracker.method_1502(17, (int) 0); //Age
+        dataTracker.method_1502(18, (byte) 0); //Adult
+        dataTracker.method_1502(19, (byte) 0); //Eaten
+        dataTracker.method_1502(20, (byte) 0); //Tamed
+        dataTracker.method_1502(21, (byte) 0); //Public
+        dataTracker.method_1502(22, (byte) 0); //Bred
+        dataTracker.method_1502(30, ""); //Owner
+        dataTracker.method_1502(31, ""); //Name
+    }
 
     @Override
     public Identifier getHandlerIdentifier() {
         return Identifier.of(mod_mocreatures.MOD_ID, "Dolphin");
+    }
+
+    //TYPE
+    public void setTypeSpawn() {
+        if(!world.isRemote) {
+            setType(getRandomRace());
+        }
+    }
+
+    public void setType(int type)
+    {
+        if(!world.isRemote) {
+            dataTracker.method_1509(16, (byte) type);
+            chooseType(type);
+        }
+    }
+
+    public int getType()
+    {
+        return dataTracker.method_1501(16);
+    }
+
+    //AGE
+    public void setAge(float age)
+    {
+        dataTracker.method_1509(17, Float.floatToRawIntBits(age));
+    }
+
+    public float getAge()
+    {
+        return Float.intBitsToFloat(dataTracker.method_1508(17));
+    }
+
+    //ADULT
+    public boolean getAdult()
+    {
+        return (dataTracker.method_1501(18) & 1) != 0;
+    }
+
+    public void setAdult(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(18, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(18, (byte) 0);
+        }
+    }
+
+    //EATEN
+    public boolean getEaten()
+    {
+        return (dataTracker.method_1501(19) & 1) != 0;
+    }
+
+    public void setEaten(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(19, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(19, (byte) 0);
+        }
+    }
+
+    //TAMED //TODO: MOVE TAMED INTO ENTITY CUSTOM WM?
+    public boolean getTamed()
+    {
+        return (dataTracker.method_1501(20) & 1) != 0;
+    }
+
+    public void setTamed(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(20, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(20, (byte) 0);
+        }
+    }
+
+    //PUBLIC
+    public boolean getPublic()
+    {
+        return (dataTracker.method_1501(21) & 1) != 0;
+    }
+
+    public void setPublic(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(21, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(21, (byte) 0);
+        }
+    }
+
+    //BRED
+    public boolean getBred()
+    {
+        return (dataTracker.method_1501(22) & 1) != 0;
+    }
+
+    public void setBred(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(22, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(22, (byte) 0);
+        }
+    }
+
+
+    //OWNER
+    public void setOwner(String owner)
+    {
+        this.dataTracker.method_1509(30, owner);
+    }
+
+    public String getOwner()
+    {
+        return this.dataTracker.method_1510(30);
+    }
+
+    //NAME
+    public void setName(String name)
+    {
+        this.dataTracker.method_1509(31, name);
+    }
+
+    public String getName()
+    {
+        return this.dataTracker.method_1510(31);
     }
 }

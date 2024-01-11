@@ -3,6 +3,7 @@ package net.kozibrodka.mocreatures.item;
 
 import net.kozibrodka.mocreatures.entity.*;
 import net.kozibrodka.mocreatures.events.TextureListener;
+import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -113,8 +114,9 @@ public class MocreaturesEggItem extends TemplateItem {
         huj.method_1340(i, j + 1, k);
         arg3.method_210(huj);
         --arg.count;
-        if(ide == 7){
-            ((EntityDeer)huj).setType(3);
+        if(huj instanceof MoCreatureRacial){
+            //LOADING PROPS by EGG-SPAWN
+            ((MoCreatureRacial)huj).setTypeSpawn();
         }
 
         return false;

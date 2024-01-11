@@ -102,10 +102,6 @@ public class RenderDolphin extends LivingEntityRenderer
             float f, float f1)
     {
         EntityDolphin entitydolphin = (EntityDolphin)entityliving;
-        if(!entitydolphin.typechosen)
-        {
-            entitydolphin.chooseType();
-        }
         super.render(entitydolphin, d, d1, d2, f, f1);
         if(entitydolphin.renderName())
         {
@@ -170,7 +166,7 @@ public class RenderDolphin extends LivingEntityRenderer
 
     protected void stretch(EntityDolphin entitydolphin)
     {
-        GL11.glScalef(entitydolphin.b, entitydolphin.b, entitydolphin.b);
+        GL11.glScalef(entitydolphin.getAge(), entitydolphin.getAge(), entitydolphin.getAge());
     }
 
     protected float method_828(LivingEntity entityliving, float f)

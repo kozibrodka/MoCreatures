@@ -24,9 +24,9 @@ public class HorseSaddle extends TemplateItem
         if(entityliving instanceof EntityHorse)
         {
             EntityHorse entityhorse = (EntityHorse)entityliving;
-            if(!entityhorse.rideable && entityhorse.adult)
+            if(!entityhorse.getSaddled() && entityhorse.getAdult())
             {
-                entityhorse.rideable = true;
+                entityhorse.setSaddled(true);
                 itemstack.count--;
             }
         }

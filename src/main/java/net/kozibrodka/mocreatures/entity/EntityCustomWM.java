@@ -58,7 +58,7 @@ public class EntityCustomWM extends WaterCreatureEntity
         return temper;
     }
 
-    public boolean istamed()
+    public boolean istamed() //TODO: Make dolhin overrite THOSE i elo.
     {
         return tamed;
     }

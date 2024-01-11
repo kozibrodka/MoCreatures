@@ -31,7 +31,7 @@ public class RenderHorse extends LivingEntityRenderer
     {
         float f1 = entityhorse.fwinge + (entityhorse.fwingb - entityhorse.fwinge) * f;
         float f2 = entityhorse.fwingd + (entityhorse.fwingc - entityhorse.fwingd) * f;
-        if(!entityhorse.adult)
+        if(!entityhorse.getAdult())
         {
             stretch(entityhorse);
         }
@@ -41,7 +41,7 @@ public class RenderHorse extends LivingEntityRenderer
     protected void method_823(LivingEntity entityliving, float f)
     {
         EntityHorse entityhorse = (EntityHorse)entityliving;
-        modelhorse1.chested = entityhorse.chestedhorse;
+        modelhorse1.chested = entityhorse.getChested();
     }
 
     public void render(Entity entity, double d, double d1, double d2,
@@ -54,7 +54,7 @@ public class RenderHorse extends LivingEntityRenderer
             float f, float f1)
     {
         super.render(entityhorse, d, d1, d2, f, f1);
-        boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entityhorse.name.isEmpty();
+        boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entityhorse.getName().isEmpty();
         boolean flag1 = mocr.mocreaturesGlass.othersettings.displayhealth;
         boolean flag2 = mocr.mocreaturesGlass.othersettings.displayemo;
         if(entityhorse.renderName())
@@ -65,7 +65,7 @@ public class RenderHorse extends LivingEntityRenderer
             if(f5 < 16F)
             {
                 String s = "";
-                s = (new StringBuilder()).append(s).append(entityhorse.name).toString();
+                s = (new StringBuilder()).append(s).append(entityhorse.getName()).toString();
                 float f7 = 0.1F;
                 TextRenderer fontrenderer = method_2023();
                 GL11.glPushMatrix();
@@ -169,7 +169,7 @@ public class RenderHorse extends LivingEntityRenderer
 
     protected void stretch(EntityHorse entityhorse)
     {
-        GL11.glScalef(entityhorse.b, entityhorse.b, entityhorse.b);
+        GL11.glScalef(entityhorse.getAge(), entityhorse.getAge(), entityhorse.getAge());
     }
 
     protected float method_828(LivingEntity entityliving, float f)
@@ -181,7 +181,7 @@ public class RenderHorse extends LivingEntityRenderer
     {
         if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horseb.png")
         {
-            if(!entityhorse.rideable)
+            if(!entityhorse.getSaddled())
             {
                 bindTexture("/assets/mocreatures/stationapi/textures/mob/horsea.png");
             } else
@@ -191,7 +191,7 @@ public class RenderHorse extends LivingEntityRenderer
         } else
         if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horsebrownb.png")
         {
-            if(!entityhorse.rideable)
+            if(!entityhorse.getSaddled())
             {
                 bindTexture("/assets/mocreatures/stationapi/textures/mob/horsebrowna.png");
             } else
@@ -201,7 +201,7 @@ public class RenderHorse extends LivingEntityRenderer
         } else
         if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horseblackb.png")
         {
-            if(!entityhorse.rideable)
+            if(!entityhorse.getSaddled())
             {
                 bindTexture("/assets/mocreatures/stationapi/textures/mob/horseblacka.png");
             } else
@@ -211,7 +211,7 @@ public class RenderHorse extends LivingEntityRenderer
         } else
         if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horsegoldb.png")
         {
-            if(!entityhorse.rideable)
+            if(!entityhorse.getSaddled())
             {
                 bindTexture("/assets/mocreatures/stationapi/textures/mob/horsegolda.png");
             } else
@@ -221,7 +221,7 @@ public class RenderHorse extends LivingEntityRenderer
         } else
         if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horsewhiteb.png")
         {
-            if(!entityhorse.rideable)
+            if(!entityhorse.getSaddled())
             {
                 bindTexture("/assets/mocreatures/stationapi/textures/mob/horsewhitea.png");
             } else
@@ -231,7 +231,7 @@ public class RenderHorse extends LivingEntityRenderer
         } else
         if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horsepackb.png")
         {
-            if(!entityhorse.rideable)
+            if(!entityhorse.getSaddled())
             {
                 bindTexture("/assets/mocreatures/stationapi/textures/mob/horsepacka.png");
             } else
@@ -241,7 +241,7 @@ public class RenderHorse extends LivingEntityRenderer
         } else
         if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horsenightb.png")
         {
-            if(!entityhorse.rideable)
+            if(!entityhorse.getSaddled())
             {
                 bindTexture("/assets/mocreatures/stationapi/textures/mob/horsenighta.png");
             } else
@@ -251,7 +251,7 @@ public class RenderHorse extends LivingEntityRenderer
         } else
         if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horsebpb.png")
         {
-            if(!entityhorse.rideable)
+            if(!entityhorse.getSaddled())
             {
                 bindTexture("/assets/mocreatures/stationapi/textures/mob/horsebpa.png");
             } else

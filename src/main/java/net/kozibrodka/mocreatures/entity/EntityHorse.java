@@ -45,11 +45,11 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         horseboolean = false;
         setBoundingBoxSpacing(1.4F, 1.6F);
         health = 20;
-        rideable = false;
+//        rideable = false;
         isjumping = false;
-        tamed = false;
-        texture = "/assets/mocreatures/stationapi/textures/mob/horseb.png";
-        typeint = 0;
+//        tamed = false;
+//        texture = "/assets/mocreatures/stationapi/textures/mob/horseb.png";
+//        typeint = 0;
         HorseSpeed = 0.80000000000000004D;
         HorseJump = 0.40000000000000002D;
         temper = 100;
@@ -63,24 +63,24 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         maxhealth = 20;
         hasreproduced = false;
         gestationtime = 0;
-        eatenpumpkin = false;
-        bred = false;
+//        eatenpumpkin = false;
+//        bred = false;
         nightmareInt = 0;
         fireImmune = false;
-        adult = true;
-        b = 0.35F;
+//        adult = true;
+        setAge(0.35F);
         roped = false;
         roper = null;
         field_1045 = true;
-        name = "";
+//        name = "";
         displayname = false;
-        isHorsePublic = false;
-        horseOwner = "";
+//        isHorsePublic = false;
+//        horseOwner = "";
     }
 
     public void markDead()
     {
-        if((tamed || bred) && health > 0)
+        if((getTamed() || getBred()) && health > 0)
         {
             return;
         } else
@@ -90,45 +90,32 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
     }
 
-    public void setType(int i)
-    {
-        typeint = i;
-        typechosen = false;
-        chooseType();
+    public int getRandomRace(){
+        int i = mocr.mocreaturesGlass.animals.pegasusChanceS;
+        int j = random.nextInt(100);
+        if(j <= 51 - i)
+        {
+            return 1;
+        } else
+        if(j <= 86 - i)
+        {
+            return 2;
+        } else
+        if(j <= 95 - i)
+        {
+            return 3;
+        } else
+        if(j <= 99 - i)
+        {
+            return 4;
+        } else
+        {
+            return 5;
+        }
     }
 
-    public void chooseType()
+    public void chooseType(int typeint)
     {
-        int i = mocr.mocreaturesGlass.animals.pegasusChanceS;
-        if(typeint == 0)
-        {
-            if(random.nextInt(5) == 0)
-            {
-                adult = false;
-            }
-            int j = random.nextInt(100);
-            if(j <= 51 - i)
-            {
-                typeint = 1;
-            } else
-            if(j <= 86 - i)
-            {
-                typeint = 2;
-            } else
-            if(j <= 95 - i)
-            {
-                typeint = 3;
-            } else
-            if(j <= 99 - i)
-            {
-                typeint = 4;
-            } else
-            {
-                typeint = 5;
-            }
-        }
-        if(!typechosen)
-        {
             if(typeint == 1)
             {
                 HorseSpeed = 0.90000000000000002D;
@@ -191,8 +178,6 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 fireImmune = true;
             }
             health = maxhealth;
-        }
-        typechosen = true;
     }
 
     public void Riding()
@@ -241,7 +226,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             health++;
         }
         Riding();
-        if(typeint == 5 || typeint == 8)
+        if(getType() == 5 || getType() == 8)
         {
             fwinge = fwingb;
             fwingd = fwingc;
@@ -266,16 +251,17 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             fwingb += fwingh * 2.0F;
         }
         super.method_937();
-        if(typeint == 7 && field_1594 != null && nightmareInt > 0 && random.nextInt(2) == 0)
+        if(getType() == 7 && field_1594 != null && nightmareInt > 0 && random.nextInt(2) == 0)
         {
             NightmareEffect();
         }
-        if(!adult && random.nextInt(200) == 0)
+        if(!getAdult() && random.nextInt(200) == 0)
         {
-            b += 0.01F;
-            if(b >= 1.0F)
+
+            setAge(getAge()+0.01F);
+            if(getAge() >= 1.0F)
             {
-                adult = true;
+                setAdult(true);
             }
         }
         if(!ReadyforParenting(this))
@@ -322,17 +308,17 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             entityhorse1.method_1340(x, y, z);
             world.method_210(entityhorse1);
             world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-            eatenpumpkin = false;
+            setEaten(false);
             if(!(mocr.mocreaturesGlass.animals.easybreeding))
             {
                 hasreproduced = true;
             }
-            entityhorse.eatenpumpkin = false;
+            entityhorse.setEaten(false);
             gestationtime = 0;
             entityhorse.gestationtime = 0;
             int l = HorseGenetics(this, entityhorse);
-            entityhorse1.bred = true;
-            entityhorse1.adult = false;
+            entityhorse1.setBred(true);
+            entityhorse1.setAdult(false);
             entityhorse1.setType(l);
             break;
         }
@@ -345,7 +331,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         {
             super.method_910();
         }
-        if(tamed && field_1595 == null && roper != null)
+        if(getTamed() && field_1595 == null && roper != null)
         {
             float f = roper.method_1351(this);
             if(f > 5F)
@@ -398,16 +384,16 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
 
     public boolean ReadyforParenting(EntityHorse entityhorse)
     {
-        return entityhorse.field_1594 == null && entityhorse.field_1595 == null && entityhorse.tamed && entityhorse.eatenpumpkin && !entityhorse.hasreproduced && entityhorse.adult;
+        return entityhorse.field_1594 == null && entityhorse.field_1595 == null && entityhorse.getTamed() && entityhorse.getEaten() && !entityhorse.hasreproduced && entityhorse.getAdult();
     }
 
     private int HorseGenetics(EntityHorse entityhorse, EntityHorse entityhorse1)
     {
-        if(entityhorse.typeint == entityhorse1.typeint)
+        if(entityhorse.getType() == entityhorse1.getType())
         {
-            return entityhorse.typeint;
+            return entityhorse.getType();
         }
-        int i = entityhorse.typeint + entityhorse1.typeint;
+        int i = entityhorse.getType() + entityhorse1.getType();
         boolean flag = mocr.mocreaturesGlass.animals.easybreeding;
         boolean flag1 = random.nextInt(3) == 0;
         if(i == 7 && (flag || flag1))
@@ -470,7 +456,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                     yaw = field_1594.yaw;
                 }
                 method_1342(yaw, pitch);
-                if(!tamed)
+                if(!getTamed())
                 {
                     field_1594 = null;
                 }
@@ -510,7 +496,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                     yaw = field_1594.yaw;
                 }
                 method_1342(yaw, pitch);
-                if(!tamed)
+                if(!getTamed())
                 {
                     field_1594 = null;
                 }
@@ -558,7 +544,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                     velocityY = -0.14999999999999999D;
                 }
             }
-            if(field_1594 != null && !tamed)
+            if(field_1594 != null && !getTamed())
             {
                 if(random.nextInt(5) == 0 && !isjumping)
                 {
@@ -584,13 +570,13 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 }
                 if(random.nextInt(temper * 8) == 0)
                 {
-                    tamed = true;
+                    setTamed(true);
                     PlayerEntity milosc = (PlayerEntity)field_1594;
-                    horseOwner = milosc.name;
+                    setOwner(milosc.name);
                     setName(this);
                 }
             }
-            if(field_1594 != null && tamed)
+            if(field_1594 != null && getTamed())
             {
                 boundingBox.maxY = field_1594.boundingBox.maxY;
                 velocityX += field_1594.velocityX * HorseSpeed;
@@ -601,7 +587,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                     velocityY += HorseJump;
                     isjumping = true;
                 }
-                if(((LivingAccesor)entityplayer2).getJumping() && (typeint == 5 || typeint == 8))
+                if(((LivingAccesor)entityplayer2).getJumping() && (getType() == 5 || getType() == 8))
                 {
                     velocityY += 0.10000000000000001D;
                 }
@@ -619,7 +605,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             {
                 velocityY = 0.20000000000000001D;
             }
-            if((typeint == 5 || typeint == 8) && field_1594 != null && tamed)
+            if((getType() == 5 || getType() == 8) && field_1594 != null && getTamed())
             {
                 velocityY -= 0.080000000000000002D;
                 velocityY *= 0.60000000000000009D;
@@ -645,7 +631,6 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         {
             openFuelGui();
         }
-//        animalKeyDown = Keyboard.isKeyDown(mod_mocreatures.keyBinding_horseFuel.key);
         burnFuel(1);
         addFuel();
     }
@@ -730,10 +715,6 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         return cargoItems[i];
     }
 
-    public String getName()
-    {
-        return "TESTOWY NA RAZIE";
-    }
 
     public int getMaxCountPerStack()
     {
@@ -769,9 +750,9 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     protected void method_1389(float f)
     {
         int i = (int)Math.ceil(f - 3F);
-        if(i > 0 && typeint != 5 && typeint != 8)
+        if(i > 0 && getType() != 5 && getType() != 8)
         {
-            if(typeint >= 3)
+            if(getType() >= 3)
             {
                 i /= 3;
             }
@@ -783,7 +764,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             {
                 field_1594.damage(null, i);
             }
-            if(typeint == 5 || typeint == 8)
+            if(getType() == 5 || getType() == 8)
             {
                 return;
             }
@@ -809,14 +790,14 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     public boolean method_1323(PlayerEntity entityplayer)
     {
         ItemStack itemstack = entityplayer.inventory.getSelectedItem();
-        if(tamed && !isHorsePublic && !entityplayer.name.equals(horseOwner))
+        if(getTamed() && !getProtect() && !entityplayer.name.equals(getOwner()))
         {
             return false;
         }
-        if(itemstack != null && tamed && entityplayer.name.equals(horseOwner) && (itemstack.itemId == Item.GOLDEN_SWORD.id || itemstack.itemId == Item.STONE_SWORD.id || itemstack.itemId == Item.WOODEN_SWORD.id || itemstack.itemId == Item.IRON_SWORD.id || itemstack.itemId == Item.DIAMOND_SWORD.id))
+        if(itemstack != null && getTamed() && entityplayer.name.equals(getOwner()) && (itemstack.itemId == Item.GOLDEN_SWORD.id || itemstack.itemId == Item.STONE_SWORD.id || itemstack.itemId == Item.WOODEN_SWORD.id || itemstack.itemId == Item.IRON_SWORD.id || itemstack.itemId == Item.DIAMOND_SWORD.id))
         {
-            if(isHorsePublic == true){
-                isHorsePublic = false;
+            if(getProtect()){
+                setProtect(false);
                 for(int var3 = 0; var3 < 7; ++var3) {
                     double var4 = this.random.nextGaussian() * 0.02D;
                     double var6 = this.random.nextGaussian() * 0.02D;
@@ -824,7 +805,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                     world.addParticle("heart", this.x + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, this.y + 0.5D + (double) (this.random.nextFloat() * this.spacingY), this.z + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, var4, var6, var8);
                 }
             }else{
-                isHorsePublic = true;
+                setProtect(true);
                 for(int var3 = 0; var3 < 7; ++var3) {
                     double var4 = this.random.nextGaussian() * 0.02D;
                     double var6 = this.random.nextGaussian() * 0.02D;
@@ -849,9 +830,9 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 health = maxhealth;
             }
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-            if(!adult && b < 1.0F)
+            if(!getAdult() && getAge() < 1.0F)
             {
-                b += 0.01F;
+                setAge(getAge()+0.01F);
             }
             return true;
         }
@@ -870,9 +851,9 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 health = maxhealth;
             }
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-            if(!adult && b < 1.0F)
+            if(!getAdult() && getAge() < 1.0F)
             {
-                b += 0.02F;
+                setAge(getAge()+0.02F);
             }
             return true;
         }
@@ -891,9 +872,9 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 health = maxhealth;
             }
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-            if(!adult && b < 1.0F)
+            if(!getAdult() && getAge() < 1.0F)
             {
-                b += 0.03F;
+                setAge(getAge()+0.03F);
             }
             return true;
         }
@@ -903,20 +884,20 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             {
                 entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
-            tamed = true;
+            setTamed(true);
             health = maxhealth;
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-            if(!adult && b < 1.0F)
+            if(!getAdult() && getAge() < 1.0F)
             {
-                b += 0.05F;
+                setAge(getAge()+0.05F);
             }
-            horseOwner = entityplayer.name;
+            setOwner(entityplayer.name);
             setName(this);
             return true;
         }
-        if(itemstack != null && tamed && itemstack.itemId == Block.CHEST.id && (typeint == 6 || typeint == 8))
+        if(itemstack != null && getTamed() && itemstack.itemId == Block.CHEST.id && (getType() == 6 || getType() == 8))
         {
-            if(chestedhorse)
+            if(getChested())
             {
                 return false;
             }
@@ -924,30 +905,30 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             {
                 entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
-            chestedhorse = true;
+            setChested(true);
             world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
             return true;
         }
-        if(itemstack != null && tamed && itemstack.itemId == mod_mocreatures.haystack.id)
+        if(itemstack != null && getTamed() && itemstack.itemId == mod_mocreatures.haystack.id)
         {
             if(--itemstack.count == 0)
             {
                 entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
-            eatinghaystack = true;
+            setSitting(true);
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-            health = maxhealth;
+            health = maxhealth; //TODO: maXHealth logic...
             return true;
         }
-        if(itemstack != null && (itemstack.itemId == Item.STONE_SHOVEL.id || itemstack.itemId == Block.TORCH.id) && chestedhorse)
+        if(itemstack != null && (itemstack.itemId == Item.STONE_SHOVEL.id || itemstack.itemId == Block.TORCH.id) && getChested())
         {
-            if(typeint == 8)
+            if(getType() == 8)
             {
                 localhorsechest = new AnimalChest(localstack, "Dark Pegasus chest", localstack.length);
                 entityplayer.method_486(localhorsechest);
                 return true;
             }
-            if(typeint == 6)
+            if(getType() == 6)
             {
                 localhorsechestx54 = new AnimalChest(localstackx54, "Pack Horse chest", localstackx54.length);
                 entityplayer.method_486(localhorsechestx54);
@@ -956,7 +937,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
         if(itemstack != null && (itemstack.itemId == Block.PUMPKIN.id || itemstack.itemId == Item.MUSHROOM_STEW.id || itemstack.itemId == Item.CAKE.id))
         {
-            if(hasreproduced || !adult)
+            if(hasreproduced || !getAdult())
             {
                 return false;
             }
@@ -969,12 +950,12 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             {
                 entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
-            eatenpumpkin = true;
+            setEaten(true);
             health = maxhealth;
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             return true;
         }
-        if(itemstack != null && tamed && itemstack.itemId == Item.REDSTONE.id && typeint == 7)
+        if(itemstack != null && getTamed() && itemstack.itemId == Item.REDSTONE.id && getType() == 7)
         {
             if(nightmareInt > 500)
             {
@@ -988,12 +969,12 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             return true;
         }
-        if(itemstack != null && itemstack.itemId == mod_mocreatures.whip.id && tamed && field_1594 == null)
+        if(itemstack != null && itemstack.itemId == mod_mocreatures.whip.id && getTamed() && field_1594 == null)
         {
-            eatinghaystack = !eatinghaystack;
+            setSitting(!getSitting());
             return true;
         }
-        if(itemstack != null && field_1594 == null && roper == null && tamed && itemstack.itemId == mod_mocreatures.rope.id)
+        if(itemstack != null && field_1594 == null && roper == null && getTamed() && itemstack.itemId == mod_mocreatures.rope.id)
         {
             if(--itemstack.count == 0)
             {
@@ -1003,31 +984,31 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             roper = entityplayer;
             return true;
         }
-        if(roper != null && tamed)
+        if(roper != null && getTamed())
         {
             entityplayer.inventory.method_671(new ItemStack(mod_mocreatures.rope));
             world.playSound(this, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             roper = null;
             return true;
         }
-        if(itemstack != null && tamed && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == Item.BOOK.id))
+        if(itemstack != null && getTamed() && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == Item.BOOK.id))
         {
             setName(this);
             return true;
         }
-        if(itemstack != null && tamed && (itemstack.itemId == Item.DIAMOND_PICKAXE.id || itemstack.itemId == Item.WOODEN_PICKAXE.id || itemstack.itemId == Item.STONE_PICKAXE.id || itemstack.itemId == Item.IRON_PICKAXE.id || itemstack.itemId == Item.GOLDEN_PICKAXE.id))
+        if(itemstack != null && getTamed() && (itemstack.itemId == Item.DIAMOND_PICKAXE.id || itemstack.itemId == Item.WOODEN_PICKAXE.id || itemstack.itemId == Item.STONE_PICKAXE.id || itemstack.itemId == Item.IRON_PICKAXE.id || itemstack.itemId == Item.GOLDEN_PICKAXE.id))
         {
             displayname = !displayname;
             return true;
         }
-        if(rideable && adult)
+        if(getSaddled() && getAdult())
         {
             entityplayer.yaw = yaw;
             entityplayer.pitch = pitch;
-            eatinghaystack = false;
+            setSitting(false);
             entityplayer.method_1376(this);
             gestationtime = 0;
-            if(typeint == 8)
+            if(getType() == 8)
             {
                 entityplayer.incrementStat(mod_mocreatures.WilfFlyingWest);
             }
@@ -1054,7 +1035,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             method_933();
         }
         world.method_279(this, 3F);
-        if(chestedhorse && (typeint == 6 || typeint == 8))
+        if(getChested() && (getType() == 6 || getType() == 8))
         {
             int i = MathHelper.floor(x);
             int j = MathHelper.floor(boundingBox.minY);
@@ -1140,23 +1121,23 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
-        nbttagcompound.putBoolean("Saddle", rideable);
-        nbttagcompound.putBoolean("EatingHaystack", eatinghaystack);
-        nbttagcompound.putBoolean("Tamed", tamed);
+        nbttagcompound.putBoolean("Saddle", getSaddled());
+        nbttagcompound.putBoolean("EatingHaystack", getSitting());
+        nbttagcompound.putBoolean("Tamed", getTamed());
         nbttagcompound.putBoolean("HorseBoolean", horseboolean);
-        nbttagcompound.putInt("TypeInt", typeint);
-        nbttagcompound.putBoolean("ChestedHorse", chestedhorse);
+        nbttagcompound.putInt("TypeInt", getType());
+        nbttagcompound.putBoolean("ChestedHorse", getChested());
         nbttagcompound.putBoolean("HasReproduced", hasreproduced);
-        nbttagcompound.putBoolean("Bred", bred);
-        nbttagcompound.putBoolean("Adult", adult);
-        nbttagcompound.putFloat("Age", b);
-        nbttagcompound.putString("Name", name);
+        nbttagcompound.putBoolean("Bred", getBred());
+        nbttagcompound.putBoolean("Adult", getAdult());
+        nbttagcompound.putFloat("Age", getAge());
+        nbttagcompound.putString("Name", getName());
         nbttagcompound.putBoolean("DisplayName", displayname);
         nbttagcompound.putInt("GestationTime", gestationtime);
-        nbttagcompound.putBoolean("EatenPumpkin", eatenpumpkin);
-        nbttagcompound.putBoolean("PublicHorse", isHorsePublic);
-        nbttagcompound.putString("HorseOwner", horseOwner);
-        if(typeint == 8)
+        nbttagcompound.putBoolean("EatenPumpkin", getEaten());
+        nbttagcompound.putBoolean("PublicHorse", getProtect());
+        nbttagcompound.putString("HorseOwner", getOwner());
+        if(getType() == 8)
         {
             NbtList nbttaglist = new NbtList();
             for(int i = 0; i < localstack.length; i++)
@@ -1173,7 +1154,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             nbttagcompound.put("Items", nbttaglist);
         }
 
-        if(typeint == 6)
+        if(getType() == 6)
         {
             NbtList nbttaglist = new NbtList();
             for(int i = 0; i < localstackx54.length; i++)
@@ -1207,23 +1188,23 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
-        rideable = nbttagcompound.getBoolean("Saddle");
-        tamed = nbttagcompound.getBoolean("Tamed");
-        eatinghaystack = nbttagcompound.getBoolean("EatingHaystack");
-        bred = nbttagcompound.getBoolean("Bred");
-        adult = nbttagcompound.getBoolean("Adult");
+        setSaddled(nbttagcompound.getBoolean("Saddle"));
+        setTamed(nbttagcompound.getBoolean("Tamed"));
+        setSitting(nbttagcompound.getBoolean("EatingHaystack"));
+        setBred(nbttagcompound.getBoolean("Bred"));
+        setAdult(nbttagcompound.getBoolean("Adult"));
         horseboolean = nbttagcompound.getBoolean("HorseBoolean");
-        chestedhorse = nbttagcompound.getBoolean("ChestedHorse");
+        setChested(nbttagcompound.getBoolean("ChestedHorse"));
         hasreproduced = nbttagcompound.getBoolean("HasReproduced");
-        typeint = nbttagcompound.getInt("TypeInt");
-        b = nbttagcompound.getFloat("Age");
-        name = nbttagcompound.getString("Name");
+        setType(nbttagcompound.getInt("TypeInt"));
+        setAge(nbttagcompound.getFloat("Age"));
+        setName(nbttagcompound.getString("Name"));
         displayname = nbttagcompound.getBoolean("DisplayName");
         gestationtime = nbttagcompound.getInt("GestationTime");
-        eatenpumpkin = nbttagcompound.getBoolean("EatenPumpkin");
-        isHorsePublic = nbttagcompound.getBoolean("PublicHorse");
-        horseOwner = nbttagcompound.getString("HorseOwner");
-        if(typeint == 8)
+        setEaten(nbttagcompound.getBoolean("EatenPumpkin"));
+        setProtect(nbttagcompound.getBoolean("PublicHorse"));
+        setOwner(nbttagcompound.getString("HorseOwner"));
+        if(getType() == 8)
         {
             NbtList nbttaglist = nbttagcompound.getList("Items");
             localstack = new ItemStack[27];
@@ -1239,7 +1220,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
 
         }
 
-        if(typeint == 6)
+        if(getType() == 6)
         {
             NbtList nbttaglist = nbttagcompound.getList("Items");
             localstackx54 = new ItemStack[54];
@@ -1273,7 +1254,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
 
     protected boolean method_640()
     {
-        return eatinghaystack || field_1594 != null;
+        return getSitting() || field_1594 != null;
     }
 
     protected String method_911()
@@ -1299,7 +1280,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             method_1327(new ItemStack(method_914(), 1, 0), 0.0F);
         }
 
-        if(rideable && mocr.mocreaturesGlass.balancesettings.horse_saddle) {
+        if(getSaddled() && mocr.mocreaturesGlass.balancesettings.horse_saddle) {
             int k = random.nextInt(2);
             for (int j = 0; j < k; j++) {
                 method_1327(new ItemStack(mod_mocreatures.horsesaddle, 1, 0), 0.0F);
@@ -1334,51 +1315,263 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     public static void setName(EntityHorse entityhorse)
     {
         entityhorse.displayname = true;
-        mc.setScreen(new MoCGUI(entityhorse, entityhorse.name));
+        mc.setScreen(new MoCGUI(entityhorse, entityhorse.getName()));
     }
 
     public static Minecraft mc = Minecraft.class.cast(FabricLoader.getInstance().getGameInstance());
     mod_mocreatures mocr = new mod_mocreatures();
-    public String horseOwner;
-    public boolean isHorsePublic;
     private int nightmareInt;
-    private boolean bred;
-    public boolean eatenpumpkin;
     private int gestationtime;
     public boolean hasreproduced;
     public int maxhealth;
     private int temper;
     private double HorseSpeed;
     private double HorseJump;
-    public int typeint;
-    public boolean typechosen;
-    public boolean tamed;
     public boolean horseboolean;
-    public boolean rideable;
     public boolean isjumping;
     public float fwingb;
     public float fwingc;
     public float fwingd;
     public float fwinge;
     public float fwingh;
-    public boolean chestedhorse;
     private Inventory localhorsechest;
     public ItemStack localstack[];
     private Inventory localhorsechestx54;
     public ItemStack localstackx54[];
-    public boolean eatinghaystack;
-    public float b;
-    public boolean adult;
     public boolean roped;
     public LivingEntity roper;
-    public String name;
     public boolean displayname;
     public ItemStack cargoItems[];
     private int animalFuel;
-    public boolean animalKeyDown;
+
+//    public int typeint;
+//    public float b; //AGE
+//    public boolean adult;
+//    public boolean eatenpumpkin; //eaten
+//    public boolean tamed;
+//    public boolean eatinghaystack; //sitting
+//    public boolean rideable; //saddle
+//    public boolean isHorsePublic; //public
+//    private boolean bred;
+//    public boolean chestedhorse;
+
+//    public String horseOwner;
+//    public String name;
+
+    public boolean typechosen;
+
+    protected void initDataTracker()
+    {
+        super.initDataTracker();
+        dataTracker.method_1502(16, (byte) 0); //Type
+        dataTracker.method_1502(17, (int) 0); //Age
+        dataTracker.method_1502(18, (byte) 0); //Adult
+        dataTracker.method_1502(19, (byte) 0); //EatenHayStack
+        dataTracker.method_1502(20, (byte) 0); //Tamed
+        dataTracker.method_1502(21, (byte) 0); //Sitting
+        dataTracker.method_1502(22, (byte) 0); //Saddle
+        dataTracker.method_1502(23, (byte) 0); //Protect From Players/Public
+        dataTracker.method_1502(24, (byte) 0); //Bred
+        dataTracker.method_1502(25, (byte) 0); //Chested
+        dataTracker.method_1502(30, ""); //Owner
+        dataTracker.method_1502(31, ""); //Name
+    }
 
     @Override
     public Identifier getHandlerIdentifier() {
         return Identifier.of(mod_mocreatures.MOD_ID, "Horse");
     }
+
+    //TYPE
+    public void setTypeSpawn() {
+        if(!world.isRemote) {
+            if (random.nextInt(5) == 0) {
+                setAdult(false);
+            }
+            setType(getRandomRace());
+        }
+    }
+
+    public void setType(int type)
+    {
+        if(!world.isRemote) {
+            dataTracker.method_1509(16, (byte) type);
+            chooseType(type);
+        }
+    }
+
+    public int getType()
+    {
+        return dataTracker.method_1501(16);
+    }
+
+    //AGE
+    public void setAge(float age)
+    {
+        dataTracker.method_1509(17, Float.floatToRawIntBits(age));
+    }
+
+    public float getAge()
+    {
+        return Float.intBitsToFloat(dataTracker.method_1508(17));
+    }
+
+    //ADULT
+    public boolean getAdult()
+    {
+        return (dataTracker.method_1501(18) & 1) != 0;
+    }
+
+    public void setAdult(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(18, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(18, (byte) 0);
+        }
+    }
+
+    //EATEN
+    public boolean getEaten()
+    {
+        return (dataTracker.method_1501(19) & 1) != 0;
+    }
+
+    public void setEaten(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(19, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(19, (byte) 0);
+        }
+    }
+
+    //TAMED
+    public boolean getTamed()
+    {
+        return (dataTracker.method_1501(20) & 1) != 0;
+    }
+
+    public void setTamed(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(20, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(20, (byte) 0);
+        }
+    }
+
+    //SITTING
+    public boolean getSitting()
+    {
+        return (dataTracker.method_1501(21) & 1) != 0;
+    }
+
+    public void setSitting(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(21, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(21, (byte) 0);
+        }
+    }
+
+    //HUNGRY
+    public boolean getSaddled()
+    {
+        return (dataTracker.method_1501(22) & 1) != 0;
+    }
+
+    public void setSaddled(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(22, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(22, (byte) 0);
+        }
+    }
+
+    //PROTECT FROM PLAYERES / PUBLIC
+    public boolean getProtect()
+    {
+        return (dataTracker.method_1501(23) & 1) != 0;
+    }
+
+    public void setProtect(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(23, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(23, (byte) 0);
+        }
+    }
+
+    //BRED
+    public boolean getBred()
+    {
+        return (dataTracker.method_1501(24) & 1) != 0;
+    }
+
+    public void setBred(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(24, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(24, (byte) 0);
+        }
+    }
+
+    //CHESTED
+    public boolean getChested()
+    {
+        return (dataTracker.method_1501(25) & 1) != 0;
+    }
+
+    public void setChested(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.method_1509(25, (byte) 1);
+        } else
+        {
+            dataTracker.method_1509(25, (byte) 0);
+        }
+    }
+
+    //OWNER
+    public void setOwner(String owner)
+    {
+        this.dataTracker.method_1509(30, owner);
+    }
+
+    public String getOwner()
+    {
+        return this.dataTracker.method_1510(30);
+    }
+
+    //NAME
+    public void setName(String name)
+    {
+        this.dataTracker.method_1509(31, name);
+    }
+
+    public String getName()
+    {
+        return this.dataTracker.method_1510(31);
+    }
+
 }

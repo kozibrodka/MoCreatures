@@ -98,7 +98,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityShark) || (entity1 instanceof EntitySharkEgg) || (entity1 instanceof PlayerEntity) || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof EntityDolphin) && (tamed || !mocr.mocreaturesGlass.watermobs.attackdolphins) || (entity1 instanceof EntityHorse) && tamed && ((EntityHorse) entity1).tamed || (entity1 instanceof EntityBigCat) && tamed && ((EntityBigCat) entity1).getTamed())
+            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityShark) || (entity1 instanceof EntitySharkEgg) || (entity1 instanceof PlayerEntity) || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof EntityDolphin) && (tamed || !mocr.mocreaturesGlass.watermobs.attackdolphins) || (entity1 instanceof EntityHorse) && tamed && ((EntityHorse) entity1).getTamed() || (entity1 instanceof EntityBigCat) && tamed && ((EntityBigCat) entity1).getTamed())
             {
                 continue;
             }
