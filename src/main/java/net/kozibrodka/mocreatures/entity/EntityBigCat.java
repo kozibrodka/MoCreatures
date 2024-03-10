@@ -2,6 +2,7 @@ package net.kozibrodka.mocreatures.entity;
 
 
 import net.fabricmc.loader.api.FabricLoader;
+import net.kozibrodka.mocreatures.events.GUIListener;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mixin.DataTrackerAccessor;
 import net.kozibrodka.mocreatures.mixin.WalkingBaseAccesor;
@@ -67,7 +68,6 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
 
     public void chooseType(int type)
     {
-        System.out.println("SPAWN TIGER 3");
             if(type == 1)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/lionf.png";
@@ -411,7 +411,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.field_1594 || entity1 == entity.field_1595 || (entity1 instanceof PlayerEntity) || !getAdult() && ((double)entity1.spacingXZ > 0.5D || (double)entity1.spacingY > 0.5D) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof MonsterEntity) && (!getTamed() || !getAdult()) || getTamed() && (entity1 instanceof EntityKitty) && ((EntityKitty)entity1).kittystate > 2 || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof EntityHorse) && getTamed() && ((EntityHorse) entity1).tamed || (entity1 instanceof EntityShark) && ((EntityShark)entity1).tamed && getTamed() || (entity1 instanceof EntityDolphin) && ((EntityDolphin)entity1).tamed && getTamed() || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves)
+            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.field_1594 || entity1 == entity.field_1595 || (entity1 instanceof PlayerEntity) || !getAdult() && ((double)entity1.spacingXZ > 0.5D || (double)entity1.spacingY > 0.5D) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof MonsterEntity) && (!getTamed() || !getAdult()) || getTamed() && (entity1 instanceof EntityKitty) && ((EntityKitty)entity1).kittystate > 2 || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof EntityHorse) && getTamed() && ((EntityHorse) entity1).getTamed() || (entity1 instanceof EntityShark) && ((EntityShark)entity1).tamed && getTamed() || (entity1 instanceof EntityDolphin) && ((EntityDolphin)entity1).getTamed() && getTamed() || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves)
             {
                 continue;
             }
@@ -585,7 +585,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                 }
                 setTamed(true);
                 setOwner(entityplayer.name);
-                setName(this);
+                setNameWithGui(this, entityplayer);
                 return true;
             }
             if (itemstack != null && entityplayer.name.equals(getOwner()) && getTamed() && itemstack.itemId == mod_mocreatures.whip.id) {
@@ -597,7 +597,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                 return true;
             }
             if (itemstack != null && entityplayer.name.equals(getOwner()) && getTamed() && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == Item.BOOK.id)) {
-                setName(this);
+                setNameWithGui(this, entityplayer);
                 return true;
             }
             if (itemstack != null && entityplayer.name.equals(getOwner()) && field_1594 == null && roper == null && getTamed() && itemstack.itemId == mod_mocreatures.rope.id) {
@@ -784,11 +784,14 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         setSitting(false);
     }
 
-    public static void setName(EntityBigCat entitybigcat)
+    public static void setNameWithGui(EntityBigCat entitybigcat, PlayerEntity entityPlayer)
     {
         entitybigcat.setDisplayName(true);
-        mc.setScreen(new MoCGUI(entitybigcat, entitybigcat.getName()));
+//        mc.setScreen(new MoCGUI(entitybigcat, entitybigcat.getName()));
 //        GuiHelper.openGUI(entityPlayer, Identifier.of("mocreatures:openTamePaper"), null, null, entitybigcat.name);
+        GUIListener.tempLiving = entitybigcat;
+        GUIListener.tempString = entitybigcat.getName();
+        GuiHelper.openGUI(entityPlayer, Identifier.of("mocreatures:openTamePaper"), entityPlayer.inventory, null);
     }
 
     @SuppressWarnings("deprecation")
@@ -826,7 +829,6 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
     //TYPE
     public void setTypeSpawn() {
         if (!world.isRemote) {
-            System.out.println("SPAWN TIGER 1");
             int i = 0;
             //
             if(NearSnowWithDistance(this, Double.valueOf(1.0D)))

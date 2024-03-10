@@ -22,7 +22,7 @@ public class RenderDolphin extends LivingEntityRenderer
     {
         EntityDolphin entitydolphin = (EntityDolphin)entityliving;
         super.render(entitydolphin, d, d1, d2, f, f1);
-        boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entitydolphin.name.isEmpty();
+        boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entitydolphin.getName().isEmpty();
         boolean flag1 = mocr.mocreaturesGlass.othersettings.displayhealth;
         boolean flag2 = mocr.mocreaturesGlass.othersettings.displayemo;
         if(entitydolphin.renderName())
@@ -33,7 +33,7 @@ public class RenderDolphin extends LivingEntityRenderer
             if(f4 < 16F)
             {
                 String s = "";
-                s = (new StringBuilder()).append(s).append(entitydolphin.name).toString();
+                s = (new StringBuilder()).append(s).append(entitydolphin.getName()).toString();
                 float f5 = 0.1F;
                 TextRenderer fontrenderer = method_2023();
                 GL11.glPushMatrix();
@@ -109,7 +109,7 @@ public class RenderDolphin extends LivingEntityRenderer
             float f3 = 0.01666667F * f2;
             float f4 = entityliving.method_1351(dispatcher.field_2496);
             String s = "";
-            s = (new StringBuilder()).append(s).append(entitydolphin.name).toString();
+            s = (new StringBuilder()).append(s).append(entitydolphin.getName()).toString();
             if(f4 < 12F && s.length() > 0)
             {
                 TextRenderer fontrenderer = method_2023();

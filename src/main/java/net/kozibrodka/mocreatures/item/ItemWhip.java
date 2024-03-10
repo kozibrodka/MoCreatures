@@ -65,9 +65,9 @@ public class ItemWhip extends TemplateItem
                 if(entity instanceof EntityHorse)
                 {
                     EntityHorse entityhorse = (EntityHorse)entity;
-                    if((entityhorse.tamed && entityplayer.name.equals(entityhorse.horseOwner) || (entityhorse.tamed && entityhorse.isHorsePublic)))
+                    if((entityhorse.getTamed() && entityplayer.name.equals(entityhorse.getOwner()) || (entityhorse.getTamed() && entityhorse.getProtect())))
                     {
-                        entityhorse.eatinghaystack = !entityhorse.eatinghaystack;
+                        entityhorse.setEaten(!entityhorse.getEaten());
                     }
                 }
                 if(!(entity instanceof EntityKitty))

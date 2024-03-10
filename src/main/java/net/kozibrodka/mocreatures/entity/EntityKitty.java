@@ -96,52 +96,43 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
         return (double)eyeHeight;
     }
 
-    public void setType(int i)
-    {
-        typeint = i;
-        typechosen = false;
-        chooseType();
+    public int getRandomRace(){
+        int i = random.nextInt(100);
+        if(i <= 15)
+        {
+            return 1;
+        } else
+        if(i <= 30)
+        {
+            return 2;
+        } else
+        if(i <= 45)
+        {
+            return 3;
+        } else
+        if(i <= 60)
+        {
+            return 4;
+        } else
+        if(i <= 70)
+        {
+            return 5;
+        } else
+        if(i <= 80)
+        {
+            return 6;
+        } else
+        if(i <= 90)
+        {
+            return 7;
+        } else
+        {
+            return 8;
+        }
     }
 
-    public void chooseType()
+    public void chooseType(int typeint)
     {
-        if(typeint == 0)
-        {
-            int i = random.nextInt(100);
-            if(i <= 15)
-            {
-                typeint = 1;
-            } else
-            if(i <= 30)
-            {
-                typeint = 2;
-            } else
-            if(i <= 45)
-            {
-                typeint = 3;
-            } else
-            if(i <= 60)
-            {
-                typeint = 4;
-            } else
-            if(i <= 70)
-            {
-                typeint = 5;
-            } else
-            if(i <= 80)
-            {
-                typeint = 6;
-            } else
-            if(i <= 90)
-            {
-                typeint = 7;
-            } else
-            {
-                typeint = 8;
-            }
-        }
-        if(!typechosen)
-        {
             if(typeint == 1)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/pussycata.png";
@@ -174,8 +165,6 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/pussycath.png";
             }
-        }
-        typechosen = true;
     }
 
     public boolean method_1323(PlayerEntity entityplayer)
@@ -1057,7 +1046,7 @@ label0:
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityKitty) || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityBigCat) && !mocr.mocreaturesGlass.huntercreatures.attackbigcat || (entity1 instanceof EntityBigCat) && ((EntityBigCat) entity1).getTamed() && kittystate > 2 || (entity1 instanceof EntityDolphin) && ((EntityDolphin) entity1).tamed && kittystate > 2 || (entity1 instanceof EntityShark) && ((EntityShark)entity1).tamed && kittystate > 2 || (double)entity1.spacingXZ > 0.5D && (double)entity1.spacingY > 0.5D)
+            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityKitty) || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityBigCat) && !mocr.mocreaturesGlass.huntercreatures.attackbigcat || (entity1 instanceof EntityBigCat) && ((EntityBigCat) entity1).getTamed() && kittystate > 2 || (entity1 instanceof EntityDolphin) && ((EntityDolphin) entity1).getTamed() && kittystate > 2 || (entity1 instanceof EntityShark) && ((EntityShark)entity1).tamed && kittystate > 2 || (double)entity1.spacingXZ > 0.5D && (double)entity1.spacingY > 0.5D)
             {
                 continue;
             }
@@ -1585,8 +1574,33 @@ label0:
     };
     private int displaycount;
 
+    protected void initDataTracker()
+    {
+        dataTracker.method_1502(16, (byte) 0); //Type
+    }
+
     @Override
     public Identifier getHandlerIdentifier() {
         return Identifier.of(mod_mocreatures.MOD_ID, "Kitty");
+    }
+
+    @Override
+    public void setTypeSpawn() {
+        if(!world.isRemote) {
+            setType(getRandomRace());
+        }
+    }
+
+    public void setType(int type)
+    {
+        if(!world.isRemote) {
+            dataTracker.method_1509(16, (byte) type);
+            chooseType(type);
+        }
+    }
+
+    public int getType()
+    {
+        return dataTracker.method_1501(16);
     }
 }

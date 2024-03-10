@@ -68,7 +68,7 @@ public class PlayerBaseMixin extends LivingEntity{
                 return;
             }
         }
-        if((entityliving instanceof EntityHorse && ((EntityHorse)entityliving).tamed) || (entityliving instanceof EntityDolphin && ((EntityDolphin)entityliving).tamed) || (entityliving instanceof EntityShark && ((EntityShark)entityliving).tamed) || (entityliving instanceof EntityKitty && ((EntityKitty)entityliving).kittystate > 2 ))
+        if((entityliving instanceof EntityHorse && ((EntityHorse)entityliving).getTamed()) || (entityliving instanceof EntityDolphin && ((EntityDolphin)entityliving).getTamed()) || (entityliving instanceof EntityShark && ((EntityShark)entityliving).tamed) || (entityliving instanceof EntityKitty && ((EntityKitty)entityliving).kittystate > 2 ))
         {
             return;
         }

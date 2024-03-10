@@ -65,11 +65,11 @@ public class EntityFishyEgg extends LivingEntity implements MobSpawnDataProvider
             {
                 EntityFishy entityfishy = new EntityFishy(world);
                 entityfishy.method_1340(x, y, z);
-                entityfishy.chooseType();
-                entityfishy.b = 0.3F;
+                entityfishy.setTypeSpawn();
+                entityfishy.setAge(0.3F);
                 world.method_210(entityfishy);
                 world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-                entityfishy.tamed = true;
+                entityfishy.setTamed(true);
                 markDead();
             }
         }

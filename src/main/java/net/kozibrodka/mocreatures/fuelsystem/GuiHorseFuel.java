@@ -16,7 +16,7 @@ public class GuiHorseFuel extends ContainerScreen
 
     protected void drawForeground()
     {
-        textRenderer.draw(horse.name, 8, 6, 0x404040);
+        textRenderer.draw(horse.getName(), 8, 6, 0x404040);
         textRenderer.draw("Inventory", 8, (backgroundHeight - 96) + 2, 0x404040);
     }
 

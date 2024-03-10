@@ -3,6 +3,7 @@ package net.kozibrodka.mocreatures.events;
 import net.kozibrodka.mocreatures.entity.EntityBigCat;
 import net.minecraft.client.gui.screen.Screen;
 
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Container;
 import net.fabricmc.api.EnvType;
@@ -27,12 +28,15 @@ public class GUIListener {
     @EventListener
     public void registerGuiHandlers(GuiHandlerRegistryEvent event) {
         GuiHandlerRegistry registry = event.registry;
-        registry.registerValueNoMessage(Identifier.of(MOD_ID, "openTamePaper"), BiTuple.of(this::openTamePaper, null)); //BAD ONE
+        registry.registerValueNoMessage(Identifier.of(MOD_ID, "openTamePaper"), BiTuple.of(this::openTamePaper, () -> null));
     }
 
     @Environment(EnvType.CLIENT)
     public Screen openTamePaper(PlayerEntity player, Inventory inventoryBasey) {
-        return new MoCGUI(player, "s");
+        return new MoCGUI(tempLiving, tempString);
     }
+
+    public static LivingEntity tempLiving;
+    public static String tempString;
 
 }

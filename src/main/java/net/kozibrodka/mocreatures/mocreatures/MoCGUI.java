@@ -63,7 +63,7 @@ public class MoCGUI extends Screen
             }
             if(NamedEntity instanceof EntityDolphin)
             {
-                ((EntityDolphin)NamedEntity).name = NameToSet;
+                ((EntityDolphin)NamedEntity).setName(NameToSet);
             }
             if(NamedEntity instanceof EntityShark)
             {
