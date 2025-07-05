@@ -21,7 +21,7 @@ public class RenderMouse extends LivingEntityRenderer
         super.render(entitymouse, d, d1, d2, f, f1);
     }
 
-    protected void method_823(LivingEntity entityliving, float f)
+    protected void applyScale(LivingEntity entityliving, float f)
     {
         EntityMouse entitymouse = (EntityMouse)entityliving;
         if(entitymouse.upsideDown())
@@ -51,9 +51,9 @@ public class RenderMouse extends LivingEntityRenderer
         GL11.glRotatef(90F, -1F, 0.0F, 0.0F);
     }
 
-    protected float method_828(LivingEntity entityliving, float f)
+    protected float getHeadBob(LivingEntity entityliving, float f)
     {
         stretch(entityliving);
-        return (float)entityliving.field_1645 + f;
+        return (float)entityliving.age + f;
     }
 }

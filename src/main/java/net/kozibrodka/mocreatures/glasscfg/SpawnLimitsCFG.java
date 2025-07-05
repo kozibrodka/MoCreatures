@@ -1,27 +1,24 @@
 package net.kozibrodka.mocreatures.glasscfg;
 
-
-import net.glasslauncher.mods.api.gcapi.api.ConfigName;
-import net.glasslauncher.mods.api.gcapi.api.MaxLength;
+import net.glasslauncher.mods.gcapi3.api.ConfigEntry;
 
 public class SpawnLimitsCFG {
 
-    @ConfigName("Hostiles")
-    @MaxLength(
-            value = 1000
+    @ConfigEntry(
+            name="Hostiles",
+            maxLength = 1000
     )
     public Integer maxMobsS = 70;
 
-    @ConfigName("Animals")
-    @MaxLength(
-            value = 1000
+    @ConfigEntry(
+            name="Animals",
+            maxLength = 1000
     )
     public Integer maxAnimalsS = 30;
 
-    @ConfigName("WaterMobs")
-    @MaxLength(
-            value = 1000
+    @ConfigEntry(
+            name="WaterMobs",
+            maxLength = 1000
     )
     public Integer maxWaterMobsS = 25;
-
 }

@@ -20,7 +20,7 @@ public class GreenApple extends TemplateItem
     public ItemStack use(ItemStack itemstack, World world, PlayerEntity entityplayer)
     {
         itemstack.count--;
-        entityplayer.method_939(a);
+        entityplayer.heal(a);
         return itemstack;
     }
 

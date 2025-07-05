@@ -18,11 +18,11 @@ public class RenderHorse extends LivingEntityRenderer
     public RenderHorse(EntityModel modelbase, EntityModel modelbase1)
     {
         super(modelbase1, 0.5F);
-        method_815(modelbase);
+        setDecorationModel(modelbase);
         modelhorse1 = (ModelHorse1)modelbase1;
     }
 
-    protected boolean method_825(LivingEntity entityliving, int i, float f)
+    protected boolean bindTexture(LivingEntity entityliving, int i, float f)
     {
         return setWoolColorAndRender((EntityHorse)entityliving, i);
     }
@@ -38,7 +38,7 @@ public class RenderHorse extends LivingEntityRenderer
         return (MathHelper.sin(f1) + 1.0F) * f2;
     }
 
-    protected void method_823(LivingEntity entityliving, float f)
+    protected void applyScale(LivingEntity entityliving, float f)
     {
         EntityHorse entityhorse = (EntityHorse)entityliving;
         modelhorse1.chested = entityhorse.getChested();
@@ -61,17 +61,17 @@ public class RenderHorse extends LivingEntityRenderer
         {
             float f2 = 1.6F;
             float f3 = 0.01666667F * f2;
-            float f5 = entityhorse.method_1351(dispatcher.field_2496);
+            float f5 = entityhorse.getDistance(dispatcher.cameraEntity);
             if(f5 < 16F)
             {
                 String s = "";
                 s = (new StringBuilder()).append(s).append(entityhorse.getName()).toString();
                 float f7 = 0.1F;
-                TextRenderer fontrenderer = method_2023();
+                TextRenderer fontrenderer = getTextRenderer();
                 GL11.glPushMatrix();
                 GL11.glTranslatef((float)d + 0.0F, (float)d1 + f7, (float)d2);
                 GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-                GL11.glRotatef(-dispatcher.field_2497, 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(-dispatcher.yaw, 0.0F, 1.0F, 0.0F);
                 GL11.glScalef(-f3, -f3, f3);
                 GL11.glDisable(2896 /*GL_LIGHTING*/);
                 Tessellator tessellator1 = Tessellator.INSTANCE;
@@ -172,7 +172,7 @@ public class RenderHorse extends LivingEntityRenderer
         GL11.glScalef(entityhorse.getAge(), entityhorse.getAge(), entityhorse.getAge());
     }
 
-    protected float method_828(LivingEntity entityliving, float f)
+    protected float getHeadBob(LivingEntity entityliving, float f)
     {
         return getWingRotation((EntityHorse)entityliving, f);
     }

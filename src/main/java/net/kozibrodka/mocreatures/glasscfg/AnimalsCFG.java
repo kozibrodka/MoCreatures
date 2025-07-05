@@ -1,96 +1,96 @@
 package net.kozibrodka.mocreatures.glasscfg;
 
-
-import net.glasslauncher.mods.api.gcapi.api.ConfigName;
-import net.glasslauncher.mods.api.gcapi.api.MaxLength;
-import org.checkerframework.framework.qual.CFComment;
+import net.glasslauncher.mods.gcapi3.api.ConfigEntry;
 
 public class AnimalsCFG {
 
-    @ConfigName("Horse Freq")
-    @CFComment("maximum 10")
-    @MaxLength(
-            value = 10
+    @ConfigEntry(
+            name="Horse Freq",
+            description = "maximum 10",
+            maxLength = 10
     )
     public Integer horsefreq = 5;
 
-    @ConfigName("Easy Horse Breed")
+    @ConfigEntry(name="Easy Horse Breed")
     public Boolean easybreeding = false;
 
-    @ConfigName("Spawn Mouse Indoors")
+    @ConfigEntry(name="Spawn Mouse Indoors")
     public Boolean mouseinhouse = true;
 
-    @ConfigName("Pegasus chance")
-    @CFComment("maximum 3")
-    @MaxLength(
-            value = 3
+    @ConfigEntry(
+            name="Pegasus chance",
+            description = "maximum 3",
+            maxLength = 3
     )
     public Integer pegasusChanceS = 1;
 
-    @ConfigName("Bird Freq")
-    @CFComment("maximum 10")
-    @MaxLength(
-            value = 10
+    @ConfigEntry(
+            name="Bird Freq",
+            description = "maximum 10",
+            maxLength = 10
     )
     public Integer birdfreq = 5;
 
-    @ConfigName("Bunny Freq")
-    @CFComment("maximum 10")
-    @MaxLength(
-            value = 10
+    @ConfigEntry(
+            name="Bunny Freq",
+            description = "maximum 10",
+            maxLength = 10
     )
     public Integer bunnyfreq = 6;
 
-    @ConfigName("Duck Freq")
-    @CFComment("maximum 10")
-    @MaxLength(
-            value = 10
+    @ConfigEntry(
+            name="Duck Freq",
+            description = "maximum 10",
+            maxLength = 10
     )
     public Integer duckfreq = 6;
 
-    @ConfigName("Deer freq")
-    @CFComment("maximum 10")
-    @MaxLength(
-            value = 10
+    @ConfigEntry(
+            name="Deer freq",
+            description = "maximum 10",
+            maxLength = 10
     )
     public Integer deerfreq = 6;
 
-    @ConfigName("Kitty Freq")
-    @CFComment("maximum 10")
-    @MaxLength(
-            value = 10
+    @ConfigEntry(
+            name="Kitty Freq",
+            description = "maximum 10",
+            maxLength = 10
     )
     public Integer kittyfreq = 4;
 
-    @ConfigName("Mice Freq")
-    @CFComment("maximum 10")
-    @MaxLength(
-            value = 10
+    @ConfigEntry(
+            name="Mice Freq",
+            description = "maximum 10",
+            maxLength = 10
     )
     public Integer micefreq = 6;
-    @ConfigName("Sheep Freq")
-    @CFComment("maximum 12")
-    @MaxLength(
-            value = 12
+
+    @ConfigEntry(
+            name="Sheep Freq",
+            description = "maximum 12",
+            maxLength = 12
     )
     public Integer sheepfreq = 12;
-    @ConfigName("Cow Freq")
-    @CFComment("maximum 8")
-    @MaxLength(
-            value = 8
+
+    @ConfigEntry(
+            name="Cow Freq",
+            description = "maximum 8",
+            maxLength = 8
     )
     public Integer cowfreq = 8;
-    @ConfigName("Pig Freq")
-    @CFComment("maximum 10")
-    @MaxLength(
-            value = 10
+
+    @ConfigEntry(
+            name="Pig Freq",
+            description = "maximum 10",
+            maxLength = 10
     )
     public Integer pigfreq = 10;
-    @ConfigName("Chicken Freq")
-    @CFComment("maximum 10")
-    @MaxLength(
-            value = 10
+
+    @ConfigEntry(
+            name="Chicken Freq",
+            description = "maximum 10",
+            maxLength = 10
     )
     public Integer chickenfreq = 10;
-
 }

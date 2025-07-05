@@ -21,7 +21,7 @@ public class RenderBird extends LivingEntityRenderer
         super.render(entityliving, d, d1, d2, f, f1);
     }
 
-    protected float method_828(LivingEntity entityliving, float f)
+    protected float getHeadBob(LivingEntity entityliving, float f)
     {
         EntityBird entitybird = (EntityBird)entityliving;
         float f1 = entitybird.winge + (entitybird.wingb - entitybird.winge) * f;

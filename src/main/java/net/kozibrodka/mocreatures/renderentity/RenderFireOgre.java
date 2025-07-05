@@ -10,7 +10,7 @@ public class RenderFireOgre extends RenderOgre
     public RenderFireOgre(ModelOgre2 modelogre2, EntityModel modelbase, float f)
     {
         super(modelogre2, modelbase, f);
-        method_815(modelbase);
+        setDecorationModel(modelbase);
         tempOgre = modelogre2;
     }
 

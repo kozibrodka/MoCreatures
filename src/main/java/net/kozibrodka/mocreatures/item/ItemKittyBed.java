@@ -18,7 +18,7 @@ public class ItemKittyBed extends TemplateItem
     {
         super(i);
         maxCount = 8;
-        setFuel(true);
+        setHasSubtypes(true);
     }
 
     public ItemKittyBed(Identifier i, int j)
@@ -36,11 +36,11 @@ public class ItemKittyBed extends TemplateItem
 
             EntityKittyBed entitykittybed = new EntityKittyBed(world, itemstack.getDamage());
 //            EntityKittyBed entitykittybed = new EntityKittyBed(world, itemcolor);
-            entitykittybed.method_1340(entityplayer.x, entityplayer.y, entityplayer.z);
-            world.method_210(entitykittybed);
-            entitykittybed.velocityY += world.field_214.nextFloat() * 0.05F;
-            entitykittybed.velocityX += (world.field_214.nextFloat() - world.field_214.nextFloat()) * 0.3F;
-            entitykittybed.velocityZ += (world.field_214.nextFloat() - world.field_214.nextFloat()) * 0.3F;
+            entitykittybed.setPosition(entityplayer.x, entityplayer.y, entityplayer.z);
+            world.spawnEntity(entitykittybed);
+            entitykittybed.velocityY += world.random.nextFloat() * 0.05F;
+            entitykittybed.velocityX += (world.random.nextFloat() - world.random.nextFloat()) * 0.3F;
+            entitykittybed.velocityZ += (world.random.nextFloat() - world.random.nextFloat()) * 0.3F;
 
         return itemstack;
     }

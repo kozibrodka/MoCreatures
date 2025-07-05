@@ -32,7 +32,7 @@ public class Destroyer
     public static void DestroyBlast(World world, Entity entity, double d, double d1, double d2,
                                     float f, boolean flag, boolean igniteogre, boolean explodeogre, boolean explodecaveogre, boolean explodefireogre)
     {
-        world.playSound(d, d1, d2, "mocreatures:destroy", 4F, (1.0F + (world.field_214.nextFloat() - world.field_214.nextFloat()) * 0.2F) * 0.7F);
+        world.playSound(d, d1, d2, "mocreatures:destroy", 4F, (1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
         HashSet hashset = new HashSet();
         float f1 = f;
         int i = 16;
@@ -54,7 +54,7 @@ label0:
                     d3 /= d6;
                     d4 /= d6;
                     d5 /= d6;
-                    float f2 = f * (0.7F + world.field_214.nextFloat() * 0.6F);
+                    float f2 = f * (0.7F + world.random.nextFloat() * 0.6F);
                     double d8 = d;
                     double d10 = d1;
                     double d12 = d2;
@@ -103,7 +103,7 @@ label0:
         for(int k2 = 0; k2 < list.size(); k2++)
         {
             Entity entity1 = (Entity)list.get(k2);
-            double d7 = entity1.method_1350(d, d1, d2) / (double)f;
+            double d7 = entity1.getDistance(d, d1, d2) / (double)f;
             if(d7 > 1.0D)
             {
                 continue;
@@ -115,7 +115,7 @@ label0:
             d9 /= d15;
             d11 /= d15;
             d13 /= d15;
-            double d17 = world.method_163(vec3d, entity1.boundingBox);
+            double d17 = world.getVisibilityRatio(vec3d, entity1.boundingBox);
             double d19 = (1.0D - d7) * d17;
             if(!(entity1 instanceof EntityOgre))
             {
@@ -139,9 +139,9 @@ label0:
             int l4 = world.getBlockId(j3, l3, j4);
             for(int j5 = 0; j5 < 5; j5++)
             {
-                double d14 = (float)j3 + world.field_214.nextFloat();
-                double d16 = (float)l3 + world.field_214.nextFloat();
-                double d18 = (float)j4 + world.field_214.nextFloat();
+                double d14 = (float)j3 + world.random.nextFloat();
+                double d16 = (float)l3 + world.random.nextFloat();
+                double d18 = (float)j4 + world.random.nextFloat();
                 double d20 = d14 - d;
                 double d22 = d16 - d1;
                 double d23 = d18 - d2;
@@ -150,7 +150,7 @@ label0:
                 d22 /= d24;
                 d23 /= d24;
                 double d25 = 0.5D / (d24 / (double)f + 0.10000000000000001D);
-                d25 *= world.field_214.nextFloat() * world.field_214.nextFloat() + 0.3F;
+                d25 *= world.random.nextFloat() * world.random.nextFloat() + 0.3F;
                 d25--;
                 d20 *= d25;
                 d22 *= d25 - 1.0D;
@@ -180,7 +180,7 @@ label0:
                 int i4 = chunkposition1.y;
                 int k4 = chunkposition1.z;
                 int i5 = world.getBlockId(k3, i4, k4);
-                if(i5 == 0 && world.field_214.nextInt(8) == 0)
+                if(i5 == 0 && world.random.nextInt(8) == 0)
                 {
                     world.setBlock(k3, i4, k4, Block.FIRE.id);
                 }

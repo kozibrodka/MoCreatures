@@ -84,9 +84,9 @@ public class ModelOgre1 extends BipedEntityModel
         }
         rightArm.yaw = 0.0F;
         leftArm.yaw = 0.0F;
-        if(handWingProgress > -9990F)
+        if(handSwingProgress > -9990F)
         {
-            float f6 = handWingProgress;
+            float f6 = handSwingProgress;
             body.yaw = MathHelper.sin(MathHelper.sqrt(f6) * 3.141593F * 2.0F) * 0.2F;
             rightArm.pivotZ = MathHelper.sin(body.yaw) * 5F;
             rightArm.pivotX = -MathHelper.cos(body.yaw) * 5F;
@@ -95,16 +95,16 @@ public class ModelOgre1 extends BipedEntityModel
             rightArm.yaw += body.yaw;
             leftArm.yaw += body.yaw;
             leftArm.pitch += body.yaw;
-            f6 = 1.0F - handWingProgress;
+            f6 = 1.0F - handSwingProgress;
             f6 *= f6;
             f6 *= f6;
             f6 = 1.0F - f6;
             float f7 = MathHelper.sin(f6 * 3.141593F);
-            float f8 = MathHelper.sin(handWingProgress * 3.141593F) * -(head.pitch - 0.7F) * 0.75F;
+            float f8 = MathHelper.sin(handSwingProgress * 3.141593F) * -(head.pitch - 0.7F) * 0.75F;
             ModelPart modelrenderer = rightArm;
             modelrenderer.pitch = (float)((double)modelrenderer.pitch - ((double)f7 * 1.2D + (double)f8));
             rightArm.yaw += body.yaw * 2.0F;
-            rightArm.roll = MathHelper.sin(handWingProgress * 3.141593F) * -0.4F;
+            rightArm.roll = MathHelper.sin(handSwingProgress * 3.141593F) * -0.4F;
         }
         if(sneaking)
         {

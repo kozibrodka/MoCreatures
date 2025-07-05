@@ -5,7 +5,7 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.minecraft.class_65;
+import net.minecraft.entity.Monster;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
@@ -15,7 +15,7 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 import net.modificationstation.stationapi.api.util.Identifier;
 
 public class EntityWraith extends EntityFlyerMob
-    implements class_65, MobSpawnDataProvider
+    implements Monster, MobSpawnDataProvider
 {
 
     public EntityWraith(World world)
@@ -29,50 +29,50 @@ public class EntityWraith extends EntityFlyerMob
         movementSpeed = 1.3F;
     }
 
-    protected String method_911()
+    protected String getRandomSound()
     {
         return "mocreatures:wraith";
     }
 
-    protected String method_912()
+    protected String getHurtSound()
     {
         return "mocreatures:wraithhurt";
     }
 
-    protected String method_913()
+    protected String getDeathSound()
     {
         return "mocreatures:wraithdying";
     }
 
-    protected int method_914()
+    protected int getDroppedItemId()
     {
         return Item.GUNPOWDER.id;
     }
 
-    public void method_937()
+    public void tickMovement()
     {
-        if(world.field_213 == 1)
+        if(world.difficulty == 1)
         {
             attackStrength = 2;
         } else
-        if(world.field_213 > 1)
+        if(world.difficulty > 1)
         {
             attackStrength = 3;
         }
-        if(world.method_220())
+        if(world.canMonsterSpawn())
         {
-            float f = method_1394(1.0F);
-            if(f > 0.5F && world.method_249(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && random.nextFloat() * 30F < (f - 0.4F) * 2.0F)
+            float f = getBrightnessAtEyes(1.0F);
+            if(f > 0.5F && world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && random.nextFloat() * 30F < (f - 0.4F) * 2.0F)
             {
-                fire = 300;
+                fireTicks = 300;
             }
         }
-        super.method_937();
+        super.tickMovement();
     }
 
-    protected void method_910(){
+    protected void tickLiving(){
         if(this.target instanceof PlayerEntity){
-            PlayerEntity uciekinier = world.method_186(this, 20D);
+            PlayerEntity uciekinier = world.getClosestPlayer(this, 20D);
             if(uciekinier == null && target.isAlive()){
                 if(random.nextInt(30) == 0)
                 {
@@ -80,7 +80,7 @@ public class EntityWraith extends EntityFlyerMob
                 }
             }
         }
-        super.method_910();
+        super.tickLiving();
     }
 
     public void markDead()
@@ -100,7 +100,7 @@ public class EntityWraith extends EntityFlyerMob
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.hostilemobs.wraithfreq > 0 && world.field_213 >= mocr.mocreaturesGlass.hostilemobs.wraithSpawnDifficulty + 1 && super.canSpawn();
+        return mocr.mocreaturesGlass.hostilemobs.wraithfreq > 0 && world.difficulty >= mocr.mocreaturesGlass.hostilemobs.wraithSpawnDifficulty.ordinal() + 1 && super.canSpawn();
     }
 
     public boolean d2()

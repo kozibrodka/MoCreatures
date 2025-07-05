@@ -28,11 +28,11 @@ public class ItemLitterBox extends TemplateItem
         }
         itemstack.count--;
         EntityLitterBox entitylitterbox = new EntityLitterBox(world);
-        entitylitterbox.method_1340(entityplayer.x, entityplayer.y, entityplayer.z);
-        world.method_210(entitylitterbox);
-        entitylitterbox.velocityY += world.field_214.nextFloat() * 0.05F;
-        entitylitterbox.velocityX += (world.field_214.nextFloat() - world.field_214.nextFloat()) * 0.3F;
-        entitylitterbox.velocityZ += (world.field_214.nextFloat() - world.field_214.nextFloat()) * 0.3F;
+        entitylitterbox.setPosition(entityplayer.x, entityplayer.y, entityplayer.z);
+        world.spawnEntity(entitylitterbox);
+        entitylitterbox.velocityY += world.random.nextFloat() * 0.05F;
+        entitylitterbox.velocityX += (world.random.nextFloat() - world.random.nextFloat()) * 0.3F;
+        entitylitterbox.velocityZ += (world.random.nextFloat() - world.random.nextFloat()) * 0.3F;
         return itemstack;
     }
 }

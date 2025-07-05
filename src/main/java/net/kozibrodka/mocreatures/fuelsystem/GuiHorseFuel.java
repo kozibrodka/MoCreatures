@@ -1,10 +1,10 @@
 package net.kozibrodka.mocreatures.fuelsystem;
 import net.kozibrodka.mocreatures.entity.EntityHorse;
-import net.minecraft.client.gui.screen.container.ContainerScreen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import org.lwjgl.opengl.GL11;
 
-public class GuiHorseFuel extends ContainerScreen
+public class GuiHorseFuel extends HandledScreen
 {
 
     public GuiHorseFuel(PlayerInventory inventoryplayer, EntityHorse entityplane)

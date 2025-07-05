@@ -23,7 +23,7 @@ public class RenderBunny extends LivingEntityRenderer
 
     protected void rotBunny(EntityBunny entitybunny)
     {
-        if(!entitybunny.field_1623 && entitybunny.field_1595 == null)
+        if(!entitybunny.onGround && entitybunny.vehicle == null)
         {
             if(entitybunny.velocityY > 0.5D)
             {
@@ -39,17 +39,17 @@ public class RenderBunny extends LivingEntityRenderer
         }
     }
 
-    protected float method_828(LivingEntity entityliving, float f)
+    protected float getHeadBob(LivingEntity entityliving, float f)
     {
         EntityBunny entitybunny = (EntityBunny)entityliving;
         if(!entitybunny.getAdult())
         {
             stretch(entitybunny);
         }
-        return (float)entityliving.field_1645 + f;
+        return (float)entityliving.age + f;
     }
 
-    protected void method_823(LivingEntity entityliving, float f)
+    protected void applyScale(LivingEntity entityliving, float f)
     {
         rotBunny((EntityBunny)entityliving);
     }

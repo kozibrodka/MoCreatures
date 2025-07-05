@@ -6,21 +6,27 @@ import net.kozibrodka.mocreatures.renderentity.*;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.minecraft.client.render.entity.ChickenEntityRenderer;
 import net.minecraft.client.render.entity.PigEntityRenderer;
-import net.minecraft.client.render.entity.SkeletonEntityRenderer;
+import net.minecraft.client.render.entity.UndeadEntityRenderer;
 import net.minecraft.client.render.entity.model.ChickenEntityModel;
 import net.minecraft.client.render.entity.model.PigEntityModel;
 import net.modificationstation.stationapi.api.client.event.render.entity.EntityRendererRegisterEvent;
 import net.modificationstation.stationapi.api.client.event.texture.TextureRegisterEvent;
 import net.modificationstation.stationapi.api.client.texture.atlas.Atlases;
 import net.modificationstation.stationapi.api.mod.entrypoint.Entrypoint;
+import net.modificationstation.stationapi.api.mod.entrypoint.EntrypointManager;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.util.Namespace;
 import net.modificationstation.stationapi.api.util.Null;
 
+import java.lang.invoke.MethodHandles;
+
 public class TextureListener {
+    static {
+        EntrypointManager.registerLookup(MethodHandles.lookup());
+    }
 
     @Entrypoint.Namespace
-    public static final Namespace MOD_ID = Null.get();
+    public static Namespace MOD_ID = Null.get();
 
     @EventListener
     public void registerTextures(TextureRegisterEvent event) {
@@ -38,6 +44,7 @@ public class TextureListener {
         mod_mocreatures.rope.setTexture(Identifier.of(MOD_ID, "item/rope"));
         mod_mocreatures.petfood.setTexture(Identifier.of(MOD_ID, "item/petfood"));
         mod_mocreatures.kittybed.setTexture(Identifier.of(MOD_ID, "item/bedkitty"));
+
         if(mod_mocreatures.mocreaturesGlass.balancesettings.balance_drop) {
             mod_mocreatures.sharkoil.setTexture(Identifier.of(MOD_ID, "item/sharkoil"));
             mod_mocreatures.wildleather.setTexture(Identifier.of(MOD_ID, "item/wildleather"));
@@ -88,8 +95,8 @@ public class TextureListener {
         event.renderers.put(EntityDeer.class, new RenderDeer(new ModelDeer(), 0.5F));
         event.renderers.put(EntityWWolf.class, new RenderWWolf(new ModelWolf2(), new ModelWolf1(), 0.7F));
         event.renderers.put(EntityPolarBear.class, new RenderPolarBear(new ModelBear2(), new ModelBear1(), 0.7F));
-        event.renderers.put(EntityWraith.class, new SkeletonEntityRenderer(new ModelWraith(), 0.5F));
-        event.renderers.put(EntityFlameWraith.class, new SkeletonEntityRenderer(new ModelWraith(), 0.5F));
+        event.renderers.put(EntityWraith.class, new UndeadEntityRenderer(new ModelWraith(), 0.5F));
+        event.renderers.put(EntityFlameWraith.class, new UndeadEntityRenderer(new ModelWraith(), 0.5F));
         event.renderers.put(EntityBunny.class, new RenderBunny(new ModelBunny(), 0.3F));
         event.renderers.put(EntityBird.class, new RenderBird(new ModelBird(), 0.3F));
         event.renderers.put(EntityFox.class, new RenderFox(new ModelFox()));

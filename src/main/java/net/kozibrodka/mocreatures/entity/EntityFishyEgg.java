@@ -5,7 +5,7 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.minecraft.block.Material;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -29,12 +29,12 @@ public class EntityFishyEgg extends LivingEntity implements MobSpawnDataProvider
     {
     }
 
-    public void method_937()
+    public void tickMovement()
     {
-        field_1060 = 0.0F;
-        field_1029 = 0.0F;
-        field_1030 = 0.0F;
-        method_945(field_1060, field_1029);
+        sidewaysSpeed = 0.0F;
+        forwardSpeed = 0.0F;
+        rotationSpeed = 0.0F;
+        travel(sidewaysSpeed, forwardSpeed);
     }
 
     public void onPlayerInteraction(PlayerEntity entityplayer)
@@ -43,10 +43,10 @@ public class EntityFishyEgg extends LivingEntity implements MobSpawnDataProvider
         {
             return;
         }
-        if(lCounter > 10 && entityplayer.inventory.method_671(new ItemStack(mod_mocreatures.fishyegg, 1)))
+        if(lCounter > 10 && entityplayer.inventory.addStack(new ItemStack(mod_mocreatures.fishyegg, 1)))
         {
             world.playSound(this, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-            entityplayer.method_491(this, 1);
+            entityplayer.sendPickup(this, 1);
             markDead();
         }
     }
@@ -58,16 +58,16 @@ public class EntityFishyEgg extends LivingEntity implements MobSpawnDataProvider
         {
             lCounter++;
         }
-        if(field_1612 && random.nextInt(20) == 0)
+        if(submergedInWater && random.nextInt(20) == 0)
         {
             tCounter++;
             if(tCounter >= 50)
             {
                 EntityFishy entityfishy = new EntityFishy(world);
-                entityfishy.method_1340(x, y, z);
+                entityfishy.setPosition(x, y, z);
                 entityfishy.setTypeSpawn();
                 entityfishy.setAge(0.3F);
-                world.method_210(entityfishy);
+                world.spawnEntity(entityfishy);
                 world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
                 entityfishy.setTamed(true);
                 markDead();
@@ -80,27 +80,27 @@ public class EntityFishyEgg extends LivingEntity implements MobSpawnDataProvider
         return true;
     }
 
-    public boolean isSubmergedInWater()
+    public boolean checkWaterCollisions()
     {
-        return world.method_170(boundingBox, Material.WATER, this);
+        return world.updateMovementInFluid(boundingBox, Material.WATER, this);
     }
 
-    protected String method_911()
-    {
-        return null;
-    }
-
-    protected String method_912()
+    protected String getRandomSound()
     {
         return null;
     }
 
-    protected String method_913()
+    protected String getHurtSound()
     {
         return null;
     }
 
-    protected float method_915()
+    protected String getDeathSound()
+    {
+        return null;
+    }
+
+    protected float getSoundVolume()
     {
         return 0.4F;
     }

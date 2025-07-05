@@ -9,12 +9,12 @@ import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCGUI;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.block.Block;
-import net.minecraft.block.Material;
-import net.minecraft.class_61;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
@@ -38,7 +38,7 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
         super(world);
         setBoundingBoxSpacing(0.7F, 0.5F);
         texture = "/assets/mocreatures/stationapi/textures/mob/pussycata.png";
-        field_1045 = true;
+        killedByOtherEntity = true;
         adult = true;
         edad = 0.4F;
         inBed = false;
@@ -73,27 +73,27 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
 
     public boolean climbingTree()
     {
-        return kittystate == 16 && method_932();
+        return kittystate == 16 && isOnLadder();
     }
 
-    public double method_1385()
+    public double getStandingEyeHeight()
     {
-        if(field_1595 instanceof PlayerEntity)
+        if(vehicle instanceof PlayerEntity)
         {
             if(kittystate == 10)
             {
-                return (double)(eyeHeight - 1.1F);
+                return (double)(standingEyeHeight - 1.1F);
             }
             if(upsideDown())
             {
-                return (double)(eyeHeight - 1.7F);
+                return (double)(standingEyeHeight - 1.7F);
             }
             if(onMaBack())
             {
-                return (double)(eyeHeight - 1.5F);
+                return (double)(standingEyeHeight - 1.5F);
             }
         }
-        return (double)eyeHeight;
+        return (double)standingEyeHeight;
     }
 
     public int getRandomRace(){
@@ -167,7 +167,7 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
             }
     }
 
-    public boolean method_1323(PlayerEntity entityplayer)
+    public boolean interact(PlayerEntity entityplayer)
     {
         ItemStack itemstack = entityplayer.inventory.getSelectedItem();
         if(kittystate == 2 && itemstack != null && itemstack.itemId == mod_mocreatures.medallion.id)
@@ -201,10 +201,10 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
             ItemEntity entityitem = new ItemEntity(world, x, y + 1.0D, z, new ItemStack(mod_mocreatures.woolball, 1));
             entityitem.pickupDelay = 30;
             entityitem.itemAge = -10000;
-            world.method_210(entityitem);
-            entityitem.velocityY += world.field_214.nextFloat() * 0.05F;
-            entityitem.velocityX += (world.field_214.nextFloat() - world.field_214.nextFloat()) * 0.3F;
-            entityitem.velocityZ += (world.field_214.nextFloat() - world.field_214.nextFloat()) * 0.3F;
+            world.spawnEntity(entityitem);
+            entityitem.velocityY += world.random.nextFloat() * 0.05F;
+            entityitem.velocityX += (world.random.nextFloat() - world.random.nextFloat()) * 0.3F;
+            entityitem.velocityZ += (world.random.nextFloat() - world.random.nextFloat()) * 0.3F;
             target = entityitem;
             return true;
         }
@@ -231,7 +231,7 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
         if(itemstack != null && kittystate > 2 && pickable() && itemstack.itemId == mod_mocreatures.rope.id)
         {
             changeKittyState(14);
-            method_1376(entityplayer);
+            setVehicle(entityplayer);
             return true;
         }
         if(itemstack != null && kittystate > 2 && whipeable() && itemstack.itemId == mod_mocreatures.whip.id)
@@ -239,15 +239,15 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
             isSitting = !isSitting;
             return true;
         }
-        if(itemstack == null && kittystate == 10 && field_1595 != null)
+        if(itemstack == null && kittystate == 10 && vehicle != null)
         {
-            field_1595 = null;
+            vehicle = null;
             return true;
         }
         if(itemstack == null && kittystate > 2 && pickable())
         {
             changeKittyState(15);
-            method_1376(entityplayer);
+            setVehicle(entityplayer);
             return true;
         }
         if(itemstack == null && kittystate == 15)
@@ -270,7 +270,7 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
         return kittystate != 13;
     }
 
-    public void method_937()
+    public void tickMovement()
     {
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
@@ -282,7 +282,7 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
         }
         if(kittystate != 12)
         {
-            super.method_937();
+            super.tickMovement();
         }
         if(random.nextInt(200) == 0)
         {
@@ -294,7 +294,7 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
             if(edad >= 1.0F)
             {
                 adult = true;
-                field_1045 = false;
+                killedByOtherEntity = false;
             }
         }
         if(!hungry && !isSitting && random.nextInt(100) == 0)
@@ -327,12 +327,12 @@ label0:
             {
                 break;
             }
-            float f = entityitem.method_1351(this);
+            float f = entityitem.getDistance(this);
             if(f > 2.0F)
             {
                 getMyOwnPath(entityitem, f);
             }
-            if(f < 2.0F && entityitem != null && field_1041 == 0)
+            if(f < 2.0F && entityitem != null && deathTime == 0)
             {
                 entityitem.markDead();
                 world.playSound(this, "mocreatures:kittyeatingf", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
@@ -369,11 +369,11 @@ label0:
                 break;
             }
             EntityKittyBed entitykittybed = (EntityKittyBed)getKittyStuff(this, 18D, false);
-            if(entitykittybed == null || entitykittybed.field_1594 != null || !entitykittybed.hasMilk && !entitykittybed.hasFood)
+            if(entitykittybed == null || entitykittybed.passenger != null || !entitykittybed.hasMilk && !entitykittybed.hasFood)
             {
                 break;
             }
-            float f5 = entitykittybed.method_1351(this);
+            float f5 = entitykittybed.getDistance(this);
             if(f5 > 2.0F)
             {
                 getMyOwnPath(entitykittybed, f5);
@@ -381,15 +381,15 @@ label0:
             if(f5 < 2.0F)
             {
                 changeKittyState(4);
-                method_1376(entitykittybed);
+                setVehicle(entitykittybed);
                 isSitting = true;
             }
             break;
 
         case 4: // '\004'
-            if(field_1595 != null)
+            if(vehicle != null)
             {
-                EntityKittyBed entitykittybed1 = (EntityKittyBed)field_1595;
+                EntityKittyBed entitykittybed1 = (EntityKittyBed)vehicle;
                 if(entitykittybed1 != null && !entitykittybed1.hasMilk && !entitykittybed1.hasFood)
                 {
                     health = maxhealth;
@@ -419,11 +419,11 @@ label0:
                 break;
             }
             EntityLitterBox entitylitterbox = (EntityLitterBox)getKittyStuff(this, 18D, true);
-            if(entitylitterbox == null || entitylitterbox.field_1594 != null || entitylitterbox.usedlitter)
+            if(entitylitterbox == null || entitylitterbox.passenger != null || entitylitterbox.usedlitter)
             {
                 break;
             }
-            float f6 = entitylitterbox.method_1351(this);
+            float f6 = entitylitterbox.getDistance(this);
             if(f6 > 2.0F)
             {
                 getMyOwnPath(entitylitterbox, f6);
@@ -431,7 +431,7 @@ label0:
             if(f6 < 2.0F)
             {
                 changeKittyState(6);
-                method_1376(entitylitterbox);
+                setVehicle(entitylitterbox);
             }
             break;
 
@@ -442,7 +442,7 @@ label0:
                 break;
             }
             world.playSound(this, "mocreatures:kittypoo", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-            EntityLitterBox entitylitterbox1 = (EntityLitterBox)field_1595;
+            EntityLitterBox entitylitterbox1 = (EntityLitterBox)vehicle;
             if(entitylitterbox1 != null)
             {
                 entitylitterbox1.usedlitter = true;
@@ -458,7 +458,7 @@ label0:
             }
             if(random.nextInt(20) == 0)
             {
-                PlayerEntity entityplayer = world.method_186(this, 12D);
+                PlayerEntity entityplayer = world.getClosestPlayer(this, 12D);
                 if(entityplayer != null)
                 {
                     ItemStack itemstack = entityplayer.inventory.getSelectedItem();
@@ -469,12 +469,12 @@ label0:
                     }
                 }
             }
-            if(field_1612 && random.nextInt(500) == 0)
+            if(submergedInWater && random.nextInt(500) == 0)
             {
                 changeKittyState(13);
                 break;
             }
-            if(random.nextInt(500) == 0 && !world.method_220())
+            if(random.nextInt(500) == 0 && !world.canMonsterSpawn())
             {
                 changeKittyState(12);
                 break;
@@ -491,14 +491,14 @@ label0:
             break;
 
         case 8: // '\b'
-            if(field_1612)
+            if(submergedInWater)
             {
                 changeKittyState(13);
                 break;
             }
             if(target != null && (target instanceof ItemEntity))
             {
-                float f1 = method_1351(target);
+                float f1 = getDistance(target);
                 if(f1 < 1.5F)
                 {
                     swingArm();
@@ -560,7 +560,7 @@ label0:
                     {
                         continue;
                     }
-                    float f9 = method_1351(entity1);
+                    float f9 = getDistance(entity1);
                     if(f9 > 12F)
                     {
                         target = entity1;
@@ -576,7 +576,7 @@ label0:
                     target = getClosestItem(this, 10D, -1, -1);
                 } else
                 {
-                    target = world.method_186(this, 18D);
+                    target = world.getClosestPlayer(this, 18D);
                 }
             }
             if(target != null && random.nextInt(400) == 0)
@@ -585,7 +585,7 @@ label0:
             }
             if(target != null && (target instanceof ItemEntity))
             {
-                float f2 = method_1351(target);
+                float f2 = getDistance(target);
                 if(f2 < 1.5F)
                 {
                     swingArm();
@@ -597,18 +597,18 @@ label0:
             }
             if(target != null && (target instanceof EntityKitty) && random.nextInt(20) == 0)
             {
-                float f3 = method_1351(target);
+                float f3 = getDistance(target);
                 if(f3 < 2.0F)
                 {
                     swingArm();
-                    method_635(null);
+                    setPath(null);
                 }
             }
             if(target == null || !(target instanceof PlayerEntity))
             {
                 break;
             }
-            float f4 = method_1351(target);
+            float f4 = getDistance(target);
             if(f4 < 2.0F && random.nextInt(20) == 0)
             {
                 swingArm();
@@ -616,7 +616,7 @@ label0:
             break;
 
         case 11: // '\013'
-            PlayerEntity entityplayer1 = world.method_186(this, 18D);
+            PlayerEntity entityplayer1 = world.getClosestPlayer(this, 18D);
             if(entityplayer1 == null || random.nextInt(10) != 0)
             {
                 break;
@@ -627,7 +627,7 @@ label0:
                 changeKittyState(7);
                 break;
             }
-            float f8 = entityplayer1.method_1351(this);
+            float f8 = entityplayer1.getDistance(this);
             if(f8 > 5F)
             {
                 method_429(entityplayer1, f8);
@@ -636,24 +636,24 @@ label0:
 
         case 12: // '\f'
             kittytimer++;
-            if(world.method_220() || kittytimer > 500 && random.nextInt(500) == 0)
+            if(world.canMonsterSpawn() || kittytimer > 500 && random.nextInt(500) == 0)
             {
                 changeKittyState(7);
                 break;
             }
             isSitting = true;
-            if(random.nextInt(80) == 0 || !field_1623)
+            if(random.nextInt(80) == 0 || !onGround)
             {
-                super.method_937();
+                super.tickMovement();
             }
             break;
 
         case 13: // '\r'
             hungry = false;
-            target = world.method_186(this, 18D);
+            target = world.getClosestPlayer(this, 18D);
             if(target != null)
             {
-                float f7 = method_1351(target);
+                float f7 = getDistance(target);
                 if(f7 < 1.5F)
                 {
                     swingArm();
@@ -679,7 +679,7 @@ label0:
             break;
 
         case 14: // '\016'
-            if(field_1623)
+            if(onGround)
             {
                 changeKittyState(13);
                 break;
@@ -688,12 +688,12 @@ label0:
             {
                 swingArm();
             }
-            if(field_1595 == null)
+            if(vehicle == null)
             {
                 break;
             }
-            yaw = field_1595.yaw + 90F;
-            PlayerEntity entityplayer2 = (PlayerEntity)field_1595;
+            yaw = vehicle.yaw + 90F;
+            PlayerEntity entityplayer2 = (PlayerEntity)vehicle;
             if(entityplayer2 == null)
             {
                 break;
@@ -706,13 +706,13 @@ label0:
             break;
 
         case 15: // '\017'
-            if(field_1623)
+            if(onGround)
             {
                 changeKittyState(7);
             }
-            if(field_1595 != null)
+            if(vehicle != null)
             {
-                yaw = field_1595.yaw + 90F;
+                yaw = vehicle.yaw + 90F;
             }
             break;
 
@@ -753,12 +753,12 @@ label0:
                 {
                     break;
                 }
-                class_61 pathentity = world.method_189(this, treeCoord[0], treeCoord[1], treeCoord[2], 24F);
+                Path pathentity = world.findPath(this, treeCoord[0], treeCoord[1], treeCoord[2], 24F);
                 if(pathentity != null)
                 {
-                    method_635(pathentity);
+                    setPath(pathentity);
                 }
-                Double double1 = Double.valueOf(method_1347(treeCoord[0], treeCoord[1], treeCoord[2]));
+                Double double1 = Double.valueOf(getSquaredDistance(treeCoord[0], treeCoord[1], treeCoord[2]));
                 if(double1.doubleValue() < 7D)
                 {
                     onTree = true;
@@ -797,7 +797,7 @@ label0:
                 int k3 = MathHelper.floor(x) - l1;
                 velocityZ -= 0.01D;
             }
-            if(field_1623 || !field_1624 || !field_1625)
+            if(onGround || !horizontalCollision || !verticalCollision)
             {
                 break;
             }
@@ -811,7 +811,7 @@ label0:
                 int j4 = world.getBlockId(treeCoord[0], treeCoord[1] + i4, treeCoord[2]);
                 if(j4 == 0)
                 {
-                    method_1341(treeCoord[0], treeCoord[1] + i4, treeCoord[2], yaw, pitch);
+                    setPositionAndAnglesKeepPrevAngles(treeCoord[0], treeCoord[1] + i4, treeCoord[2], yaw, pitch);
                     changeKittyState(17);
                     treeCoord[0] = -1;
                     treeCoord[1] = -1;
@@ -822,7 +822,7 @@ label0:
             } while(true);
 
         case 17: // '\021'
-            PlayerEntity entityplayer3 = world.method_186(this, 2D);
+            PlayerEntity entityplayer3 = world.getClosestPlayer(this, 2D);
             if(entityplayer3 != null)
             {
                 changeKittyState(7);
@@ -842,7 +842,7 @@ label0:
                 {
                     swingArm();
                 }
-                float f10 = method_1351(entitykitty);
+                float f10 = getDistance(entitykitty);
                 if(f10 < 5F)
                 {
                     kittytimer++;
@@ -864,11 +864,11 @@ label0:
                 break;
             }
             EntityKittyBed entitykittybed2 = (EntityKittyBed)getKittyStuff(this, 18D, false);
-            if(entitykittybed2 == null || entitykittybed2.field_1594 != null)
+            if(entitykittybed2 == null || entitykittybed2.passenger != null)
             {
                 break;
             }
-            float f11 = entitykittybed2.method_1351(this);
+            float f11 = entitykittybed2.getDistance(this);
             if(f11 > 2.0F)
             {
                 getMyOwnPath(entitykittybed2, f11);
@@ -876,12 +876,12 @@ label0:
             if(f11 < 2.0F)
             {
                 changeKittyState(20);
-                method_1376(entitykittybed2);
+                setVehicle(entitykittybed2);
             }
             break;
 
         case 20: // '\024'
-            if(field_1595 == null)
+            if(vehicle == null)
             {
                 changeKittyState(19);
                 break;
@@ -896,8 +896,8 @@ label0:
             for(int l2 = 0; l2 < i2; l2++)
             {
                 EntityKitty entitykitty1 = new EntityKitty(world);
-                entitykitty1.method_1340(x, y, z);
-                world.method_210(entitykitty1);
+                entitykitty1.setPosition(x, y, z);
+                world.spawnEntity(entitykitty1);
                 world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
                 entitykitty1.adult = false;
                 entitykitty1.changeKittyState(10);
@@ -946,7 +946,7 @@ label0:
     private void changeKittyState(int i)
     {
         kittystate = i;
-        method_1376(null);
+        setVehicle(null);
         isSitting = false;
         kittytimer = 0;
         onTree = false;
@@ -954,14 +954,14 @@ label0:
         target = null;
     }
 
-    public boolean method_932()
+    public boolean isOnLadder()
     {
         if(kittystate == 16)
         {
-            return field_1624 && onTree;
+            return horizontalCollision && onTree;
         } else
         {
-            return super.method_932();
+            return super.isOnLadder();
         }
     }
 
@@ -1026,9 +1026,9 @@ label0:
         });
     }
 
-    protected Entity method_638()
+    protected Entity getTargetInRange()
     {
-        if(world.field_213 > 0 && kittystate != 8 && kittystate != 10 && kittystate != 15 && kittystate != 18 && kittystate != 19 && !method_640() && hungry)
+        if(world.difficulty > 0 && kittystate != 8 && kittystate != 10 && kittystate != 15 && kittystate != 18 && kittystate != 19 && !isMovementBlocked() && hungry)
         {
             LivingEntity entityliving = getClosestTarget(this, 10D);
             return entityliving;
@@ -1046,12 +1046,12 @@ label0:
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityKitty) || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityBigCat) && !mocr.mocreaturesGlass.huntercreatures.attackbigcat || (entity1 instanceof EntityBigCat) && ((EntityBigCat) entity1).getTamed() && kittystate > 2 || (entity1 instanceof EntityDolphin) && ((EntityDolphin) entity1).getTamed() && kittystate > 2 || (entity1 instanceof EntityShark) && ((EntityShark)entity1).tamed && kittystate > 2 || (double)entity1.spacingXZ > 0.5D && (double)entity1.spacingY > 0.5D)
+            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityKitty) || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityBigCat) && !mocr.mocreaturesGlass.huntercreatures.attackbigcat || (entity1 instanceof EntityBigCat) && ((EntityBigCat) entity1).getTamed() && kittystate > 2 || (entity1 instanceof EntityDolphin) && ((EntityDolphin) entity1).getTamed() && kittystate > 2 || (entity1 instanceof EntityShark) && ((EntityShark)entity1).tamed && kittystate > 2 || (double)entity1.width > 0.5D && (double)entity1.height > 0.5D)
             {
                 continue;
             }
-            double d2 = entity1.method_1347(entity.x, entity.y, entity.z);
-            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).method_928(entity))
+            double d2 = entity1.getSquaredDistance(entity.x, entity.y, entity.z);
+            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).canSee(entity))
             {
                 d1 = d2;
                 entityliving = (LivingEntity)entity1;
@@ -1078,7 +1078,7 @@ label0:
             {
                 continue;
             }
-            double d2 = entityitem1.method_1347(entity.x, entity.y, entity.z);
+            double d2 = entityitem1.getSquaredDistance(entity.x, entity.y, entity.z);
             if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1))
             {
                 d1 = d2;
@@ -1091,10 +1091,10 @@ label0:
 
     private void getMyOwnPath(Entity entity, float f)
     {
-        class_61 pathentity = world.method_192(this, entity, 16F);
+        Path pathentity = world.findPath(this, entity, 16F);
         if(pathentity != null)
         {
-            method_635(pathentity);
+            setPath(pathentity);
         }
     }
 
@@ -1150,7 +1150,7 @@ label0:
 
     private void method_429(Entity entity, float f)
     {
-        class_61 pathentity = world.method_192(this, entity, 16F);
+        Path pathentity = world.findPath(this, entity, 16F);
         if(pathentity == null && f > 12F)
         {
             int i = MathHelper.floor(entity.x) - 2;
@@ -1160,9 +1160,9 @@ label0:
             {
                 for(int i1 = 0; i1 <= 4; i1++)
                 {
-                    if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && world.method_1780(i + l, k - 1, j + i1) && !world.method_1780(i + l, k, j + i1) && !world.method_1780(i + l, k + 1, j + i1))
+                    if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && world.shouldSuffocate(i + l, k - 1, j + i1) && !world.shouldSuffocate(i + l, k, j + i1) && !world.shouldSuffocate(i + l, k + 1, j + i1))
                     {
-                        method_1341((float)(i + l) + 0.5F, k, (float)(j + i1) + 0.5F, yaw, pitch);
+                        setPositionAndAnglesKeepPrevAngles((float)(i + l) + 0.5F, k, (float)(j + i1) + 0.5F, yaw, pitch);
                         return;
                     }
                 }
@@ -1171,7 +1171,7 @@ label0:
 
         } else
         {
-            method_635(pathentity);
+            setPath(pathentity);
         }
     }
 
@@ -1194,8 +1194,8 @@ label0:
                 {
                     continue;
                 }
-                double d2 = entity1.method_1347(entity.x, entity.y, entity.z);
-                if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && entitylitterbox.method_928(entity))
+                double d2 = entity1.getSquaredDistance(entity.x, entity.y, entity.z);
+                if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && entitylitterbox.canSee(entity))
                 {
                     d1 = d2;
                     obj = entitylitterbox;
@@ -1207,8 +1207,8 @@ label0:
                 continue;
             }
             EntityKittyBed entitykittybed = (EntityKittyBed)entity1;
-            double d3 = entity1.method_1347(entity.x, entity.y, entity.z);
-            if((d < 0.0D || d3 < d * d) && (d1 == -1D || d3 < d1) && entitykittybed.method_928(entity))
+            double d3 = entity1.getSquaredDistance(entity.x, entity.y, entity.z);
+            if((d < 0.0D || d3 < d * d) && (d1 == -1D || d3 < d1) && entitykittybed.canSee(entity))
             {
                 d1 = d3;
                 obj = entitykittybed;
@@ -1223,16 +1223,16 @@ label0:
         super.tick();
         if(isSwinging)
         {
-            field_1035 += 0.2F;
-            if(field_1035 > 2.0F)
+            swingAnimationProgress += 0.2F;
+            if(swingAnimationProgress > 2.0F)
             {
                 isSwinging = false;
-                field_1035 = 0.0F;
+                swingAnimationProgress = 0.0F;
             }
         }
     }
 
-    protected boolean method_640()
+    protected boolean isMovementBlocked()
     {
         return isSitting || kittystate == 6 || kittystate == 16 && onTree || kittystate == 12 || kittystate == 17 || kittystate == 14 || kittystate == 20 || kittystate == 23;
     }
@@ -1242,13 +1242,13 @@ label0:
         if(!isSwinging)
         {
             isSwinging = true;
-            field_1035 = 0.0F;
+            swingAnimationProgress = 0.0F;
         }
     }
 
-    protected void method_637(Entity entity, float f)
+    protected void attack(Entity entity, float f)
     {
-        if(f > 2.0F && f < 6F && random.nextInt(30) == 0 && field_1623)
+        if(f > 2.0F && f < 6F && random.nextInt(30) == 0 && onGround)
         {
             double d = entity.x - x;
             double d1 = entity.z - z;
@@ -1259,7 +1259,7 @@ label0:
         }
         if((double)f < 2D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
         {
-            field_1042 = 20;
+            attackCooldown = 20;
             if(kittystate != 18 && kittystate != 10)
             {
                 swingArm();
@@ -1280,7 +1280,7 @@ label0:
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity = (Entity)list.get(i);
-            if((entity instanceof LivingEntity) && !(entity instanceof EntityDeer) && !(entity instanceof EntityHorse) && ((double)entity.spacingXZ >= 0.5D || (double)entity.spacingY >= 0.5D) && (flag || !(entity instanceof PlayerEntity)))
+            if((entity instanceof LivingEntity) && !(entity instanceof EntityDeer) && !(entity instanceof EntityHorse) && ((double)entity.width >= 0.5D || (double)entity.height >= 0.5D) && (flag || !(entity instanceof PlayerEntity)))
             {
                 entityliving = (LivingEntity)entity;
             }
@@ -1312,8 +1312,8 @@ label0:
             int k1 = (k + random.nextInt(4)) - random.nextInt(4);
             if(j1 > 4 && (world.getBlockId(i1, j1, k1) == 0 || world.getBlockId(i1, j1, k1) == Block.SNOW.id) && world.getBlockId(i1, j1 - 1, k1) != 0)
             {
-                class_61 pathentity = world.method_189(this, i1, j1, k1, 16F);
-                method_635(pathentity);
+                Path pathentity = world.findPath(this, i1, j1, k1, 16F);
+                setPath(pathentity);
                 break;
             }
             l++;
@@ -1344,17 +1344,17 @@ label0:
         displayname = nbttagcompound.getBoolean("DisplayName");
     }
 
-    protected void method_1389(float f)
+    protected void onLanding(float f)
     {
     }
 
-    protected String method_911()
+    protected String getRandomSound()
     {
         if(kittystate == 4)
         {
-            if(field_1595 != null)
+            if(vehicle != null)
             {
-                EntityKittyBed entitykittybed = (EntityKittyBed)field_1595;
+                EntityKittyBed entitykittybed = (EntityKittyBed)vehicle;
                 if(entitykittybed != null && !entitykittybed.hasMilk)
                 {
                     return "mocreatures:kittyeatingm";
@@ -1395,7 +1395,7 @@ label0:
         }
     }
 
-    protected String method_912()
+    protected String getHurtSound()
     {
         if(kittystate == 10)
         {
@@ -1406,7 +1406,7 @@ label0:
         }
     }
 
-    protected String method_913()
+    protected String getDeathSound()
     {
         if(kittystate == 10)
         {
@@ -1417,17 +1417,17 @@ label0:
         }
     }
 
-    protected int method_914()
+    protected int getDroppedItemId()
     {
         return 0;
     }
 
-    public int method_916()
+    public int getLimitPerChunk()
     {
         return 2;
     }
 
-    protected boolean method_940()
+    protected boolean canDespawn()
     {
         return kittystate < 3;
     }
@@ -1576,7 +1576,7 @@ label0:
 
     protected void initDataTracker()
     {
-        dataTracker.method_1502(16, (byte) 0); //Type
+        dataTracker.startTracking(16, (byte) 0); //Type
     }
 
     @Override
@@ -1594,13 +1594,13 @@ label0:
     public void setType(int type)
     {
         if(!world.isRemote) {
-            dataTracker.method_1509(16, (byte) type);
+            dataTracker.set(16, (byte) type);
             chooseType(type);
         }
     }
 
     public int getType()
     {
-        return dataTracker.method_1501(16);
+        return dataTracker.getByte(16);
     }
 }

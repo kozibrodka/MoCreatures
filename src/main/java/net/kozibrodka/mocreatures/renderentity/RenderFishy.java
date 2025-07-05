@@ -27,13 +27,13 @@ public class RenderFishy extends LivingEntityRenderer
         GL11.glScalef(entityfishy.getAge(), entityfishy.getAge(), entityfishy.getAge());
     }
 
-    protected float method_828(LivingEntity entityliving, float f)
+    protected float getHeadBob(LivingEntity entityliving, float f)
     {
         EntityFishy entityfishy = (EntityFishy)entityliving;
         if(!entityfishy.getAdult())
         {
             stretch(entityfishy);
         }
-        return (float)entityliving.field_1645 + f;
+        return (float)entityliving.age + f;
     }
 }

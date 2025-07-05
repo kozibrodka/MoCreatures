@@ -32,24 +32,24 @@ public class EntityBoar extends PigEntity implements MobSpawnDataProvider
         attackRange = 1.0D;
     }
 
-    public void method_937()
+    public void tickMovement()
     {
-        if(world.field_213 == 1)
+        if(world.difficulty == 1)
         {
             attackRange = 2D;
             force = 1;
         } else
-        if(world.field_213 > 1)
+        if(world.difficulty > 1)
         {
             attackRange = 3D;
             force = 2;
         }
-        super.method_937();
+        super.tickMovement();
     }
 
-    protected void method_910(){
+    protected void tickLiving(){
         if(this.target instanceof PlayerEntity){
-            PlayerEntity uciekinier = world.method_186(this, 16D);
+            PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
             if(uciekinier == null && target.isAlive()){
                 if(random.nextInt(30) == 0)
                 {
@@ -57,14 +57,14 @@ public class EntityBoar extends PigEntity implements MobSpawnDataProvider
                 }
             }
         }
-        super.method_910();
+        super.tickLiving();
     }
 
-    protected Entity method_638()
+    protected Entity getTargetInRange()
     {
-        if(world.field_213 > 0)
+        if(world.difficulty > 0)
         {
-            PlayerEntity entityplayer = world.method_186(this, attackRange);
+            PlayerEntity entityplayer = world.getClosestPlayer(this, attackRange);
             if(entityplayer != null && random.nextInt(50) == 0)
             {
                 return entityplayer;
@@ -86,12 +86,12 @@ public class EntityBoar extends PigEntity implements MobSpawnDataProvider
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.field_1594 || entity1 == entity.field_1595 || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || spacingY <= entity1.spacingY || spacingXZ <= entity1.spacingXZ)
+            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || height <= entity1.height || width <= entity1.width)
             {
                 continue;
             }
-            double d2 = entity1.method_1347(entity.y, entity.z, entity.velocityX);
-            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).method_928(entity))
+            double d2 = entity1.getSquaredDistance(entity.y, entity.z, entity.velocityX);
+            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).canSee(entity))
             {
                 d1 = d2;
                 entityliving = (LivingEntity)entity1;
@@ -105,11 +105,11 @@ public class EntityBoar extends PigEntity implements MobSpawnDataProvider
     {
         if(super.damage(entityBase, i))
         {
-            if(field_1594 == entityBase || field_1595 == entityBase)
+            if(passenger == entityBase || vehicle == entityBase)
             {
                 return true;
             }
-            if(entityBase != this && world.field_213 > 0)
+            if(entityBase != this && world.difficulty > 0)
             {
                 target = entityBase;
             }
@@ -120,11 +120,11 @@ public class EntityBoar extends PigEntity implements MobSpawnDataProvider
         }
     }
 
-    protected void method_637(Entity entity, float f)
+    protected void attack(Entity entity, float f)
     {
         if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
         {
-            field_1042 = 20;
+            attackCooldown = 20;
             entity.damage(this, force);
             if(!(entity instanceof PlayerEntity))
             {

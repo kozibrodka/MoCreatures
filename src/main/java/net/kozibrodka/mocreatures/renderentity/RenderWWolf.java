@@ -11,7 +11,7 @@ public class RenderWWolf extends LivingEntityRenderer
     public RenderWWolf(EntityModel modelbase, EntityModel modelbase1, float f)
     {
         super(modelbase, f);
-        method_815(modelbase1);
+        setDecorationModel(modelbase1);
     }
 
     protected boolean a(EntityWWolf entitywwolf, int i)
@@ -20,7 +20,7 @@ public class RenderWWolf extends LivingEntityRenderer
         return i == 0 && !entitywwolf.wolfboolean;
     }
 
-    protected boolean method_825(LivingEntity entityliving, int i, float f)
+    protected boolean bindTexture(LivingEntity entityliving, int i, float f)
     {
         return a((EntityWWolf)entityliving, i);
     }

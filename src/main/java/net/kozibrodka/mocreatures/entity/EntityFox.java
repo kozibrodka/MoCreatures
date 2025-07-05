@@ -34,14 +34,14 @@ public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
         attackRange = 4D;
     }
 
-    public void method_937()
+    public void tickMovement()
     {
-        super.method_937();
+        super.tickMovement();
     }
 
-    protected void method_910(){
+    protected void tickLiving(){
         if(this.target instanceof PlayerEntity){
-            PlayerEntity uciekinier = world.method_186(this, 16D);
+            PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
             if(uciekinier == null && target.isAlive()){
                 if(random.nextInt(30) == 0)
                 {
@@ -49,12 +49,12 @@ public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
                 }
             }
         }
-        super.method_910();
+        super.tickLiving();
     }
 
-    protected Entity method_638()
+    protected Entity getTargetInRange()
     {
-        if(random.nextInt(80) == 0 && world.field_213 > 0)
+        if(random.nextInt(80) == 0 && world.difficulty > 0)
         {
             LivingEntity entityliving = getClosestTarget(this, 8D);
             return entityliving;
@@ -72,12 +72,12 @@ public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.field_1594 || entity1 == entity.field_1595 || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || spacingY <= entity1.spacingY || spacingXZ <= entity1.spacingXZ)
+            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || height <= entity1.height || width <= entity1.width)
             {
                 continue;
             }
-            double d2 = entity1.method_1347(entity.x, entity.y, entity.z);
-            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).method_928(entity))
+            double d2 = entity1.getSquaredDistance(entity.x, entity.y, entity.z);
+            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).canSee(entity))
             {
                 d1 = d2;
                 entityliving = (LivingEntity)entity1;
@@ -91,11 +91,11 @@ public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
     {
         if(super.damage(entitybase, i))
         {
-            if(field_1594 == entitybase || field_1595 == entitybase)
+            if(passenger == entitybase || vehicle == entitybase)
             {
                 return true;
             }
-            if(entitybase != this && world.field_213 > 0)
+            if(entitybase != this && world.difficulty > 0)
             {
                 target = entitybase;
             }
@@ -106,11 +106,11 @@ public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
         }
     }
 
-    protected void method_637(Entity entity, float f)
+    protected void attack(Entity entity, float f)
     {
         if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
         {
-            field_1042 = 20;
+            attackCooldown = 20;
             entity.damage(this, force);
             if(!(entity instanceof PlayerEntity))
             {
@@ -131,50 +131,50 @@ public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
         foxboolean = nbttagcompound.getBoolean("FoxBoolean");
     }
 
-    protected float method_915()
+    protected float getSoundVolume()
     {
         return 0.3F;
     }
 
-    protected String method_911()
+    protected String getRandomSound()
     {
         return "mocreatures:foxcall";
     }
 
-    protected String method_912()
+    protected String getHurtSound()
     {
         return "mocreatures:foxhurt";
     }
 
-    protected String method_913()
+    protected String getDeathSound()
     {
         return "mocreatures:foxdying";
     }
 
-    protected void method_933()
+    protected void dropItems()
     {
         int i = random.nextInt(3);
         for(int j = 0; j < i; j++)
         {
-            method_1327(new ItemStack(method_914(), 1, 0), 0.0F);
+            dropItem(new ItemStack(getDroppedItemId(), 1, 0), 0.0F);
         }
         if(mocr.mocreaturesGlass.balancesettings.balance_drop) {
             int a = random.nextInt(10);
             if (a < 8) {
                 int k = random.nextInt(2);
                 for (int j = 0; j < k; j++) {
-                    method_1327(new ItemStack(mod_mocreatures.wildleather, 1, 0), 0.0F);
+                    dropItem(new ItemStack(mod_mocreatures.wildleather, 1, 0), 0.0F);
                 }
             }
         }
     }
 
-    protected int method_914()
+    protected int getDroppedItemId()
     {
         return Item.LEATHER.id;
     }
 
-    public int method_916()
+    public int getLimitPerChunk()
     {
         return 1;
     }

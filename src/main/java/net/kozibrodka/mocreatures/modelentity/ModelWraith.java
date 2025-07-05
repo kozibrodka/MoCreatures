@@ -46,8 +46,8 @@ public class ModelWraith extends BipedEntityModel
     public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
     {
         super.setAngles(f, f1, f2, f3, f4, f5);
-        float f6 = MathHelper.sin(handWingProgress * 3.141593F);
-        float f7 = MathHelper.sin((1.0F - (1.0F - handWingProgress) * (1.0F - handWingProgress)) * 3.141593F);
+        float f6 = MathHelper.sin(handSwingProgress * 3.141593F);
+        float f7 = MathHelper.sin((1.0F - (1.0F - handSwingProgress) * (1.0F - handSwingProgress)) * 3.141593F);
         rightArm.roll = 0.0F;
         leftArm.roll = 0.0F;
         rightArm.yaw = -(0.1F - f6 * 0.6F);

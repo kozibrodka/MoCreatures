@@ -5,8 +5,8 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.minecraft.class_65;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.Monster;
 import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -18,7 +18,7 @@ import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 public class EntityWerewolf extends MonsterEntity
-    implements class_65, MobSpawnDataProvider
+    implements Monster, MobSpawnDataProvider
 {
 
     public EntityWerewolf(World world)
@@ -35,14 +35,14 @@ public class EntityWerewolf extends MonsterEntity
         isUndead = true;
     }
 
-    protected Entity method_638()
+    protected Entity getTargetInRange()
     {
         if(humanform)
         {
             return null;
         }
-        PlayerEntity entityplayer = world.method_186(this, 16D);
-        if(entityplayer != null && method_928(entityplayer))
+        PlayerEntity entityplayer = world.getClosestPlayer(this, 16D);
+        if(entityplayer != null && canSee(entityplayer))
         {
             return entityplayer;
         } else
@@ -51,10 +51,10 @@ public class EntityWerewolf extends MonsterEntity
         }
     }
 
-    protected void method_910()
+    protected void tickLiving()
     {
         if(this.target instanceof PlayerEntity){
-            PlayerEntity uciekinier = world.method_186(this, 16D);
+            PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
             if(uciekinier == null && target.isAlive()){
                 if(random.nextInt(30) == 0)
                 {
@@ -64,11 +64,11 @@ public class EntityWerewolf extends MonsterEntity
         }
         if(!transforming)
         {
-            super.method_910();
+            super.tickLiving();
         }
     }
 
-    protected void method_637(Entity entity, float f)
+    protected void attack(Entity entity, float f)
     {
         if(humanform)
         {
@@ -77,7 +77,7 @@ public class EntityWerewolf extends MonsterEntity
         }
         if(f > 2.0F && f < 6F && random.nextInt(15) == 0)
         {
-            if(field_1623)
+            if(onGround)
             {
                 hunched = true;
                 double d = entity.x - x;
@@ -89,7 +89,7 @@ public class EntityWerewolf extends MonsterEntity
             }
         } else
         {
-            super.method_637(entity, f);
+            super.attack(entity, f);
         }
     }
 
@@ -127,9 +127,9 @@ public class EntityWerewolf extends MonsterEntity
         return super.damage(entity, i);
     }
 
-    public void method_937()
+    public void tickMovement()
     {
-        super.method_937();
+        super.tickMovement();
         if((IsNight() && humanform || !IsNight() && !humanform) && random.nextInt(250) == 0)
         {
             transforming = true;
@@ -172,32 +172,32 @@ public class EntityWerewolf extends MonsterEntity
         }
         if(random.nextInt(300) == 0)
         {
-            field_1059 -= 100 * world.field_213;
-            if(field_1059 < 0)
+            despawnCounter -= 100 * world.difficulty;
+            if(despawnCounter < 0)
             {
-                field_1059 = 0;
+                despawnCounter = 0;
             }
         }
     }
 
     public boolean IsNight()
     {
-        return !world.method_220();
+        return !world.canMonsterSpawn();
     }
 
-    public void method_945(float f, float f1)
+    public void travel(float f, float f1)
     {
-        if(!humanform && field_1623)
+        if(!humanform && onGround)
         {
             velocityX *= 1.2D;
             velocityZ *= 1.2D;
         }
-        super.method_945(f, f1);
+        super.travel(f, f1);
     }
 
     private void Transform()
     {
-        if(field_1041 > 0)
+        if(deathTime > 0)
         {
             return;
         }
@@ -207,9 +207,9 @@ public class EntityWerewolf extends MonsterEntity
         float f = 0.1F;
         for(int l = 0; l < 30; l++)
         {
-            double d = (float)i + world.field_214.nextFloat();
-            double d1 = (float)j + world.field_214.nextFloat();
-            double d2 = (float)k + world.field_214.nextFloat();
+            double d = (float)i + world.random.nextFloat();
+            double d1 = (float)j + world.random.nextFloat();
+            double d2 = (float)k + world.random.nextFloat();
             double d3 = d - (double)i;
             double d4 = d1 - (double)j;
             double d5 = d2 - (double)k;
@@ -218,7 +218,7 @@ public class EntityWerewolf extends MonsterEntity
             d4 /= d6;
             d5 /= d6;
             double d7 = 0.5D / (d6 / (double)f + 0.10000000000000001D);
-            d7 *= world.field_214.nextFloat() * world.field_214.nextFloat() + 0.3F;
+            d7 *= world.random.nextFloat() * world.random.nextFloat() + 0.3F;
             d3 *= d7;
             d4 *= d7;
             d5 *= d7;
@@ -250,7 +250,7 @@ public class EntityWerewolf extends MonsterEntity
         humanform = nbttagcompound.getBoolean("HumanForm");
     }
 
-    protected String method_911()
+    protected String getRandomSound()
     {
         if(humanform)
         {
@@ -261,7 +261,7 @@ public class EntityWerewolf extends MonsterEntity
         }
     }
 
-    protected String method_912()
+    protected String getHurtSound()
     {
         if(humanform)
         {
@@ -272,7 +272,7 @@ public class EntityWerewolf extends MonsterEntity
         }
     }
 
-    protected String method_913()
+    protected String getDeathSound()
     {
         if(humanform)
         {
@@ -283,7 +283,7 @@ public class EntityWerewolf extends MonsterEntity
         }
     }
 
-    protected int method_914()
+    protected int getDroppedItemId()
     {
         int i = random.nextInt(12);
         if(humanform)
@@ -331,7 +331,7 @@ public class EntityWerewolf extends MonsterEntity
             return Item.STONE_SHOVEL.id;
 
         case 7: // '\007'
-            return Item.STONE_HATCHET.id;
+            return Item.STONE_AXE.id;
 
         case 8: // '\b'
             return Item.STONE_PICKAXE.id;
@@ -346,33 +346,33 @@ public class EntityWerewolf extends MonsterEntity
         }
     }
 
-    public void method_938(Entity entity)
+    public void onKilledBy(Entity entity)
     {
-        if(field_1024 > 0 && entity != null)
+        if(scoreAmount > 0 && entity != null)
         {
-            entity.method_1391(this, field_1024);
+            entity.updateKilledAchievement(this, scoreAmount);
         }
         if(entity != null)
         {
-            entity.method_1390(this);
+            entity.onKilledOther(this);
         }
-        field_1045 = true;
+        killedByOtherEntity = true;
         if(!world.isRemote)
         {
             for(int i = 0; i < 2; i++)
             {
-                int j = method_914();
+                int j = getDroppedItemId();
                 if(j > 0)
                 {
-                    method_1339(j, 1);
+                    dropItem(j, 1);
                 }
             }
 
         }
-        world.method_279(this, 3F);
+        world.getSkyColor(this, 3F);
     }
 
-    public int method_916()
+    public int getLimitPerChunk()
     {
         return 1;
     }
@@ -384,7 +384,7 @@ public class EntityWerewolf extends MonsterEntity
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.hostilemobs.werewolffreq > 0 && world.field_213 >= mocr.mocreaturesGlass.hostilemobs.wereSpawnDifficulty + 1 && super.canSpawn();
+        return mocr.mocreaturesGlass.hostilemobs.werewolffreq > 0 && world.difficulty >= mocr.mocreaturesGlass.hostilemobs.wereSpawnDifficulty.ordinal() + 1 && super.canSpawn();
     }
 
     public void ustawTexture(String tex){

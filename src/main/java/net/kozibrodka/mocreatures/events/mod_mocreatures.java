@@ -1,44 +1,33 @@
 package net.kozibrodka.mocreatures.events;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
+import net.glasslauncher.mods.gcapi3.api.ConfigRoot;
 import net.kozibrodka.mocreatures.glasscfg.MocreaturesCFG;
 import net.kozibrodka.mocreatures.item.*;
-import net.glasslauncher.mods.api.gcapi.api.GConfig;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.mine_diver.unsafeevents.listener.ListenerPriority;
 import net.minecraft.achievement.Achievements;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.modificationstation.stationapi.api.client.event.option.KeyBindingRegisterEvent;
 import net.modificationstation.stationapi.api.event.achievement.AchievementRegisterEvent;
-import net.modificationstation.stationapi.api.event.container.slot.ItemUsedInCraftingEvent;
 import net.modificationstation.stationapi.api.event.recipe.RecipeRegisterEvent;
 import net.modificationstation.stationapi.api.event.registry.ItemRegistryEvent;
 import net.modificationstation.stationapi.api.mod.entrypoint.Entrypoint;
 import net.modificationstation.stationapi.api.recipe.CraftingRegistry;
-
 import net.modificationstation.stationapi.api.template.item.TemplateItem;
-
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.util.Namespace;
 import net.modificationstation.stationapi.api.util.Null;
 import net.minecraft.achievement.Achievement;
-import org.lwjgl.input.Keyboard;
-
-import java.util.List;
-
 
 public class mod_mocreatures {
 
-    @GConfig(value = "MocreaturesCFG", visibleName = "Mo' Creatures Config")
+    @ConfigRoot(value = "MocreaturesCFG", visibleName = "Mo' Creatures Config")
     public static final MocreaturesCFG mocreaturesGlass = new MocreaturesCFG();
 
     @Entrypoint.Namespace
-    public static final Namespace MOD_ID = Null.get();
+    public static Namespace MOD_ID = Null.get();
 
     public static Achievement Indiana;
     public static Achievement BunnyKilla;
@@ -177,6 +166,4 @@ public class mod_mocreatures {
     public static Item bigcatfood;
     public static Item sharkfood;
     public static Item goldenshears;
-
-
 }

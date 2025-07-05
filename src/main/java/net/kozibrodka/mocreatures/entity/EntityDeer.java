@@ -8,9 +8,9 @@ import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mixin.DataTrackerAccessor;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.block.Block;
-import net.minecraft.class_61;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -43,9 +43,9 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
 
     protected void initDataTracker() {
         super.initDataTracker();
-        dataTracker.method_1502(16, (byte) 0); //Type
-        dataTracker.method_1502(17, (int) 0); //Age
-        dataTracker.method_1502(18, (byte) 0); //Adult
+        dataTracker.startTracking(16, (byte) 0); //Type
+        dataTracker.startTracking(17, (int) 0); //Age
+        dataTracker.startTracking(18, (byte) 0); //Adult
     }
 
     public void chooseType(int type)
@@ -104,7 +104,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         movementSpeed = f;
     }
 
-    protected void method_1389(float f)
+    protected void onLanding(float f)
     {
     }
 
@@ -116,9 +116,9 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
-    public void method_937()
+    public void tickMovement()
     {
-        super.method_937();
+        super.tickMovement();
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
             setMyTexture(getType());
@@ -162,7 +162,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity = (Entity)list.get(i);
-            if((entity instanceof LivingEntity) && !(entity instanceof EntityDeer) && ((double)entity.spacingXZ >= 0.5D || (double)entity.spacingY >= 0.5D))
+            if((entity instanceof LivingEntity) && !(entity instanceof EntityDeer) && ((double)entity.width >= 0.5D || (double)entity.height >= 0.5D))
             {
                 entityliving = (LivingEntity)entity;
             }
@@ -194,21 +194,21 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
             int k1 = (k + random.nextInt(4)) - random.nextInt(4);
             if(j1 > 4 && (world.getBlockId(i1, j1, k1) == 0 || world.getBlockId(i1, j1, k1) == Block.SNOW.id) && world.getBlockId(i1, j1 - 1, k1) != 0)
             {
-                class_61 pathentity = world.method_189(this, i1, j1, k1, 16F);
-                method_635(pathentity);
+                Path pathentity = world.findPath(this, i1, j1, k1, 16F);
+                setPath(pathentity);
                 break;
             }
             l++;
         } while(true);
     }
 
-    protected void method_910()
+    protected void tickLiving()
     {
-        if(movementSpeed > 2.0F && field_1623 && random.nextInt(30) == 0 && (velocityX > 0.10000000000000001D || velocityZ > 0.10000000000000001D || velocityX < -0.10000000000000001D || velocityZ < -0.10000000000000001D))
+        if(movementSpeed > 2.0F && onGround && random.nextInt(30) == 0 && (velocityX > 0.10000000000000001D || velocityZ > 0.10000000000000001D || velocityX < -0.10000000000000001D || velocityZ < -0.10000000000000001D))
         {
             velocityY = 0.59999999999999998D;
         }
-        super.method_910();
+        super.tickLiving();
     }
 
     public void writeNbt(NbtCompound nbttagcompound)
@@ -232,7 +232,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
 //        }
     }
 
-    protected String method_911()
+    protected String getRandomSound()
     {
         if(!getAdult())
         {
@@ -243,17 +243,17 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
-    protected String method_912()
+    protected String getHurtSound()
     {
         return "mocreatures:deerhurt";
     }
 
-    protected String method_913()
+    protected String getDeathSound()
     {
         return "mocreatures:deerdying";
     }
 
-    protected int method_914()
+    protected int getDroppedItemId()
     {
         return Item.RAW_PORKCHOP.id;
     }
@@ -285,7 +285,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
 //            System.out.println("LADUJE SIE + " + getType() + "  id:" + id);
 //            final byte by = this.dataTracker.method_1501(16);
 //            this.dataTracker.method_1509(16, (byte)(by & 0xF0 | type & 0xF));
-            dataTracker.method_1509(16, (byte)(type));
+            dataTracker.set(16, (byte)(type));
             chooseType(type);
             setMySpeed(false, type);
         }
@@ -301,34 +301,34 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
 
     public int getType()
     {
-        return dataTracker.method_1501(16) & 0xF;
+        return dataTracker.getByte(16) & 0xF;
     }
 
     //AGE
     public void setAge(float age)
     {
-        dataTracker.method_1509(17, Float.floatToRawIntBits(age));
+        dataTracker.set(17, Float.floatToRawIntBits(age));
     }
 
     public float getAge()
     {
-        return Float.intBitsToFloat(dataTracker.method_1508(17));
+        return Float.intBitsToFloat(dataTracker.getInt(17));
     }
 
     //ADULT
     public boolean getAdult()
     {
-        return (dataTracker.method_1501(18) & 1) != 0;
+        return (dataTracker.getByte(18) & 1) != 0;
     }
 
     public void setAdult(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(18, (byte) 1);
+            dataTracker.set(18, (byte) 1);
         } else
         {
-            dataTracker.method_1509(18, (byte) 0);
+            dataTracker.set(18, (byte) 0);
         }
     }
 
@@ -338,7 +338,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
     }
 
     //INTERACT
-    public boolean method_1323(PlayerEntity entityplayer)
+    public boolean interact(PlayerEntity entityplayer)
     {
         ItemStack itemstack = entityplayer.inventory.getSelectedItem();
         if(itemstack != null && itemstack.itemId == Item.DIAMOND_HOE.id)

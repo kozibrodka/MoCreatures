@@ -5,8 +5,8 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.minecraft.class_65;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.Monster;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
@@ -15,13 +15,13 @@ import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 public class EntityCaveOgre extends EntityOgre
-    implements class_65, MobSpawnDataProvider
+    implements Monster, MobSpawnDataProvider
 {
 
     public EntityCaveOgre(World world)
     {
         super(world);
-        field_547 = 3;
+        attackDamage = 3;
         attackRange = mocr.mocreaturesGlass.hostilemobs.ogrerange;
         ogreboolean = false;
         texture = "/assets/mocreatures/stationapi/textures/mob/caveogre.png";
@@ -33,20 +33,20 @@ public class EntityCaveOgre extends EntityOgre
         frequencyA = 35;
     }
 
-    public void method_937()
+    public void tickMovement()
     {
-        method_638();
+        getTargetInRange();
         destroyForce = mocr.mocreaturesGlass.hostilemobs.ogreStrength;
         attackRange = mocr.mocreaturesGlass.hostilemobs.ogrerange;
         if(ogrehasenemy && random.nextInt(frequencyA) == 0)
         {
             ogreattack = true;
-            field_1042 = 15;
+            attackCooldown = 15;
         }
-        if(world.method_220())
+        if(world.canMonsterSpawn())
         {
-            float f = method_1394(1.0F);
-            if(f > 0.5F && world.method_249(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && random.nextFloat() * 30F < (f - 0.4F) * 2.0F)
+            float f = getBrightnessAtEyes(1.0F);
+            if(f > 0.5F && world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && random.nextFloat() * 30F < (f - 0.4F) * 2.0F)
             {
                 health -= 5;
             }
@@ -57,9 +57,9 @@ public class EntityCaveOgre extends EntityOgre
     public boolean maxNumberReached()
     {
         int i = 0;
-        for(int j = 0; j < world.field_198.size(); j++)
+        for(int j = 0; j < world.entities.size(); j++)
         {
-            Entity entity = (Entity)world.field_198.get(j);
+            Entity entity = (Entity)world.entities.get(j);
             if(entity instanceof EntityCaveOgre)
             {
                 i++;
@@ -86,10 +86,10 @@ public class EntityCaveOgre extends EntityOgre
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.hostilemobs.cogrefreq > 0 && world.field_213 >= mocr.mocreaturesGlass.hostilemobs.cogreSpawnDifficulty + 1 && !world.method_249(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && y < 50D && super.d2();
+        return mocr.mocreaturesGlass.hostilemobs.cogrefreq > 0 && world.difficulty >= mocr.mocreaturesGlass.hostilemobs.cogreSpawnDifficulty.ordinal() + 1 && !world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && y < 50D && super.d2();
     }
 
-    protected int method_914()
+    protected int getDroppedItemId()
     {
         return Item.DIAMOND.id;
     }

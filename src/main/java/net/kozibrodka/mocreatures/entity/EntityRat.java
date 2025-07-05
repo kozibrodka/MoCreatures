@@ -29,7 +29,7 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider
         texture = "/assets/mocreatures/stationapi/textures/mob/blackrat.png";
         setBoundingBoxSpacing(0.5F, 0.5F);
         health = 10;
-        field_547 = 1;
+        attackDamage = 1;
     }
 
     public void chooseType()
@@ -75,13 +75,13 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider
             {
                 target = entityBase;
             }
-            if((entityBase instanceof ArrowEntity) && ((ArrowEntity)entityBase).field_1576 != null)
+            if((entityBase instanceof ArrowEntity) && ((ArrowEntity)entityBase).owner != null)
             {
-                entityBase = ((ArrowEntity)entityBase).field_1576;
+                entityBase = ((ArrowEntity)entityBase).owner;
             }
             if(entityBase instanceof LivingEntity)
             {
-                List list = world.method_175(EntityRat.class, Box.createCached(x, y, z, x + 1.0D, y + 1.0D, z + 1.0D).expand(16D, 4D, 16D));
+                List list = world.collectEntitiesByClass(EntityRat.class, Box.createCached(x, y, z, x + 1.0D, y + 1.0D, z + 1.0D).expand(16D, 4D, 16D));
                 Iterator iterator = list.iterator();
                 do
                 {
@@ -104,23 +104,23 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider
         }
     }
 
-    protected void method_637(Entity entityBase, float f)
+    protected void attack(Entity entityBase, float f)
     {
-        float f1 = method_1394(1.0F);
+        float f1 = getBrightnessAtEyes(1.0F);
         if(f1 > 0.5F && random.nextInt(100) == 0)
         {
             target = null;
             return;
         } else
         {
-            super.method_637(entityBase, f);
+            super.attack(entityBase, f);
             return;
         }
     }
 
-    protected void method_910(){
+    protected void tickLiving(){
         if(this.target instanceof PlayerEntity){
-            PlayerEntity uciekinier = world.method_186(this, 16D);
+            PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
             if(uciekinier == null && target.isAlive()){
                 if(random.nextInt(30) == 0)
                 {
@@ -128,22 +128,22 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider
                 }
             }
         }
-        super.method_910();
+        super.tickLiving();
     }
 
-    protected Entity method_638()
+    protected Entity getTargetInRange()
     {
-        float f = method_1394(1.0F);
+        float f = getBrightnessAtEyes(1.0F);
         if(f < 0.5F)
         {
-            return world.method_186(this, 16D);
+            return world.getClosestPlayer(this, 16D);
         } else
         {
             return null;
         }
     }
 
-    public int method_916()
+    public int getLimitPerChunk()
     {
         return 5;
     }
@@ -165,34 +165,34 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider
         return mocr.mocreaturesGlass.hostilemobs.ratfreq > 0 && super.canSpawn();
     }
 
-    protected String method_911()
+    protected String getRandomSound()
     {
         return "mocreatures:ratgrunt";
     }
 
-    protected String method_912()
+    protected String getHurtSound()
     {
         return "mocreatures:rathurt";
     }
 
-    protected String method_913()
+    protected String getDeathSound()
     {
         return "mocreatures:ratdying";
     }
 
-    protected int method_914()
+    protected int getDroppedItemId()
     {
         return Item.COAL.id;
     }
 
-    public boolean method_932()
+    public boolean isOnLadder()
     {
-        return field_1624;
+        return horizontalCollision;
     }
 
     public boolean climbing()
     {
-        return !field_1623 && method_932();
+        return !onGround && isOnLadder();
     }
 
     mod_mocreatures mocr = new mod_mocreatures();

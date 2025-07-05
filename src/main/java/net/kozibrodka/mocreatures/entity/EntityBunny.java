@@ -27,14 +27,14 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         setAge(0.5F);
         movementSpeed = 1.5F;
 //        texture = "/assets/mocreatures/stationapi/textures/mob/bunny.png";
-        eyeHeight = -0.16F;
+        standingEyeHeight = -0.16F;
         setBoundingBoxSpacing(0.4F, 0.4F);
         health = 4;
         j = random.nextInt(64);
         i = 0;
 //        typeint = 0;
         typechosen = false;
-        field_1045 = true;
+        killedByOtherEntity = true;
     }
 
     public void chooseType(int typeint)
@@ -76,7 +76,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         }
     }
 
-    public void method_937()
+    public void tickMovement()
     {
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
@@ -91,13 +91,13 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
                 //TODO: DORASTANIE? manioulate age for if statemtnt
             }
         }
-        super.method_937();
+        super.tickMovement();
     }
 
     public void tick()
     {
         super.tick();
-        if(!getTamed() || !getAdult() || field_1595 != null)
+        if(!getTamed() || !getAdult() || vehicle != null)
         {
             return;
         }
@@ -136,14 +136,14 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
                     continue;
                 }
                 EntityBunny entitybunny = (EntityBunny)entity1;
-                if(entitybunny.field_1595 != null || entitybunny.j < 1023 || !entitybunny.getAdult())
+                if(entitybunny.vehicle != null || entitybunny.j < 1023 || !entitybunny.getAdult())
                 {
                     continue;
                 }
                 EntityBunny entitybunny1 = new EntityBunny(world);
-                entitybunny1.method_1340(x, y, z);
+                entitybunny1.setPosition(x, y, z);
                 entitybunny1.setAdult(false);
-                world.method_210(entitybunny1);
+                world.spawnEntity(entitybunny1);
                 world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
                 proceed();
                 entitybunny.proceed();
@@ -158,21 +158,21 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         }
     }
 
-    protected void method_1389(float f)
+    protected void onLanding(float f)
     {
     }
 
-    protected void method_910()
+    protected void tickLiving()
     {
-        if(field_1623 && (velocityX > 0.050000000000000003D || velocityZ > 0.050000000000000003D || velocityX < -0.050000000000000003D || velocityZ < -0.050000000000000003D))
+        if(onGround && (velocityX > 0.050000000000000003D || velocityZ > 0.050000000000000003D || velocityX < -0.050000000000000003D || velocityZ < -0.050000000000000003D))
         {
             velocityY = 0.45000000000000001D;
         }
         if(!h)
         {
-            super.method_910();
+            super.tickLiving();
         } else
-        if(field_1623)
+        if(onGround)
         {
             h = false;
             world.playSound(this, "mocreatures:rabbitland", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
@@ -190,12 +190,12 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         }
     }
 
-    public boolean method_1323(PlayerEntity entityplayer)
+    public boolean interact(PlayerEntity entityplayer)
     {
 //        ItemInstance itemstack = entityplayer.inventory.getHeldItem();
         yaw = entityplayer.yaw;
-        method_1376(entityplayer);
-        if(field_1595 == null)
+        setVehicle(entityplayer);
+        if(vehicle == null)
         {
             h = true;
         } else
@@ -209,18 +209,18 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         return true;
     }
 
-    public double method_1385()
+    public double getStandingEyeHeight()
     {
-        if(field_1595 instanceof PlayerEntity)
+        if(vehicle instanceof PlayerEntity)
         {
-            return (double)(eyeHeight - 1.15F);
+            return (double)(standingEyeHeight - 1.15F);
         } else
         {
-            return (double)eyeHeight;
+            return (double)standingEyeHeight;
         }
     }
 
-    protected String method_911()
+    protected String getRandomSound()
     {
         return null;
     }
@@ -231,17 +231,17 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         j = random.nextInt(64);
     }
 
-    protected String method_912()
+    protected String getHurtSound()
     {
         return "mocreatures:rabbithurt";
     }
 
-    public void method_925(Entity entity, int k, double d, double d2)
+    public void applyKnockback(Entity entity, int k, double d, double d2)
     {
-        super.method_925(entity, k, d, d2);
+        super.applyKnockback(entity, k, d, d2);
     }
 
-    protected String method_913()
+    protected String getDeathSound()
     {
         return "mocreatures:rabbitdeath";
     }
@@ -249,9 +249,9 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
     public boolean maxNumberReached()
     {
         int k = 0;
-        for(int l = 0; l < world.field_198.size(); l++)
+        for(int l = 0; l < world.entities.size(); l++)
         {
-            Entity entity = (Entity)world.field_198.get(l);
+            Entity entity = (Entity)world.entities.get(l);
             if(entity instanceof EntityBunny)
             {
                 k++;
@@ -286,10 +286,10 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
 
     protected void initDataTracker() {
         super.initDataTracker();
-        dataTracker.method_1502(16, (byte) 0); //Type
-        dataTracker.method_1502(17, (int) 0); //Age
-        dataTracker.method_1502(18, (byte) 0); //Adult
-        dataTracker.method_1502(19, (byte) 0); //Tamed
+        dataTracker.startTracking(16, (byte) 0); //Type
+        dataTracker.startTracking(17, (int) 0); //Age
+        dataTracker.startTracking(18, (byte) 0); //Adult
+        dataTracker.startTracking(19, (byte) 0); //Tamed
     }
 
     public boolean canSpawn()
@@ -297,7 +297,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         return mocr.mocreaturesGlass.animals.bunnyfreq > 0 && super.canSpawn();
     }
 
-    protected boolean method_940()
+    protected boolean canDespawn()
     {
         return !getTamed();
     }
@@ -333,55 +333,55 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
     public void setType(int type)
     {
         if(!world.isRemote) {
-            dataTracker.method_1509(16, (byte) type);
+            dataTracker.set(16, (byte) type);
             chooseType(type);
         }
     }
 
     public int getType()
     {
-        return dataTracker.method_1501(16);
+        return dataTracker.getByte(16);
     }
     //AGE
     public void setAge(float age)
     {
-        dataTracker.method_1509(17, Float.floatToRawIntBits(age));
+        dataTracker.set(17, Float.floatToRawIntBits(age));
     }
 
     public float getAge()
     {
-        return Float.intBitsToFloat(dataTracker.method_1508(17));
+        return Float.intBitsToFloat(dataTracker.getInt(17));
     }
     //ADULT
     public boolean getAdult()
     {
-        return (dataTracker.method_1501(18) & 1) != 0;
+        return (dataTracker.getByte(18) & 1) != 0;
     }
 
     public void setAdult(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(18, (byte) 1);
+            dataTracker.set(18, (byte) 1);
         } else
         {
-            dataTracker.method_1509(18, (byte) 0);
+            dataTracker.set(18, (byte) 0);
         }
     }
     //TAMED
     public boolean getTamed()
     {
-        return (dataTracker.method_1501(19) & 1) != 0;
+        return (dataTracker.getByte(19) & 1) != 0;
     }
 
     public void setTamed(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(19, (byte) 1);
+            dataTracker.set(19, (byte) 1);
         } else
         {
-            dataTracker.method_1509(19, (byte) 0);
+            dataTracker.set(19, (byte) 0);
         }
     }
 }

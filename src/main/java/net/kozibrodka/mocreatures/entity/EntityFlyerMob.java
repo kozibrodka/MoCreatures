@@ -6,8 +6,8 @@ package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.block.Block;
-import net.minecraft.class_61;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
@@ -25,32 +25,32 @@ public class EntityFlyerMob extends MonsterEntity
     public EntityFlyerMob(World world)
     {
         super(world);
-        field_1625 = false;
+        verticalCollision = false;
         speedModifier = 0.029999999999999999D;
         setBoundingBoxSpacing(1.5F, 1.5F);
         attackStrength = 3;
         health = 10;
     }
 
-    protected void method_1389(float f)
+    protected void onLanding(float f)
     {
     }
 
-    public void method_945(float f, float f1)
+    public void travel(float f, float f1)
     {
-        if(isSubmergedInWater())
+        if(checkWaterCollisions())
         {
             double d = y;
-            method_1324(f, f1, 0.02F);
+            moveNonSolid(f, f1, 0.02F);
             move(velocityX, velocityY, velocityZ);
             velocityX *= 0.80000001192092896D;
             velocityY *= 0.80000001192092896D;
             velocityZ *= 0.80000001192092896D;
         } else
-        if(method_1335())
+        if(isTouchingLava())
         {
             double d1 = y;
-            method_1324(f, f1, 0.02F);
+            moveNonSolid(f, f1, 0.02F);
             move(velocityX, velocityY, velocityZ);
             velocityX *= 0.5D;
             velocityY *= 0.5D;
@@ -58,7 +58,7 @@ public class EntityFlyerMob extends MonsterEntity
         } else
         {
             float f2 = 0.91F;
-            if(field_1623)
+            if(onGround)
             {
                 f2 = 0.5460001F;
                 int i = world.getBlockId(MathHelper.floor(x), MathHelper.floor(boundingBox.minY) - 1, MathHelper.floor(z));
@@ -68,9 +68,9 @@ public class EntityFlyerMob extends MonsterEntity
                 }
             }
             float f3 = 0.162771F / (f2 * f2 * f2);
-            method_1324(f, f1, field_1623 ? 0.1F * f3 : 0.02F);
+            moveNonSolid(f, f1, onGround ? 0.1F * f3 : 0.02F);
             f2 = 0.91F;
-            if(field_1623)
+            if(onGround)
             {
                 f2 = 0.5460001F;
                 int j = world.getBlockId(MathHelper.floor(x), MathHelper.floor(boundingBox.minY) - 1, MathHelper.floor(z));
@@ -83,7 +83,7 @@ public class EntityFlyerMob extends MonsterEntity
             velocityX *= f2;
             velocityY *= f2;
             velocityZ *= f2;
-            if(field_1624)
+            if(horizontalCollision)
             {
                 velocityY = 0.20000000000000001D;
             }
@@ -92,7 +92,7 @@ public class EntityFlyerMob extends MonsterEntity
                 velocityY = -0.25D;
             }
         }
-        field_1048 = field_1049;
+        lastWalkAnimationSpeed = walkAnimationSpeed;
         double d2 = x - prevX;
         double d3 = z - prevZ;
         float f4 = MathHelper.sqrt(d2 * d2 + d3 * d3) * 4F;
@@ -100,19 +100,19 @@ public class EntityFlyerMob extends MonsterEntity
         {
             f4 = 1.0F;
         }
-        field_1049 += (f4 - field_1049) * 0.4F;
-        field_1050 += field_1049;
+        walkAnimationSpeed += (f4 - walkAnimationSpeed) * 0.4F;
+        walkAnimationProgress += walkAnimationSpeed;
     }
 
-    public boolean method_932()
+    public boolean isOnLadder()
     {
         return false;
     }
 
-    protected Entity method_638()
+    protected Entity getTargetInRange()
     {
-        PlayerEntity entityplayer = world.method_186(this, 20D);
-        if(entityplayer != null && method_928(entityplayer))
+        PlayerEntity entityplayer = world.getClosestPlayer(this, 20D);
+        if(entityplayer != null && canSee(entityplayer))
         {
             return entityplayer;
         } else
@@ -121,16 +121,16 @@ public class EntityFlyerMob extends MonsterEntity
         }
     }
 
-    protected void method_910()
+    protected void tickLiving()
     {
-        field_663 = false;
+        movementBlocked = false;
         float f = 16F;
         if(target == null)
         {
-            target = method_638();
+            target = getTargetInRange();
             if(target != null)
             {
-                entitypath = world.method_192(this, target, f);
+                entitypath = world.findPath(this, target, f);
             }
         } else
         if(!target.isAlive())
@@ -138,15 +138,15 @@ public class EntityFlyerMob extends MonsterEntity
             target = null;
         } else
         {
-            float f1 = target.method_1351(this);
-            if(method_928(target))
+            float f1 = target.getDistance(this);
+            if(canSee(target))
             {
-                method_637(target, f1);
+                attack(target, f1);
             }
         }
-        if(!field_663 && target != null && (entitypath == null || random.nextInt(10) == 0))
+        if(!movementBlocked && target != null && (entitypath == null || random.nextInt(10) == 0))
         {
-            entitypath = world.method_192(this, target, f);
+            entitypath = world.findPath(this, target, f);
         } else
         if(entitypath == null && random.nextInt(80) == 0 || random.nextInt(80) == 0)
         {
@@ -160,7 +160,7 @@ public class EntityFlyerMob extends MonsterEntity
                 int j1 = MathHelper.floor((x + (double)random.nextInt(13)) - 6D);
                 int k1 = MathHelper.floor((y + (double)random.nextInt(7)) - 3D);
                 int l1 = MathHelper.floor((z + (double)random.nextInt(13)) - 6D);
-                float f3 = method_641(j1, k1, l1);
+                float f3 = getPathfindingFavor(j1, k1, l1);
                 if(f3 > f2)
                 {
                     f2 = f3;
@@ -173,30 +173,30 @@ public class EntityFlyerMob extends MonsterEntity
 
             if(flag)
             {
-                entitypath = world.method_189(this, j, k, l, 10F);
+                entitypath = world.findPath(this, j, k, l, 10F);
             }
         }
         int i = MathHelper.floor(boundingBox.minY);
-        boolean flag1 = isSubmergedInWater();
-        boolean flag2 = method_1335();
+        boolean flag1 = checkWaterCollisions();
+        boolean flag2 = isTouchingLava();
         pitch = 0.0F;
         if(entitypath == null || random.nextInt(100) == 0)
         {
-            super.method_910();
+            super.tickLiving();
             entitypath = null;
             return;
         }
-        Vec3d vec3d = entitypath.method_2041(this);
-        for(double d = spacingXZ * 2.0F; vec3d != null && vec3d.squaredDistanceTo(x, vec3d.y, z) < d * d;)
+        Vec3d vec3d = entitypath.getNodePosition(this);
+        for(double d = width * 2.0F; vec3d != null && vec3d.squaredDistanceTo(x, vec3d.y, z) < d * d;)
         {
-            entitypath.method_2040();
-            if(entitypath.method_2042())
+            entitypath.next();
+            if(entitypath.isFinished())
             {
                 vec3d = null;
                 entitypath = null;
             } else
             {
-                vec3d = entitypath.method_2041(this);
+                vec3d = entitypath.getNodePosition(this);
             }
         }
 
@@ -208,7 +208,7 @@ public class EntityFlyerMob extends MonsterEntity
             double d3 = vec3d.y - (double)i;
             float f4 = (float)((Math.atan2(d2, d1) * 180D) / 3.1415927410125728D) - 90F;
             float f5 = f4 - yaw;
-            field_1029 = movementSpeed;
+            forwardSpeed = movementSpeed;
             for(; f5 < -180F; f5 += 360F) { }
             for(; f5 >= 180F; f5 -= 360F) { }
             if(f5 > 30F)
@@ -220,15 +220,15 @@ public class EntityFlyerMob extends MonsterEntity
                 f5 = -30F;
             }
             yaw += f5;
-            if(field_663 && target != null)
+            if(movementBlocked && target != null)
             {
                 double d4 = target.x - x;
                 double d5 = target.z - z;
                 float f6 = yaw;
                 yaw = (float)((Math.atan2(d5, d4) * 180D) / 3.1415927410125728D) - 90F;
                 float f7 = (((f6 - yaw) + 90F) * 3.141593F) / 180F;
-                field_1060 = -MathHelper.sin(f7) * field_1029 * 1.0F;
-                field_1029 = MathHelper.cos(f7) * field_1029 * 1.0F;
+                sidewaysSpeed = -MathHelper.sin(f7) * forwardSpeed * 1.0F;
+                forwardSpeed = MathHelper.cos(f7) * forwardSpeed * 1.0F;
             }
             if(d3 > 0.0D)
             {
@@ -237,9 +237,9 @@ public class EntityFlyerMob extends MonsterEntity
         }
         if(target != null)
         {
-            method_924(target, 30F, 30F);
+            lookAt(target, 30F, 30F);
         }
-        if(field_1624)
+        if(horizontalCollision)
         {
             jumping = true;
         }
@@ -249,11 +249,11 @@ public class EntityFlyerMob extends MonsterEntity
         }
     }
 
-    protected void method_637(Entity entity, float f)
+    protected void attack(Entity entity, float f)
     {
         if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
         {
-            field_1042 = 20;
+            attackCooldown = 20;
             entity.damage(this, attackStrength);
         }
     }
@@ -264,7 +264,7 @@ public class EntityFlyerMob extends MonsterEntity
     }
 
     protected int attackStrength;
-    private class_61 entitypath;
+    private Path entitypath;
     public double speedModifier;
 
 }

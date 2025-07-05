@@ -6,7 +6,7 @@ package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.block.Block;
-import net.minecraft.block.Material;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,12 +29,12 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
         health = 30;
     }
 
-    protected Entity method_638()
+    protected Entity getTargetInRange()
     {
-        if(world.field_213 > 0)
+        if(world.difficulty > 0)
         {
-            PlayerEntity entityplayer = world.method_186(this, attackRange);
-            if(entityplayer != null && world.field_213 > 0)
+            PlayerEntity entityplayer = world.getClosestPlayer(this, attackRange);
+            if(entityplayer != null && world.difficulty > 0)
             {
                 return entityplayer;
             }
@@ -47,19 +47,19 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
         return null;
     }
 
-    public void method_937()
+    public void tickMovement()
     {
-        if(world.field_213 == 1)
+        if(world.difficulty == 1)
         {
             attackRange = 5D;
             force = 3;
         } else
-        if(world.field_213 > 1)
+        if(world.difficulty > 1)
         {
             attackRange = 8D;
             force = 5;
         }
-        super.method_937();
+        super.tickMovement();
     }
 
     public boolean NearSnowWithDistance(Entity entity, Double double1)
@@ -78,7 +78,7 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
                 for(int i2 = i1; i2 < j1; i2++)
                 {
                     int j2 = world.getBlockId(k1, l1, i2);
-                    if(j2 != 0 && Block.BLOCKS[j2].material == Material.field_998)
+                    if(j2 != 0 && Block.BLOCKS[j2].material == Material.SNOW_LAYER)
                     {
                         return true;
                     }
@@ -91,22 +91,22 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
         return false;
     }
 
-    protected void method_933()
+    protected void dropItems()
     {
         int i = random.nextInt(3);
         for(int j = 0; j < i; j++)
         {
-            method_1327(new ItemStack(method_914(), 1, 0), 0.0F);
+            dropItem(new ItemStack(getDroppedItemId(), 1, 0), 0.0F);
         }
         if(mocr.mocreaturesGlass.balancesettings.balance_drop) {
             int k = random.nextInt(2);
             for (int j = 0; j < k; j++) {
-                method_1327(new ItemStack(mod_mocreatures.polarleather, 1, 0), 0.0F);
+                dropItem(new ItemStack(mod_mocreatures.polarleather, 1, 0), 0.0F);
             }
         }
     }
 
-    public int method_916()
+    public int getLimitPerChunk()
     {
         return 2;
     }

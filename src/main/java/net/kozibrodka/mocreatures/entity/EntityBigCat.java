@@ -9,13 +9,13 @@ import net.kozibrodka.mocreatures.mixin.WalkingBaseAccesor;
 import net.kozibrodka.mocreatures.mocreatures.MoCGUI;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.block.Block;
-import net.minecraft.block.Material;
-import net.minecraft.class_61;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
@@ -52,17 +52,17 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
     protected void initDataTracker()
     {
         super.initDataTracker();
-        dataTracker.method_1502(16, (byte) 0); //Type
-        dataTracker.method_1502(17, (int) 0); //Age
-        dataTracker.method_1502(18, (byte) 0); //Adult
-        dataTracker.method_1502(19, (byte) 0); //Eaten
-        dataTracker.method_1502(20, (byte) 0); //Tamed
-        dataTracker.method_1502(21, (byte) 0); //Sitting
-        dataTracker.method_1502(22, (byte) 0); //Hungry
-        dataTracker.method_1502(23, (byte) 0); //Protect From Players
-        dataTracker.method_1502(24, (byte) 0); //Display Name
-        dataTracker.method_1502(30, ""); //Owner
-        dataTracker.method_1502(31, ""); //Name
+        dataTracker.startTracking(16, (byte) 0); //Type
+        dataTracker.startTracking(17, (int) 0); //Age
+        dataTracker.startTracking(18, (byte) 0); //Adult
+        dataTracker.startTracking(19, (byte) 0); //Eaten
+        dataTracker.startTracking(20, (byte) 0); //Tamed
+        dataTracker.startTracking(21, (byte) 0); //Sitting
+        dataTracker.startTracking(22, (byte) 0); //Hungry
+        dataTracker.startTracking(23, (byte) 0); //Protect From Players
+        dataTracker.startTracking(24, (byte) 0); //Display Name
+        dataTracker.startTracking(30, ""); //Owner
+        dataTracker.startTracking(31, ""); //Name
     }
 
 
@@ -176,9 +176,9 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
-    public void method_937()
+    public void tickMovement()
     {
-        super.method_937();
+        super.tickMovement();
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
             chooseType(getType());
@@ -188,14 +188,14 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                 setAge(getAge() + 0.01F);
                 if (getAge() >= 1.0F) {
                     setAdult(true);
-                    field_1045 = false;
+                    killedByOtherEntity = false;
                 }
             }
             if (!getHungry() && !getSitting() && random.nextInt(200) == 0) {
                 setHungry(true);
             }
             if (roper != null && random.nextInt(20) == 0) {
-                float f = roper.method_1351(this);
+                float f = roper.getDistance(this);
                 if (f > 8F && !getSitting()) {
                     method_429(roper, f);
                 }
@@ -203,12 +203,12 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                     roper = null;
                 }
             }
-            if (field_1041 == 0 && getHungry() && !getSitting()) {
+            if (deathTime == 0 && getHungry() && !getSitting()) {
                 ItemEntity entityitem = getClosestItem(this, 12D, Item.RAW_PORKCHOP.id, Item.RAW_FISH.id);
                 if (entityitem != null) {
                     MoveToNextEntity(entityitem);
                     ItemEntity entityitem1 = getClosestItem(this, 2D, Item.RAW_PORKCHOP.id, Item.RAW_FISH.id);
-                    if (random.nextInt(80) == 0 && entityitem1 != null && field_1041 == 0) {
+                    if (random.nextInt(80) == 0 && entityitem1 != null && deathTime == 0) {
                         entityitem1.markDead();
                         if (health + 10 > maxhealth) {
                             health = maxhealth;
@@ -226,14 +226,14 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
-    protected boolean method_640()
+    protected boolean isMovementBlocked()
     {
         return getSitting();
     }
 
     private void method_429(Entity entity, float f)
     {
-        class_61 pathentity = world.method_192(this, entity, 16F);
+        Path pathentity = world.findPath(this, entity, 16F);
         if(pathentity == null && f > 12F)
         {
             int i = MathHelper.floor(entity.x) - 2;
@@ -243,9 +243,9 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
             {
                 for(int i1 = 0; i1 <= 4; i1++)
                 {
-                    if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && world.method_1780(i + l, k - 1, j + i1) && !world.method_1780(i + l, k, j + i1) && !world.method_1780(i + l, k + 1, j + i1))
+                    if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && world.shouldSuffocate(i + l, k - 1, j + i1) && !world.shouldSuffocate(i + l, k, j + i1) && !world.shouldSuffocate(i + l, k + 1, j + i1))
                     {
-                        method_1341((float)(i + l) + 0.5F, k, (float)(j + i1) + 0.5F, yaw, pitch);
+                        setPositionAndAnglesKeepPrevAngles((float)(i + l) + 0.5F, k, (float)(j + i1) + 0.5F, yaw, pitch);
                         return;
                     }
                 }
@@ -254,7 +254,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
 
         } else
         {
-            method_635(pathentity);
+            setPath(pathentity);
         }
     }
 
@@ -348,7 +348,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
             {
                 continue;
             }
-            double d2 = entityitem1.method_1347(entity.x, entity.y, entity.z);
+            double d2 = entityitem1.getSquaredDistance(entity.x, entity.y, entity.z);
             if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1))
             {
                 d1 = d2;
@@ -358,9 +358,9 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
 
         return entityitem;
     }
-    protected void method_910(){
+    protected void tickLiving(){
         if(this.target instanceof LivingEntity){
-            PlayerEntity uciekinier = world.method_186(this, 16D);
+            PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
             if(uciekinier == null && target.isAlive()){
                 if(random.nextInt(30) == 0)
                 {
@@ -368,18 +368,18 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                 }
             }
         }
-        super.method_910();
+        super.tickLiving();
     }
 
-    protected Entity method_638()
+    protected Entity getTargetInRange()
     {
         if(roper != null)
         {
             return getMastersEnemy((PlayerEntity)roper, 12D);
         }
-        if(world.field_213 > 0)
+        if(world.difficulty > 0)
         {
-            PlayerEntity entityplayer = world.method_186(this, 12D);
+            PlayerEntity entityplayer = world.getClosestPlayer(this, 12D);
             if(!getTamed() && entityplayer != null && getAdult() && getHungry())
             {
                 if(getType() == 1 || getType() == 5 || getType() == 7)
@@ -411,7 +411,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.field_1594 || entity1 == entity.field_1595 || (entity1 instanceof PlayerEntity) || !getAdult() && ((double)entity1.spacingXZ > 0.5D || (double)entity1.spacingY > 0.5D) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof MonsterEntity) && (!getTamed() || !getAdult()) || getTamed() && (entity1 instanceof EntityKitty) && ((EntityKitty)entity1).kittystate > 2 || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof EntityHorse) && getTamed() && ((EntityHorse) entity1).getTamed() || (entity1 instanceof EntityShark) && ((EntityShark)entity1).tamed && getTamed() || (entity1 instanceof EntityDolphin) && ((EntityDolphin)entity1).getTamed() && getTamed() || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves)
+            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof PlayerEntity) || !getAdult() && ((double)entity1.width > 0.5D || (double)entity1.height > 0.5D) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof MonsterEntity) && (!getTamed() || !getAdult()) || getTamed() && (entity1 instanceof EntityKitty) && ((EntityKitty)entity1).kittystate > 2 || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof EntityHorse) && getTamed() && ((EntityHorse) entity1).getTamed() || (entity1 instanceof EntityShark) && ((EntityShark)entity1).tamed && getTamed() || (entity1 instanceof EntityDolphin) && ((EntityDolphin)entity1).getTamed() && getTamed() || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves)
             {
                 continue;
             }
@@ -427,8 +427,8 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                     continue;
                 }
             }
-            double d2 = entity1.method_1347(entity.x, entity.y, entity.z);
-            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).method_928(entity))
+            double d2 = entity1.getSquaredDistance(entity.x, entity.y, entity.z);
+            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).canSee(entity))
             {
                 d1 = d2;
                 entityliving = (LivingEntity)entity1;
@@ -464,7 +464,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
     {
         if(super.damage(entitybase, i))
         {
-            if(field_1594 == entitybase || field_1595 == entitybase)
+            if(passenger == entitybase || vehicle == entitybase)
             {
                 return true;
             }
@@ -476,7 +476,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                     target = entitybase;
                 }
             }
-            if(entitybase != this && world.field_213 > 0 && !getTamed())
+            if(entitybase != this && world.difficulty > 0 && !getTamed())
             {
                 target = entitybase;
             }
@@ -487,11 +487,11 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
-    protected void method_637(Entity entity, float f)
+    protected void attack(Entity entity, float f)
     {
         if(f > 2.0F && f < 6F && random.nextInt(50) == 0)
         {
-            if(field_1623)
+            if(onGround)
             {
                 double d = entity.x - x;
                 double d1 = entity.z - z;
@@ -503,7 +503,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         } else
         if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
         {
-            field_1042 = 20;
+            attackCooldown = 20;
             entity.damage(this, force);
             if(!(entity instanceof PlayerEntity))
             {
@@ -544,7 +544,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         setEaten(nbttagcompound.getBoolean("Eaten"));
     }
 
-    public boolean method_1323(PlayerEntity entityplayer)
+    public boolean interact(PlayerEntity entityplayer)
     {
         if(!world.isRemote) {
             ItemStack itemstack = entityplayer.inventory.getSelectedItem();
@@ -566,7 +566,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                         double var4 = this.random.nextGaussian() * 0.02D;
                         double var6 = this.random.nextGaussian() * 0.02D;
                         double var8 = this.random.nextGaussian() * 0.02D;
-                        world.addParticle("heart", this.x + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, this.y + 0.5D + (double) (this.random.nextFloat() * this.spacingY), this.z + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, var4, var6, var8);
+                        world.addParticle("heart", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
                     }
                 } else {
                     setProtect(true);
@@ -574,7 +574,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                         double var4 = this.random.nextGaussian() * 0.02D;
                         double var6 = this.random.nextGaussian() * 0.02D;
                         double var8 = this.random.nextGaussian() * 0.02D;
-                        world.addParticle("flame", this.x + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, this.y + 0.5D + (double) (this.random.nextFloat() * this.spacingY), this.z + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, var4, var6, var8);
+                        world.addParticle("flame", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
                     }
                 }
                 return true;
@@ -600,7 +600,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                 setNameWithGui(this, entityplayer);
                 return true;
             }
-            if (itemstack != null && entityplayer.name.equals(getOwner()) && field_1594 == null && roper == null && getTamed() && itemstack.itemId == mod_mocreatures.rope.id) {
+            if (itemstack != null && entityplayer.name.equals(getOwner()) && passenger == null && roper == null && getTamed() && itemstack.itemId == mod_mocreatures.rope.id) {
                 if (--itemstack.count == 0) {
                     entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
                 }
@@ -618,7 +618,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
             }
             //
             if (roper != null && getTamed()) {
-                entityplayer.inventory.method_671(new ItemStack(mod_mocreatures.rope));
+                entityplayer.inventory.addStack(new ItemStack(mod_mocreatures.rope));
                 world.playSound(this, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
                 roper = null;
                 return true;
@@ -629,7 +629,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         return false;
     }
 
-    protected String method_911()
+    protected String getRandomSound()
     {
         if(getAdult())
         {
@@ -640,7 +640,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
-    protected String method_912()
+    protected String getHurtSound()
     {
         if(getAdult())
         {
@@ -651,7 +651,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
-    protected String method_913()
+    protected String getDeathSound()
     {
         if(getAdult())
         {
@@ -662,7 +662,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
-    protected int method_914()
+    protected int getDroppedItemId()
     {
         return mod_mocreatures.bigcatclaw.id;
     }
@@ -690,12 +690,12 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
 
     }
 
-    public int method_916()
+    public int getLimitPerChunk()
     {
         return 4;
     }
 
-    protected boolean method_940()
+    protected boolean canDespawn()
     {
         return !getTamed();
     }
@@ -750,7 +750,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                 for(int i2 = i1; i2 < j1; i2++)
                 {
                     int j2 = world.getBlockId(k1, l1, i2);
-                    if(j2 != 0 && Block.BLOCKS[j2].material == Material.field_998)
+                    if(j2 != 0 && Block.BLOCKS[j2].material == Material.SNOW_LAYER)
                     {
                         return true;
                     }
@@ -848,7 +848,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
             //
             if (random.nextInt(4) == 0) {
                 setAdult(false);
-                field_1045 = true;
+                killedByOtherEntity = true;
             }else{
                 setAdult(true);
             }
@@ -859,166 +859,166 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
     public void setType(int type)
     {
         if(!world.isRemote) {
-            dataTracker.method_1509(16, (byte) type);
+            dataTracker.set(16, (byte) type);
             chooseType(type);
         }
     }
 
     public int getType()
     {
-        return dataTracker.method_1501(16);
+        return dataTracker.getByte(16);
     }
 
     //AGE
     public void setAge(float age)
     {
-        dataTracker.method_1509(17, Float.floatToRawIntBits(age));
+        dataTracker.set(17, Float.floatToRawIntBits(age));
     }
 
     public float getAge()
     {
-        return Float.intBitsToFloat(dataTracker.method_1508(17));
+        return Float.intBitsToFloat(dataTracker.getInt(17));
     }
 
     //ADULT
     public boolean getAdult()
     {
-        return (dataTracker.method_1501(18) & 1) != 0;
+        return (dataTracker.getByte(18) & 1) != 0;
     }
 
     public void setAdult(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(18, Byte.valueOf((byte)1));
+            dataTracker.set(18, Byte.valueOf((byte)1));
         } else
         {
-            dataTracker.method_1509(18, Byte.valueOf((byte)0));
+            dataTracker.set(18, Byte.valueOf((byte)0));
         }
     }
 
     //TAMED
     public boolean getTamed()
     {
-        return (dataTracker.method_1501(20) & 1) != 0;
+        return (dataTracker.getByte(20) & 1) != 0;
     }
 
     public void setTamed(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(20, Byte.valueOf((byte)1));
+            dataTracker.set(20, Byte.valueOf((byte)1));
         } else
         {
-            dataTracker.method_1509(20, Byte.valueOf((byte)0));
+            dataTracker.set(20, Byte.valueOf((byte)0));
         }
     }
 
     //SITTING
     public boolean getSitting()
     {
-        return (dataTracker.method_1501(21) & 1) != 0;
+        return (dataTracker.getByte(21) & 1) != 0;
     }
 
     public void setSitting(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(21, Byte.valueOf((byte)1));
+            dataTracker.set(21, Byte.valueOf((byte)1));
         } else
         {
-            dataTracker.method_1509(21, Byte.valueOf((byte)0));
+            dataTracker.set(21, Byte.valueOf((byte)0));
         }
     }
 
     //HUNGRY
     public boolean getHungry()
     {
-        return (dataTracker.method_1501(22) & 1) != 0;
+        return (dataTracker.getByte(22) & 1) != 0;
     }
 
     public void setHungry(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(22, Byte.valueOf((byte)1));
+            dataTracker.set(22, Byte.valueOf((byte)1));
         } else
         {
-            dataTracker.method_1509(22, Byte.valueOf((byte)0));
+            dataTracker.set(22, Byte.valueOf((byte)0));
         }
     }
 
     //EATEN
     public boolean getEaten()
     {
-        return (dataTracker.method_1501(19) & 1) != 0;
+        return (dataTracker.getByte(19) & 1) != 0;
     }
 
     public void setEaten(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(19, Byte.valueOf((byte)1));
+            dataTracker.set(19, Byte.valueOf((byte)1));
         } else
         {
-            dataTracker.method_1509(19, Byte.valueOf((byte)0));
+            dataTracker.set(19, Byte.valueOf((byte)0));
         }
     }
 
     //PROTECT FROM PLAYERES
     public boolean getProtect()
     {
-        return (dataTracker.method_1501(23) & 1) != 0;
+        return (dataTracker.getByte(23) & 1) != 0;
     }
 
     public void setProtect(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(23, Byte.valueOf((byte)1));
+            dataTracker.set(23, Byte.valueOf((byte)1));
         } else
         {
-            dataTracker.method_1509(23, Byte.valueOf((byte)0));
+            dataTracker.set(23, Byte.valueOf((byte)0));
         }
     }
 
     //DISPLAY NAME
     public boolean getDisplayName()
     {
-        return (dataTracker.method_1501(24) & 1) != 0;
+        return (dataTracker.getByte(24) & 1) != 0;
     }
 
     public void setDisplayName(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(24, Byte.valueOf((byte)1));
+            dataTracker.set(24, Byte.valueOf((byte)1));
         } else
         {
-            dataTracker.method_1509(24, Byte.valueOf((byte)0));
+            dataTracker.set(24, Byte.valueOf((byte)0));
         }
     }
 
     //OWNER
     public void setOwner(String owner)
     {
-        this.dataTracker.method_1509(30, owner);
+        this.dataTracker.set(30, owner);
     }
 
     public String getOwner()
     {
-        return this.dataTracker.method_1510(30);
+        return this.dataTracker.getString(30);
     }
 
     //NAME
     public void setName(String name)
     {
-        this.dataTracker.method_1509(31, name);
+        this.dataTracker.set(31, name);
     }
 
     public String getName()
     {
-        return this.dataTracker.method_1510(31);
+        return this.dataTracker.getString(31);
     }
 }
 
