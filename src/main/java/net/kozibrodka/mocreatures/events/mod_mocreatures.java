@@ -10,6 +10,8 @@ import net.minecraft.achievement.Achievements;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stat.Stat;
+import net.modificationstation.stationapi.api.client.gui.screen.achievement.AchievementPage;
 import net.modificationstation.stationapi.api.event.achievement.AchievementRegisterEvent;
 import net.modificationstation.stationapi.api.event.recipe.RecipeRegisterEvent;
 import net.modificationstation.stationapi.api.event.registry.ItemRegistryEvent;
@@ -48,6 +50,15 @@ public class mod_mocreatures {
         Indiana.challenge();
 //        WilfFlyingWest.setUnusual();
 //        RobertMaklowicz.setUnusual();
+
+        /* A few options below for adding achievements */
+//        event.achievements.add(Indiana);
+//        event.achievements.add(BunnyKilla);
+
+//        AchievementPage achievementPage = new MoCreaturesAchievementPage(MOD_ID.id("mocreaturesAchievements"));
+//        event.achievements.addAll(MoCreaturesAchievementPage.ACHIEVEMENTS);
+//        achievementPage.addAchievements(MoCreaturesAchievementPage.ACHIEVEMENTS.toArray(Achievement[]::new));
+//        MoCreaturesAchievementPage.ACHIEVEMENTS.forEach(Stat::addStat);
     }
 
     @EventListener

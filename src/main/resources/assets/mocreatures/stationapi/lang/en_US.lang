@@ -37,7 +37,9 @@ item.@.bigcatfood.name = Big Cat Food
 item.@.sharkfood.name = Shark Food
 item.@.goldenshears.name = Golden Shears
 
-achievement.indiana= Indiana, Master of the BigCats
-achievement.bunnykilla= Da Bunny Killa
-achievement.indiana.desc= Using a whip, command at least 7 tamed BigCats at once
-achievement.bunnykilla.desc= Using the bunny-kill-o-matic, euthanize at least 69 promiscuous bunnies at once
+gui.stationapi.achievementPage.@.mocreaturesAchievements=Mo Creatures
+stationapi\:achievementPage.mocreaturesAchievements=Mo Creatures
+achievement.@.indiana= Indiana, Master of the BigCats
+achievement.@.bunnykilla= Da Bunny Killa
+achievement.@.indiana.desc= Using a whip, command at least 7 tamed BigCats at once
+achievement.@.bunnykilla.desc= Using the bunny-kill-o-matic, euthanize at least 69 promiscuous bunnies at once
