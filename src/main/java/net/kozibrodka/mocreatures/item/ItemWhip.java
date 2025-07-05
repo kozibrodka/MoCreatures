@@ -57,7 +57,7 @@ public class ItemWhip extends TemplateItem
                         entitybigcat.setSitting(!entitybigcat.getSitting());
                         i1++;
                     } else
-                    if(world.field_213 > 0 && entitybigcat.getAdult())
+                    if(world.difficulty > 0 && entitybigcat.getAdult())
                     {
                         entitybigcat.ustawCel(entityplayer);
                     }
@@ -89,15 +89,15 @@ public class ItemWhip extends TemplateItem
         }
         if(l != 0 && (k1 == Block.SIGN.id || j1 == Block.SIGN.id) && j1 != 0)
         {
-            SignBlockEntity tileentitysign = (SignBlockEntity)world.method_1777(i, j + 1, k);
+            SignBlockEntity tileentitysign = (SignBlockEntity)world.getBlockEntity(i, j + 1, k);
             if(tileentitysign == null)
             {
-                tileentitysign = (SignBlockEntity)world.method_1777(i, j, k);
+                tileentitysign = (SignBlockEntity)world.getBlockEntity(i, j, k);
             }
             if(tileentitysign != null)
             {
                 int i2 = 0;
-                List list1 = world.method_291();
+                List list1 = world.getEntities();
                 for(int j2 = 0; j2 < list1.size(); j2++)
                 {
                     Entity entity1 = (Entity)list1.get(j2);

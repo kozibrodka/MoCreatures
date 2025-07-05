@@ -26,7 +26,7 @@ public class SugarLump extends TemplateItem
     {
         if(mod_mocreatures.mocreaturesGlass.balancesettings.sugar_lump) {
             itemstack.count--;
-            entityplayer.method_939(a);
+            entityplayer.heal(a);
         }
         return itemstack;
     }

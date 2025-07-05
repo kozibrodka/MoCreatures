@@ -17,11 +17,11 @@ public class RenderBigCat extends LivingEntityRenderer
     public RenderBigCat(ModelBigCat2 modelbigcat2, ModelBigCat1 modelbigcat1, float f)
     {
         super(modelbigcat2, f);
-        method_815(modelbigcat1);
+        setDecorationModel(modelbigcat1);
         bigcat1 = modelbigcat2;
     }
 
-    protected void method_823(LivingEntity entityliving, float f)
+    protected void applyScale(LivingEntity entityliving, float f)
     {
         EntityBigCat entitybigcat = (EntityBigCat)entityliving;
         bigcat1.sitting = entitybigcat.getSitting();
@@ -57,17 +57,17 @@ public class RenderBigCat extends LivingEntityRenderer
         {
             float f2 = 1.6F;
             float f3 = 0.01666667F * f2;
-            float f5 = entitybigcat.method_1351(dispatcher.field_2496);
+            float f5 = entitybigcat.getDistance(dispatcher.cameraEntity);
             if(f5 < 16F)
             {
                 String s = "";
                 s = (new StringBuilder()).append(s).append(entitybigcat.getName()).toString();
                 float f7 = 0.1F;
-                TextRenderer fontrenderer = method_2023();
+                TextRenderer fontrenderer = getTextRenderer();
                 GL11.glPushMatrix();
                 GL11.glTranslatef((float)d + 0.0F, (float)d1 + f7, (float)d2);
                 GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-                GL11.glRotatef(-dispatcher.field_2497, 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(-dispatcher.yaw, 0.0F, 1.0F, 0.0F);
                 GL11.glScalef(-f3, -f3, f3);
                 GL11.glDisable(2896 /*GL_LIGHTING*/);
                 Tessellator tessellator1 = Tessellator.INSTANCE;
@@ -178,11 +178,11 @@ public class RenderBigCat extends LivingEntityRenderer
         GL11.glScalef(f * entitybigcat.widthF, f * entitybigcat.heightF, f * entitybigcat.lengthF);
     }
 
-    protected float method_828(LivingEntity entityliving, float f)
+    protected float getHeadBob(LivingEntity entityliving, float f)
     {
         EntityBigCat entitybigcat = (EntityBigCat)entityliving;
         stretch(entitybigcat);
-        return (float)entityliving.field_1645 + f;
+        return (float)entityliving.age + f;
     }
 
     mod_mocreatures mocr = new mod_mocreatures();

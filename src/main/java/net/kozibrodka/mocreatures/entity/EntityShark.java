@@ -43,9 +43,9 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
         protectFromPlayers = true;
     }
 
-    public void method_937()
+    public void tickMovement()
     {
-        super.method_937();
+        super.tickMovement();
         if(!adult && random.nextInt(50) == 0)
         {
             b += 0.01F;
@@ -56,9 +56,9 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
         }
     }
 
-    protected void method_910(){
+    protected void tickLiving(){
         if(this.target instanceof LivingEntity){
-            PlayerEntity uciekinier = world.method_186(this, 16D);
+            PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
             if(uciekinier == null && target.isAlive()){
                 if(random.nextInt(30) == 0)
                 {
@@ -66,22 +66,22 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
                 }
             }
         }
-        super.method_910();
+        super.tickLiving();
     }
 
-    protected Entity method_638()
+    protected Entity getTargetInRange()
     {
-        if(world.field_213 > 0 && b >= 1.0F)
+        if(world.difficulty > 0 && b >= 1.0F)
         {
-            PlayerEntity entityplayer = world.method_186(this, 16D);
-            if(entityplayer != null && ((EntityBaseAccesor)entityplayer).getField_1612() && !tamed)
+            PlayerEntity entityplayer = world.getClosestPlayer(this, 16D);
+            if(entityplayer != null && ((EntityBaseAccesor)entityplayer).getSubmergedInWater() && !tamed)
             {
                 return entityplayer;
             }
             if(random.nextInt(30) == 0)
             {
                 LivingEntity entityliving = FindTarget(this, 16D);
-                if(entityliving != null && ((EntityBaseAccesor)entityliving).getField_1612())
+                if(entityliving != null && ((EntityBaseAccesor)entityliving).getSubmergedInWater())
                 {
                     return entityliving;
                 }
@@ -102,8 +102,8 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
             {
                 continue;
             }
-            double d2 = entity1.method_1347(entity.x, entity.y, entity.z);
-            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).method_928(entity))
+            double d2 = entity1.getSquaredDistance(entity.x, entity.y, entity.z);
+            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).canSee(entity))
             {
                 d1 = d2;
                 entityliving = (LivingEntity)entity1;
@@ -115,9 +115,9 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
 
     public boolean damage(Entity entitybase, int i)
     {
-        if(super.damage(entitybase, i) && world.field_213 > 0)
+        if(super.damage(entitybase, i) && world.difficulty > 0)
         {
-            if(field_1594 == entitybase || field_1595 == entitybase)
+            if(passenger == entitybase || vehicle == entitybase)
             {
                 return true;
             }
@@ -140,11 +140,11 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
         }
     }
 
-    protected void method_637(Entity entity, float f)
+    protected void attack(Entity entity, float f)
     {
         if((double)f < 3.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY && b >= 1.0F)
         {
-            field_1042 = 20;
+            attackCooldown = 20;
             entity.damage(this, 5);
             if(!(entity instanceof PlayerEntity))
             {
@@ -173,7 +173,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
         displayname = nbttagcompound.getBoolean("DisplayName");
     }
 
-    protected boolean method_940()
+    protected boolean canDespawn()
     {
         return !tamed;
     }
@@ -183,7 +183,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
         return !tamed;
     }
 
-    protected void method_933()
+    protected void dropItems()
     {
         int i = random.nextInt(100);
         if(i < 90)
@@ -191,22 +191,22 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
             int j = random.nextInt(3) + 1;
             for(int l = 0; l < j; l++)
             {
-                method_1327(new ItemStack(mod_mocreatures.sharkteeth, 1, 0), 0.0F);
+                dropItem(new ItemStack(mod_mocreatures.sharkteeth, 1, 0), 0.0F);
             }
             if(mocr.mocreaturesGlass.balancesettings.balance_drop) {
                 int j1 = random.nextInt(2);
                 for (int l1 = 0; l1 < j1; l1++) {
-                    method_1327(new ItemStack(mod_mocreatures.sharkoil, 1, 0), 0.0F);
+                    dropItem(new ItemStack(mod_mocreatures.sharkoil, 1, 0), 0.0F);
                 }
             }
 
         } else
-        if(world.field_213 > 0 && b > 1.5F)
+        if(world.difficulty > 0 && b > 1.5F)
         {
             int k = random.nextInt(3) + 1;
             for(int i1 = 0; i1 < k; i1++)
             {
-                method_1327(new ItemStack(mod_mocreatures.sharkegg, 1, 0), 0.0F);
+                dropItem(new ItemStack(mod_mocreatures.sharkegg, 1, 0), 0.0F);
             }
 
         }
@@ -231,7 +231,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
 
     }
 
-    public boolean method_1323(PlayerEntity entityplayer)
+    public boolean interact(PlayerEntity entityplayer)
     {
         ItemStack itemstack = entityplayer.inventory.getSelectedItem();
         if(tamed && !protectFromPlayers && !entityplayer.name.equals(sharkOwner))
@@ -246,7 +246,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
                     double var4 = this.random.nextGaussian() * 0.02D;
                     double var6 = this.random.nextGaussian() * 0.02D;
                     double var8 = this.random.nextGaussian() * 0.02D;
-                    world.addParticle("heart", this.x + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, this.y + 0.5D + (double) (this.random.nextFloat() * this.spacingY), this.z + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, var4, var6, var8);
+                    world.addParticle("heart", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
                 }
             }else{
                 protectFromPlayers = true;
@@ -254,7 +254,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
                     double var4 = this.random.nextGaussian() * 0.02D;
                     double var6 = this.random.nextGaussian() * 0.02D;
                     double var8 = this.random.nextGaussian() * 0.02D;
-                    world.addParticle("flame", this.x + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, this.y + 0.5D + (double) (this.random.nextFloat() * this.spacingY), this.z + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, var4, var6, var8);
+                    world.addParticle("flame", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
                 }
             }
             return true;
@@ -300,12 +300,12 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
         }
     }
 
-    protected String method_912()
+    protected String getHurtSound()
     {
         return "mocreatures:sharkhurt";
     }
 
-    protected String method_913()
+    protected String getDeathSound()
     {
         return "mocreatures:sharkhurt";
     }
@@ -318,7 +318,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.watermobs.sharkfreq > 0 && world.field_213 >= mocr.mocreaturesGlass.watermobs.sharkSpawnDifficulty + 1 && super.canSpawn();
+        return mocr.mocreaturesGlass.watermobs.sharkfreq > 0 && world.difficulty >= mocr.mocreaturesGlass.watermobs.sharkSpawnDifficulty.ordinal() + 1 && super.canSpawn();
     }
 
     public static void setName(EntityShark entityshark)

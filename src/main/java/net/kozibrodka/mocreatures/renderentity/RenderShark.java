@@ -29,17 +29,17 @@ public class RenderShark extends LivingEntityRenderer
         {
             float f2 = 1.6F;
             float f3 = 0.01666667F * f2;
-            float f4 = entityshark.method_1351(dispatcher.field_2496);
+            float f4 = entityshark.getDistance(dispatcher.cameraEntity);
             if(f4 < 16F)
             {
                 String s = "";
                 s = (new StringBuilder()).append(s).append(entityshark.name).toString();
                 float f5 = 0.1F;
-                TextRenderer fontrenderer = method_2023();
+                TextRenderer fontrenderer = getTextRenderer();
                 GL11.glPushMatrix();
                 GL11.glTranslatef((float)d + 0.0F, (float)d1 + f5, (float)d2);
                 GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-                GL11.glRotatef(-dispatcher.field_2497, 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(-dispatcher.yaw, 0.0F, 1.0F, 0.0F);
                 GL11.glScalef(-f3, -f3, f3);
                 GL11.glDisable(2896 /*GL_LIGHTING*/);
                 Tessellator tessellator = Tessellator.INSTANCE;
@@ -107,16 +107,16 @@ public class RenderShark extends LivingEntityRenderer
         {
             float f2 = 1.6F;
             float f3 = 0.01666667F * f2;
-            float f4 = entityliving.method_1351(dispatcher.field_2496);
+            float f4 = entityliving.getDistance(dispatcher.cameraEntity);
             String s = "";
             s = (new StringBuilder()).append(s).append(entityshark.name).toString();
             if(f4 < 12F && s.length() > 0)
             {
-                TextRenderer fontrenderer = method_2023();
+                TextRenderer fontrenderer = getTextRenderer();
                 GL11.glPushMatrix();
                 GL11.glTranslatef((float)d + 0.0F, (float)d1 + 0.2F, (float)d2);
                 GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-                GL11.glRotatef(-dispatcher.field_2497, 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(-dispatcher.yaw, 0.0F, 1.0F, 0.0F);
                 GL11.glScalef(-f3, -f3, f3);
                 GL11.glDisable(2896 /*GL_LIGHTING*/);
                 GL11.glDepthMask(false);
@@ -169,10 +169,10 @@ public class RenderShark extends LivingEntityRenderer
         GL11.glScalef(entityshark.b, entityshark.b, entityshark.b);
     }
 
-    protected float method_828(LivingEntity entityliving, float f)
+    protected float getHeadBob(LivingEntity entityliving, float f)
     {
         stretch((EntityShark)entityliving);
-        return (float)entityliving.field_1645 + f;
+        return (float)entityliving.age + f;
     }
 
     mod_mocreatures mocr = new mod_mocreatures();

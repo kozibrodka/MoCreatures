@@ -34,7 +34,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         setAge(1.0F);
 //        adult = false;
 //        tamed = false;
-        field_1045 = true;
+        killedByOtherEntity = true;
     }
 
 //    public void setTame()
@@ -47,9 +47,9 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
 //        return getTamed();
 //    }
 
-    public void method_937()
+    public void tickMovement()
     {
-        super.method_937();
+        super.tickMovement();
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
             chooseType(getType());
@@ -106,8 +106,8 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
             for(int i1 = 0; i1 < l; i1++)
             {
                 EntityFishy entityfishy1 = new EntityFishy(world);
-                entityfishy1.method_1340(x, y, z);
-                world.method_210(entityfishy1);
+                entityfishy1.setPosition(x, y, z);
+                world.spawnEntity(entityfishy1);
                 world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
                 eaten = false;
                 entityfishy.eaten = false;
@@ -129,9 +129,9 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         return entityfishy.getTamed() && entityfishy.eaten && entityfishy.getAdult();
     }
 
-    protected void method_910(){
+    protected void tickLiving(){
         if(this.target instanceof PlayerEntity){
-            PlayerEntity uciekinier = world.method_186(this, 16D);
+            PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
             if(uciekinier == null && target.isAlive()){
                 if(random.nextInt(30) == 0)
                 {
@@ -139,22 +139,22 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
                 }
             }
         }
-        super.method_910();
+        super.tickLiving();
     }
 
-    protected Entity method_638()
+    protected Entity getTargetInRange()
     {
-        if(world.field_213 > 0 && getAge() >= 1.0F && getType() == 10)
+        if(world.difficulty > 0 && getAge() >= 1.0F && getType() == 10)
         {
-            PlayerEntity entityplayer = world.method_186(this, 16D);
-            if(entityplayer != null && ((EntityBaseAccesor)entityplayer).getField_1612() && !getTamed())
+            PlayerEntity entityplayer = world.getClosestPlayer(this, 16D);
+            if(entityplayer != null && ((EntityBaseAccesor)entityplayer).getSubmergedInWater() && !getTamed())
             {
                 return entityplayer;
             }
             if(random.nextInt(30) == 0)
             {
                 LivingEntity entityliving = FindTarget(this, 16D);
-                if(entityliving != null && ((EntityBaseAccesor)entityliving).getField_1612())
+                if(entityliving != null && ((EntityBaseAccesor)entityliving).getSubmergedInWater())
                 {
                     return entityliving;
                 }
@@ -175,8 +175,8 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
             {
                 continue;
             }
-            double d2 = entity1.method_1347(entity.x, entity.y, entity.z);
-            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).method_928(entity))
+            double d2 = entity1.getSquaredDistance(entity.x, entity.y, entity.z);
+            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).canSee(entity))
             {
                 d1 = d2;
                 entityliving = (LivingEntity)entity1;
@@ -202,7 +202,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
     {
         if(super.damage(entityBase, i))
         {
-            if(field_1594 == entityBase || field_1595 == entityBase)
+            if(passenger == entityBase || vehicle == entityBase)
             {
                 return true;
             }
@@ -217,11 +217,11 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         }
     }
 
-    protected void method_637(Entity entity, float f)
+    protected void attack(Entity entity, float f)
     {
         if((double)f < 2D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
         {
-            field_1042 = 20;
+            attackCooldown = 20;
             entity.damage(this, 1);
         }
     }
@@ -318,18 +318,18 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
             }
     }
 
-    protected void method_933()
+    protected void dropItems()
     {
         int i = random.nextInt(100);
         if(i < 70 && getAdult())
         {
-            method_1327(new ItemStack(Item.RAW_FISH.id, 1, 0), 0.0F);
+            dropItem(new ItemStack(Item.RAW_FISH.id, 1, 0), 0.0F);
         } else
         {
             int j = random.nextInt(2) + 1;
             for(int k = 0; k < j; k++)
             {
-                method_1327(new ItemStack(mod_mocreatures.fishyegg, 1, 0), 0.0F);
+                dropItem(new ItemStack(mod_mocreatures.fishyegg, 1, 0), 0.0F);
             }
 
         }
@@ -360,10 +360,10 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
 
     protected void initDataTracker() {
         super.initDataTracker();
-        dataTracker.method_1502(16, (byte) 0); //Type
-        dataTracker.method_1502(17, (int) 0); //Age
-        dataTracker.method_1502(18, (byte) 0); //Adult
-        dataTracker.method_1502(19, (byte) 0); //Tamed
+        dataTracker.startTracking(16, (byte) 0); //Type
+        dataTracker.startTracking(17, (int) 0); //Age
+        dataTracker.startTracking(18, (byte) 0); //Adult
+        dataTracker.startTracking(19, (byte) 0); //Tamed
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
@@ -395,55 +395,55 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
     public void setType(int type)
     {
         if(!world.isRemote) {
-            dataTracker.method_1509(16, (byte) type);
+            dataTracker.set(16, (byte) type);
             chooseType(type);
         }
     }
 
     public int getType()
     {
-        return dataTracker.method_1501(16);
+        return dataTracker.getByte(16);
     }
     //AGE
     public void setAge(float age)
     {
-        dataTracker.method_1509(17, Float.floatToRawIntBits(age));
+        dataTracker.set(17, Float.floatToRawIntBits(age));
     }
 
     public float getAge()
     {
-        return Float.intBitsToFloat(dataTracker.method_1508(17));
+        return Float.intBitsToFloat(dataTracker.getInt(17));
     }
     //ADULT
     public boolean getAdult()
     {
-        return (dataTracker.method_1501(18) & 1) != 0;
+        return (dataTracker.getByte(18) & 1) != 0;
     }
 
     public void setAdult(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(18, (byte) 1);
+            dataTracker.set(18, (byte) 1);
         } else
         {
-            dataTracker.method_1509(18, (byte) 0);
+            dataTracker.set(18, (byte) 0);
         }
     }
     //TAMED
     public boolean getTamed()
     {
-        return (dataTracker.method_1501(19) & 1) != 0;
+        return (dataTracker.getByte(19) & 1) != 0;
     }
 
     public void setTamed(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(19, (byte) 1);
+            dataTracker.set(19, (byte) 1);
         } else
         {
-            dataTracker.method_1509(19, (byte) 0);
+            dataTracker.set(19, (byte) 0);
         }
     }
 }

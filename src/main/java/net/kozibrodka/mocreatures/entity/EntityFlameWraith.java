@@ -5,8 +5,8 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.minecraft.class_65;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.Monster;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
@@ -16,7 +16,7 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 import net.modificationstation.stationapi.api.util.Identifier;
 
 public class EntityFlameWraith extends EntityWraith
-    implements class_65, MobSpawnDataProvider
+    implements Monster, MobSpawnDataProvider
 {
 
     public EntityFlameWraith(World world)
@@ -30,41 +30,41 @@ public class EntityFlameWraith extends EntityWraith
         movementSpeed = 1.1F;
     }
 
-    protected int method_914()
+    protected int getDroppedItemId()
     {
         return Item.REDSTONE.id;
     }
 
-    public void method_937()
+    public void tickMovement()
     {
         if(random.nextInt(40) == 0)
         {
-            fire = 2;
+            fireTicks = 2;
         }
-        if(world.method_220())
+        if(world.canMonsterSpawn())
         {
-            float f = method_1394(1.0F);
-            if(f > 0.5F && world.method_249(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && random.nextFloat() * 30F < (f - 0.4F) * 2.0F)
+            float f = getBrightnessAtEyes(1.0F);
+            if(f > 0.5F && world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && random.nextFloat() * 30F < (f - 0.4F) * 2.0F)
             {
                 health -= 2;
             }
         }
-        super.method_937();
+        super.tickMovement();
     }
 
-    protected void method_637(Entity entity, float f)
+    protected void attack(Entity entity, float f)
     {
         if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
         {
-            field_1042 = 20;
+            attackCooldown = 20;
             entity.damage(this, 2);
-            entity.fire = burningTime;
+            entity.fireTicks = burningTime;
         }
     }
 
-    protected void method_910(){
+    protected void tickLiving(){
         if(this.target instanceof PlayerEntity){
-            PlayerEntity uciekinier = world.method_186(this, 20D);
+            PlayerEntity uciekinier = world.getClosestPlayer(this, 20D);
             if(uciekinier == null && target.isAlive()){
                 if(random.nextInt(30) == 0)
                 {
@@ -72,7 +72,7 @@ public class EntityFlameWraith extends EntityWraith
                 }
             }
         }
-        super.method_910();
+        super.tickLiving();
     }
 
     public void markDead()
@@ -92,7 +92,7 @@ public class EntityFlameWraith extends EntityWraith
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.hostilemobs.fwraithfreq > 0 && world.field_213 >= mocr.mocreaturesGlass.hostilemobs.fwraithSpawnDifficulty + 1 && super.d2();
+        return mocr.mocreaturesGlass.hostilemobs.fwraithfreq > 0 && world.difficulty >= mocr.mocreaturesGlass.hostilemobs.fwraithSpawnDifficulty.ordinal() + 1 && super.d2();
     }
 
     mod_mocreatures mocr = new mod_mocreatures();

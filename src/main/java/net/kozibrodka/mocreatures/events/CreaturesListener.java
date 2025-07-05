@@ -1,25 +1,25 @@
 package net.kozibrodka.mocreatures.events;
 
-
-
-import net.fabricmc.api.Environment;
 import net.kozibrodka.mocreatures.entity.*;
-import net.kozibrodka.mocreatures.modelentity.*;
-import net.kozibrodka.mocreatures.renderentity.*;
 import net.mine_diver.unsafeevents.listener.EventListener;
-import net.modificationstation.stationapi.api.client.event.render.entity.EntityRendererRegisterEvent;
 import net.modificationstation.stationapi.api.event.entity.EntityRegister;
 import net.modificationstation.stationapi.api.event.registry.MobHandlerRegistryEvent;
 import net.modificationstation.stationapi.api.mod.entrypoint.Entrypoint;
+import net.modificationstation.stationapi.api.mod.entrypoint.EntrypointManager;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.util.Namespace;
-import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.registry.Registry;
 import net.modificationstation.stationapi.api.util.Null;
 
+import java.lang.invoke.MethodHandles;
+
 public class CreaturesListener {
+    static {
+        EntrypointManager.registerLookup(MethodHandles.lookup());
+    }
+
     @Entrypoint.Namespace
-    public static final Namespace MOD_ID = Null.get();
+    public static Namespace MOD_ID = Null.get();
 
     @EventListener
     private static void registerEntities(EntityRegister event) { //TODO - MULTIPLAYER

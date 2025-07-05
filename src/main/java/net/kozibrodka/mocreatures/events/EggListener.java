@@ -3,12 +3,10 @@ package net.kozibrodka.mocreatures.events;
 import net.kozibrodka.mocreatures.item.MocreaturesEggItem;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.minecraft.item.Item;
-import net.modificationstation.stationapi.api.client.texture.atlas.Atlas;
 import net.modificationstation.stationapi.api.event.registry.ItemRegistryEvent;
 import net.modificationstation.stationapi.api.mod.entrypoint.Entrypoint;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.util.Namespace;
-import net.modificationstation.stationapi.api.template.item.TemplateItem;
 import net.modificationstation.stationapi.api.util.Null;
 
 public class EggListener {
@@ -42,10 +40,9 @@ public class EggListener {
     public static Item egg27;
     public static Item egg28;
 
-
-
     @Entrypoint.Namespace
-    public static final Namespace MOD_ID = Null.get();
+    public static Namespace MOD_ID = Null.get();
+
     @EventListener
     public void registerItems(ItemRegistryEvent event) {
         if(mod_mocreatures.mocreaturesGlass.balancesettings.spawn_eggs){

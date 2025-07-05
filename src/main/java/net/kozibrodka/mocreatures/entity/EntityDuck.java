@@ -20,20 +20,20 @@ public class EntityDuck extends ChickenEntity implements MobSpawnDataProvider
         texture = "/assets/mocreatures/stationapi/textures/mob/duck.png";
         setBoundingBoxSpacing(0.3F, 0.4F);
         health = 4;
-        field_2165 = random.nextInt(6000) + 6000;
+        eggLayTime = random.nextInt(6000) + 6000;
     }
 
-    protected String method_911()
+    protected String getRandomSound()
     {
         return "mocreatures:duck";
     }
 
-    protected String method_912()
+    protected String getHurtSound()
     {
         return "mocreatures:duckhurt";
     }
 
-    protected String method_913()
+    protected String getDeathSound()
     {
         return "mocreatures:duckhurt";
     }

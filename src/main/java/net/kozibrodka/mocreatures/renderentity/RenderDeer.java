@@ -49,16 +49,16 @@ public class RenderDeer extends LivingEntityRenderer
         GL11.glScalef(f1, f1, f1);
     }
 
-    protected float method_828(LivingEntity entityliving, float f)
+    protected float getHeadBob(LivingEntity entityliving, float f)
     {
         EntityDeer entitydeer = (EntityDeer)entityliving;
         stretch(entitydeer);
-        return (float)entityliving.field_1645 + f;
+        return (float)entityliving.age + f;
     }
 
     protected void rotateDeer(EntityDeer entitydeer)
     {
-        if(!entitydeer.field_1623 && entitydeer.dajszybkosc() > 2.0F)
+        if(!entitydeer.onGround && entitydeer.dajszybkosc() > 2.0F)
         {
             if(entitydeer.velocityY > 0.5D)
             {
@@ -74,7 +74,7 @@ public class RenderDeer extends LivingEntityRenderer
         }
     }
 
-    protected void method_823(LivingEntity entityliving, float f)
+    protected void applyScale(LivingEntity entityliving, float f)
     {
         rotateDeer((EntityDeer)entityliving);
     }

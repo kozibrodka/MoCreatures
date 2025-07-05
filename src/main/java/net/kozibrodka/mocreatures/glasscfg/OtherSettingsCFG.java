@@ -1,17 +1,17 @@
 package net.kozibrodka.mocreatures.glasscfg;
 
-import net.glasslauncher.mods.api.gcapi.api.ConfigName;
+import net.glasslauncher.mods.gcapi3.api.ConfigEntry;
 
 public class OtherSettingsCFG {
 
-    @ConfigName("Show Pet Name?")
+    @ConfigEntry(name="Show Pet Name?")
     public Boolean displayname = true;
-    @ConfigName("Show Pet Health?")
+    @ConfigEntry(name="Show Pet Health?")
     public Boolean displayhealth = true;
-    @ConfigName("Show Pet Icons?")
+    @ConfigEntry(name="Show Pet Icons?")
     public Boolean displayemo = true;
-    @ConfigName("Static K.Bed?")
+    @ConfigEntry(name="Static K.Bed?")
     public Boolean staticbed = true;
-    @ConfigName("Static Litter?")
+    @ConfigEntry(name="Static Litter?")
     public Boolean staticlitter = true;
 }

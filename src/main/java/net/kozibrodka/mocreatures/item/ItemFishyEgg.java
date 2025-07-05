@@ -26,11 +26,11 @@ public class ItemFishyEgg extends TemplateItem
         if(!world.isRemote)
         {
             EntityFishyEgg entityfishyegg = new EntityFishyEgg(world);
-            entityfishyegg.method_1340(entityplayer.x, entityplayer.y, entityplayer.z);
-            world.method_210(entityfishyegg);
-            entityfishyegg.velocityY += world.field_214.nextFloat() * 0.05F;
-            entityfishyegg.velocityX += (world.field_214.nextFloat() - world.field_214.nextFloat()) * 0.3F;
-            entityfishyegg.velocityZ += (world.field_214.nextFloat() - world.field_214.nextFloat()) * 0.3F;
+            entityfishyegg.setPosition(entityplayer.x, entityplayer.y, entityplayer.z);
+            world.spawnEntity(entityfishyegg);
+            entityfishyegg.velocityY += world.random.nextFloat() * 0.05F;
+            entityfishyegg.velocityX += (world.random.nextFloat() - world.random.nextFloat()) * 0.3F;
+            entityfishyegg.velocityZ += (world.random.nextFloat() - world.random.nextFloat()) * 0.3F;
         }
         return itemstack;
     }

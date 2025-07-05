@@ -110,9 +110,9 @@ public class MocreaturesEggItem extends TemplateItem {
         }
 
 
-        huj.method_1341(i, j, k, arg3.field_214.nextFloat() * 360F, 0.0F);
-        huj.method_1340(i, j + 1, k);
-        arg3.method_210(huj);
+        huj.setPositionAndAnglesKeepPrevAngles(i, j, k, arg3.random.nextFloat() * 360F, 0.0F);
+        huj.setPosition(i, j + 1, k);
+        arg3.spawnEntity(huj);
         --arg.count;
         if(huj instanceof MoCreatureRacial){
             //LOADING PROPS by EGG-SPAWN

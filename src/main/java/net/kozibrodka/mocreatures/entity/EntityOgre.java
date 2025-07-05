@@ -7,8 +7,8 @@ package net.kozibrodka.mocreatures.entity;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.Destroyer;
 import net.minecraft.block.Block;
-import net.minecraft.class_65;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.Monster;
 import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -18,13 +18,13 @@ import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 public class EntityOgre extends MonsterEntity
-    implements class_65, MobSpawnDataProvider
+    implements Monster, MobSpawnDataProvider
 {
 
     public EntityOgre(World world)
     {
         super(world);
-        field_547 = 3;
+        attackDamage = 3;
         attackRange = mocr.mocreaturesGlass.hostilemobs.ogrerange;
         ogreboolean = false;
         texture = "/assets/mocreatures/stationapi/textures/mob/ogre.png";
@@ -52,29 +52,29 @@ public class EntityOgre extends MonsterEntity
         ogreattack = nbttagcompound.getBoolean("OgreAttack");
     }
 
-    protected String method_911()
+    protected String getRandomSound()
     {
         return "mocreatures:ogre";
     }
 
-    protected String method_912()
+    protected String getHurtSound()
     {
         return "mocreatures:ogrehurt";
     }
 
-    protected String method_913()
+    protected String getDeathSound()
     {
         return "mocreatures:ogredying";
     }
 
-    protected int method_914()
+    protected int getDroppedItemId()
     {
         return Block.OBSIDIAN.id;
     }
 
-    protected void method_910(){
+    protected void tickLiving(){
         if(this.target instanceof PlayerEntity){
-            PlayerEntity uciekinier = world.method_186(this, 16D);
+            PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
             if(uciekinier == null && target.isAlive()){
                 if(random.nextInt(30) == 0)
                 {
@@ -82,16 +82,16 @@ public class EntityOgre extends MonsterEntity
                 }
             }
         }
-        super.method_910();
+        super.tickLiving();
     }
 
-    protected Entity method_638()
+    protected Entity getTargetInRange()
     {
-        float f = method_1394(1.0F);
+        float f = getBrightnessAtEyes(1.0F);
         if(f < 0.5F)
         {
-            PlayerEntity entityplayer = world.method_186(this, attackRange);
-            if(entityplayer != null && world.field_213 > 0)
+            PlayerEntity entityplayer = world.getClosestPlayer(this, attackRange);
+            if(entityplayer != null && world.difficulty > 0)
             {
                 ogrehasenemy = true;
                 return entityplayer;
@@ -105,11 +105,11 @@ public class EntityOgre extends MonsterEntity
     {
         if(super.damage(entityBase, i))
         {
-            if(field_1594 == entityBase || field_1595 == entityBase)
+            if(passenger == entityBase || vehicle == entityBase)
             {
                 return true;
             }
-            if(entityBase != this && world.field_213 > 0)
+            if(entityBase != this && world.difficulty > 0)
             {
                 target = entityBase;
                 ogrehasenemy = true;
@@ -121,28 +121,28 @@ public class EntityOgre extends MonsterEntity
         }
     }
 
-    public void method_937()
+    public void tickMovement()
     {
         destroyForce = mocr.mocreaturesGlass.hostilemobs.ogreStrength;
         attackRange = mocr.mocreaturesGlass.hostilemobs.ogrerange;
         if(ogrehasenemy && random.nextInt(frequencyA) == 0)
         {
             ogreattack = true;
-            field_1042 = 15;
+            attackCooldown = 15;
         }
-        super.method_937();
+        super.tickMovement();
     }
 
     public void onLivingUpdate2()
     {
-        super.method_937();
+        super.tickMovement();
     }
 
-    protected void method_637(Entity entity, float f)
+    protected void attack(Entity entity, float f)
     {
-        if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY && world.field_213 > 0)
+        if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY && world.difficulty > 0)
         {
-            entity.damage(this, field_547);
+            entity.damage(this, attackDamage);
         }
     }
 
@@ -158,7 +158,7 @@ public class EntityOgre extends MonsterEntity
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.hostilemobs.ogrefreq > 0 && world.field_213 >= mocr.mocreaturesGlass.hostilemobs.ogreSpawnDifficulty + 1 && super.canSpawn();
+        return mocr.mocreaturesGlass.hostilemobs.ogrefreq > 0 && world.difficulty >= mocr.mocreaturesGlass.hostilemobs.ogreSpawnDifficulty.ordinal() + 1 && super.canSpawn();
     }
 
     public boolean d2()
@@ -166,17 +166,17 @@ public class EntityOgre extends MonsterEntity
         return super.canSpawn();
     }
 
-    public int method_916()
+    public int getLimitPerChunk()
     {
         return 3;
     }
 
-    protected void method_933()
+    protected void dropItems()
     {
         int i = random.nextInt(3) + 1;
         for(int j = 0; j < i; j++)
         {
-            method_1327(new ItemStack(method_914(), 1, 0), 0.0F);
+            dropItem(new ItemStack(getDroppedItemId(), 1, 0), 0.0F);
         }
 
     }

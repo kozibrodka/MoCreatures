@@ -30,8 +30,11 @@
     "stationapi:event_bus_server": [
 
     ],
-    "gcapi": [
+    "gcapi3": [
       "net.kozibrodka.mocreatures.events.mod_mocreatures"
+    ],
+    "gcapi3:factory_provider": [
+      "net.kozibrodka.mocreatures.glasscfg.enums.DifficultyEnumFactory"
     ]
   },
   "mixins": [
@@ -39,6 +42,12 @@
   ],
 
   "depends": {
-    "minecraft": "1.0.0-beta.7.3"
+    "minecraft": "1.0.0-beta.7.3",
+    "stationapi": "*"
+  },
+
+  "recommends": {
+    "gcapi": "*",
+    "modmenu": "*"
   }
 }

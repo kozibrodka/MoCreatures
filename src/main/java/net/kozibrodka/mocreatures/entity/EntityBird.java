@@ -5,7 +5,7 @@ import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mixin.EntityBaseAccesor;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.block.Block;
-import net.minecraft.block.Material;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
@@ -31,7 +31,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
 //        texture = "/assets/mocreatures/stationapi/textures/mob/birdblue.png";
         setBoundingBoxSpacing(0.4F, 0.3F);
         health = 2;
-        field_1625 = true;
+        verticalCollision = true;
         wingb = 0.0F;
         wingc = 0.0F;
         wingh = 1.0F;
@@ -40,38 +40,38 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
 //        typeint = 0;
 //        typechosen = false;
 //        hasreproduced = false;
-        field_1045 = true;
+        killedByOtherEntity = true;
     }
 
-    protected void method_1389(float f)
+    protected void onLanding(float f)
     {
     }
 
     protected void initDataTracker()
     {
         super.initDataTracker();
-        dataTracker.method_1502(16, (byte) 0); //Type
-        dataTracker.method_1502(17, (byte) 0); //Tamed
-        dataTracker.method_1502(18, (byte) 0); //Picked
-        dataTracker.method_1502(19, (byte) 0); //HasReproduced
-        dataTracker.method_1502(20, (byte) 0); //Fleeing
+        dataTracker.startTracking(16, (byte) 0); //Type
+        dataTracker.startTracking(17, (byte) 0); //Tamed
+        dataTracker.startTracking(18, (byte) 0); //Picked
+        dataTracker.startTracking(19, (byte) 0); //HasReproduced
+        dataTracker.startTracking(20, (byte) 0); //Fleeing
     }
 
-    public int method_916()
+    public int getLimitPerChunk()
     {
         return 6;
     }
 
-    public void method_937()
+    public void tickMovement()
     {
-        super.method_937();
+        super.tickMovement();
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
             chooseType(getType());
         }
         winge = wingb;
         wingd = wingc;
-        wingc = (float)((double)wingc + (double)(field_1623 ? -1 : 4) * 0.29999999999999999D);
+        wingc = (float)((double)wingc + (double)(onGround ? -1 : 4) * 0.29999999999999999D);
         if(wingc < 0.0F)
         {
             wingc = 0.0F;
@@ -80,18 +80,18 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         {
             wingc = 1.0F;
         }
-        if(!field_1623 && wingh < 1.0F)
+        if(!onGround && wingh < 1.0F)
         {
             wingh = 1.0F;
         }
         wingh = (float)((double)wingh * 0.90000000000000002D);
-        if(!field_1623 && velocityY < 0.0D)
+        if(!onGround && velocityY < 0.0D)
         {
             velocityY *= 0.80000000000000004D;
         }
         wingb += wingh * 2.0F;
         LivingEntity entityliving = getClosestEntityLiving(this, 4D);
-        if(entityliving != null && !getTamed() && method_928(entityliving))
+        if(entityliving != null && !getTamed() && canSee(entityliving))
         {
             setFleeing(true);
         }
@@ -136,19 +136,19 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
-    protected void method_910()
+    protected void tickLiving()
     {
-        if(field_1623 && random.nextInt(10) == 0 && (velocityX > 0.050000000000000003D || velocityZ > 0.050000000000000003D || velocityX < -0.050000000000000003D || velocityZ < -0.050000000000000003D))
+        if(onGround && random.nextInt(10) == 0 && (velocityX > 0.050000000000000003D || velocityZ > 0.050000000000000003D || velocityX < -0.050000000000000003D || velocityZ < -0.050000000000000003D))
         {
             velocityY = 0.25D;
         }
-        if(field_1595 != null && (field_1595 instanceof PlayerEntity))
+        if(vehicle != null && (vehicle instanceof PlayerEntity))
         {
-            PlayerEntity entityplayer = (PlayerEntity)field_1595;
+            PlayerEntity entityplayer = (PlayerEntity)vehicle;
             if(entityplayer != null)
             {
                 yaw = entityplayer.yaw;
-                ((EntityBaseAccesor)entityplayer).setField_1636(0.0F);
+                ((EntityBaseAccesor)entityplayer).setFallDistance(0.0F);
                 if(entityplayer.velocityY < -0.10000000000000001D)
                 {
                     entityplayer.velocityY = -0.10000000000000001D;
@@ -157,9 +157,9 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
         if(!getFleeing() || !getPicked())
         {
-            super.method_910();
+            super.tickLiving();
         } else
-        if(field_1623)
+        if(onGround)
         {
             setPicked(false);
         }
@@ -177,15 +177,15 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
-    public boolean method_1323(PlayerEntity entityplayer)
+    public boolean interact(PlayerEntity entityplayer)
     {
         if(!getTamed())
         {
             return false;
         }
         yaw = entityplayer.yaw;
-        method_1376(entityplayer);
-        if(field_1595 != null)
+        setVehicle(entityplayer);
+        if(vehicle != null)
         {
             setPicked(true);
         } else
@@ -198,14 +198,14 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         return true;
     }
 
-    public double method_1385()
+    public double getStandingEyeHeight()
     {
-        if(field_1595 instanceof PlayerEntity)
+        if(vehicle instanceof PlayerEntity)
         {
-            return (double)(eyeHeight - 1.15F);
+            return (double)(standingEyeHeight - 1.15F);
         } else
         {
-            return (double)eyeHeight;
+            return (double)standingEyeHeight;
         }
     }
 
@@ -226,7 +226,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
             {
                 continue;
             }
-            double d2 = entityitem1.method_1347(entity.x, entity.y, entity.z);
+            double d2 = entityitem1.getSquaredDistance(entity.x, entity.y, entity.z);
             if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1))
             {
                 d1 = d2;
@@ -249,8 +249,8 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
             {
                 continue;
             }
-            double d2 = entity1.method_1347(entity.x, entity.y, entity.z);
-            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).method_928(entity))
+            double d2 = entity1.getSquaredDistance(entity.x, entity.y, entity.z);
+            if((d < 0.0D || d2 < d * d) && (d1 == -1D || d2 < d1) && ((LivingEntity)entity1).canSee(entity))
             {
                 d1 = d2;
                 entityliving = (LivingEntity)entity1;
@@ -535,7 +535,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         });
     }
 
-    protected int method_914()
+    protected int getDroppedItemId()
     {
         if(random.nextInt(2) == 0)
         {
@@ -562,7 +562,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         setType(nbttagcompound.getInt("TypeInt"));
     }
 
-    protected String method_911()
+    protected String getRandomSound()
     {
         if(getType() == 1)
         {
@@ -589,12 +589,12 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
-    protected String method_912()
+    protected String getHurtSound()
     {
         return "mocreatures:birdhurt";
     }
 
-    protected String method_913()
+    protected String getDeathSound()
     {
         return "mocreatures:birddying";
     }
@@ -637,78 +637,78 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
     public void setType(int type)
     {
         if(!world.isRemote) {
-            dataTracker.method_1509(16, (byte) type);
+            dataTracker.set(16, (byte) type);
             chooseType(type);
         }
     }
 
     public int getType()
     {
-        return dataTracker.method_1501(16);
+        return dataTracker.getByte(16);
     }
 
     //Tamed
     public boolean getTamed()
     {
-        return (dataTracker.method_1501(17) & 1) != 0;
+        return (dataTracker.getByte(17) & 1) != 0;
     }
 
     public void setTamed(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(17, (byte) 1);
+            dataTracker.set(17, (byte) 1);
         } else
         {
-            dataTracker.method_1509(17, (byte) 0);
+            dataTracker.set(17, (byte) 0);
         }
     }
     //Picked
     public boolean getPicked()
     {
-        return (dataTracker.method_1501(18) & 1) != 0;
+        return (dataTracker.getByte(18) & 1) != 0;
     }
 
     public void setPicked(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(18, (byte) 1);
+            dataTracker.set(18, (byte) 1);
         } else
         {
-            dataTracker.method_1509(18, (byte) 0);
+            dataTracker.set(18, (byte) 0);
         }
     }
     //Picked
     public boolean getReproduced()
     {
-        return (dataTracker.method_1501(19) & 1) != 0;
+        return (dataTracker.getByte(19) & 1) != 0;
     }
 
     public void setReproduced(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(19, (byte) 1);
+            dataTracker.set(19, (byte) 1);
         } else
         {
-            dataTracker.method_1509(19, (byte) 0);
+            dataTracker.set(19, (byte) 0);
         }
     }
     //Picked
     public boolean getFleeing()
     {
-        return (dataTracker.method_1501(20) & 1) != 0;
+        return (dataTracker.getByte(20) & 1) != 0;
     }
 
     public void setFleeing(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(20, (byte) 1);
+            dataTracker.set(20, (byte) 1);
         } else
         {
-            dataTracker.method_1509(20, (byte) 0);
+            dataTracker.set(20, (byte) 0);
         }
     }
 }

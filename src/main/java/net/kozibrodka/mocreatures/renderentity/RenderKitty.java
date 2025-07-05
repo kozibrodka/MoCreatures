@@ -7,11 +7,11 @@ import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.entity.SkeletonEntityRenderer;
+import net.minecraft.client.render.entity.UndeadEntityRenderer;
 import net.minecraft.entity.LivingEntity;
 import org.lwjgl.opengl.GL11;
 
-public class RenderKitty extends SkeletonEntityRenderer
+public class RenderKitty extends UndeadEntityRenderer
 {
 
     public RenderKitty(ModelKitty modelkitty, float f)
@@ -20,12 +20,12 @@ public class RenderKitty extends SkeletonEntityRenderer
         pussy1 = modelkitty;
     }
 
-    protected void method_823(LivingEntity entityliving, float f)
+    protected void applyScale(LivingEntity entityliving, float f)
     {
         EntityKitty entitykitty = (EntityKitty)entityliving;
         pussy1.isSitting = entitykitty.isSitting;
         pussy1.isSwinging = entitykitty.isSwinging;
-        pussy1.swingProgress = entitykitty.field_1035;
+        pussy1.swingProgress = entitykitty.swingAnimationProgress;
         pussy1.kittystate = entitykitty.kittystate;
         if(entitykitty.kittystate == 20)
         {
@@ -57,14 +57,14 @@ public class RenderKitty extends SkeletonEntityRenderer
         GL11.glScalef(entitykitty.edad, entitykitty.edad, entitykitty.edad);
     }
 
-    protected float method_828(LivingEntity entityliving, float f)
+    protected float getHeadBob(LivingEntity entityliving, float f)
     {
         EntityKitty entitykitty = (EntityKitty)entityliving;
         if(!entitykitty.adult)
         {
             stretch(entitykitty);
         }
-        return (float)entityliving.field_1645 + f;
+        return (float)entityliving.age + f;
     }
 
     public void render(LivingEntity entityliving, double d, double d1, double d2,
@@ -79,7 +79,7 @@ public class RenderKitty extends SkeletonEntityRenderer
         {
             float f2 = 1.6F;
             float f3 = 0.01666667F * f2;
-            float f4 = entityliving.method_1351(dispatcher.field_2496);
+            float f4 = entityliving.getDistance(dispatcher.cameraEntity);
             String s = "";
             s = (new StringBuilder()).append(s).append(entitykitty.name).toString();
             if(f4 < 12F)
@@ -89,11 +89,11 @@ public class RenderKitty extends SkeletonEntityRenderer
                 {
                     f5 = 0.4F;
                 }
-                TextRenderer fontrenderer = method_2023();
+                TextRenderer fontrenderer = getTextRenderer();
                 GL11.glPushMatrix();
                 GL11.glTranslatef((float)d + 0.0F, (float)d1 - f5, (float)d2);
                 GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-                GL11.glRotatef(-dispatcher.field_2497, 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(-dispatcher.yaw, 0.0F, 1.0F, 0.0F);
                 GL11.glScalef(-f3, -f3, f3);
                 GL11.glDisable(2896 /*GL_LIGHTING*/);
                 Tessellator tessellator = Tessellator.INSTANCE;
@@ -178,7 +178,7 @@ public class RenderKitty extends SkeletonEntityRenderer
 
     protected void rotateAnimal(LivingEntity entityliving)
     {
-        if(!entityliving.field_1623)
+        if(!entityliving.onGround)
         {
             GL11.glRotatef(90F, -1F, 0.0F, 0.0F);
         }

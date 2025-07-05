@@ -1,19 +1,19 @@
 package net.kozibrodka.mocreatures.glasscfg;
 
-import net.glasslauncher.mods.api.gcapi.api.ConfigName;
+import net.glasslauncher.mods.gcapi3.api.ConfigEntry;
 
 public class BalanceCFG {
 
-    @ConfigName("Rework mob drops?")
+    @ConfigEntry(name="Rework mob drops?")
     public Boolean balance_drop = false;
-    @ConfigName("SugarLump is food item")
+    @ConfigEntry(name="SugarLump is food item")
     public Boolean sugar_lump = true;
-    @ConfigName("Horse salldle balance?")
+    @ConfigEntry(name="Horse salldle balance?")
     public Boolean horse_saddle = false;
-    @ConfigName("Horse Fuel")
+    @ConfigEntry(name="Horse Fuel")
     public Boolean horse_fuel = false;
-    @ConfigName("Horse Speed Boost by mouse etc.......")
+    @ConfigEntry(name="Horse Speed Boost by mouse etc.......")
     public Boolean horse_speed_boost = true;
-    @ConfigName("Spawn Eggs (cheating)")
+    @ConfigEntry(name="Spawn Eggs (cheating)")
     public Boolean spawn_eggs = false;
 }

@@ -15,7 +15,7 @@ public class EntityHellRat extends EntityRat implements MobSpawnDataProvider
         texture = "/assets/mocreatures/stationapi/textures/mob/hellrat.png";
         setBoundingBoxSpacing(0.7F, 0.7F);
         health = 20;
-        field_547 = 2;
+        attackDamage = 2;
         fireImmune = true;
     }
 
@@ -24,7 +24,7 @@ public class EntityHellRat extends EntityRat implements MobSpawnDataProvider
         texture = "/assets/mocreatures/stationapi/textures/mob/hellrat.png";
     }
 
-    protected int method_914()
+    protected int getDroppedItemId()
     {
         return Item.REDSTONE.id;
     }

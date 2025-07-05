@@ -27,11 +27,11 @@ public class ItemSharkEgg extends TemplateItem
         if(!world.isRemote)
         {
             EntitySharkEgg entitysharkegg = new EntitySharkEgg(world, entityplayer.name);
-            entitysharkegg.method_1340(entityplayer.x, entityplayer.y, entityplayer.z);
-            world.method_210(entitysharkegg);
-            entitysharkegg.velocityY += world.field_214.nextFloat() * 0.05F;
-            entitysharkegg.velocityX += (world.field_214.nextFloat() - world.field_214.nextFloat()) * 0.3F;
-            entitysharkegg.velocityZ += (world.field_214.nextFloat() - world.field_214.nextFloat()) * 0.3F;
+            entitysharkegg.setPosition(entityplayer.x, entityplayer.y, entityplayer.z);
+            world.spawnEntity(entitysharkegg);
+            entitysharkegg.velocityY += world.random.nextFloat() * 0.05F;
+            entitysharkegg.velocityX += (world.random.nextFloat() - world.random.nextFloat()) * 0.3F;
+            entitysharkegg.velocityZ += (world.random.nextFloat() - world.random.nextFloat()) * 0.3F;
         }
         return itemstack;
     }

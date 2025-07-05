@@ -6,6 +6,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(CreeperEntity.class)
 public interface CreeperAccesor {
-    @Accessor
-    void setField_350(int currentFuseTime);
+    @Accessor("fuseTime")
+    void setFuseTime(int currentFuseTime);
 }

@@ -40,7 +40,7 @@ public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
 
     public void move(double d, double d1, double d2)
     {
-        if(field_1595 != null || !field_1623 || !mocr.mocreaturesGlass.othersettings.staticbed)
+        if(vehicle != null || !onGround || !mocr.mocreaturesGlass.othersettings.staticbed)
         {
             super.move(d, d1, d2);
         }
@@ -49,11 +49,11 @@ public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
     public void tick()
     {
         super.tick();
-        if(field_1623)
+        if(onGround)
         {
             pickedUp = false;
         }
-        if((hasMilk || hasFood) && field_1594 != null)
+        if((hasMilk || hasFood) && passenger != null)
         {
             milklevel += 0.003F;
             if(milklevel > 2.0F)
@@ -79,35 +79,35 @@ public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
         hasFood = nbttagcompound.getBoolean("HasFood");
     }
 
-    public boolean method_928(Entity entity)
+    public boolean canSee(Entity entity)
     {
-        return world.method_160(Vec3d.createCached(x, y + (double)method_1366(), z), Vec3d.createCached(entity.x, entity.y + (double)entity.method_1366(), entity.z)) == null;
+        return world.raycast(Vec3d.createCached(x, y + (double)getShadowRadius(), z), Vec3d.createCached(entity.x, entity.y + (double)entity.getShadowRadius(), entity.z)) == null;
     }
 
-    public boolean method_1356()
-    {
-        return !dead;
-    }
-
-    public boolean method_1380()
+    public boolean isCollidable()
     {
         return !dead;
     }
 
-    protected boolean method_940()
+    public boolean isPushable()
+    {
+        return !dead;
+    }
+
+    protected boolean canDespawn()
     {
         return false;
     }
 
-    public void method_1313(byte byte0)
+    public void processServerEntityStatus(byte byte0)
     {
     }
 
-    protected void method_910()
+    protected void tickLiving()
     {
     }
 
-    protected void method_1389(float f)
+    protected void onLanding(float f)
     {
     }
 
@@ -116,12 +116,12 @@ public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
         return false;
     }
 
-    public String method_1314()
+    public String getTexture()
     {
         return "/assets/mocreatures/stationapi/textures/mob/kittybed.png";
     }
 
-    public boolean method_1323(PlayerEntity entityplayer)
+    public boolean interact(PlayerEntity entityplayer)
     {
         ItemStack itemstack = entityplayer.inventory.getSelectedItem();
         if(itemstack != null && itemstack.itemId == Item.MILK_BUCKET.id)
@@ -144,47 +144,47 @@ public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
         }
         if(itemstack != null && (itemstack.itemId == Item.STONE_PICKAXE.id || itemstack.itemId == Item.WOODEN_PICKAXE.id || itemstack.itemId == Item.IRON_PICKAXE.id || itemstack.itemId == Item.GOLDEN_PICKAXE.id || itemstack.itemId == Item.DIAMOND_PICKAXE.id))
         {
-            entityplayer.inventory.method_671(new ItemStack(mod_mocreatures.kittybed, 1, sheetcolour));
+            entityplayer.inventory.addStack(new ItemStack(mod_mocreatures.kittybed, 1, sheetcolour));
             world.playSound(this, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
             markDead();
             return true;
         } else
         {
             yaw = entityplayer.yaw;
-            method_1376(entityplayer);
+            setVehicle(entityplayer);
             world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
             return true;
         }
     }
 
-    public double method_1385()
+    public double getStandingEyeHeight()
     {
-        if(field_1595 instanceof PlayerEntity)
+        if(vehicle instanceof PlayerEntity)
         {
             pickedUp = true;
-            return (double)(eyeHeight - 1.15F);
+            return (double)(standingEyeHeight - 1.15F);
         } else
         {
-            return (double)eyeHeight;
+            return (double)standingEyeHeight;
         }
     }
 
-    protected float method_915()
+    protected float getSoundVolume()
     {
         return 0.0F;
     }
 
-    protected String method_911()
+    protected String getRandomSound()
     {
         return null;
     }
 
-    protected String method_912()
+    protected String getHurtSound()
     {
         return null;
     }
 
-    protected String method_913()
+    protected String getDeathSound()
     {
         return null;
     }

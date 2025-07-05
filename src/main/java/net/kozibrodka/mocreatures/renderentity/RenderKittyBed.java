@@ -15,10 +15,10 @@ public class RenderKittyBed extends LivingEntityRenderer
     {
         super(modelkittybed, f);
         kittybed = modelkittybed;
-        method_815(modelkittybed2);
+        setDecorationModel(modelkittybed2);
     }
 
-    protected void method_823(LivingEntity entityliving, float f)
+    protected void applyScale(LivingEntity entityliving, float f)
     {
         EntityKittyBed entitykittybed = (EntityKittyBed)entityliving;
         mycolor = entitykittybed.sheetcolour;
@@ -28,7 +28,7 @@ public class RenderKittyBed extends LivingEntityRenderer
         kittybed.milklevel = entitykittybed.milklevel;
     }
 
-    protected boolean method_825(LivingEntity entityliving, int i, float f)
+    protected boolean bindTexture(LivingEntity entityliving, int i, float f)
     {
         return setWoolColorAndRender(entityliving, i, f);
     }

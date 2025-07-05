@@ -12,12 +12,12 @@ import net.kozibrodka.mocreatures.mocreatures.AnimalChest;
 import net.kozibrodka.mocreatures.mocreatures.MoCGUI;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.block.Block;
-import net.minecraft.class_61;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
@@ -71,7 +71,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         setAge(0.35F);
         roped = false;
         roper = null;
-        field_1045 = true;
+        killedByOtherEntity = true;
 //        name = "";
         displayname = false;
 //        isHorsePublic = false;
@@ -182,9 +182,9 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
 
     public void Riding()
     {
-        if(field_1594 != null && (field_1594 instanceof PlayerEntity))
+        if(passenger != null && (passenger instanceof PlayerEntity))
         {
-            PlayerEntity entityplayer = (PlayerEntity)field_1594;
+            PlayerEntity entityplayer = (PlayerEntity)passenger;
             List list = world.getEntities(this, boundingBox.expand(1.0D, 0.0D, 1.0D));
             if(list != null)
             {
@@ -200,28 +200,28 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                     {
                         continue;
                     }
-                    float f = method_1351(entity);
+                    float f = getDistance(entity);
                     if(f < 2.0F && random.nextInt(10) == 0)
                     {
-                        damage(entity, ((MonsterBaseAccesor)entity).getField_547());
+                        damage(entity, ((MonsterBaseAccesor)entity).getAttackDamage());
                     }
                 }
 
             }
-            if(entityplayer.method_1373())
+            if(entityplayer.isSneaking())
             {
-                entityplayer.method_1376(null);
+                entityplayer.setVehicle(null);
             }
         }
     }
 
-    public void method_937()
+    public void tickMovement()
     {
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
             chooseType(getType());
         }
-        if(random.nextInt(300) == 0 && health < maxhealth && field_1041 == 0)
+        if(random.nextInt(300) == 0 && health < maxhealth && deathTime == 0)
         {
             health++;
         }
@@ -230,7 +230,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         {
             fwinge = fwingb;
             fwingd = fwingc;
-            fwingc = (float)((double)fwingc + (double)(field_1623 ? -1 : 4) * 0.29999999999999999D);
+            fwingc = (float)((double)fwingc + (double)(onGround ? -1 : 4) * 0.29999999999999999D);
             if(fwingc < 0.0F)
             {
                 fwingc = 0.0F;
@@ -239,19 +239,19 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             {
                 fwingc = 1.0F;
             }
-            if(!field_1623 && fwingh < 1.0F)
+            if(!onGround && fwingh < 1.0F)
             {
                 fwingh = 0.3F;
             }
             fwingh = (float)((double)fwingh * 0.90000000000000002D);
-            if(!field_1623 && velocityY < 0.0D)
+            if(!onGround && velocityY < 0.0D)
             {
                 velocityY *= 0.59999999999999998D;
             }
             fwingb += fwingh * 2.0F;
         }
-        super.method_937();
-        if(getType() == 7 && field_1594 != null && nightmareInt > 0 && random.nextInt(2) == 0)
+        super.tickMovement();
+        if(getType() == 7 && passenger != null && nightmareInt > 0 && random.nextInt(2) == 0)
         {
             NightmareEffect();
         }
@@ -305,8 +305,8 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 continue;
             }
             EntityHorse entityhorse1 = new EntityHorse(world);
-            entityhorse1.method_1340(x, y, z);
-            world.method_210(entityhorse1);
+            entityhorse1.setPosition(x, y, z);
+            world.spawnEntity(entityhorse1);
             world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
             setEaten(false);
             if(!(mocr.mocreaturesGlass.animals.easybreeding))
@@ -325,15 +325,15 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
 
     }
 
-    protected void method_910()
+    protected void tickLiving()
     {
-        if(!field_1026 && field_1594 == null)
+        if(!interpolateOnly && passenger == null)
         {
-            super.method_910();
+            super.tickLiving();
         }
-        if(getTamed() && field_1595 == null && roper != null)
+        if(getTamed() && vehicle == null && roper != null)
         {
-            float f = roper.method_1351(this);
+            float f = roper.getDistance(this);
             if(f > 5F)
             {
                 method_429(roper, f);
@@ -343,7 +343,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
 
     private void method_429(Entity entity, float f)
     {
-        class_61 pathentity = world.method_192(this, entity, 16F);
+        Path pathentity = world.findPath(this, entity, 16F);
         if(pathentity == null && f > 12F)
         {
             int i = MathHelper.floor(entity.x) - 2;
@@ -353,9 +353,9 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             {
                 for(int i1 = 0; i1 <= 4; i1++)
                 {
-                    if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && world.method_1780(i + l, k - 1, j + i1) && !world.method_1780(i + l, k, j + i1) && !world.method_1780(i + l, k + 1, j + i1))
+                    if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && world.shouldSuffocate(i + l, k - 1, j + i1) && !world.shouldSuffocate(i + l, k, j + i1) && !world.shouldSuffocate(i + l, k + 1, j + i1))
                     {
-                        method_1341((float)(i + l) + 0.5F, k, (float)(j + i1) + 0.5F, yaw, pitch);
+                        setPositionAndAnglesKeepPrevAngles((float)(i + l) + 0.5F, k, (float)(j + i1) + 0.5F, yaw, pitch);
                         return;
                     }
                 }
@@ -364,7 +364,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
 
         } else
         {
-            method_635(pathentity);
+            setPath(pathentity);
         }
     }
 
@@ -374,17 +374,17 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         int j = MathHelper.floor(boundingBox.minY);
         int k = MathHelper.floor(z);
         world.setBlock(i - 1, j, k - 1, Block.FIRE.id);
-        PlayerEntity entityplayer = (PlayerEntity)field_1594;
-        if(entityplayer != null && entityplayer.fire > 0)
+        PlayerEntity entityplayer = (PlayerEntity)passenger;
+        if(entityplayer != null && entityplayer.fireTicks > 0)
         {
-            entityplayer.fire = 0;
+            entityplayer.fireTicks = 0;
         }
         nightmareInt--;
     }
 
     public boolean ReadyforParenting(EntityHorse entityhorse)
     {
-        return entityhorse.field_1594 == null && entityhorse.field_1595 == null && entityhorse.getTamed() && entityhorse.getEaten() && !entityhorse.hasreproduced && entityhorse.getAdult();
+        return entityhorse.passenger == null && entityhorse.vehicle == null && entityhorse.getTamed() && entityhorse.getEaten() && !entityhorse.hasreproduced && entityhorse.getAdult();
     }
 
     private int HorseGenetics(EntityHorse entityhorse, EntityHorse entityhorse1)
@@ -415,7 +415,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
 
     public boolean damage(Entity entity, int i)
     {
-        if(field_1594 != null && entity == field_1594)
+        if(passenger != null && entity == passenger)
         {
             return false;
         }
@@ -431,91 +431,91 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
     }
 
-    public void method_945(float f, float f1)
+    public void travel(float f, float f1)
     {
-        if(isSubmergedInWater())
+        if(checkWaterCollisions())
         {
-            if(field_1594 != null)
+            if(passenger != null)
             {
-                velocityX += field_1594.velocityX * (HorseSpeed / 2D);
-                velocityZ += field_1594.velocityZ * (HorseSpeed / 2D);
-                PlayerEntity entityplayer = (PlayerEntity)field_1594;
+                velocityX += passenger.velocityX * (HorseSpeed / 2D);
+                velocityZ += passenger.velocityZ * (HorseSpeed / 2D);
+                PlayerEntity entityplayer = (PlayerEntity)passenger;
                 if(((LivingAccesor)entityplayer).getJumping() && !isjumping)
                 {
                     velocityY += 0.5D;
                     isjumping = true;
                 }
                 move(velocityX, velocityY, velocityZ);
-                if(field_1623)
+                if(onGround)
                 {
                     isjumping = false;
                 }
-                pitch = field_1594.pitch * 0.5F;
+                pitch = passenger.pitch * 0.5F;
                 if(random.nextInt(20) == 0)
                 {
-                    yaw = field_1594.yaw;
+                    yaw = passenger.yaw;
                 }
-                method_1342(yaw, pitch);
+                setRotation(yaw, pitch);
                 if(!getTamed())
                 {
-                    field_1594 = null;
+                    passenger = null;
                 }
             }
             double d = y;
-            method_1324(f, f1, 0.02F);
+            moveNonSolid(f, f1, 0.02F);
             move(velocityX, velocityY, velocityZ);
             velocityX *= 0.80000001192092896D;
             velocityY *= 0.80000001192092896D;
             velocityZ *= 0.80000001192092896D;
             velocityY -= 0.02D;
-            if(field_1624 && method_1344(velocityX, ((velocityY + 0.60000002384185791D) - y) + d, velocityZ))
+            if(horizontalCollision && getEntitiesInside(velocityX, ((velocityY + 0.60000002384185791D) - y) + d, velocityZ))
             {
                 velocityY = 0.30000001192092901D;
             }
         } else
-        if(method_1335())
+        if(isTouchingLava())
         {
-            if(field_1594 != null)
+            if(passenger != null)
             {
-                velocityX += field_1594.velocityX * (HorseSpeed / 2D);
-                velocityZ += field_1594.velocityZ * (HorseSpeed / 2D);
-                PlayerEntity entityplayer1 = (PlayerEntity)field_1594;
+                velocityX += passenger.velocityX * (HorseSpeed / 2D);
+                velocityZ += passenger.velocityZ * (HorseSpeed / 2D);
+                PlayerEntity entityplayer1 = (PlayerEntity)passenger;
                 if(((LivingAccesor)entityplayer1).getJumping() && !isjumping)
                 {
                     velocityY += 0.5D;
                     isjumping = true;
                 }
                 move(velocityX, velocityY, velocityZ);
-                if(field_1623)
+                if(onGround)
                 {
                     isjumping = false;
                 }
-                pitch = field_1594.pitch * 0.5F;
+                pitch = passenger.pitch * 0.5F;
                 if(random.nextInt(20) == 0)
                 {
-                    yaw = field_1594.yaw;
+                    yaw = passenger.yaw;
                 }
-                method_1342(yaw, pitch);
+                setRotation(yaw, pitch);
                 if(!getTamed())
                 {
-                    field_1594 = null;
+                    passenger = null;
                 }
             }
             double d1 = y;
-            method_1324(f, f1, 0.02F);
+            moveNonSolid(f, f1, 0.02F);
             move(velocityX, velocityY, velocityZ);
             velocityX *= 0.5D;
             velocityY *= 0.5D;
             velocityZ *= 0.5D;
             velocityY -= 0.02D;
-            if(field_1624 && method_1344(velocityX, ((velocityY + 0.60000002384185791D) - y) + d1, velocityZ))
+            if(horizontalCollision && getEntitiesInside(velocityX, ((velocityY + 0.60000002384185791D) - y) + d1, velocityZ))
             {
                 velocityY = 0.30000001192092901D;
             }
         } else
         {
             float f2 = 0.91F;
-            if(field_1623)
+            if(onGround)
             {
                 f2 = 0.5460001F;
                 int i = world.getBlockId(MathHelper.floor(x), MathHelper.floor(boundingBox.minY) - 1, MathHelper.floor(z));
@@ -525,9 +525,9 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 }
             }
             float f3 = 0.162771F / (f2 * f2 * f2);
-            method_1324(f, f1, field_1623 ? 0.1F * f3 : 0.02F);
+            moveNonSolid(f, f1, onGround ? 0.1F * f3 : 0.02F);
             f2 = 0.91F;
-            if(field_1623)
+            if(onGround)
             {
                 f2 = 0.5460001F;
                 int j = world.getBlockId(MathHelper.floor(x), MathHelper.floor(boundingBox.minY) - 1, MathHelper.floor(z));
@@ -536,15 +536,15 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                     f2 = Block.BLOCKS[j].slipperiness * 0.91F;
                 }
             }
-            if(method_932())
+            if(isOnLadder())
             {
-                field_1636 = 0.0F;
+                fallDistance = 0.0F;
                 if(velocityY < -0.14999999999999999D)
                 {
                     velocityY = -0.14999999999999999D;
                 }
             }
-            if(field_1594 != null && !getTamed())
+            if(passenger != null && !getTamed())
             {
                 if(random.nextInt(5) == 0 && !isjumping)
                 {
@@ -560,28 +560,28 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 if(random.nextInt(50) == 0)
                 {
                     world.playSound(this, "mocreatures:horsemad", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-                    field_1594.velocityY += 0.90000000000000002D;
-                    field_1594.velocityZ -= 0.29999999999999999D;
-                    field_1594 = null;
+                    passenger.velocityY += 0.90000000000000002D;
+                    passenger.velocityZ -= 0.29999999999999999D;
+                    passenger = null;
                 }
-                if(field_1623)
+                if(onGround)
                 {
                     isjumping = false;
                 }
                 if(random.nextInt(temper * 8) == 0)
                 {
                     setTamed(true);
-                    PlayerEntity milosc = (PlayerEntity)field_1594;
+                    PlayerEntity milosc = (PlayerEntity)passenger;
                     setOwner(milosc.name);
                     setName(this);
                 }
             }
-            if(field_1594 != null && getTamed())
+            if(passenger != null && getTamed())
             {
-                boundingBox.maxY = field_1594.boundingBox.maxY;
-                velocityX += field_1594.velocityX * HorseSpeed;
-                velocityZ += field_1594.velocityZ * HorseSpeed;
-                PlayerEntity entityplayer2 = (PlayerEntity)field_1594;
+                boundingBox.maxY = passenger.boundingBox.maxY;
+                velocityX += passenger.velocityX * HorseSpeed;
+                velocityZ += passenger.velocityZ * HorseSpeed;
+                PlayerEntity entityplayer2 = (PlayerEntity)passenger;
                 if(((LivingAccesor)entityplayer2).getJumping() && !isjumping)
                 {
                     velocityY += HorseJump;
@@ -592,20 +592,20 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                     velocityY += 0.10000000000000001D;
                 }
                 move(velocityX, velocityY, velocityZ);
-                if(field_1623)
+                if(onGround)
                 {
                     isjumping = false;
                 }
-                prevYaw = yaw = field_1594.yaw;
-                pitch = field_1594.pitch * 0.5F;
-                method_1342(yaw, pitch);
+                prevYaw = yaw = passenger.yaw;
+                pitch = passenger.pitch * 0.5F;
+                setRotation(yaw, pitch);
             }
             move(velocityX, velocityY, velocityZ);
-            if(field_1624 && method_932())
+            if(horizontalCollision && isOnLadder())
             {
                 velocityY = 0.20000000000000001D;
             }
-            if((getType() == 5 || getType() == 8) && field_1594 != null && getTamed())
+            if((getType() == 5 || getType() == 8) && passenger != null && getTamed())
             {
                 velocityY -= 0.080000000000000002D;
                 velocityY *= 0.60000000000000009D;
@@ -617,7 +617,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             velocityX *= f2;
             velocityZ *= f2;
         }
-        field_1048 = field_1049;
+        lastWalkAnimationSpeed = walkAnimationSpeed;
         double d2 = x - prevX;
         double d3 = z - prevZ;
         float f4 = MathHelper.sqrt(d2 * d2 + d3 * d3) * 4F;
@@ -625,9 +625,9 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         {
             f4 = 1.0F;
         }
-        field_1049 += (f4 - field_1049) * 0.4F;
-        field_1050 += field_1049;
-        if(mocr.mocreaturesGlass.balancesettings.horse_fuel && mc.currentScreen == null && Keyboard.isKeyDown(KeybindListener.keyBinding_horseFuel.code) && field_1594 != null)
+        walkAnimationSpeed += (f4 - walkAnimationSpeed) * 0.4F;
+        walkAnimationProgress += walkAnimationSpeed;
+        if(mocr.mocreaturesGlass.balancesettings.horse_fuel && mc.currentScreen == null && Keyboard.isKeyDown(KeybindListener.keyBinding_horseFuel.code) && passenger != null)
         {
             openFuelGui();
         }
@@ -656,7 +656,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     public void addFuel(){
         if(mocr.mocreaturesGlass.balancesettings.horse_fuel)
         {
-            if(animalFuel <= 0 && field_1594 != null && !world.isRemote)
+            if(animalFuel <= 0 && passenger != null && !world.isRemote)
             {
                 if(cargoItems[0] != null && cargoItems[0].itemId == Item.COAL.id)  //PALIWO
                 {
@@ -693,8 +693,8 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         if(!world.isRemote) {
             if (mc.currentScreen instanceof GuiHorseFuel) {
                 mc.setScreen(null);
-            } else if (field_1594.field_1595 instanceof EntityHorse) {
-                mc.setScreen(new GuiHorseFuel(((PlayerEntity)field_1594).inventory, (EntityHorse)field_1594.field_1595));
+            } else if (passenger.vehicle instanceof EntityHorse) {
+                mc.setScreen(new GuiHorseFuel(((PlayerEntity)passenger).inventory, (EntityHorse)passenger.vehicle));
             }
         }
     }
@@ -741,13 +741,13 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             return false;
         } else
         {
-            return entityplayer.method_1352(this) <= 64D;
+            return entityplayer.getSquaredDistance(this) <= 64D;
         }
     }
 
     //TODO:EXTRA FUEL end
 
-    protected void method_1389(float f)
+    protected void onLanding(float f)
     {
         int i = (int)Math.ceil(f - 3F);
         if(i > 0 && getType() != 5 && getType() != 8)
@@ -760,9 +760,9 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             {
                 damage(this, i);
             }
-            if(field_1594 != null && i > 0)
+            if(passenger != null && i > 0)
             {
-                field_1594.damage(null, i);
+                passenger.damage(null, i);
             }
             if(getType() == 5 || getType() == 8)
             {
@@ -772,22 +772,22 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             if(j > 0)
             {
                 BlockSoundGroup stepsound = Block.BLOCKS[j].soundGroup;
-                world.playSound(this, stepsound.getSound(), stepsound.method_1976() * 0.5F, stepsound.method_1977() * 0.75F);
+                world.playSound(this, stepsound.getSound(), stepsound.getVolume() * 0.5F, stepsound.getPitch() * 0.75F);
             }
         }
     }
 
-    protected float method_915()
+    protected float getSoundVolume()
     {
         return 0.4F;
     }
 
-    public boolean method_1356()
+    public boolean isCollidable()
     {
-        return field_1594 == null;
+        return passenger == null;
     }
 
-    public boolean method_1323(PlayerEntity entityplayer)
+    public boolean interact(PlayerEntity entityplayer)
     {
         ItemStack itemstack = entityplayer.inventory.getSelectedItem();
         if(getTamed() && !getProtect() && !entityplayer.name.equals(getOwner()))
@@ -802,7 +802,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                     double var4 = this.random.nextGaussian() * 0.02D;
                     double var6 = this.random.nextGaussian() * 0.02D;
                     double var8 = this.random.nextGaussian() * 0.02D;
-                    world.addParticle("heart", this.x + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, this.y + 0.5D + (double) (this.random.nextFloat() * this.spacingY), this.z + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, var4, var6, var8);
+                    world.addParticle("heart", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
                 }
             }else{
                 setProtect(true);
@@ -810,7 +810,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                     double var4 = this.random.nextGaussian() * 0.02D;
                     double var6 = this.random.nextGaussian() * 0.02D;
                     double var8 = this.random.nextGaussian() * 0.02D;
-                    world.addParticle("flame", this.x + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, this.y + 0.5D + (double) (this.random.nextFloat() * this.spacingY), this.z + (double) (this.random.nextFloat() * this.spacingXZ * 2.0F) - (double) this.spacingXZ, var4, var6, var8);
+                    world.addParticle("flame", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
                 }
             }
             return true;
@@ -925,13 +925,13 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             if(getType() == 8)
             {
                 localhorsechest = new AnimalChest(localstack, "Dark Pegasus chest", localstack.length);
-                entityplayer.method_486(localhorsechest);
+                entityplayer.openChestScreen(localhorsechest);
                 return true;
             }
             if(getType() == 6)
             {
                 localhorsechestx54 = new AnimalChest(localstackx54, "Pack Horse chest", localstackx54.length);
-                entityplayer.method_486(localhorsechestx54);
+                entityplayer.openChestScreen(localhorsechestx54);
                 return true;
             }
         }
@@ -944,7 +944,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             if(itemstack.itemId == Item.MUSHROOM_STEW.id)
             {
                 itemstack.count--;
-                entityplayer.inventory.method_671(new ItemStack(Item.BOWL));
+                entityplayer.inventory.addStack(new ItemStack(Item.BOWL));
             } else
             if(--itemstack.count == 0)
             {
@@ -969,12 +969,12 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             return true;
         }
-        if(itemstack != null && itemstack.itemId == mod_mocreatures.whip.id && getTamed() && field_1594 == null)
+        if(itemstack != null && itemstack.itemId == mod_mocreatures.whip.id && getTamed() && passenger == null)
         {
             setSitting(!getSitting());
             return true;
         }
-        if(itemstack != null && field_1594 == null && roper == null && getTamed() && itemstack.itemId == mod_mocreatures.rope.id)
+        if(itemstack != null && passenger == null && roper == null && getTamed() && itemstack.itemId == mod_mocreatures.rope.id)
         {
             if(--itemstack.count == 0)
             {
@@ -986,7 +986,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
         if(roper != null && getTamed())
         {
-            entityplayer.inventory.method_671(new ItemStack(mod_mocreatures.rope));
+            entityplayer.inventory.addStack(new ItemStack(mod_mocreatures.rope));
             world.playSound(this, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             roper = null;
             return true;
@@ -1006,7 +1006,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             entityplayer.yaw = yaw;
             entityplayer.pitch = pitch;
             setSitting(false);
-            entityplayer.method_1376(this);
+            entityplayer.setVehicle(this);
             gestationtime = 0;
             if(getType() == 8)
             {
@@ -1019,22 +1019,22 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
     }
 
-    public void method_938(Entity entity)
+    public void onKilledBy(Entity entity)
     {
-        if(field_1024 >= 0 && entity != null)
+        if(scoreAmount >= 0 && entity != null)
         {
-            entity.method_1391(this, field_1024);
+            entity.updateKilledAchievement(this, scoreAmount);
         }
         if(entity != null)
         {
-            entity.method_1390(this);
+            entity.onKilledOther(this);
         }
-        field_1045 = true;
+        killedByOtherEntity = true;
         if(!world.isRemote)
         {
-            method_933();
+            dropItems();
         }
-        world.method_279(this, 3F);
+        world.getSkyColor(this, 3F);
         if(getChested() && (getType() == 6 || getType() == 8))
         {
             int i = MathHelper.floor(x);
@@ -1077,7 +1077,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                     entityitem.velocityX = (float)random.nextGaussian() * f3;
                     entityitem.velocityY = (float)random.nextGaussian() * f3 + 0.2F;
                     entityitem.velocityZ = (float)random.nextGaussian() * f3;
-                    world.method_210(entityitem);
+                    world.spawnEntity(entityitem);
                 } while(true);
             }
         }
@@ -1112,7 +1112,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                     entityitem.velocityX = (float)random.nextGaussian() * f3;
                     entityitem.velocityY = (float)random.nextGaussian() * f3 + 0.2F;
                     entityitem.velocityZ = (float)random.nextGaussian() * f3;
-                    world.method_210(entityitem);
+                    world.spawnEntity(entityitem);
                 } while(true);
             }
         }
@@ -1252,48 +1252,48 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
 
     }
 
-    protected boolean method_640()
+    protected boolean isMovementBlocked()
     {
-        return getSitting() || field_1594 != null;
+        return getSitting() || passenger != null;
     }
 
-    protected String method_911()
+    protected String getRandomSound()
     {
         return "mocreatures:horsegrunt";
     }
 
-    protected String method_912()
+    protected String getHurtSound()
     {
         return "mocreatures:horsehurt";
     }
 
-    protected String method_913()
+    protected String getDeathSound()
     {
         return "mocreatures:horsedying";
     }
 
-    protected void method_933()
+    protected void dropItems()
     {
         int i = random.nextInt(3);
         for(int j = 0; j < i; j++)
         {
-            method_1327(new ItemStack(method_914(), 1, 0), 0.0F);
+            dropItem(new ItemStack(getDroppedItemId(), 1, 0), 0.0F);
         }
 
         if(getSaddled() && mocr.mocreaturesGlass.balancesettings.horse_saddle) {
             int k = random.nextInt(2);
             for (int j = 0; j < k; j++) {
-                method_1327(new ItemStack(mod_mocreatures.horsesaddle, 1, 0), 0.0F);
+                dropItem(new ItemStack(mod_mocreatures.horsesaddle, 1, 0), 0.0F);
             }
         }
     }
 
-    protected int method_914()
+    protected int getDroppedItemId()
     {
         return Item.LEATHER.id;
     }
 
-    public int method_916()
+    public int getLimitPerChunk()
     {
         return 6;
     }
@@ -1305,7 +1305,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
 
     public boolean renderName()
     {
-        return displayname && field_1594 == null;
+        return displayname && passenger == null;
     }
 
     public String dajTexture(){
@@ -1363,18 +1363,18 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     protected void initDataTracker()
     {
         super.initDataTracker();
-        dataTracker.method_1502(16, (byte) 0); //Type
-        dataTracker.method_1502(17, (int) 0); //Age
-        dataTracker.method_1502(18, (byte) 0); //Adult
-        dataTracker.method_1502(19, (byte) 0); //EatenHayStack
-        dataTracker.method_1502(20, (byte) 0); //Tamed
-        dataTracker.method_1502(21, (byte) 0); //Sitting
-        dataTracker.method_1502(22, (byte) 0); //Saddle
-        dataTracker.method_1502(23, (byte) 0); //Protect From Players/Public
-        dataTracker.method_1502(24, (byte) 0); //Bred
-        dataTracker.method_1502(25, (byte) 0); //Chested
-        dataTracker.method_1502(30, ""); //Owner
-        dataTracker.method_1502(31, ""); //Name
+        dataTracker.startTracking(16, (byte) 0); //Type
+        dataTracker.startTracking(17, (int) 0); //Age
+        dataTracker.startTracking(18, (byte) 0); //Adult
+        dataTracker.startTracking(19, (byte) 0); //EatenHayStack
+        dataTracker.startTracking(20, (byte) 0); //Tamed
+        dataTracker.startTracking(21, (byte) 0); //Sitting
+        dataTracker.startTracking(22, (byte) 0); //Saddle
+        dataTracker.startTracking(23, (byte) 0); //Protect From Players/Public
+        dataTracker.startTracking(24, (byte) 0); //Bred
+        dataTracker.startTracking(25, (byte) 0); //Chested
+        dataTracker.startTracking(30, ""); //Owner
+        dataTracker.startTracking(31, ""); //Name
     }
 
     @Override
@@ -1395,183 +1395,183 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     public void setType(int type)
     {
         if(!world.isRemote) {
-            dataTracker.method_1509(16, (byte) type);
+            dataTracker.set(16, (byte) type);
             chooseType(type);
         }
     }
 
     public int getType()
     {
-        return dataTracker.method_1501(16);
+        return dataTracker.getByte(16);
     }
 
     //AGE
     public void setAge(float age)
     {
-        dataTracker.method_1509(17, Float.floatToRawIntBits(age));
+        dataTracker.set(17, Float.floatToRawIntBits(age));
     }
 
     public float getAge()
     {
-        return Float.intBitsToFloat(dataTracker.method_1508(17));
+        return Float.intBitsToFloat(dataTracker.getInt(17));
     }
 
     //ADULT
     public boolean getAdult()
     {
-        return (dataTracker.method_1501(18) & 1) != 0;
+        return (dataTracker.getByte(18) & 1) != 0;
     }
 
     public void setAdult(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(18, (byte) 1);
+            dataTracker.set(18, (byte) 1);
         } else
         {
-            dataTracker.method_1509(18, (byte) 0);
+            dataTracker.set(18, (byte) 0);
         }
     }
 
     //EATEN
     public boolean getEaten()
     {
-        return (dataTracker.method_1501(19) & 1) != 0;
+        return (dataTracker.getByte(19) & 1) != 0;
     }
 
     public void setEaten(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(19, (byte) 1);
+            dataTracker.set(19, (byte) 1);
         } else
         {
-            dataTracker.method_1509(19, (byte) 0);
+            dataTracker.set(19, (byte) 0);
         }
     }
 
     //TAMED
     public boolean getTamed()
     {
-        return (dataTracker.method_1501(20) & 1) != 0;
+        return (dataTracker.getByte(20) & 1) != 0;
     }
 
     public void setTamed(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(20, (byte) 1);
+            dataTracker.set(20, (byte) 1);
         } else
         {
-            dataTracker.method_1509(20, (byte) 0);
+            dataTracker.set(20, (byte) 0);
         }
     }
 
     //SITTING
     public boolean getSitting()
     {
-        return (dataTracker.method_1501(21) & 1) != 0;
+        return (dataTracker.getByte(21) & 1) != 0;
     }
 
     public void setSitting(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(21, (byte) 1);
+            dataTracker.set(21, (byte) 1);
         } else
         {
-            dataTracker.method_1509(21, (byte) 0);
+            dataTracker.set(21, (byte) 0);
         }
     }
 
     //HUNGRY
     public boolean getSaddled()
     {
-        return (dataTracker.method_1501(22) & 1) != 0;
+        return (dataTracker.getByte(22) & 1) != 0;
     }
 
     public void setSaddled(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(22, (byte) 1);
+            dataTracker.set(22, (byte) 1);
         } else
         {
-            dataTracker.method_1509(22, (byte) 0);
+            dataTracker.set(22, (byte) 0);
         }
     }
 
     //PROTECT FROM PLAYERES / PUBLIC
     public boolean getProtect()
     {
-        return (dataTracker.method_1501(23) & 1) != 0;
+        return (dataTracker.getByte(23) & 1) != 0;
     }
 
     public void setProtect(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(23, (byte) 1);
+            dataTracker.set(23, (byte) 1);
         } else
         {
-            dataTracker.method_1509(23, (byte) 0);
+            dataTracker.set(23, (byte) 0);
         }
     }
 
     //BRED
     public boolean getBred()
     {
-        return (dataTracker.method_1501(24) & 1) != 0;
+        return (dataTracker.getByte(24) & 1) != 0;
     }
 
     public void setBred(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(24, (byte) 1);
+            dataTracker.set(24, (byte) 1);
         } else
         {
-            dataTracker.method_1509(24, (byte) 0);
+            dataTracker.set(24, (byte) 0);
         }
     }
 
     //CHESTED
     public boolean getChested()
     {
-        return (dataTracker.method_1501(25) & 1) != 0;
+        return (dataTracker.getByte(25) & 1) != 0;
     }
 
     public void setChested(boolean flag)
     {
         if(flag)
         {
-            dataTracker.method_1509(25, (byte) 1);
+            dataTracker.set(25, (byte) 1);
         } else
         {
-            dataTracker.method_1509(25, (byte) 0);
+            dataTracker.set(25, (byte) 0);
         }
     }
 
     //OWNER
     public void setOwner(String owner)
     {
-        this.dataTracker.method_1509(30, owner);
+        this.dataTracker.set(30, owner);
     }
 
     public String getOwner()
     {
-        return this.dataTracker.method_1510(30);
+        return this.dataTracker.getString(30);
     }
 
     //NAME
     public void setName(String name)
     {
-        this.dataTracker.method_1509(31, name);
+        this.dataTracker.set(31, name);
     }
 
     public String getName()
     {
-        return this.dataTracker.method_1510(31);
+        return this.dataTracker.getString(31);
     }
 
 }

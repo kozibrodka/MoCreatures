@@ -6,10 +6,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(Entity.class)
 public interface EntityBaseAccesor {
-    @Accessor
-    boolean getField_1612();
+    @Accessor("submergedInWater")
+    boolean getSubmergedInWater();
 
     @Accessor
-    void setField_1636(float fallDistance);
-
+    void setFallDistance(float fallDistance);
 }
