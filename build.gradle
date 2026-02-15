@@ -1,19 +1,34 @@
 plugins {
+	id 'net.fabricmc.fabric-loom-remap' version '1.14.10'
+	id 'babric-loom-extension' version '1.14.2'
 	id 'maven-publish'
-	id 'fabric-loom' version '1.9.2'
-	id 'babric-loom-extension' version '1.9.4'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+version = property("mod_version")
+group = property("maven_group")
 
-archivesBaseName = project.archives_base_name
-version = project.mod_version
-group = project.maven_group
+base {
+	archivesName = project.archives_base_name
+}
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
 
 loom {
-	customMinecraftManifest.set("https://babric.github.io/manifest-polyfill/${minecraft_version}.json")
-	intermediaryUrl.set("https://maven.glass-launcher.net/babric/babric/intermediary/%1\$s/intermediary-%1\$s-v2.jar")
+	mixin {
+		useLegacyMixinAp = true
+	}
+	accessWidenerPath = file("src/main/resources/mocreatures.accesswidener")
+}
+
+loom.runs {
+	register("secondClient") {
+		client()
+		programArgs(["--username", "Player2", "--uuid", "cb7afd42-6488-4bb9-9dd3-151aa66d7049"])
+	}
 }
 
 repositories {
@@ -104,18 +119,10 @@ dependencies {
 	modRuntimeOnly ("maven.modrinth:fast-stapi-intro:${project.stapi_fast_intro_version}") {
 		transitive false
 	}
-
-	modImplementation("com.github.paulevsGitch:BHCreative:${project.bhcreative_version}"){
-		transitive false
-	}
-
 	modImplementation("net.glasslauncher.mods:AlwaysMoreItems:${project.alwaysmoreitems_version}") {
 		transitive false
 	}
 
-	modImplementation("net.danygames2014:spawneggs:${project.spawneggs_version}") {
-		transitive false
-	}
 }
 
 processResources {

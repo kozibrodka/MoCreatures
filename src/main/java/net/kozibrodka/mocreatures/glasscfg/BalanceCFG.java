@@ -12,8 +12,6 @@ public class BalanceCFG {
     public Boolean horse_saddle = false;
     @ConfigEntry(name="Horse Fuel")
     public Boolean horse_fuel = false;
-    @ConfigEntry(name="Horse Speed Boost by mouse etc.......")
-    public Boolean horse_speed_boost = true;
     @ConfigEntry(name="Spawn Eggs (cheating)")
     public Boolean spawn_eggs = false;
 }

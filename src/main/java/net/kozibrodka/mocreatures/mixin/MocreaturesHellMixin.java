@@ -17,8 +17,8 @@ public class MocreaturesHellMixin extends MocreaturesMixin{
     @Inject(method = "<init>", at = @At("TAIL"))
     private void Injected(CallbackInfo ci) {
         mod_mocreatures mocr = new mod_mocreatures();
-        this.spawnableWaterCreatures.add(new EntitySpawnGroup(EntityFireOgre.class, mocr.mocreaturesGlass.hostilemobs.fogrefreq));
-        this.spawnableWaterCreatures.add(new EntitySpawnGroup(EntityHellRat.class, mocr.mocreaturesGlass.hostilemobs.hellratfreq));
-        this.spawnableWaterCreatures.add(new EntitySpawnGroup(EntityFlameWraith.class, mocr.mocreaturesGlass.hostilemobs.fwraithfreq));
+        this.spawnableMonsters.add(new EntitySpawnGroup(EntityFireOgre.class, mocr.mocreaturesGlass.hostilemobs.fogrefreq));
+        this.spawnableMonsters.add(new EntitySpawnGroup(EntityHellRat.class, mocr.mocreaturesGlass.hostilemobs.hellratfreq));
+        this.spawnableMonsters.add(new EntitySpawnGroup(EntityFlameWraith.class, mocr.mocreaturesGlass.hostilemobs.fwraithfreq));
     }
 }

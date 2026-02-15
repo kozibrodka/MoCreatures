@@ -108,7 +108,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
     {
     }
 
-    public boolean debugTexture(){
+    public boolean debugTexture(){   //TODO: nie podoba mi sie zupelnie to co tu zrogilem.
         if (texture == "/assets/mocreatures/stationapi/textures/mob/deerb.png") {
             return true;
         }else{
@@ -146,7 +146,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
             if(entityliving != null)
             {
                 setMySpeed(true, getType());
-//                runLikeHell(entityliving); //TODO:DDDDDd
+//                runLikeHell(entityliving); //TODO: usuniete dla obserwacji zwierząt
             } else
             {
                 setMySpeed(false, getType());

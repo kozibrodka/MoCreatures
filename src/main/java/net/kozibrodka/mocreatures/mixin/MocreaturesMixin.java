@@ -25,60 +25,60 @@ public class MocreaturesMixin {
     @Inject(method = "<init>", at = @At("TAIL"))
     private void Injected(CallbackInfo ci) {
         mod_mocreatures mocr = new mod_mocreatures();
-//        this.spawnablePassive.add(new class_288(EntityBear.class, mocr.mocreaturesGlass.huntercreatures.bearfreq));
-//        this.spawnablePassive.add(new class_288(EntityBigCat.class, mocr.mocreaturesGlass.huntercreatures.lionfreq)); //TODO GUI
-//        this.spawnablePassive.add(new class_288(EntityBird.class, mocr.mocreaturesGlass.animals.birdfreq));
-//        this.spawnablePassive.add(new class_288(EntityBoar.class, mocr.mocreaturesGlass.huntercreatures.boarfreq));
-//        this.spawnablePassive.add(new class_288(EntityBunny.class, mocr.mocreaturesGlass.animals.bunnyfreq));
+        this.spawnablePassive.add(new EntitySpawnGroup(EntityBear.class, mocr.mocreaturesGlass.huntercreatures.bearfreq));
+        this.spawnablePassive.add(new EntitySpawnGroup(EntityBigCat.class, mocr.mocreaturesGlass.huntercreatures.lionfreq)); //TODO GUI
+        this.spawnablePassive.add(new EntitySpawnGroup(EntityBird.class, mocr.mocreaturesGlass.animals.birdfreq));
+        this.spawnablePassive.add(new EntitySpawnGroup(EntityBoar.class, mocr.mocreaturesGlass.huntercreatures.boarfreq));
+        this.spawnablePassive.add(new EntitySpawnGroup(EntityBunny.class, mocr.mocreaturesGlass.animals.bunnyfreq));
         this.spawnablePassive.add(new EntitySpawnGroup(EntityDeer.class, mocr.mocreaturesGlass.animals.deerfreq));
-//        this.spawnablePassive.add(new class_288(EntityDuck.class, mocr.mocreaturesGlass.animals.duckfreq));
-//        this.spawnablePassive.add(new class_288(EntityFox.class, mocr.mocreaturesGlass.huntercreatures.foxfreq));
-//        this.spawnablePassive.add(new class_288(EntityHorse.class, mocr.mocreaturesGlass.animals.horsefreq)); //TODO GUI
-//        this.spawnablePassive.add(new class_288(EntityKitty.class, mocr.mocreaturesGlass.animals.kittyfreq)); //TODO GUI
-//        this.spawnablePassive.add(new class_288(EntityMouse.class, mocr.mocreaturesGlass.animals.micefreq));
-//        this.spawnablePassive.add(new class_288(EntityPolarBear.class, mocr.mocreaturesGlass.huntercreatures.pbearfreq));
+        this.spawnablePassive.add(new EntitySpawnGroup(EntityDuck.class, mocr.mocreaturesGlass.animals.duckfreq));
+        this.spawnablePassive.add(new EntitySpawnGroup(EntityFox.class, mocr.mocreaturesGlass.huntercreatures.foxfreq));
+        this.spawnablePassive.add(new EntitySpawnGroup(EntityHorse.class, mocr.mocreaturesGlass.animals.horsefreq)); //TODO GUI
+        this.spawnablePassive.add(new EntitySpawnGroup(EntityKitty.class, mocr.mocreaturesGlass.animals.kittyfreq)); //TODO GUI
+        this.spawnablePassive.add(new EntitySpawnGroup(EntityMouse.class, mocr.mocreaturesGlass.animals.micefreq));
+        this.spawnablePassive.add(new EntitySpawnGroup(EntityPolarBear.class, mocr.mocreaturesGlass.huntercreatures.pbearfreq));
 
-//        this.spawnableWaterCreatures.add(new class_288(EntityShark.class, mocr.mocreaturesGlass.watermobs.sharkfreq));
-//        this.spawnableWaterCreatures.add(new class_288(EntityDolphin.class, mocr.mocreaturesGlass.watermobs.dolphinfreq)); //TODO GUI
-//        this.spawnableWaterCreatures.add(new class_288(EntityFishy.class, mocr.mocreaturesGlass.watermobs.fishfreq));
+        this.spawnableWaterCreatures.add(new EntitySpawnGroup(EntityShark.class, mocr.mocreaturesGlass.watermobs.sharkfreq));
+        this.spawnableWaterCreatures.add(new EntitySpawnGroup(EntityDolphin.class, mocr.mocreaturesGlass.watermobs.dolphinfreq)); //TODO GUI
+        this.spawnableWaterCreatures.add(new EntitySpawnGroup(EntityFishy.class, mocr.mocreaturesGlass.watermobs.fishfreq));
 
-//        this.spawnableMonsters.add(new class_288(EntityWWolf.class, mocr.mocreaturesGlass.hostilemobs.wwolffreq));
-//        this.spawnableMonsters.add(new class_288(EntityWraith.class, mocr.mocreaturesGlass.hostilemobs.wraithfreq));
-//        this.spawnableMonsters.add(new class_288(EntityFlameWraith.class, mocr.mocreaturesGlass.hostilemobs.fwraithfreq));
-//        this.spawnableMonsters.add(new class_288(EntityWerewolf.class, mocr.mocreaturesGlass.hostilemobs.werewolffreq));
-//        this.spawnableMonsters.add(new class_288(EntityRat.class, mocr.mocreaturesGlass.hostilemobs.ratfreq));
-//        this.spawnableMonsters.add(new class_288(EntityOgre.class, mocr.mocreaturesGlass.hostilemobs.ogrefreq));
-//        this.spawnableMonsters.add(new class_288(EntityCaveOgre.class, mocr.mocreaturesGlass.hostilemobs.cogrefreq));
-//        this.spawnableMonsters.add(new class_288(EntityFireOgre.class, mocr.mocreaturesGlass.hostilemobs.fogrefreq));
+        this.spawnableMonsters.add(new EntitySpawnGroup(EntityWWolf.class, mocr.mocreaturesGlass.hostilemobs.wwolffreq));
+        this.spawnableMonsters.add(new EntitySpawnGroup(EntityWraith.class, mocr.mocreaturesGlass.hostilemobs.wraithfreq));
+        this.spawnableMonsters.add(new EntitySpawnGroup(EntityFlameWraith.class, mocr.mocreaturesGlass.hostilemobs.fwraithfreq));
+        this.spawnableMonsters.add(new EntitySpawnGroup(EntityWerewolf.class, mocr.mocreaturesGlass.hostilemobs.werewolffreq));
+        this.spawnableMonsters.add(new EntitySpawnGroup(EntityRat.class, mocr.mocreaturesGlass.hostilemobs.ratfreq));
+        this.spawnableMonsters.add(new EntitySpawnGroup(EntityOgre.class, mocr.mocreaturesGlass.hostilemobs.ogrefreq));
+        this.spawnableMonsters.add(new EntitySpawnGroup(EntityCaveOgre.class, mocr.mocreaturesGlass.hostilemobs.cogrefreq));
+        this.spawnableMonsters.add(new EntitySpawnGroup(EntityFireOgre.class, mocr.mocreaturesGlass.hostilemobs.fogrefreq));
 
     }
 
     @ModifyConstant(method = "<init>", constant = @Constant(intValue = 10, ordinal=7))
-    private static int Squid(int value) {
+    private int Squid(int value) {
         mod_mocreatures mocr = new mod_mocreatures();
         return mocr.mocreaturesGlass.watermobs.squidfreq;
     }
 
     @ModifyConstant(method = "<init>", constant = @Constant(intValue = 8))
-    private static int Cow(int value) {
+    private int Cow(int value) {
         mod_mocreatures mocr = new mod_mocreatures();
         return mocr.mocreaturesGlass.animals.cowfreq;
     }
 
     @ModifyConstant(method = "<init>", constant = @Constant(intValue = 10, ordinal=6))
-    private static int Chicken(int value) {
+    private int Chicken(int value) {
         mod_mocreatures mocr = new mod_mocreatures();
         return mocr.mocreaturesGlass.animals.chickenfreq;
     }
 
     @ModifyConstant(method = "<init>", constant = @Constant(intValue = 10, ordinal=5))
-    private static int Pig(int value) {
+    private int Pig(int value) {
         mod_mocreatures mocr = new mod_mocreatures();
         return mocr.mocreaturesGlass.animals.pigfreq;
     }
 
     @ModifyConstant(method = "<init>", constant = @Constant(intValue = 12))
-    private static int Sheep(int value) {
+    private int Sheep(int value) {
         mod_mocreatures mocr = new mod_mocreatures();
         return mocr.mocreaturesGlass.animals.sheepfreq;
     }

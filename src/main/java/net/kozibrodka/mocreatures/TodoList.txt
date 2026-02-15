@@ -1,0 +1,7 @@
+To Do List:
+
+- Clean up typechoosen mechanic client.
+- Watch for setting age in render class.
+- Get data right with deer first
+- Opening GUI?
+- Update Project to latest versions. - first

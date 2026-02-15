@@ -129,7 +129,7 @@ public class RenderBigCat extends LivingEntityRenderer
             Tessellator tessellator = Tessellator.INSTANCE;
             if(entitybigcat.getAdult())
             {
-                entitybigcat.setAge(1.0F); //TODO: does it work?
+                entitybigcat.setAge(1.0F); //TODO: does it work? why in render??
             }
             d1 -= 0.40000000000000002D / (double)entitybigcat.getAge();
             float f4 = ((entitybigcat.roper.prevYaw + (entitybigcat.roper.yaw - entitybigcat.roper.prevYaw) * f1 * 0.5F) * 3.141593F) / 180F;

@@ -38,6 +38,8 @@ public class mod_mocreatures {
 
     //TODO: horse faliing DMG crazy speed boost, GUI HANDLERS
 
+    //TODO: remove istypechosen client logic, watch for setting age in render classes.
+
     @EventListener(priority = ListenerPriority.HIGHEST)
     public void registerAchievements(AchievementRegisterEvent event) {
         Indiana = new Achievement(77, MOD_ID.id("indiana").toString(), -4, -4, mod_mocreatures.whip, Achievements.OPEN_INVENTORY).addStat();
