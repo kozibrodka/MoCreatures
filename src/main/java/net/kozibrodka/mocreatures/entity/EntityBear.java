@@ -25,7 +25,6 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
     public EntityBear(World world)
     {
         super(world);
-        bearboolean = false;
         texture = "/assets/mocreatures/stationapi/textures/mob/bear.png";
         setBoundingBoxSpacing(0.9F, 1.3F);
         health = 25;
@@ -98,6 +97,7 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
 
     public boolean damage(Entity entitybase, int i)
     {
+        //TODO: should it run on client?
         if(super.damage(entitybase, i))
         {
             if(passenger == entitybase || vehicle == entitybase)
@@ -131,13 +131,11 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
-        nbttagcompound.putBoolean("BearBoolean", bearboolean);
     }
 
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
-        bearboolean = nbttagcompound.getBoolean("BearBoolean");
     }
 
     protected String getRandomSound()
@@ -191,7 +189,7 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
                 continue;
             }
             ItemEntity entityitem = (ItemEntity)entity1;
-            if(entityitem != null && entityitem.itemAge < 50 && mocr.mocreaturesGlass.huntercreatures.destroyitems)
+            if(entityitem.itemAge < 50 && mocr.mocreaturesGlass.huntercreatures.destroyitems)
             {
                 entityitem.markDead();
             }
@@ -216,7 +214,6 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
 
     mod_mocreatures mocr = new mod_mocreatures();
     protected double attackRange;
-    public boolean bearboolean;
     protected int force;
 
     @Override

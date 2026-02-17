@@ -7,7 +7,6 @@
     "BlockBaseAccesor",
     "CreeperAccesor",
     "DataTrackerAccessor",
-    "DestroyStupidResource404Errors",
     "DungeonSaddleMixin",
     "EntityBaseAccesor",
     "LimitsMixin",

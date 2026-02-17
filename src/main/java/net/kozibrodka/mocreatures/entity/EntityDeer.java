@@ -4,40 +4,42 @@
 
 package net.kozibrodka.mocreatures.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mixin.DataTrackerAccessor;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
+import net.kozibrodka.mocreatures.network.AdultPacket;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ShovelItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 //import net.modificationstation.stationapi.api.packet.Message;
+import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.HasTrackingParameters;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 
-@HasTrackingParameters(trackingDistance = 160, updatePeriod = 2)
+@HasTrackingParameters(trackingDistance = 160, updatePeriod = 1)
 public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial
 {
 
     public EntityDeer(World world)
     {
         super(world);
-        setAge(0.75F); //0.75F
         setBoundingBoxSpacing(0.9F, 1.3F);
-        health = 10;
-//        System.out.println("JESTEM+ " +  this.getType());
-//        setType(getRandomRace());
-        movementSpeed = 1.7F;
         typechosen = false;
     }
 
@@ -53,22 +55,23 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
             if(type == 1)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/deer.png";
-                health = 15;
+                health = 18;
                 setAdult(true);
-                setAge(0.75F);
+                setAge(2.0F);
             } else
             if(type == 2)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/deerf.png";
                 health = 15;
                 setAdult(true);
-                setAge(0.75F);
+                setAge(2.0F);
             }
             if(type == 3)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/deerb.png";
                 health = 5;
                 setAdult(false);
+                setAge(0.75F);
             }
 
     }
@@ -80,6 +83,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
             texture = "/assets/mocreatures/stationapi/textures/mob/deerf.png";
         }else if(i == 3){
             texture = "/assets/mocreatures/stationapi/textures/mob/deerb.png";
+            //todo czy rozmiar bedzie updated? na client, extra
         }
     }
 
@@ -108,14 +112,6 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
     {
     }
 
-    public boolean debugTexture(){   //TODO: nie podoba mi sie zupelnie to co tu zrogilem.
-        if (texture == "/assets/mocreatures/stationapi/textures/mob/deerb.png") {
-            return true;
-        }else{
-            return false;
-        }
-    }
-
     public void tickMovement()
     {
         super.tickMovement();
@@ -123,21 +119,16 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
             typechosen = true;
             setMyTexture(getType());
         }
-        if(world.isRemote && getType() != 3 && debugTexture()){
-            chooseType(getType());
-        }
         if(getType() == 3 && !getAdult() && random.nextInt(250) == 0 && !world.isRemote)
         {
             setAge(getAge()+0.01F);
             if(getAge() >= 1.3F)
             {
-//                System.out.println("DOROSLEM");
-//                setAdult(true);
-//                this.dataTracker.method_1509(16, (byte)(0));
-                //TODO: Jedyny taki MOB, wszysyko działa ale tekstura zaktualizuje się dopiero po reconnect Klienta. No logiczne bo chooseType
-                //TODO: odpala tylko na servie w tym przypadku
-                //TODO: SHOULD BE FIXED with debugTex()
-                setType(getRandomRace());
+                int newType = getRandomAdultRace();
+                setType(newType);
+                if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
+                    adultPacket("deer", this.id, newType);
+                }
             }
         }
         if(random.nextInt(5) == 0 && !world.isRemote)
@@ -146,7 +137,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
             if(entityliving != null)
             {
                 setMySpeed(true, getType());
-//                runLikeHell(entityliving); //TODO: usuniete dla obserwacji zwierząt
+                runLikeHell(entityliving);
             } else
             {
                 setMySpeed(false, getType());
@@ -225,11 +216,6 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         setAdult(nbttagcompound.getBoolean("Adult"));
         setType(nbttagcompound.getInt("TypeInt"));
         setAge(nbttagcompound.getFloat("Edad"));
-//        if(!world.isRemote){
-//            System.out.println("servi: " + (nbttagcompound.getInt("TypeInt")) + "  ID:" + id);
-//        }else{
-//            System.out.println("client: " + (nbttagcompound.getInt("TypeInt")) + "  ID:" + id);
-//        }
     }
 
     protected String getRandomSound()
@@ -278,13 +264,22 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
+    public int getRandomAdultRace()
+    {
+        int i = random.nextInt(10);
+        if(i <= 3)
+        {
+            return 1;
+        } else
+        {
+            return 2;
+        }
+    }
+
     //TYPE
     public void setType(int type)
     {
         if(!world.isRemote){
-//            System.out.println("LADUJE SIE + " + getType() + "  id:" + id);
-//            final byte by = this.dataTracker.method_1501(16);
-//            this.dataTracker.method_1509(16, (byte)(by & 0xF0 | type & 0xF));
             dataTracker.set(16, (byte)(type));
             chooseType(type);
             setMySpeed(false, type);
@@ -337,7 +332,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         return Identifier.of(mod_mocreatures.MOD_ID, "Deer");
     }
 
-    //INTERACT
+    //TODO DEBUG INTERACT
     public boolean interact(PlayerEntity entityplayer)
     {
         ItemStack itemstack = entityplayer.inventory.getSelectedItem();
@@ -346,12 +341,12 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
             System.out.println("TYPE: " + getType());
             System.out.println("ADULT? " + getAdult());
             System.out.println("AGE: " + getAge());
-//            System.out.println("AGE: " + typechoosen);
+//            System.out.println("BOX: " + this.width + " " + this.height);
             return true;
         }
         if(itemstack != null && itemstack.itemId == Item.GOLDEN_HOE.id && !world.isRemote)
         {
-//            typechoosen = true;
+            setAge(getAge()+0.2F);
         }
         return false;
     }
@@ -362,4 +357,15 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
 
     mod_mocreatures mocr = new mod_mocreatures();
     public boolean typechosen;
+
+    @Environment(EnvType.SERVER)
+    public void adultPacket(String name, int id, int type) {
+        List list2 = world.players;
+        if (list2.size() != 0) {
+            for (int k = 0; k < list2.size(); k++) {
+                ServerPlayerEntity player1 = (ServerPlayerEntity) list2.get(k);
+                PacketHelper.sendTo(player1, new AdultPacket(name, id, type));
+            }
+        }
+    }
 }

@@ -23,12 +23,12 @@ public class CreaturesListener {
 
     @EventListener
     private static void registerEntities(EntityRegister event) { //TODO - MULTIPLAYER
-        event.register(EntityBear.class, String.valueOf(Identifier.of(MOD_ID, "Bear")));  //TODO
+        event.register(EntityBear.class, String.valueOf(Identifier.of(MOD_ID, "Bear")));
         event.register(EntityBird.class, String.valueOf(Identifier.of(MOD_ID, "Bird")));  //TODO
-        event.register(EntityBoar.class, String.valueOf(Identifier.of(MOD_ID, "Boar")));  //TODO
+        event.register(EntityBoar.class, String.valueOf(Identifier.of(MOD_ID, "Boar")));  
         event.register(EntityBunny.class, String.valueOf(Identifier.of(MOD_ID, "Bunny")));  //TODO
         event.register(EntityCaveOgre.class, String.valueOf(Identifier.of(MOD_ID, "CaveOgre")));  //TODO
-        event.register(EntityDeer.class, String.valueOf(Identifier.of(MOD_ID, "Deer")));  //TODO
+        event.register(EntityDeer.class, String.valueOf(Identifier.of(MOD_ID, "Deer")));
         event.register(EntityDuck.class, String.valueOf(Identifier.of(MOD_ID, "Duck")));  //TODO
         event.register(EntityFireOgre.class, String.valueOf(Identifier.of(MOD_ID, "FireOgre")));  //TODO
         event.register(EntityFishy.class, String.valueOf(Identifier.of(MOD_ID, "Fishy")));  //TODO
@@ -40,7 +40,7 @@ public class CreaturesListener {
         event.register(EntityLitterBox.class, String.valueOf(Identifier.of(MOD_ID, "LitterBox")));  //TODO
         event.register(EntityMouse.class, String.valueOf(Identifier.of(MOD_ID, "Mouse")));  //TODO
         event.register(EntityOgre.class, String.valueOf(Identifier.of(MOD_ID, "Ogre")));  //TODO
-        event.register(EntityPolarBear.class, String.valueOf(Identifier.of(MOD_ID, "PolarBear")));  //TODO
+        event.register(EntityPolarBear.class, String.valueOf(Identifier.of(MOD_ID, "PolarBear")));
         event.register(EntityRat.class, String.valueOf(Identifier.of(MOD_ID, "Rat")));  //TODO
         event.register(EntityShark.class, String.valueOf(Identifier.of(MOD_ID, "Shark")));  //TODO
         event.register(EntitySharkEgg.class, String.valueOf(Identifier.of(MOD_ID, "SharkEgg")));  //TODO

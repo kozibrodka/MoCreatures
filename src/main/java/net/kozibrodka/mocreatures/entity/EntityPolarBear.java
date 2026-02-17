@@ -25,7 +25,7 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
     {
         super(world);
         texture = "/assets/mocreatures/stationapi/textures/mob/polarbear.png";
-        attackRange = 1.0D;
+        attackRange = 5.0D;
         health = 30;
     }
 
@@ -33,8 +33,13 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
     {
         if(world.difficulty > 0)
         {
+            if(world.difficulty > 1){
+                this.attackRange = 8.0D;
+            }else{
+                this.attackRange = 5.0D;
+            }
             PlayerEntity entityplayer = world.getClosestPlayer(this, attackRange);
-            if(entityplayer != null && world.difficulty > 0)
+            if(entityplayer != null)
             {
                 return entityplayer;
             }
@@ -47,20 +52,38 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
         return null;
     }
 
-    public void tickMovement()
+    protected void attack(Entity entity, float f)
     {
-        if(world.difficulty == 1)
+        if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
         {
-            attackRange = 5D;
-            force = 3;
-        } else
-        if(world.difficulty > 1)
-        {
-            attackRange = 8D;
-            force = 5;
+            attackCooldown = 20;
+            if(world.difficulty > 1){
+                this.force = 5;
+            }else{
+                this.force = 3;
+            }
+            entity.damage(this, force);
+            if(!(entity instanceof PlayerEntity))
+            {
+                destroyDrops(this, 3D);
+            }
         }
-        super.tickMovement();
     }
+
+//    public void tickMovement()
+//    {
+//        if(world.difficulty == 1)
+//        {
+//            attackRange = 5D;
+//            force = 3;
+//        } else
+//        if(world.difficulty > 1)
+//        {
+//            attackRange = 8D;
+//            force = 5;
+//        }
+//        super.tickMovement();
+//    }
 
     public boolean NearSnowWithDistance(Entity entity, Double double1)
     {

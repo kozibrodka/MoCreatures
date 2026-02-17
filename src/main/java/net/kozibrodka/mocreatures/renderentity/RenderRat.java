@@ -18,7 +18,7 @@ public class RenderRat extends LivingEntityRenderer
                                float f, float f1)
     {
         EntityRat entityrat = (EntityRat)entityliving;
-        if(!entityrat.typechosen)
+        if(!entityrat.typechosen) //todo remove
         {
             entityrat.chooseType();
         }

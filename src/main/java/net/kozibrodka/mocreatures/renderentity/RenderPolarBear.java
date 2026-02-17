@@ -17,7 +17,7 @@ public class RenderPolarBear extends LivingEntityRenderer
     protected boolean a(EntityBear entitybear, int i)
     {
         bindTexture("/assets/mocreatures/stationapi/textures/mob/polarbearb.png");
-        return i == 0 && !entitybear.bearboolean;
+        return i == 0;  //return i == 0 && !entitybear.bearboolean;
     }
 
     protected boolean bindTexture(LivingEntity entityliving, int i, float f)

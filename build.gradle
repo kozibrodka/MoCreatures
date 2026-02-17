@@ -122,6 +122,9 @@ dependencies {
 	modImplementation("net.glasslauncher.mods:AlwaysMoreItems:${project.alwaysmoreitems_version}") {
 		transitive false
 	}
+	modImplementation("net.danygames2014:WhatsThis:${project.whatsthis_version}") {
+		transitive false
+	}
 
 }
 

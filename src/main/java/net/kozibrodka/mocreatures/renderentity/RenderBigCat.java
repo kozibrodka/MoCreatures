@@ -28,22 +28,22 @@ public class RenderBigCat extends LivingEntityRenderer
         bigcat1.tamed = entitybigcat.getTamed();
     }
 
-//    protected boolean a(EntityBigCat entitybigcat, int i)
-//    {
-//        if(entitybigcat.getType() == 2 && entitybigcat.getAdult())
-//        {
-//            bindTexture("/assets/mocreatures/stationapi/textures/mob/lionb.png");
-//        } else
-//        {
-//            bindTexture("/assets/mocreatures/stationapi/textures/mob/lionc.png");
-//        }
-//        return i == 0;
-//    }
+    protected boolean a(EntityBigCat entitybigcat, int i) //TODO: logika tego neiznana
+    {
+        if(entitybigcat.getType() == 2 && entitybigcat.getAdult())
+        {
+            bindTexture("/assets/mocreatures/stationapi/textures/mob/lionb.png");
+        } else
+        {
+            bindTexture("/assets/mocreatures/stationapi/textures/mob/lionc.png");
+        }
+        return i == 0;
+    }
 
-//    protected boolean method_825(LivingEntity entityliving, int i, float f)
-//    {
-//        return a((EntityBigCat)entityliving, i);
-//    }
+    protected boolean bindTexture(LivingEntity entityliving, int i, float f)
+    {
+        return a((EntityBigCat)entityliving, i);
+    }
 
     public void render(LivingEntity entityliving, double d, double d1, double d2,
             float f, float f1)

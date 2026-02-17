@@ -4,4 +4,7 @@ To Do List:
 - Watch for setting age in render class.
 - Get data right with deer first
 - Opening GUI?
-- Update Project to latest versions. - first
+- Move accessors to ACCESSWIDENDER
+- Config descriptions
+- setBoundingBoxSpacing - can it be sync on client?
+- wtf is bearboolean?

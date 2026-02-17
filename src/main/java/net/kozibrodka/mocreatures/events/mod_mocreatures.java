@@ -4,6 +4,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.glasslauncher.mods.gcapi3.api.ConfigRoot;
 import net.kozibrodka.mocreatures.glasscfg.MocreaturesCFG;
 import net.kozibrodka.mocreatures.item.*;
+import net.kozibrodka.mocreatures.network.AdultPacket;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.mine_diver.unsafeevents.listener.ListenerPriority;
 import net.minecraft.achievement.Achievements;
@@ -13,10 +14,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.stat.Stat;
 import net.modificationstation.stationapi.api.client.gui.screen.achievement.AchievementPage;
 import net.modificationstation.stationapi.api.event.achievement.AchievementRegisterEvent;
+import net.modificationstation.stationapi.api.event.network.packet.PacketRegisterEvent;
 import net.modificationstation.stationapi.api.event.recipe.RecipeRegisterEvent;
 import net.modificationstation.stationapi.api.event.registry.ItemRegistryEvent;
 import net.modificationstation.stationapi.api.mod.entrypoint.Entrypoint;
 import net.modificationstation.stationapi.api.recipe.CraftingRegistry;
+import net.modificationstation.stationapi.api.registry.PacketTypeRegistry;
+import net.modificationstation.stationapi.api.registry.Registry;
 import net.modificationstation.stationapi.api.template.item.TemplateItem;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.util.Namespace;
@@ -39,6 +43,12 @@ public class mod_mocreatures {
     //TODO: horse faliing DMG crazy speed boost, GUI HANDLERS
 
     //TODO: remove istypechosen client logic, watch for setting age in render classes.
+
+    @EventListener
+    public void registerPacket(PacketRegisterEvent event) {
+        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("adult"), AdultPacket.TYPE);
+
+    }
 
     @EventListener(priority = ListenerPriority.HIGHEST)
     public void registerAchievements(AchievementRegisterEvent event) {
