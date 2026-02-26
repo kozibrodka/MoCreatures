@@ -3,9 +3,10 @@ package net.kozibrodka.mocreatures.network;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
-import net.kozibrodka.mocreatures.entity.EntityDeer;
-import net.minecraft.client.Minecraft;
+import net.kozibrodka.mocreatures.entity.EntityHorse;
+import net.kozibrodka.mocreatures.mocreatures.MoGuiOpener;
 import net.minecraft.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.NetworkHandler;
 import net.minecraft.network.packet.Packet;
@@ -13,6 +14,7 @@ import net.minecraft.world.ClientWorld;
 import net.minecraft.world.ServerWorld;
 import net.modificationstation.stationapi.api.entity.player.PlayerHelper;
 import net.modificationstation.stationapi.api.network.packet.ManagedPacket;
+import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import net.modificationstation.stationapi.api.network.packet.PacketType;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,19 +23,17 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Objects;
 
-public class AdultPacket extends Packet implements ManagedPacket<AdultPacket> {
+public class AskPacket extends Packet implements ManagedPacket<AskPacket> {
 
-    public static final PacketType<AdultPacket> TYPE = PacketType.builder(true, true, AdultPacket::new).build();
+    public static final PacketType<AskPacket> TYPE = PacketType.builder(true, true, AskPacket::new).build();
 
     private int entityId;
-    private int entityType;
-    private String entityName;
+    private String entityType;
 
-    public AdultPacket() {
+    public AskPacket() {
     }
 
-    public AdultPacket(String name, int id, int type) {
-        this.entityName = name;
+    public AskPacket(int id, String type) {
         this.entityId = id;
         this.entityType = type;
     }
@@ -41,9 +41,8 @@ public class AdultPacket extends Packet implements ManagedPacket<AdultPacket> {
     @Override
     public void read(DataInputStream stream) {
         try {
-            this.entityName = stream.readUTF();
             this.entityId = stream.readInt();
-            this.entityType = stream.readInt();
+            this.entityType = stream.readUTF();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,9 +51,8 @@ public class AdultPacket extends Packet implements ManagedPacket<AdultPacket> {
     @Override
     public void write(DataOutputStream stream) {
         try {
-            stream.writeUTF(this.entityName);
             stream.writeInt(this.entityId);
-            stream.writeInt(this.entityType);
+            stream.writeUTF(this.entityType);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,19 +68,27 @@ public class AdultPacket extends Packet implements ManagedPacket<AdultPacket> {
 
     @Environment(EnvType.CLIENT)
     public void handleClient(NetworkHandler networkHandler) {
-        if(Objects.equals(entityName, "deer")){
-            ClientPlayerEntity player = (ClientPlayerEntity) PlayerHelper.getPlayerFromPacketHandler(networkHandler);
-            if(player != null) {
-                EntityDeer entity1 = (EntityDeer) ((ClientWorld)player.world).getEntity(this.entityId);
-                    if(entity1 != null){
-                        entity1.setMyTexture(entityType);
-                    }
-            }
-        }
+
     }
 
     @Environment(EnvType.SERVER)
     public void handleServer(NetworkHandler networkHandler) {
+        ServerPlayerEntity player = (ServerPlayerEntity) PlayerHelper.getPlayerFromPacketHandler(networkHandler);
+        if(player == null){
+            return;
+        }
+
+        if(Objects.equals(entityType, "horse")){
+
+            EntityHorse horse1 = (EntityHorse) ((ServerWorld)player.world).getEntity(this.entityId);
+            if(horse1 != null) {
+                PacketHelper.sendTo(player, new HealthPacket(this.entityId, horse1.health));
+                PlayerEntity roper1 = (PlayerEntity) horse1.roper;
+                if(roper1 != null) {
+                    PacketHelper.sendTo(player, new RopePacket("horse", this.entityId, roper1.name));
+                }
+            }
+        }
     }
 
     @Override
@@ -91,7 +97,7 @@ public class AdultPacket extends Packet implements ManagedPacket<AdultPacket> {
     }
 
     @Override
-    public @NotNull PacketType<AdultPacket> getType() {
+    public @NotNull PacketType<AskPacket> getType() {
         return TYPE;
     }
 }

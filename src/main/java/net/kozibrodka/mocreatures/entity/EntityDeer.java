@@ -8,7 +8,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.kozibrodka.mocreatures.mixin.DataTrackerAccessor;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.kozibrodka.mocreatures.network.AdultPacket;
 import net.minecraft.block.Block;
@@ -336,7 +335,10 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
     public boolean interact(PlayerEntity entityplayer)
     {
         ItemStack itemstack = entityplayer.inventory.getSelectedItem();
-        if(itemstack != null && itemstack.itemId == Item.DIAMOND_HOE.id)
+        if(itemstack == null){
+            return false;
+        }
+        if(itemstack.itemId == Item.DIAMOND_HOE.id)
         {
             System.out.println("TYPE: " + getType());
             System.out.println("ADULT? " + getAdult());
@@ -344,9 +346,27 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
 //            System.out.println("BOX: " + this.width + " " + this.height);
             return true;
         }
-        if(itemstack != null && itemstack.itemId == Item.GOLDEN_HOE.id && !world.isRemote)
+        if(itemstack.itemId == Item.GOLDEN_HOE.id && !world.isRemote)
         {
             setAge(getAge()+0.2F);
+        }
+        if(itemstack.itemId == mod_mocreatures.sugarlump.id) {
+            if (--itemstack.count == 0) {
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
+            }
+            world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }
+        if(itemstack.itemId == mod_mocreatures.haystack.id && !world.isRemote) {
+            if (--itemstack.count == 0) {
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
+            }
+            world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }
+        if(itemstack.itemId == mod_mocreatures.petfood.id && world.isRemote) {
+            if (--itemstack.count == 0) {
+                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
+            }
+            world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
         }
         return false;
     }

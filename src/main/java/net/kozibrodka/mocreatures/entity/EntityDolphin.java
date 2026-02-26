@@ -1,14 +1,8 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
 
 package net.kozibrodka.mocreatures.entity;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.kozibrodka.mocreatures.mixin.EntityBaseAccesor;
-import net.kozibrodka.mocreatures.mixin.LivingAccesor;
-import net.kozibrodka.mocreatures.mixin.MonsterBaseAccesor;
 import net.kozibrodka.mocreatures.mocreatures.MoCGUI;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.client.Minecraft;
@@ -242,7 +236,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
                     float f = getDistance(entity);
                     if(f < 2.0F && random.nextInt(10) == 0)
                     {
-                        damage(entity, ((MonsterBaseAccesor)entity).getAttackDamage());
+                        damage(entity, ((MonsterEntity)entity).attackDamage);
                     }
                 }
 
@@ -415,7 +409,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         if(world.difficulty > 0 && getAge() >= 1.0F && mocr.mocreaturesGlass.watermobs.attackdolphins && random.nextInt(50) == 0)
         {
             LivingEntity entityliving = FindTarget(this, 12D);
-            if(entityliving != null && ((EntityBaseAccesor)entityliving).getSubmergedInWater())
+            if(entityliving != null && entityliving.submergedInWater)
             {
                 return entityliving;
             }

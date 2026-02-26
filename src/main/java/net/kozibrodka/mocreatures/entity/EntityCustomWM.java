@@ -4,7 +4,6 @@
 
 package net.kozibrodka.mocreatures.entity;
 
-import net.kozibrodka.mocreatures.mixin.EntityBaseAccesor;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -274,12 +273,12 @@ public class EntityCustomWM extends WaterCreatureEntity
         if(target == null)
         {
             target = getTargetInRange();
-            if(target != null && ((EntityBaseAccesor)target).getSubmergedInWater())
+            if(target != null && target.submergedInWater)
             {
                 a = world.findPath(this, target, f);
             }
         } else
-        if(!target.isAlive() || !((EntityBaseAccesor)target).getSubmergedInWater())
+        if(!target.isAlive() || !target.submergedInWater)
         {
             target = null;
         } else
@@ -290,7 +289,7 @@ public class EntityCustomWM extends WaterCreatureEntity
                 attack(target, f1);
             }
         }
-        if(!movementBlocked && target != null && ((EntityBaseAccesor)target).getSubmergedInWater() && (a == null || random.nextInt(20) == 0))
+        if(!movementBlocked && target != null && target.submergedInWater && (a == null || random.nextInt(20) == 0))
         {
             a = world.findPath(this, target, f);
         } else
@@ -376,7 +375,7 @@ public class EntityCustomWM extends WaterCreatureEntity
                 sidewaysSpeed = -MathHelper.sin(f7) * forwardSpeed * 1.0F;
                 forwardSpeed = MathHelper.cos(f7) * forwardSpeed * 1.0F;
             }
-            if(d3 > 0.0D && target != null && ((EntityBaseAccesor)target).getSubmergedInWater())
+            if(d3 > 0.0D && target != null && target.submergedInWater)
             {
                 jumping = true;
             }
@@ -416,7 +415,7 @@ public class EntityCustomWM extends WaterCreatureEntity
                 continue;
             }
             ItemEntity entityitem1 = (ItemEntity)entity1;
-            if(entityitem1.stack.itemId != Item.RAW_FISH.id || !((EntityBaseAccesor)entityitem1).getSubmergedInWater())
+            if(entityitem1.stack.itemId != Item.RAW_FISH.id || !entityitem1.submergedInWater)
             {
                 continue;
             }

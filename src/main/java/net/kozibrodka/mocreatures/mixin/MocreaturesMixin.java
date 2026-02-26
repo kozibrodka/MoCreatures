@@ -32,7 +32,7 @@ public class MocreaturesMixin {
 //        this.spawnablePassive.add(new EntitySpawnGroup(EntityBunny.class, mocr.mocreaturesGlass.animals.bunnyfreq));
         this.spawnablePassive.add(new EntitySpawnGroup(EntityDeer.class, mocr.mocreaturesGlass.animals.deerfreq));
 //        this.spawnablePassive.add(new EntitySpawnGroup(EntityDuck.class, mocr.mocreaturesGlass.animals.duckfreq));
-//        this.spawnablePassive.add(new EntitySpawnGroup(EntityFox.class, mocr.mocreaturesGlass.huntercreatures.foxfreq));
+        this.spawnablePassive.add(new EntitySpawnGroup(EntityFox.class, mocr.mocreaturesGlass.huntercreatures.foxfreq));
 //        this.spawnablePassive.add(new EntitySpawnGroup(EntityHorse.class, mocr.mocreaturesGlass.animals.horsefreq)); //TODO GUI
 //        this.spawnablePassive.add(new EntitySpawnGroup(EntityKitty.class, mocr.mocreaturesGlass.animals.kittyfreq)); //TODO GUI
 //        this.spawnablePassive.add(new EntitySpawnGroup(EntityMouse.class, mocr.mocreaturesGlass.animals.micefreq));

@@ -2,7 +2,6 @@ package net.kozibrodka.mocreatures.entity;
 
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.kozibrodka.mocreatures.mixin.WalkingBaseAccesor;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.MonsterEntity;
@@ -183,7 +182,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
                 if(entity instanceof MonsterEntity)
                 {
                     MonsterEntity entitymob = (MonsterEntity)entity;
-                    ((WalkingBaseAccesor)entitymob).setTarget(this);
+                    entitymob.target = (this);
                 }
             }
 

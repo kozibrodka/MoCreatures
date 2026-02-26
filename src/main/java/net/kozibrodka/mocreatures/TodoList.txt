@@ -2,9 +2,11 @@ To Do List:
 
 - Clean up typechoosen mechanic client.
 - Watch for setting age in render class.
-- Get data right with deer first
-- Opening GUI?
-- Move accessors to ACCESSWIDENDER
+- (DONE) Get data right with deer first
 - Config descriptions
 - setBoundingBoxSpacing - can it be sync on client?
-- wtf is bearboolean?
+- sound packets.
+
+- Extra horse Fuel - GUI issues. - implement new dependency but later
+- Packets try/catch - necasary?? ask dany.
+- Fix player animation when riding - VANILLA ALSO - boats

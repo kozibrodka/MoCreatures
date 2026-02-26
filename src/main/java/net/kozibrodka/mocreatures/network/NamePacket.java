@@ -4,7 +4,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.entity.EntityDeer;
-import net.minecraft.client.Minecraft;
+import net.kozibrodka.mocreatures.entity.EntityHorse;
+import net.kozibrodka.mocreatures.mocreatures.MoGuiOpener;
 import net.minecraft.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.NetworkHandler;
@@ -21,18 +22,18 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Objects;
 
-public class AdultPacket extends Packet implements ManagedPacket<AdultPacket> {
+public class NamePacket extends Packet implements ManagedPacket<NamePacket> {
 
-    public static final PacketType<AdultPacket> TYPE = PacketType.builder(true, true, AdultPacket::new).build();
+    public static final PacketType<NamePacket> TYPE = PacketType.builder(true, true, NamePacket::new).build();
 
     private int entityId;
-    private int entityType;
+    private String entityType;
     private String entityName;
 
-    public AdultPacket() {
+    public NamePacket() {
     }
 
-    public AdultPacket(String name, int id, int type) {
+    public NamePacket(String name, int id, String type) {
         this.entityName = name;
         this.entityId = id;
         this.entityType = type;
@@ -43,7 +44,7 @@ public class AdultPacket extends Packet implements ManagedPacket<AdultPacket> {
         try {
             this.entityName = stream.readUTF();
             this.entityId = stream.readInt();
-            this.entityType = stream.readInt();
+            this.entityType = stream.readUTF();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -54,7 +55,7 @@ public class AdultPacket extends Packet implements ManagedPacket<AdultPacket> {
         try {
             stream.writeUTF(this.entityName);
             stream.writeInt(this.entityId);
-            stream.writeInt(this.entityType);
+            stream.writeUTF(this.entityType);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,19 +71,31 @@ public class AdultPacket extends Packet implements ManagedPacket<AdultPacket> {
 
     @Environment(EnvType.CLIENT)
     public void handleClient(NetworkHandler networkHandler) {
-        if(Objects.equals(entityName, "deer")){
-            ClientPlayerEntity player = (ClientPlayerEntity) PlayerHelper.getPlayerFromPacketHandler(networkHandler);
-            if(player != null) {
-                EntityDeer entity1 = (EntityDeer) ((ClientWorld)player.world).getEntity(this.entityId);
-                    if(entity1 != null){
-                        entity1.setMyTexture(entityType);
-                    }
+        MoGuiOpener clientS = new MoGuiOpener();
+        ClientPlayerEntity player = (ClientPlayerEntity) PlayerHelper.getPlayerFromPacketHandler(networkHandler);
+        if(player == null){
+            return;
+        }
+        if(Objects.equals(entityType, "horse")){
+            EntityHorse entity1 = (EntityHorse) ((ClientWorld)player.world).getEntity(this.entityId);
+            if(entity1 != null){
+                clientS.openTameGui(entity1, entity1.getName());
             }
         }
     }
 
     @Environment(EnvType.SERVER)
     public void handleServer(NetworkHandler networkHandler) {
+        ServerPlayerEntity player = (ServerPlayerEntity) PlayerHelper.getPlayerFromPacketHandler(networkHandler);
+        if(player == null){
+            return;
+        }
+        if(Objects.equals(entityType, "horse")){
+            EntityHorse entity1 = (EntityHorse) ((ServerWorld)player.world).getEntity(this.entityId);
+            if(entity1 != null){
+                entity1.setName(this.entityName);
+            }
+        }
     }
 
     @Override
@@ -91,7 +104,7 @@ public class AdultPacket extends Packet implements ManagedPacket<AdultPacket> {
     }
 
     @Override
-    public @NotNull PacketType<AdultPacket> getType() {
+    public @NotNull PacketType<NamePacket> getType() {
         return TYPE;
     }
 }

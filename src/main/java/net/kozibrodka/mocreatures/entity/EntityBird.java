@@ -2,7 +2,6 @@ package net.kozibrodka.mocreatures.entity;
 
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.kozibrodka.mocreatures.mixin.EntityBaseAccesor;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -148,7 +147,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
             if(entityplayer != null)
             {
                 yaw = entityplayer.yaw;
-                ((EntityBaseAccesor)entityplayer).setFallDistance(0.0F);
+                entityplayer.fallDistance = 0.0F;
                 if(entityplayer.velocityY < -0.10000000000000001D)
                 {
                     entityplayer.velocityY = -0.10000000000000001D;

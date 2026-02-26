@@ -57,6 +57,8 @@ public class RenderHorse extends LivingEntityRenderer
         boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entityhorse.getName().isEmpty();
         boolean flag1 = mocr.mocreaturesGlass.othersettings.displayhealth;
         boolean flag2 = mocr.mocreaturesGlass.othersettings.displayemo;
+        boolean flagEat = entityhorse.getEaten();
+        boolean flagRep = entityhorse.getReproduced();
         if(entityhorse.renderName())
         {
             float f2 = 1.6F;
@@ -88,12 +90,24 @@ public class RenderHorse extends LivingEntityRenderer
                     float f9 = entityhorse.maxhealth;
                     float f10 = f8 / f9;
                     float f11 = 40F * f10;
+                    float r1;
+                    float r2;
+                    float r3;
+                    if(!flagEat){
+                        r1 = 0.0F;
+                        r2 = 0.7F;
+                        r3 = 0.0F;
+                    }else{
+                        r1 = 0.9F;
+                        r2 = 0.6F;
+                        r3 = 0.3F;
+                    }
                     tessellator1.color(0.7F, 0.0F, 0.0F, 1.0F);
                     tessellator1.vertex(-20F + f11, -10 + byte0, 0.0D);
                     tessellator1.vertex(-20F + f11, -6 + byte0, 0.0D);
                     tessellator1.vertex(20D, -6 + byte0, 0.0D);
                     tessellator1.vertex(20D, -10 + byte0, 0.0D);
-                    tessellator1.color(0.0F, 0.7F, 0.0F, 1.0F);
+                    tessellator1.color(r1, r2, r3, 1.0F); //tessellator1.color(0.0F, 0.7F, 0.0F, 1.0F);
                     tessellator1.vertex(-20D, -10 + byte0, 0.0D);
                     tessellator1.vertex(-20D, -6 + byte0, 0.0D);
                     tessellator1.vertex(f11 - 20F, -6 + byte0, 0.0D);
@@ -103,6 +117,18 @@ public class RenderHorse extends LivingEntityRenderer
                 }
                 if(flag)
                 {
+                    float r1;
+                    float r2;
+                    float r3;
+                    if(!flagRep){
+                        r1 = 0.0F;
+                        r2 = 0.0F;
+                        r3 = 0.0F;
+                    }else{
+                        r1 = 0.65F;
+                        r2 = 1.0F;
+                        r3 = 1.0F;
+                    }
                     GL11.glDepthMask(false);
                     GL11.glDisable(2929 /*GL_DEPTH_TEST*/);
                     GL11.glEnable(3042 /*GL_BLEND*/);
@@ -110,7 +136,7 @@ public class RenderHorse extends LivingEntityRenderer
                     GL11.glDisable(3553 /*GL_TEXTURE_2D*/);
                     tessellator1.startQuads();
                     int i = fontrenderer.getWidth(s) / 2;
-                    tessellator1.color(0.0F, 0.0F, 0.0F, 0.25F);
+                    tessellator1.color(r1, r2, r3, 0.25F); //tessellator1.color(0.0F, 0.0F, 0.0F, 0.25F);
                     tessellator1.vertex(-i - 1, -1 + byte0, 0.0D);
                     tessellator1.vertex(-i - 1, 8 + byte0, 0.0D);
                     tessellator1.vertex(i + 1, 8 + byte0, 0.0D);
@@ -259,7 +285,7 @@ public class RenderHorse extends LivingEntityRenderer
                 bindTexture("/assets/mocreatures/stationapi/textures/mob/horsebpsaddle.png");
             }
         }
-        return i == 0 && !entityhorse.horseboolean;
+        return i == 0;
     }
 
     mod_mocreatures mocr = new mod_mocreatures();

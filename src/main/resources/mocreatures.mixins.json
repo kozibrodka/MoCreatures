@@ -4,21 +4,15 @@
   "package": "net.kozibrodka.mocreatures.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "BlockBaseAccesor",
-    "CreeperAccesor",
-    "DataTrackerAccessor",
     "DungeonSaddleMixin",
-    "EntityBaseAccesor",
     "LimitsMixin",
-    "LivingAccesor",
+    "MixinEntityBase",
     "MixinFixDepthBuffer",
     "MixinFixThreadCheckHasPaid",
     "MocreaturesHellMixin",
     "MocreaturesMixin",
-    "MonsterBaseAccesor",
     "PlayerBaseMixin",
-    "SpawnerAnimalsMixin",
-    "WalkingBaseAccesor"
+    "SpawnerAnimalsMixin"
   ],
   "server": [
   ],

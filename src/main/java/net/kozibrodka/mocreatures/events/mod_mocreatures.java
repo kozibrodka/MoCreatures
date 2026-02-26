@@ -1,23 +1,28 @@
 package net.kozibrodka.mocreatures.events;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.glasslauncher.mods.gcapi3.api.ConfigRoot;
 import net.kozibrodka.mocreatures.glasscfg.MocreaturesCFG;
 import net.kozibrodka.mocreatures.item.*;
-import net.kozibrodka.mocreatures.network.AdultPacket;
+import net.kozibrodka.mocreatures.network.*;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.mine_diver.unsafeevents.listener.ListenerPriority;
 import net.minecraft.achievement.Achievements;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stat.Stat;
+import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.client.gui.screen.achievement.AchievementPage;
 import net.modificationstation.stationapi.api.event.achievement.AchievementRegisterEvent;
 import net.modificationstation.stationapi.api.event.network.packet.PacketRegisterEvent;
 import net.modificationstation.stationapi.api.event.recipe.RecipeRegisterEvent;
 import net.modificationstation.stationapi.api.event.registry.ItemRegistryEvent;
 import net.modificationstation.stationapi.api.mod.entrypoint.Entrypoint;
+import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import net.modificationstation.stationapi.api.recipe.CraftingRegistry;
 import net.modificationstation.stationapi.api.registry.PacketTypeRegistry;
 import net.modificationstation.stationapi.api.registry.Registry;
@@ -26,6 +31,8 @@ import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.util.Namespace;
 import net.modificationstation.stationapi.api.util.Null;
 import net.minecraft.achievement.Achievement;
+
+import java.util.List;
 
 public class mod_mocreatures {
 
@@ -44,9 +51,61 @@ public class mod_mocreatures {
 
     //TODO: remove istypechosen client logic, watch for setting age in render classes.
 
+    @Environment(EnvType.SERVER)
+    public void particlePacket(World world, String name, double x, double y, double z, double i, double j, double k) {
+        List list2 = world.players;
+        if (list2.size() != 0) {
+            for (int k1 = 0; k1 < list2.size(); k1++) {
+                ServerPlayerEntity player1 = (ServerPlayerEntity) list2.get(k1);
+                PacketHelper.sendTo(player1, new ParticlePacket(name, x, y, z, i, j, k));
+            }
+        }
+    }
+
+    @Environment(EnvType.SERVER)
+    public void voicePacket(World world, String name, int x, int y, int z, float g, float h) {
+        List list2 = world.players;
+        if (list2.size() != 0) {
+            for (int k = 0; k < list2.size(); k++) {
+                ServerPlayerEntity player1 = (ServerPlayerEntity) list2.get(k);
+                PacketHelper.sendTo(player1, new SoundPacket(name, x, y, z, g, h));
+            }
+        }
+    }
+
+    @Environment(EnvType.SERVER)
+    public void voicePacket(World world, String name, int id, float vol, float pit) {
+        List list2 = world.players;
+        if (list2.size() != 0) {
+            for (int k = 0; k < list2.size(); k++) {
+                ServerPlayerEntity player1 = (ServerPlayerEntity) list2.get(k);
+                PacketHelper.sendTo(player1, new SoundPacket(name, id, vol, pit));
+            }
+        }
+    }
+
+    @Environment(EnvType.SERVER)
+    public void healthPacket(World world, int id, int hp) {
+        List list2 = world.players;
+        if (list2.size() != 0) {
+            for (int k = 0; k < list2.size(); k++) {
+                ServerPlayerEntity player1 = (ServerPlayerEntity) list2.get(k);
+                PacketHelper.sendTo(player1, new HealthPacket(id, hp));
+            }
+        }
+    }
+
     @EventListener
     public void registerPacket(PacketRegisterEvent event) {
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("adult"), AdultPacket.TYPE);
+        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("name"), NamePacket.TYPE);
+        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("rope"), RopePacket.TYPE);
+        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("horse_riding"), RidingHorsePacket.TYPE);
+        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("jokey"), JokeyPacket.TYPE);
+        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("sound"), SoundPacket.TYPE);
+        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("particle"), ParticlePacket.TYPE);
+        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("health"), HealthPacket.TYPE);
+        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("ask"), AskPacket.TYPE);
 
     }
 
@@ -89,6 +148,7 @@ public class mod_mocreatures {
         woolball = new TemplateItem(Identifier.of(MOD_ID, "woolball")).setTranslationKey(MOD_ID, "woolball");
         rope = new TemplateItem(Identifier.of(MOD_ID, "rope")).setTranslationKey(MOD_ID, "rope");
         petfood = new TemplateItem(Identifier.of(MOD_ID, "petfood")).setTranslationKey(MOD_ID, "petfood");
+        greenapple = new GreenApple(Identifier.of(MOD_ID, "greenapple")).setTranslationKey(MOD_ID, "greenapple");
 
         //TODO: extra items, optional for balance propably going to remove some of it
         if(mocreaturesGlass.balancesettings.balance_drop) {

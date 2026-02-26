@@ -4,13 +4,11 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.entity.EntityDeer;
-import net.minecraft.client.Minecraft;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.NetworkHandler;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.world.ClientWorld;
-import net.minecraft.world.ServerWorld;
 import net.modificationstation.stationapi.api.entity.player.PlayerHelper;
 import net.modificationstation.stationapi.api.network.packet.ManagedPacket;
 import net.modificationstation.stationapi.api.network.packet.PacketType;
@@ -21,29 +19,26 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Objects;
 
-public class AdultPacket extends Packet implements ManagedPacket<AdultPacket> {
+public class HealthPacket extends Packet implements ManagedPacket<HealthPacket> {
 
-    public static final PacketType<AdultPacket> TYPE = PacketType.builder(true, true, AdultPacket::new).build();
+    public static final PacketType<HealthPacket> TYPE = PacketType.builder(true, true, HealthPacket::new).build();
 
     private int entityId;
-    private int entityType;
-    private String entityName;
+    private int healthPoints;
 
-    public AdultPacket() {
+    public HealthPacket() {
     }
 
-    public AdultPacket(String name, int id, int type) {
-        this.entityName = name;
+    public HealthPacket(int id, int health) {
         this.entityId = id;
-        this.entityType = type;
+        this.healthPoints = health;
     }
 
     @Override
     public void read(DataInputStream stream) {
         try {
-            this.entityName = stream.readUTF();
             this.entityId = stream.readInt();
-            this.entityType = stream.readInt();
+            this.healthPoints = stream.readInt();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,9 +47,8 @@ public class AdultPacket extends Packet implements ManagedPacket<AdultPacket> {
     @Override
     public void write(DataOutputStream stream) {
         try {
-            stream.writeUTF(this.entityName);
             stream.writeInt(this.entityId);
-            stream.writeInt(this.entityType);
+            stream.writeInt(this.healthPoints);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,15 +64,13 @@ public class AdultPacket extends Packet implements ManagedPacket<AdultPacket> {
 
     @Environment(EnvType.CLIENT)
     public void handleClient(NetworkHandler networkHandler) {
-        if(Objects.equals(entityName, "deer")){
             ClientPlayerEntity player = (ClientPlayerEntity) PlayerHelper.getPlayerFromPacketHandler(networkHandler);
-            if(player != null) {
-                EntityDeer entity1 = (EntityDeer) ((ClientWorld)player.world).getEntity(this.entityId);
-                    if(entity1 != null){
-                        entity1.setMyTexture(entityType);
-                    }
+            if (player != null) {
+                LivingEntity entity1 = (LivingEntity) ((ClientWorld) player.world).getEntity(this.entityId);
+                if (entity1 != null) {
+                    entity1.health = this.healthPoints;
+                }
             }
-        }
     }
 
     @Environment(EnvType.SERVER)
@@ -91,7 +83,7 @@ public class AdultPacket extends Packet implements ManagedPacket<AdultPacket> {
     }
 
     @Override
-    public @NotNull PacketType<AdultPacket> getType() {
+    public @NotNull PacketType<HealthPacket> getType() {
         return TYPE;
     }
 }

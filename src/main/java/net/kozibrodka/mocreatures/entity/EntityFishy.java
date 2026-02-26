@@ -5,7 +5,6 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.kozibrodka.mocreatures.mixin.EntityBaseAccesor;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -147,14 +146,14 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         if(world.difficulty > 0 && getAge() >= 1.0F && getType() == 10)
         {
             PlayerEntity entityplayer = world.getClosestPlayer(this, 16D);
-            if(entityplayer != null && ((EntityBaseAccesor)entityplayer).getSubmergedInWater() && !getTamed())
+            if(entityplayer != null && entityplayer.submergedInWater && !getTamed())
             {
                 return entityplayer;
             }
             if(random.nextInt(30) == 0)
             {
                 LivingEntity entityliving = FindTarget(this, 16D);
-                if(entityliving != null && ((EntityBaseAccesor)entityliving).getSubmergedInWater())
+                if(entityliving != null && entityliving.submergedInWater)
                 {
                     return entityliving;
                 }

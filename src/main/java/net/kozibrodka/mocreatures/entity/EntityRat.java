@@ -22,7 +22,7 @@ import java.util.List;
 
 public class EntityRat extends MonsterEntity implements MobSpawnDataProvider
 {
-
+//TODO: racial interface
     public EntityRat(World world)
     {
         super(world);

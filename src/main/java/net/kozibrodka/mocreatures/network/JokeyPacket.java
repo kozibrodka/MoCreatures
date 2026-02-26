@@ -3,14 +3,9 @@ package net.kozibrodka.mocreatures.network;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
-import net.kozibrodka.mocreatures.entity.EntityDeer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.NetworkHandler;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.world.ClientWorld;
-import net.minecraft.world.ServerWorld;
 import net.modificationstation.stationapi.api.entity.player.PlayerHelper;
 import net.modificationstation.stationapi.api.network.packet.ManagedPacket;
 import net.modificationstation.stationapi.api.network.packet.PacketType;
@@ -19,31 +14,24 @@ import org.jetbrains.annotations.NotNull;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Objects;
 
-public class AdultPacket extends Packet implements ManagedPacket<AdultPacket> {
+public class JokeyPacket extends Packet implements ManagedPacket<JokeyPacket> {
 
-    public static final PacketType<AdultPacket> TYPE = PacketType.builder(true, true, AdultPacket::new).build();
+    public static final PacketType<JokeyPacket> TYPE = PacketType.builder(true, true, JokeyPacket::new).build();
 
-    private int entityId;
-    private int entityType;
-    private String entityName;
+    private int action;
 
-    public AdultPacket() {
+    public JokeyPacket() {
     }
 
-    public AdultPacket(String name, int id, int type) {
-        this.entityName = name;
-        this.entityId = id;
-        this.entityType = type;
+    public JokeyPacket(int code) {
+        this.action = code;
     }
 
     @Override
     public void read(DataInputStream stream) {
         try {
-            this.entityName = stream.readUTF();
-            this.entityId = stream.readInt();
-            this.entityType = stream.readInt();
+            this.action = stream.readInt();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,9 +40,7 @@ public class AdultPacket extends Packet implements ManagedPacket<AdultPacket> {
     @Override
     public void write(DataOutputStream stream) {
         try {
-            stream.writeUTF(this.entityName);
-            stream.writeInt(this.entityId);
-            stream.writeInt(this.entityType);
+            stream.writeInt(this.action);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,15 +56,19 @@ public class AdultPacket extends Packet implements ManagedPacket<AdultPacket> {
 
     @Environment(EnvType.CLIENT)
     public void handleClient(NetworkHandler networkHandler) {
-        if(Objects.equals(entityName, "deer")){
-            ClientPlayerEntity player = (ClientPlayerEntity) PlayerHelper.getPlayerFromPacketHandler(networkHandler);
-            if(player != null) {
-                EntityDeer entity1 = (EntityDeer) ((ClientWorld)player.world).getEntity(this.entityId);
-                    if(entity1 != null){
-                        entity1.setMyTexture(entityType);
-                    }
-            }
+        ClientPlayerEntity player = (ClientPlayerEntity) PlayerHelper.getPlayerFromPacketHandler(networkHandler);
+        if(player == null){
+            return;
         }
+        if(action == 0) {
+            player.velocityY += 0.90000000000000002D;
+            player.velocityZ -= 0.29999999999999999D;
+            System.out.println("DOSZŁO CLIENT."); //todo dlaczego to wyzej niz na singlepl?
+        }
+        if(action == 1){
+            player.swingHand();
+        }
+
     }
 
     @Environment(EnvType.SERVER)
@@ -91,7 +81,7 @@ public class AdultPacket extends Packet implements ManagedPacket<AdultPacket> {
     }
 
     @Override
-    public @NotNull PacketType<AdultPacket> getType() {
+    public @NotNull PacketType<JokeyPacket> getType() {
         return TYPE;
     }
 }

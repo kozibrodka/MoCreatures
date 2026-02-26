@@ -630,7 +630,7 @@ label0:
             float f8 = entityplayer1.getDistance(this);
             if(f8 > 5F)
             {
-                method_429(entityplayer1, f8);
+                getPathOrWalkableBlock(entityplayer1, f8);
             }
             break;
 
@@ -1148,7 +1148,7 @@ label0:
         }
     }
 
-    private void method_429(Entity entity, float f)
+    private void getPathOrWalkableBlock(Entity entity, float f)
     {
         Path pathentity = world.findPath(this, entity, 16F);
         if(pathentity == null && f > 12F)

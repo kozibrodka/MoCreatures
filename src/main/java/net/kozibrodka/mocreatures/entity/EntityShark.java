@@ -6,7 +6,6 @@ package net.kozibrodka.mocreatures.entity;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.kozibrodka.mocreatures.mixin.EntityBaseAccesor;
 import net.kozibrodka.mocreatures.mocreatures.MoCGUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -74,14 +73,14 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider
         if(world.difficulty > 0 && b >= 1.0F)
         {
             PlayerEntity entityplayer = world.getClosestPlayer(this, 16D);
-            if(entityplayer != null && ((EntityBaseAccesor)entityplayer).getSubmergedInWater() && !tamed)
+            if(entityplayer != null && entityplayer.submergedInWater && !tamed)
             {
                 return entityplayer;
             }
             if(random.nextInt(30) == 0)
             {
                 LivingEntity entityliving = FindTarget(this, 16D);
-                if(entityliving != null && ((EntityBaseAccesor)entityliving).getSubmergedInWater())
+                if(entityliving != null && entityliving.submergedInWater)
                 {
                     return entityliving;
                 }

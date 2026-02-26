@@ -97,7 +97,6 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
 
     public boolean damage(Entity entitybase, int i)
     {
-        //TODO: should it run on client?
         if(super.damage(entitybase, i))
         {
             if(passenger == entitybase || vehicle == entitybase)

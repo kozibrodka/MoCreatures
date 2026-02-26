@@ -4,9 +4,6 @@ package net.kozibrodka.mocreatures.entity;
 import net.fabricmc.loader.api.FabricLoader;
 import net.kozibrodka.mocreatures.events.GUIListener;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.kozibrodka.mocreatures.mixin.DataTrackerAccessor;
-import net.kozibrodka.mocreatures.mixin.WalkingBaseAccesor;
-import net.kozibrodka.mocreatures.mocreatures.MoCGUI;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -197,7 +194,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
             if (roper != null && random.nextInt(20) == 0) {
                 float f = roper.getDistance(this);
                 if (f > 8F && !getSitting()) {
-                    method_429(roper, f);
+                    getPathOrWalkableBlock(roper, f);
                 }
                 if ((f > 18F) & getSitting()) {
                     roper = null;
@@ -219,7 +216,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                             setEaten(true);
                         }
                         world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-                        setHungry(true);
+                        setHungry(false); //todo czemu prawda???
                     }
                 }
             }
@@ -231,7 +228,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         return getSitting();
     }
 
-    private void method_429(Entity entity, float f)
+    private void getPathOrWalkableBlock(Entity entity, float f)
     {
         Path pathentity = world.findPath(this, entity, 16F);
         if(pathentity == null && f > 12F)
@@ -451,7 +448,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                 continue;
             }
             MobEntity entitycreature1 = (MobEntity)entity;
-            if(entitycreature1 != null && ((WalkingBaseAccesor)entitycreature1).getTarget() == entityplayer)
+            if(entitycreature1 != null && entitycreature1.target == entityplayer)
             {
                 return entitycreature1;
             }

@@ -26,7 +26,6 @@ public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
     public EntityFox(World world)
     {
         super(world);
-        foxboolean = false;
         texture = "/assets/mocreatures/stationapi/textures/mob/fox.png";
         setBoundingBoxSpacing(0.9F, 1.3F);
         health = 15;
@@ -122,13 +121,11 @@ public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
-        nbttagcompound.putBoolean("FoxBoolean", foxboolean);
     }
 
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
-        foxboolean = nbttagcompound.getBoolean("FoxBoolean");
     }
 
     protected float getSoundVolume()
@@ -190,7 +187,7 @@ public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
                 continue;
             }
             ItemEntity entityitem = (ItemEntity)entity1;
-            if(entityitem != null && entityitem.itemAge < 50 && mocr.mocreaturesGlass.huntercreatures.destroyitems)
+            if(entityitem.itemAge < 50 && mocr.mocreaturesGlass.huntercreatures.destroyitems)
             {
                 entityitem.markDead();
             }
@@ -210,7 +207,6 @@ public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
 
     mod_mocreatures mocr = new mod_mocreatures();
     protected double attackRange;
-    public boolean foxboolean;
     protected int force;
 
     @Override

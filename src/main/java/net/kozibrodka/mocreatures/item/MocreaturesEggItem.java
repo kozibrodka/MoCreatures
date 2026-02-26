@@ -109,6 +109,17 @@ public class MocreaturesEggItem extends TemplateItem {
             huj = new EntityWWolf(arg3);
         }
 
+        if(ide >= 30 && ide < 40){
+            huj = new EntityHorse(arg3);
+            huj.setPositionAndAnglesKeepPrevAngles(i, j, k, arg3.random.nextFloat() * 360F, 0.0F);
+            huj.setPosition(i, j + 1, k);
+            arg3.spawnEntity(huj);
+            --arg.count;
+            ((EntityHorse)huj).setType(ide - 30 + 1);
+            ((EntityHorse)huj).setAdult(true);
+            return false;
+        }
+
 
         huj.setPositionAndAnglesKeepPrevAngles(i, j, k, arg3.random.nextFloat() * 360F, 0.0F);
         huj.setPosition(i, j + 1, k);

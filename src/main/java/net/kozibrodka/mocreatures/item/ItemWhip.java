@@ -37,6 +37,11 @@ public class ItemWhip extends TemplateItem
 
     public boolean useOnBlock(ItemStack itemstack, PlayerEntity entityplayer, World world, int i, int j, int k, int l)
     {
+        //TODO CLIENT ETC.
+        System.out.println("UZYWAM BICZA");
+//        if(world.isRemote){
+//            return false;
+//        }
         int i1 = 0;
         int j1 = world.getBlockId(i, j, k);
         int k1 = world.getBlockId(i, j + 1, k);
@@ -67,7 +72,7 @@ public class ItemWhip extends TemplateItem
                     EntityHorse entityhorse = (EntityHorse)entity;
                     if((entityhorse.getTamed() && entityplayer.name.equals(entityhorse.getOwner()) || (entityhorse.getTamed() && entityhorse.getProtect())))
                     {
-                        entityhorse.setEaten(!entityhorse.getEaten());
+                        entityhorse.setSitting(!entityhorse.getSitting());
                     }
                 }
                 if(!(entity instanceof EntityKitty))

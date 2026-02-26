@@ -9,7 +9,6 @@ import net.kozibrodka.mocreatures.entity.EntityCaveOgre;
 import net.kozibrodka.mocreatures.entity.EntityFireOgre;
 import net.kozibrodka.mocreatures.entity.EntityOgre;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.kozibrodka.mocreatures.mixin.BlockBaseAccesor;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
@@ -72,7 +71,7 @@ label0:
                         int j6 = world.getBlockId(k5, l5, i6);
                         if(j6 > 0)
                         {
-                            f4 = ((BlockBaseAccesor)Block.BLOCKS[j6]).getHardness();
+                            f4 = Block.BLOCKS[j6].getHardness();
 //                            f4 = BlockBase.BY_ID[j6].hardness;
                             f2 -= (Block.BLOCKS[j6].getBlastResistance(entity) + 0.3F) * (f3 / 10F);
                         }

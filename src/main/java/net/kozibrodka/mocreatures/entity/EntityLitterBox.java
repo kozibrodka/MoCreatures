@@ -5,8 +5,6 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.kozibrodka.mocreatures.mixin.CreeperAccesor;
-import net.kozibrodka.mocreatures.mixin.WalkingBaseAccesor;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -53,12 +51,10 @@ public class EntityLitterBox extends LivingEntity implements MobSpawnDataProvide
                     continue;
                 }
                 MonsterEntity entitymob = (MonsterEntity)entity;
-//                entitymob.entity = this;
-                ((WalkingBaseAccesor)entitymob).setTarget(this);
+                entitymob.target = (this);
                 if(entitymob instanceof CreeperEntity)
                 {
-//                    ((Creeper)entitymob).currentFuseTime = 5;
-                    ((CreeperAccesor)(CreeperEntity)entitymob).setFuseTime(5);
+                    ((CreeperEntity)entitymob).fuseTime = 5;
                 }
                 if(entitymob instanceof EntityOgre)
                 {

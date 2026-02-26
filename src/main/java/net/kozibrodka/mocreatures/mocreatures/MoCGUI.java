@@ -5,10 +5,12 @@
 package net.kozibrodka.mocreatures.mocreatures;
 
 import net.kozibrodka.mocreatures.entity.*;
+import net.kozibrodka.mocreatures.network.NamePacket;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.CharacterUtils;
+import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
@@ -51,23 +53,43 @@ public class MoCGUI extends Screen
         {
             if(NamedEntity instanceof EntityKitty)
             {
-                ((EntityKitty)NamedEntity).name = NameToSet;
+                if(NamedEntity.world.isRemote){
+
+                }else{
+                    ((EntityKitty)NamedEntity).name = NameToSet;
+                }
             }
             if(NamedEntity instanceof EntityHorse)
             {
-                ((EntityHorse)NamedEntity).setName(NameToSet);
+                if(NamedEntity.world.isRemote){
+                    PacketHelper.send(new NamePacket(NameToSet, NamedEntity.id, "horse"));
+                }else{
+                    ((EntityHorse)NamedEntity).setName(NameToSet);
+                }
             }
             if(NamedEntity instanceof EntityBigCat)
             {
-                ((EntityBigCat)NamedEntity).setName(NameToSet);
+                if(NamedEntity.world.isRemote){
+
+                }else{
+                    ((EntityBigCat)NamedEntity).setName(NameToSet);
+                }
             }
             if(NamedEntity instanceof EntityDolphin)
             {
-                ((EntityDolphin)NamedEntity).setName(NameToSet);
+                if(NamedEntity.world.isRemote){
+
+                }else{
+                    ((EntityDolphin)NamedEntity).setName(NameToSet);
+                }
             }
             if(NamedEntity instanceof EntityShark)
             {
-                ((EntityShark)NamedEntity).name = NameToSet;
+                if(NamedEntity.world.isRemote){
+
+                }else{
+                    ((EntityShark)NamedEntity).name = NameToSet;
+                }
             }
             minecraft.setScreen(null);
         }
