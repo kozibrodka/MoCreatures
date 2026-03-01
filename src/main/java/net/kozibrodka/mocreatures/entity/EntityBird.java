@@ -1,8 +1,13 @@
 package net.kozibrodka.mocreatures.entity;
 
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
+import net.kozibrodka.mocreatures.network.AskPacket;
+import net.kozibrodka.mocreatures.network.RopePacket;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -10,11 +15,13 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
@@ -46,13 +53,32 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
     {
     }
 
+    @Override
+    public boolean shouldRender(double distance) {
+        return distance < 1024D; //10000D airship  //512 troche malo
+    }
+
+    @Environment(EnvType.CLIENT)
+    public void setPositionAndAnglesAvoidEntities(double x, double y, double z, float pitch, float yaw, int interpolationSteps) {
+        this.standingEyeHeight = 0.0F;
+        this.lerpX = x;
+        if(getPicked()){
+            this.lerpY = y + 1.65D; //
+        }else{
+            this.lerpY = y;
+        }
+        this.lerpZ = z;
+        this.lerpYaw = (double)pitch;
+        this.lerpPitch = (double)yaw;
+        this.bodyTrackingIncrements = interpolationSteps;
+    }
+
     protected void initDataTracker()
     {
         super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //Type
         dataTracker.startTracking(17, (byte) 0); //Tamed
         dataTracker.startTracking(18, (byte) 0); //Picked
-        dataTracker.startTracking(19, (byte) 0); //HasReproduced
         dataTracker.startTracking(20, (byte) 0); //Fleeing
     }
 
@@ -67,6 +93,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
             chooseType(getType());
+//            PacketHelper.send(new AskPacket(this.id, "bird"));
         }
         winge = wingb;
         wingd = wingc;
@@ -89,6 +116,12 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
             velocityY *= 0.80000000000000004D;
         }
         wingb += wingh * 2.0F;
+
+        if(world.isRemote){
+            tickLivingClient();
+            return;
+        }
+
         LivingEntity entityliving = getClosestEntityLiving(this, 4D);
         if(entityliving != null && !getTamed() && canSee(entityliving))
         {
@@ -135,6 +168,22 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
+    public void tickLivingClient()
+    {
+        if(vehicle != null && (vehicle instanceof PlayerEntity))
+        {
+            PlayerEntity entityplayer = (PlayerEntity)vehicle;
+            yaw = entityplayer.yaw;
+//            entityplayer.updatePassengerPosition();
+//            setPosition(this.x, this.y + ((double)this.height * (double)0.75F) + this.getStandingEyeHeight(), this.z);
+            entityplayer.fallDistance = 0.0F;
+            if(entityplayer.velocityY < -0.10000000000000001D)
+            {
+                entityplayer.velocityY = -0.10000000000000001D;
+            }
+        }
+    }
+
     protected void tickLiving()
     {
         if(onGround && random.nextInt(10) == 0 && (velocityX > 0.050000000000000003D || velocityZ > 0.050000000000000003D || velocityX < -0.050000000000000003D || velocityZ < -0.050000000000000003D))
@@ -144,21 +193,32 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         if(vehicle != null && (vehicle instanceof PlayerEntity))
         {
             PlayerEntity entityplayer = (PlayerEntity)vehicle;
-            if(entityplayer != null)
+            yaw = entityplayer.yaw;
+            ///
+////            standingEyeHeight -= 1.15F;
+//            this.y += 2.0D;
+//            this.prevY += 2.0D;
+//                    this.setPosition(this.x, this.y, this.z);
+            ///
+            entityplayer.fallDistance = 0.0F;
+            if(entityplayer.velocityY < -0.10000000000000001D)
             {
-                yaw = entityplayer.yaw;
-                entityplayer.fallDistance = 0.0F;
-                if(entityplayer.velocityY < -0.10000000000000001D)
-                {
-                    entityplayer.velocityY = -0.10000000000000001D;
-                }
+                entityplayer.velocityY = -0.10000000000000001D;
             }
+//                if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+//                    this.y += 2.0D;
+////                    this.y = entityplayer.y + 5.0D;
+//                    setPosition(this.x, this.y + 1.0D, this.z);
+//                    System.out.println(this.y + "  " + entityplayer.y);
+//                    entityplayer.updatePassengerPosition();
+//                    setPosition(this.x, this.y + ((double)this.height * (double)0.75F) + this.getStandingEyeHeight() -1.0D, this.z);
+//                }
         }
         if(!getFleeing() || !getPicked())
         {
             super.tickLiving();
         } else
-        if(onGround)
+        if(onGround && getPicked())
         {
             setPicked(false);
         }
@@ -178,18 +238,29 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
 
     public boolean interact(PlayerEntity entityplayer)
     {
+        if(world.isRemote){
+            return false;
+        }
         if(!getTamed())
         {
             return false;
         }
         yaw = entityplayer.yaw;
         setVehicle(entityplayer);
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
+//            sendRopePacket(world, "bird", this.id, entityplayer.name);
+            PacketHelper.sendTo(entityplayer, new RopePacket("bird", this.id, entityplayer.name));
+        }
         if(vehicle != null)
         {
             setPicked(true);
         } else
         {
             world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+            if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+                mocr.voicePacket(world, "mob.chickenplop", this.id, 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+            }
+            setPicked(false);
         }
         velocityX = entityplayer.velocityX * 5D;
         velocityY = entityplayer.velocityY / 2D + 0.5D;
@@ -549,14 +620,12 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
     {
         super.writeNbt(nbttagcompound);
         nbttagcompound.putInt("TypeInt", getType());
-        nbttagcompound.putBoolean("HasReproduced", getReproduced());
         nbttagcompound.putBoolean("Tamed", getTamed());
     }
 
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
-        setReproduced(nbttagcompound.getBoolean("HasReproduced"));
         setTamed(nbttagcompound.getBoolean("Tamed"));
         setType(nbttagcompound.getInt("TypeInt"));
     }
@@ -624,6 +693,17 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         return Identifier.of(mod_mocreatures.MOD_ID, "Bird");
     }
 
+    @Environment(EnvType.SERVER)
+    public void sendRopePacket(World world, String typeName, int entityID, String roperID) {
+        List list2 = world.players;
+        if (list2.size() != 0) {
+            for (int k = 0; k < list2.size(); k++) {
+                ServerPlayerEntity player1 = (ServerPlayerEntity) list2.get(k);
+                PacketHelper.sendTo(player1, new RopePacket(typeName, entityID, roperID));
+            }
+        }
+    }
+
     //TYPE
     public void setTypeSpawn()
     {
@@ -678,23 +758,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
             dataTracker.set(18, (byte) 0);
         }
     }
-    //Picked
-    public boolean getReproduced()
-    {
-        return (dataTracker.getByte(19) & 1) != 0;
-    }
-
-    public void setReproduced(boolean flag)
-    {
-        if(flag)
-        {
-            dataTracker.set(19, (byte) 1);
-        } else
-        {
-            dataTracker.set(19, (byte) 0);
-        }
-    }
-    //Picked
+    //Fleeing
     public boolean getFleeing()
     {
         return (dataTracker.getByte(20) & 1) != 0;

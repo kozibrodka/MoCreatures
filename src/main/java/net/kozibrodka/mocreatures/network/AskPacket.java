@@ -3,6 +3,8 @@ package net.kozibrodka.mocreatures.network;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
+import net.kozibrodka.mocreatures.entity.EntityBigCat;
+import net.kozibrodka.mocreatures.entity.EntityBird;
 import net.kozibrodka.mocreatures.entity.EntityHorse;
 import net.kozibrodka.mocreatures.mocreatures.MoGuiOpener;
 import net.minecraft.entity.player.ClientPlayerEntity;
@@ -86,6 +88,29 @@ public class AskPacket extends Packet implements ManagedPacket<AskPacket> {
                 PlayerEntity roper1 = (PlayerEntity) horse1.roper;
                 if(roper1 != null) {
                     PacketHelper.sendTo(player, new RopePacket("horse", this.entityId, roper1.name));
+                }
+            }
+        }
+
+        if(Objects.equals(entityType, "tiger")){
+
+            EntityBigCat tiger1 = (EntityBigCat) ((ServerWorld)player.world).getEntity(this.entityId);
+            if(tiger1 != null) {
+                PacketHelper.sendTo(player, new HealthPacket(this.entityId, tiger1.health));
+                PlayerEntity roper2 = (PlayerEntity) tiger1.roper;
+                if(roper2 != null) {
+                    PacketHelper.sendTo(player, new RopePacket("tiger", this.entityId, roper2.name));
+                }
+            }
+        }
+
+        if(Objects.equals(entityType, "bird")){
+
+            EntityBird bird1 = (EntityBird) ((ServerWorld)player.world).getEntity(this.entityId);
+            if(bird1 != null) {
+                PlayerEntity roper3 = (PlayerEntity) bird1.vehicle;
+                if(roper3 != null) {
+                    PacketHelper.sendTo(player, new RopePacket("bird", this.entityId, roper3.name));
                 }
             }
         }

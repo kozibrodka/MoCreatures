@@ -47,12 +47,12 @@ public class TextureListener {
         mod_mocreatures.greenapple.setTexture(Identifier.of(MOD_ID, "item/greenapple"));
 
         if(mod_mocreatures.mocreaturesGlass.balancesettings.balance_drop) {
-            mod_mocreatures.sharkoil.setTexture(Identifier.of(MOD_ID, "item/sharkoil"));
-            mod_mocreatures.wildleather.setTexture(Identifier.of(MOD_ID, "item/wildleather"));
-            mod_mocreatures.polarleather.setTexture(Identifier.of(MOD_ID, "item/polarleather"));
+//            mod_mocreatures.sharkoil.setTexture(Identifier.of(MOD_ID, "item/sharkoil"));
+//            mod_mocreatures.wildleather.setTexture(Identifier.of(MOD_ID, "item/wildleather"));
+//            mod_mocreatures.polarleather.setTexture(Identifier.of(MOD_ID, "item/polarleather"));
 //            mod_mocreatures.greenapple.setTexture(Identifier.of(MOD_ID, "item/greenapple"));
-            mod_mocreatures.bigcatfood.setTexture(Identifier.of(MOD_ID, "item/bigcatfood"));
-            mod_mocreatures.sharkfood.setTexture(Identifier.of(MOD_ID, "item/sharkfood"));
+//            mod_mocreatures.bigcatfood.setTexture(Identifier.of(MOD_ID, "item/bigcatfood"));
+//            mod_mocreatures.sharkfood.setTexture(Identifier.of(MOD_ID, "item/sharkfood"));
         }
 
         if(mod_mocreatures.mocreaturesGlass.balancesettings.spawn_eggs) {
@@ -89,6 +89,14 @@ public class TextureListener {
             EggListener.egg35.setTexture(Identifier.of(MOD_ID, "item/egg/horse5"));
             EggListener.egg36.setTexture(Identifier.of(MOD_ID, "item/egg/horse6"));
             EggListener.egg37.setTexture(Identifier.of(MOD_ID, "item/egg/horse7"));
+
+            EggListener.egg40.setTexture(Identifier.of(MOD_ID, "item/egg/MobMaleLion"));
+            EggListener.egg41.setTexture(Identifier.of(MOD_ID, "item/egg/MobFemaleLion"));
+            EggListener.egg42.setTexture(Identifier.of(MOD_ID, "item/egg/MobPanther"));
+            EggListener.egg43.setTexture(Identifier.of(MOD_ID, "item/egg/MobCheetah"));
+            EggListener.egg44.setTexture(Identifier.of(MOD_ID, "item/egg/MobTiger"));
+            EggListener.egg45.setTexture(Identifier.of(MOD_ID, "item/egg/MobSnowLeopard"));
+            EggListener.egg46.setTexture(Identifier.of(MOD_ID, "item/egg/MobWhiteTiger"));
         }
     }
 

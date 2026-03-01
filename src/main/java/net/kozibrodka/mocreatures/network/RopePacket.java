@@ -3,6 +3,8 @@ package net.kozibrodka.mocreatures.network;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
+import net.kozibrodka.mocreatures.entity.EntityBigCat;
+import net.kozibrodka.mocreatures.entity.EntityBird;
 import net.kozibrodka.mocreatures.entity.EntityDeer;
 import net.kozibrodka.mocreatures.entity.EntityHorse;
 import net.minecraft.entity.LivingEntity;
@@ -70,34 +72,35 @@ public class RopePacket extends Packet implements ManagedPacket<RopePacket> {
 
     @Environment(EnvType.CLIENT)
     public void handleClient(NetworkHandler networkHandler) {
-//        System.out.println("hej 0: " + entityRoper);
-        if(Objects.equals(entityName, "horse")){
-            ClientPlayerEntity player = (ClientPlayerEntity) PlayerHelper.getPlayerFromPacketHandler(networkHandler);
-            if(player != null) {
-                EntityHorse horse1 = (EntityHorse) ((ClientWorld)player.world).getEntity(this.entityId);
-//                LivingEntity entityRAK = (LivingEntity) ((ClientWorld)player.world).getEntity(this.entityRoper);
-                if(horse1 != null){
-                    LivingEntity roper1 = horse1.world.getPlayer(this.entityRoper);
-                    horse1.roper = roper1;
-                }
-//                System.out.println(horse1);
-//                System.out.println(entityRAKOWISKO);
-//                System.out.println(player.name);
+        ClientPlayerEntity player = (ClientPlayerEntity) PlayerHelper.getPlayerFromPacketHandler(networkHandler);
+        if(player == null){
+            return;
+        }
 
-//                LivingEntity entityR;
-//                if(entityRoper == 0){
-//                    horse1.roper = null;
-//                }else{
-//                    entityR = (LivingEntity) ((ClientWorld)player.world).getEntity(this.entityRoper);
-//                    System.out.println(entityR);
-//                    if(entityRoper == player.id){
-////                        horse1.roper = entityR;
-//                        horse1.roper = entityRAKOWISKO;
-//                    }else{
-////                        horse1.roper = entityR;
-//                        horse1.roper = entityRAKOWISKO;
-//                    }
-//                }
+        if(Objects.equals(entityName, "horse")){
+                EntityHorse horse1 = (EntityHorse) ((ClientWorld)player.world).getEntity(this.entityId);
+                if(horse1 != null){
+                    horse1.roper = horse1.world.getPlayer(this.entityRoper);
+                }
+        }
+
+        if(Objects.equals(entityName, "tiger")){
+            EntityBigCat tiger1 = (EntityBigCat) ((ClientWorld)player.world).getEntity(this.entityId);
+            if(tiger1 != null){
+                LivingEntity roper2 = tiger1.world.getPlayer(this.entityRoper);
+                tiger1.roper = roper2;
+            }
+        }
+
+        if(Objects.equals(entityName, "bird")){
+            EntityBird bird1 = (EntityBird) ((ClientWorld)player.world).getEntity(this.entityId);
+            if(bird1 != null){
+                LivingEntity roper2 = bird1.world.getPlayer(this.entityRoper);
+//                (EntityBird)
+                bird1.setVehicle(roper2);
+//                bird1.vehicle = roper2;
+//                bird1.standingEyeHeight -= 1.15F;
+//                bird1.roper = roper2;
             }
         }
     }

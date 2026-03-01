@@ -156,6 +156,7 @@ public class RenderHorse extends LivingEntityRenderer
         }
         if(entityhorse.roper != null)
         {
+            //TODO: on Multiplayer second Client has wrong roper.y/prevY
             Tessellator tessellator = Tessellator.INSTANCE;
             float f4 = ((entityhorse.roper.prevYaw + (entityhorse.roper.yaw - entityhorse.roper.prevYaw) * f1 * 0.5F) * 3.141593F) / 180F;
             float f6 = ((entityhorse.roper.prevPitch + (entityhorse.roper.pitch - entityhorse.roper.prevPitch) * f1 * 0.5F) * 3.141593F) / 180F;

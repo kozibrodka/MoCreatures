@@ -4,6 +4,8 @@
 
 package net.kozibrodka.mocreatures.item;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.entity.EntityBigCat;
 import net.kozibrodka.mocreatures.entity.EntityBunny;
 import net.kozibrodka.mocreatures.entity.EntityHorse;
@@ -37,11 +39,11 @@ public class ItemWhip extends TemplateItem
 
     public boolean useOnBlock(ItemStack itemstack, PlayerEntity entityplayer, World world, int i, int j, int k, int l)
     {
-        //TODO CLIENT ETC.
-        System.out.println("UZYWAM BICZA");
-//        if(world.isRemote){
-//            return false;
-//        }
+
+        if(world.isRemote){
+            entityplayer.swingHand();
+            return false;
+        }
         int i1 = 0;
         int j1 = world.getBlockId(i, j, k);
         int k1 = world.getBlockId(i, j + 1, k);
@@ -49,6 +51,7 @@ public class ItemWhip extends TemplateItem
         {
             whipFX(world, i, j, k);
             world.playSound(entityplayer, "mocreatures:whip", 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+            sendSound(world,"mocreatures:whip", entityplayer.x, entityplayer.y, entityplayer.z, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
             itemstack.damage(1, entityplayer);
             List list = world.getEntities(entityplayer, entityplayer.boundingBox.expand(12D, 12D, 12D));
             for(int l1 = 0; l1 < list.size(); l1++)
@@ -125,6 +128,7 @@ public class ItemWhip extends TemplateItem
                 }
                 whipFX(world, i, j, k);
                 world.playSound(entityplayer, "mocreatures:whip", 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+                sendSound(world,"mocreatures:whip", entityplayer.x, entityplayer.y, entityplayer.z, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
                 itemstack.damage(1, entityplayer);
                 return true;
             }
@@ -150,6 +154,20 @@ public class ItemWhip extends TemplateItem
         world.addParticle("smoke", d, d1, d2, 0.0D, 0.0D, 0.0D);
         world.addParticle("flame", d, d1, d2, 0.0D, 0.0D, 0.0D);
     }
+
+//    public void sendSound(World world, int eID, String name, float vol, float pit){
+//        if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+//            mocr.voicePacket(world, name, eID, vol, pit);
+//        }
+//    }
+
+    public void sendSound(World world, String name, double x, double y, double z, float g, float h){
+        if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+            mocr.voicePacket(world, name,x,y,z,g,h);
+        }
+    }
+
+    mod_mocreatures mocr = new mod_mocreatures();
 
     public boolean isFull3D()
     {

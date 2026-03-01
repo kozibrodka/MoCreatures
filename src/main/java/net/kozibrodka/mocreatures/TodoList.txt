@@ -7,6 +7,13 @@ To Do List:
 - setBoundingBoxSpacing - can it be sync on client?
 - sound packets.
 
-- Extra horse Fuel - GUI issues. - implement new dependency but later
+
 - Packets try/catch - necasary?? ask dany.
+
+(server fix mod:)
 - Fix player animation when riding - VANILLA ALSO - boats
+- Fix Server StepSounds of entities
+
+- CONFIG STYLE - GLASSCGF - SUCKSS
+
+- MODERN ARMOR MOD

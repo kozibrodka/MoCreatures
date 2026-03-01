@@ -120,6 +120,23 @@ public class MocreaturesEggItem extends TemplateItem {
             return false;
         }
 
+        if(ide >= 40 && ide < 50){
+            huj = new EntityBigCat(arg3);
+            huj.setPositionAndAnglesKeepPrevAngles(i, j, k, arg3.random.nextFloat() * 360F, 0.0F);
+            huj.setPosition(i, j + 1, k);
+            arg3.spawnEntity(huj);
+            --arg.count;
+            ((EntityBigCat)huj).setType(ide - 40 + 1);
+            if (random.nextInt(4) == 0) {
+                ((EntityBigCat)huj).setAdult(false);
+                ((EntityBigCat)huj).killedByOtherEntity = true;
+            }else{
+                ((EntityBigCat)huj).setAdult(true);
+                ((EntityBigCat)huj).setAge(1.0F);
+            }
+            return false;
+        }
+
 
         huj.setPositionAndAnglesKeepPrevAngles(i, j, k, arg3.random.nextFloat() * 360F, 0.0F);
         huj.setPosition(i, j + 1, k);

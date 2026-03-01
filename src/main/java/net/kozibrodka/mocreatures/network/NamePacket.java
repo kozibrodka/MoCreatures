@@ -3,9 +3,12 @@ package net.kozibrodka.mocreatures.network;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
+import net.kozibrodka.mocreatures.entity.EntityBigCat;
 import net.kozibrodka.mocreatures.entity.EntityDeer;
 import net.kozibrodka.mocreatures.entity.EntityHorse;
+import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
 import net.kozibrodka.mocreatures.mocreatures.MoGuiOpener;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.NetworkHandler;
@@ -27,16 +30,14 @@ public class NamePacket extends Packet implements ManagedPacket<NamePacket> {
     public static final PacketType<NamePacket> TYPE = PacketType.builder(true, true, NamePacket::new).build();
 
     private int entityId;
-    private String entityType;
     private String entityName;
 
     public NamePacket() {
     }
 
-    public NamePacket(String name, int id, String type) {
+    public NamePacket(String name, int id) {
         this.entityName = name;
         this.entityId = id;
-        this.entityType = type;
     }
 
     @Override
@@ -44,7 +45,6 @@ public class NamePacket extends Packet implements ManagedPacket<NamePacket> {
         try {
             this.entityName = stream.readUTF();
             this.entityId = stream.readInt();
-            this.entityType = stream.readUTF();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -55,7 +55,6 @@ public class NamePacket extends Packet implements ManagedPacket<NamePacket> {
         try {
             stream.writeUTF(this.entityName);
             stream.writeInt(this.entityId);
-            stream.writeUTF(this.entityType);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -76,12 +75,18 @@ public class NamePacket extends Packet implements ManagedPacket<NamePacket> {
         if(player == null){
             return;
         }
-        if(Objects.equals(entityType, "horse")){
-            EntityHorse entity1 = (EntityHorse) ((ClientWorld)player.world).getEntity(this.entityId);
-            if(entity1 != null){
-                clientS.openTameGui(entity1, entity1.getName());
-            }
+        LivingEntity entity1 = (LivingEntity) ((ClientWorld)player.world).getEntity(this.entityId);
+        if(entity1 instanceof MoCreatureNamed){
+            clientS.openTameGui(entity1, ((MoCreatureNamed)entity1).getName());
         }
+
+//        if(Objects.equals(entityType, "horse")){
+//            EntityHorse entity1 = (EntityHorse) ((ClientWorld)player.world).getEntity(this.entityId);
+//            if(entity1 != null){
+//                clientS.openTameGui(entity1, entity1.getName());
+//            }
+//        }
+
     }
 
     @Environment(EnvType.SERVER)
@@ -90,12 +95,18 @@ public class NamePacket extends Packet implements ManagedPacket<NamePacket> {
         if(player == null){
             return;
         }
-        if(Objects.equals(entityType, "horse")){
-            EntityHorse entity1 = (EntityHorse) ((ServerWorld)player.world).getEntity(this.entityId);
-            if(entity1 != null){
-                entity1.setName(this.entityName);
-            }
+
+        LivingEntity entity1 = (LivingEntity) ((ServerWorld)player.world).getEntity(this.entityId);
+        if(entity1 instanceof MoCreatureNamed){
+            ((MoCreatureNamed)entity1).setName(this.entityName);
         }
+
+//        if(Objects.equals(entityType, "horse")){
+//            EntityHorse entity1 = (EntityHorse) ((ServerWorld)player.world).getEntity(this.entityId);
+//            if(entity1 != null){
+//                entity1.setName(this.entityName);
+//            }
+//        }
     }
 
     @Override

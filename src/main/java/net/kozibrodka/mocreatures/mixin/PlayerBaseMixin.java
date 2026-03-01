@@ -83,10 +83,14 @@ public abstract class PlayerBaseMixin extends LivingEntity {
             Entity entity = (Entity)iterator.next();
             EntityBigCat entitybigcat = (EntityBigCat)entity;
             if (entitybigcat.getTamed() && entitybigcat.getAdult() && entitybigcat.getTarget() == null && name.equals(entitybigcat.getOwner()) && (!flag || !entitybigcat.getSitting())) {
-                if (!(entityliving instanceof PlayerEntity && !entitybigcat.getProtect())) {
+                if (entitybigcat.getProtect()) {
                     entitybigcat.wstanSzybko();
                     entitybigcat.ustawCel(entityliving);
                 }
+//                if (!(entityliving instanceof PlayerEntity && !entitybigcat.getProtect())) {
+//                    entitybigcat.wstanSzybko();
+//                    entitybigcat.ustawCel(entityliving);
+//                }
             }
         } while(true);
     }

@@ -28,7 +28,7 @@ public class RenderBigCat extends LivingEntityRenderer
         bigcat1.tamed = entitybigcat.getTamed();
     }
 
-    protected boolean a(EntityBigCat entitybigcat, int i) //TODO: logika tego neiznana
+    protected boolean a(EntityBigCat entitybigcat, int i)
     {
         if(entitybigcat.getType() == 2 && entitybigcat.getAdult())
         {
@@ -127,10 +127,6 @@ public class RenderBigCat extends LivingEntityRenderer
         if(entitybigcat.roper != null)
         {
             Tessellator tessellator = Tessellator.INSTANCE;
-            if(entitybigcat.getAdult())
-            {
-                entitybigcat.setAge(1.0F); //TODO: does it work? why in render??
-            }
             d1 -= 0.40000000000000002D / (double)entitybigcat.getAge();
             float f4 = ((entitybigcat.roper.prevYaw + (entitybigcat.roper.yaw - entitybigcat.roper.prevYaw) * f1 * 0.5F) * 3.141593F) / 180F;
             float f6 = ((entitybigcat.roper.prevPitch + (entitybigcat.roper.pitch - entitybigcat.roper.prevPitch) * f1 * 0.5F) * 3.141593F) / 180F;

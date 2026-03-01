@@ -29,7 +29,7 @@ public class CreaturesListener {
         event.register(EntityBunny.class, String.valueOf(Identifier.of(MOD_ID, "Bunny")));  //TODO
         event.register(EntityCaveOgre.class, String.valueOf(Identifier.of(MOD_ID, "CaveOgre")));  //TODO
         event.register(EntityDeer.class, String.valueOf(Identifier.of(MOD_ID, "Deer")));
-        event.register(EntityDuck.class, String.valueOf(Identifier.of(MOD_ID, "Duck")));  //TODO
+        event.register(EntityDuck.class, String.valueOf(Identifier.of(MOD_ID, "Duck")));
         event.register(EntityFireOgre.class, String.valueOf(Identifier.of(MOD_ID, "FireOgre")));  //TODO
         event.register(EntityFishy.class, String.valueOf(Identifier.of(MOD_ID, "Fishy")));  //TODO
         event.register(EntityFishyEgg.class, String.valueOf(Identifier.of(MOD_ID, "FishyEgg")));  //TODO

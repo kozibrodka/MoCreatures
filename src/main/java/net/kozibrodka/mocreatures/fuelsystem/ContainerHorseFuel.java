@@ -1,21 +1,21 @@
 package net.kozibrodka.mocreatures.fuelsystem;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.kozibrodka.mocreatures.entity.EntityHorse;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.screen.slot.Slot;
 
 public class ContainerHorseFuel extends ScreenHandler
 {
-
     public ContainerHorseFuel(Inventory iinventory, EntityHorse entityhorse)
     {
         byte var3 = 51;
         horse = entityhorse;
-        addSlot(new Slot(entityhorse, 0, 80, 22)); //addSlot(new Slot(entityplane, 0, 8, 53));
-//        addSlot(new Slot(entityplane, 2, 44 + 2 * 18, 20));
-
+        addSlot(new Slot(entityhorse, 0, 80, 22));
 
         for(int i1 = 0; i1 < 3; i1++)
         {
@@ -39,4 +39,36 @@ public class ContainerHorseFuel extends ScreenHandler
     }
 
     private EntityHorse horse;
+
+    private int animalFuel;
+    private int fuelDuration;
+
+    @Environment(EnvType.SERVER)
+    @Override
+    public void addListener(ScreenHandlerListener listener) {
+        super.addListener(listener);
+        listener.onPropertyUpdate(this, 0, horse.animalFuel);
+        listener.onPropertyUpdate(this, 1, horse.fuelDuration);
+    }
+
+    @Override
+    public void sendContentUpdates() {
+        super.sendContentUpdates();
+
+        for (Object listener : listeners) {
+            ScreenHandlerListener shl = (ScreenHandlerListener) listener;
+            if (this.animalFuel != horse.animalFuel) shl.onPropertyUpdate(this, 0, horse.animalFuel);
+            if (this.fuelDuration != horse.fuelDuration) shl.onPropertyUpdate(this, 1, horse.fuelDuration);
+        }
+
+        this.animalFuel = horse.animalFuel;
+        this.fuelDuration = horse.fuelDuration;
+    }
+
+    @Environment(EnvType.CLIENT)
+    @Override
+    public void setProperty(int id, int value) {
+        if (id == 0) horse.animalFuel = value;
+        if (id == 1) horse.fuelDuration = value;
+    }
 }

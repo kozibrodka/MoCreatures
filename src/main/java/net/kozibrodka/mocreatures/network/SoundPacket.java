@@ -53,7 +53,7 @@ public class SoundPacket extends Packet implements ManagedPacket<SoundPacket> {
     @Override
     public void read(DataInputStream stream) {
         try {
-            this.soundToPlay = readString(stream, 16);
+            this.soundToPlay = stream.readUTF();
             this.x = stream.readDouble();
             this.y = stream.readDouble();
             this.z = stream.readDouble();
@@ -68,7 +68,7 @@ public class SoundPacket extends Packet implements ManagedPacket<SoundPacket> {
     @Override
     public void write(DataOutputStream stream) {
         try {
-            writeString(this.soundToPlay, stream);
+            stream.writeUTF(this.soundToPlay);
             stream.writeDouble(this.x);
             stream.writeDouble(this.y);
             stream.writeDouble(this.z);

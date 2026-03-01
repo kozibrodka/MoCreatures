@@ -8,10 +8,12 @@ public class BalanceCFG {
     public Boolean balance_drop = false;
     @ConfigEntry(name="SugarLump is food item")
     public Boolean sugar_lump = true;
-    @ConfigEntry(name="Horse salldle balance?")
-    public Boolean horse_saddle = false;
-    @ConfigEntry(name="Horse Fuel")
+    @ConfigEntry(name="Apple, Golden Apple tame Horses and Dolphins")
+    public Boolean apple_tame = false;
+    @ConfigEntry(name="Horse drop saddle")
+    public Boolean horse_saddle_drop = false;
+    @ConfigEntry(name="Horse Fuel system")
     public Boolean horse_fuel = false;
-    @ConfigEntry(name="Spawn Eggs (cheating)")
+    @ConfigEntry(name="Spawn Eggs (cheating!!!)")
     public Boolean spawn_eggs = false;
 }

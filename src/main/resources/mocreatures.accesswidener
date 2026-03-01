@@ -8,3 +8,4 @@ accessible field net/minecraft/entity/Entity fallDistance F
 accessible field net/minecraft/entity/LivingEntity jumping Z
 accessible field net/minecraft/entity/mob/MonsterEntity attackDamage I
 accessible field net/minecraft/entity/MobEntity target Lnet/minecraft/entity/Entity;
+accessible field net/minecraft/entity/LivingEntity killedByOtherEntity Z

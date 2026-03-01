@@ -338,7 +338,15 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         if(itemstack == null){
             return false;
         }
+        ///
         if(itemstack.itemId == Item.DIAMOND_HOE.id)
+        {
+            setAge(getAge() + 0.21F);
+            System.out.println("DEBUG + AGE");
+            return true;
+        }
+        ///
+        if(itemstack.itemId == Item.IRON_HOE.id)
         {
             System.out.println("TYPE: " + getType());
             System.out.println("ADULT? " + getAdult());
@@ -370,6 +378,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
         return false;
     }
+
     public boolean canSpawn()
     {
         return mocr.mocreaturesGlass.animals.deerfreq > 0 && super.canSpawn();

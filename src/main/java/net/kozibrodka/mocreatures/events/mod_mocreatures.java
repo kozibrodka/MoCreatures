@@ -63,7 +63,7 @@ public class mod_mocreatures {
     }
 
     @Environment(EnvType.SERVER)
-    public void voicePacket(World world, String name, int x, int y, int z, float g, float h) {
+    public void voicePacket(World world, String name, double x, double y, double z, float g, float h) {
         List list2 = world.players;
         if (list2.size() != 0) {
             for (int k = 0; k < list2.size(); k++) {
@@ -106,6 +106,9 @@ public class mod_mocreatures {
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("particle"), ParticlePacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("health"), HealthPacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("ask"), AskPacket.TYPE);
+        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("server_riding"), ServerRidingPacket.TYPE);
+        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("client_riding"), ClientHorsePacket.TYPE);
+        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("horse_fuel"), HorseFuelOpenGUIPacket.TYPE);
 
     }
 
@@ -152,12 +155,12 @@ public class mod_mocreatures {
 
         //TODO: extra items, optional for balance propably going to remove some of it
         if(mocreaturesGlass.balancesettings.balance_drop) {
-            sharkoil = new TemplateItem(Identifier.of(MOD_ID, "sharkoil")).setTranslationKey(MOD_ID, "sharkoil");
-            wildleather = new TemplateItem(Identifier.of(MOD_ID, "wildleather")).setTranslationKey(MOD_ID, "wildleather");
-            polarleather = new TemplateItem(Identifier.of(MOD_ID, "polarleather")).setTranslationKey(MOD_ID, "polarleather");
-            greenapple = new GreenApple(Identifier.of(MOD_ID, "greenapple")).setTranslationKey(MOD_ID, "greenapple");
-            bigcatfood = new WildFood(Identifier.of(MOD_ID, "bigcatfood")).setTranslationKey(MOD_ID, "bigcatfood");
-            sharkfood = new WildFood(Identifier.of(MOD_ID, "sharkfood")).setTranslationKey(MOD_ID, "sharkfood");
+//            sharkoil = new TemplateItem(Identifier.of(MOD_ID, "sharkoil")).setTranslationKey(MOD_ID, "sharkoil");
+//            wildleather = new TemplateItem(Identifier.of(MOD_ID, "wildleather")).setTranslationKey(MOD_ID, "wildleather");
+//            polarleather = new TemplateItem(Identifier.of(MOD_ID, "polarleather")).setTranslationKey(MOD_ID, "polarleather");
+//            greenapple = new GreenApple(Identifier.of(MOD_ID, "greenapple")).setTranslationKey(MOD_ID, "greenapple");
+//            bigcatfood = new WildFood(Identifier.of(MOD_ID, "bigcatfood")).setTranslationKey(MOD_ID, "bigcatfood");
+//            sharkfood = new WildFood(Identifier.of(MOD_ID, "sharkfood")).setTranslationKey(MOD_ID, "sharkfood");
 //        goldenshears = new GoldenShears(Identifier.of(MOD_ID, "goldenshears")).setTranslationKey(MOD_ID, "goldenshears").setContainerItem(mod_mocreatures.goldenshears);
         }
     }

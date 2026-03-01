@@ -1,13 +1,17 @@
 package net.kozibrodka.mocreatures.entity;
 
 
-import net.fabricmc.loader.api.FabricLoader;
-import net.kozibrodka.mocreatures.events.GUIListener;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
+import net.kozibrodka.mocreatures.mocreatures.MoGuiOpener;
+import net.kozibrodka.mocreatures.network.AskPacket;
+import net.kozibrodka.mocreatures.network.NamePacket;
+import net.kozibrodka.mocreatures.network.RopePacket;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
@@ -17,20 +21,23 @@ import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.PickaxeItem;
+import net.minecraft.item.SwordItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.modificationstation.stationapi.api.gui.screen.container.GuiHelper;
+import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
 
 
-public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial
+public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial, MoCreatureNamed
 {
 
     public EntityBigCat(World world)
@@ -179,18 +186,31 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
             chooseType(getType());
+            PacketHelper.send(new AskPacket(this.id, "tiger"));
         }
         if(!world.isRemote) {
             if (!getAdult() && random.nextInt(250) == 0 && !world.isRemote) {
                 setAge(getAge() + 0.01F);
                 if (getAge() >= 1.0F) {
                     setAdult(true);
+                    setAge(1.0F);
                     killedByOtherEntity = false;
                 }
             }
-            if (!getHungry() && !getSitting() && random.nextInt(200) == 0) {
-                setHungry(true);
+            if(!getHungry()){
+                if((this.health < this.maxhealth) && getTamed()){
+                    if(random.nextInt(50) == 0){
+                        setHungry(true);
+                    }
+                }else{
+                    if(random.nextInt(200) == 0){
+                        setHungry(true);
+                    }
+                }
             }
+//            if (!getHungry() && random.nextInt(200) == 0 && !getSitting()) {
+//                setHungry(true);
+//            }
             if (roper != null && random.nextInt(20) == 0) {
                 float f = roper.getDistance(this);
                 if (f > 8F && !getSitting()) {
@@ -198,12 +218,19 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                 }
                 if ((f > 18F) & getSitting()) {
                     roper = null;
+                    if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
+                        sendRopePacket(world, "tiger", this.id, "");
+                    }
+                    ropeRemoval(world, this.x,this.y,this.z);
                 }
             }
-            if (deathTime == 0 && getHungry() && !getSitting()) {
+            if (deathTime == 0 && getHungry()) { // && !getSitting()
                 ItemEntity entityitem = getClosestItem(this, 12D, Item.RAW_PORKCHOP.id, Item.RAW_FISH.id);
                 if (entityitem != null) {
-                    MoveToNextEntity(entityitem);
+                    if(!getSitting()){
+                        MoveToNextEntity(entityitem);
+                    }
+//                    MoveToNextEntity(entityitem); //TODO: Z SIADANIEM OGARNIĄC i nie bedzie problemu z karmieniem
                     ItemEntity entityitem1 = getClosestItem(this, 2D, Item.RAW_PORKCHOP.id, Item.RAW_FISH.id);
                     if (random.nextInt(80) == 0 && entityitem1 != null && deathTime == 0) {
                         entityitem1.markDead();
@@ -212,15 +239,30 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                         } else {
                             health += 10;
                         }
+                        sendHealth(world, health);
                         if (!getAdult() && getAge() < 0.8F) {
                             setEaten(true);
                         }
                         world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-                        setHungry(false); //todo czemu prawda???
+                        sendSound(world, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+                        setHungry(false);
                     }
                 }
             }
         }
+    }
+
+    public void ropeRemoval(World world, double i, double j, double k)
+    {
+            float f = random.nextFloat() * 0.8F + 0.1F;
+            float f1 = random.nextFloat() * 0.8F + 0.1F;
+            float f2 = random.nextFloat() * 0.8F + 0.1F;
+            ItemEntity entityitem = new ItemEntity(world, (float)i + f, (float)j + f1, (float)k + f2, new ItemStack(mod_mocreatures.rope.id, 1, 0));
+            float f3 = 0.05F;
+            entityitem.velocityX = (float)random.nextGaussian() * f3;
+            entityitem.velocityY = (float)random.nextGaussian() * f3 + 0.2F;
+            entityitem.velocityZ = (float)random.nextGaussian() * f3;
+            world.spawnEntity(entityitem);
     }
 
     protected boolean isMovementBlocked()
@@ -390,7 +432,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                     return entityplayer;
                 }
             }
-            if(random.nextInt(80) == 0 && getHungry())
+            if(random.nextInt(80) == 0 && getHungry() && !getSitting()) /// dodatkowo sitting   && !getSitting()
             {
                 LivingEntity entityliving = getClosestTarget(this, 10D);
                 setHungry(false);
@@ -468,7 +510,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
             if(getTamed() && entitybase instanceof PlayerEntity)
             {
                 PlayerEntity gracz = (PlayerEntity)entitybase;
-                if(!gracz.name.equals(getOwner()) && getProtect())
+                if(!gracz.name.equals(getOwner())) /// && getProtect()
                 {
                     target = entitybase;
                 }
@@ -477,6 +519,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
             {
                 target = entitybase;
             }
+            sendHealth(world, health);/// ()health - i)
             return true;
         } else
         {
@@ -521,8 +564,8 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         nbttagcompound.putBoolean("DisplayName", getDisplayName());
         nbttagcompound.putString("TigerOwner", getOwner());
         nbttagcompound.putBoolean("ProtectFromPlayers", getProtect());
-        nbttagcompound.putBoolean("Hungry", getProtect());
-        nbttagcompound.putBoolean("Eaten", getProtect());
+        nbttagcompound.putBoolean("Hungry", getHungry());
+        nbttagcompound.putBoolean("Eaten", getEaten());
     }
 
     public void readNbt(NbtCompound nbttagcompound)
@@ -534,6 +577,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         setSitting(nbttagcompound.getBoolean("Sitting"));
         setAge(nbttagcompound.getFloat("Edad"));
         setTamed(nbttagcompound.getBoolean("Tamed"));
+        setName(nbttagcompound.getString("Name"));
         setDisplayName(nbttagcompound.getBoolean("DisplayName"));
         setOwner(nbttagcompound.getString("TigerOwner"));
         setProtect(nbttagcompound.getBoolean("ProtectFromPlayers"));
@@ -543,20 +587,15 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
 
     public boolean interact(PlayerEntity entityplayer)
     {
-        if(!world.isRemote) {
+        if(world.isRemote)
+        {
+            return false;
+        }
             ItemStack itemstack = entityplayer.inventory.getSelectedItem();
-            if (itemstack != null && mocr.mocreaturesGlass.balancesettings.balance_drop && entityplayer.name.equals(getOwner()) && getTamed() && itemstack.itemId == mod_mocreatures.bigcatfood.id) {
-                if (--itemstack.count == 0) {
-                    entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
-                }
-                if (health + 15 > maxhealth) {
-                    health = maxhealth;
-                } else {
-                    health += 15;
-                }
-                return true;
+            if(getTamed() && !entityplayer.name.equals(getOwner())){
+                return false;
             }
-            if (itemstack != null && getTamed() && entityplayer.name.equals(getOwner()) && (itemstack.itemId == Item.GOLDEN_SWORD.id || itemstack.itemId == Item.STONE_SWORD.id || itemstack.itemId == Item.WOODEN_SWORD.id || itemstack.itemId == Item.IRON_SWORD.id || itemstack.itemId == Item.DIAMOND_SWORD.id)) {
+            if (itemstack != null && getTamed() && itemstack.getItem() instanceof SwordItem) {
                 if (getProtect()) {
                     setProtect(false);
                     for (int var3 = 0; var3 < 7; ++var3) {
@@ -564,6 +603,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                         double var6 = this.random.nextGaussian() * 0.02D;
                         double var8 = this.random.nextGaussian() * 0.02D;
                         world.addParticle("heart", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
+                        sendParticle(world, "heart", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
                     }
                 } else {
                     setProtect(true);
@@ -572,6 +612,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                         double var6 = this.random.nextGaussian() * 0.02D;
                         double var8 = this.random.nextGaussian() * 0.02D;
                         world.addParticle("flame", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
+                        sendParticle(world, "flame", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
                     }
                 }
                 return true;
@@ -585,45 +626,42 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                 setNameWithGui(this, entityplayer);
                 return true;
             }
-            if (itemstack != null && entityplayer.name.equals(getOwner()) && getTamed() && itemstack.itemId == mod_mocreatures.whip.id) {
+            if (itemstack != null  && getTamed() && itemstack.itemId == mod_mocreatures.whip.id) {
                 setSitting(!getSitting());
                 return true;
             }
-            if (itemstack != null && entityplayer.name.equals(getOwner()) && getTamed() && (itemstack.itemId == Item.DIAMOND_PICKAXE.id || itemstack.itemId == Item.WOODEN_PICKAXE.id || itemstack.itemId == Item.STONE_PICKAXE.id || itemstack.itemId == Item.IRON_PICKAXE.id || itemstack.itemId == Item.GOLDEN_PICKAXE.id)) {
+            if (itemstack != null  && getTamed() && itemstack.getItem() instanceof PickaxeItem) {
                 setDisplayName(!getDisplayName());
                 return true;
             }
-            if (itemstack != null && entityplayer.name.equals(getOwner()) && getTamed() && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == Item.BOOK.id)) {
+            if (itemstack != null  && getTamed() && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == Item.BOOK.id)) {
                 setNameWithGui(this, entityplayer);
                 return true;
             }
-            if (itemstack != null && entityplayer.name.equals(getOwner()) && passenger == null && roper == null && getTamed() && itemstack.itemId == mod_mocreatures.rope.id) {
+            if (itemstack != null  && passenger == null && roper == null && getTamed() && itemstack.itemId == mod_mocreatures.rope.id) {
                 if (--itemstack.count == 0) {
                     entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
                 }
                 world.playSound(this, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+                sendSound(world, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
                 roper = entityplayer;
+                if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
+                    sendRopePacket(world, "tiger", this.id, entityplayer.name);
+                }
                 return true;
             }
-            //
-            if(itemstack != null && itemstack.itemId == Item.DIAMOND_HOE.id)
-            {
-                System.out.println("TYPE: " + getType());
-                System.out.println("ADULT? " + getAdult());
-                System.out.println("AGE: " + getAge());
-                return true;
-            }
-            //
             if (roper != null && getTamed()) {
                 entityplayer.inventory.addStack(new ItemStack(mod_mocreatures.rope));
                 world.playSound(this, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+                sendSound(world, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
                 roper = null;
+                if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
+                    sendRopePacket(world, "tiger", this.id, "");
+                }
                 return true;
             } else {
                 return false;
             }
-        }
-        return false;
     }
 
     protected String getRandomSound()
@@ -783,16 +821,16 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
 
     public static void setNameWithGui(EntityBigCat entitybigcat, PlayerEntity entityPlayer)
     {
-        entitybigcat.setDisplayName(true);
-//        mc.setScreen(new MoCGUI(entitybigcat, entitybigcat.getName()));
-//        GuiHelper.openGUI(entityPlayer, Identifier.of("mocreatures:openTamePaper"), null, null, entitybigcat.name);
-        GUIListener.tempLiving = entitybigcat;
-        GUIListener.tempString = entitybigcat.getName();
-        GuiHelper.openGUI(entityPlayer, Identifier.of("mocreatures:openTamePaper"), entityPlayer.inventory, null);
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
+            PacketHelper.sendTo(entityPlayer, new NamePacket(entitybigcat.getName(), entitybigcat.id));
+            entitybigcat.setDisplayName(true);
+        }else{
+            MoGuiOpener clientS = new MoGuiOpener();
+            clientS.openTameGui(entitybigcat, entitybigcat.getName());
+            entitybigcat.setDisplayName(true);
+        }
     }
 
-    @SuppressWarnings("deprecation")
-    public static Minecraft mc = Minecraft.class.cast(FabricLoader.getInstance().getGameInstance());
     mod_mocreatures mocr = new mod_mocreatures();
     protected int force;
     protected double attackRange;
@@ -823,6 +861,35 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         return Identifier.of(mod_mocreatures.MOD_ID, "BigCat");
     }
 
+    public void sendHealth(World world, int hp){
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+            mocr.healthPacket(world, this.id, hp);
+        }
+    }
+
+    public void sendParticle(World world, String name, double x, double y, double z, double i, double j, double k){
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+            mocr.particlePacket(world,name,x,y,z,i,j,k);
+        }
+    }
+
+    public void sendSound(World world, String name, float vol, float pit){
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+            mocr.voicePacket(world, name, this.id, vol, pit);
+        }
+    }
+
+    @Environment(EnvType.SERVER)
+    public void sendRopePacket(World world, String typeName, int entityID, String roperID) {
+        List list2 = world.players;
+        if (list2.size() != 0) {
+            for (int k = 0; k < list2.size(); k++) {
+                ServerPlayerEntity player1 = (ServerPlayerEntity) list2.get(k);
+                PacketHelper.sendTo(player1, new RopePacket(typeName, entityID, roperID));
+            }
+        }
+    }
+
     //TYPE
     public void setTypeSpawn() {
         if (!world.isRemote) {
@@ -848,6 +915,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                 killedByOtherEntity = true;
             }else{
                 setAdult(true);
+                setAge(1.0F);
             }
             setType(i);
         }

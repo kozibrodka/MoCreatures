@@ -14,7 +14,7 @@
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/mocreatures/stationapi/textures/item/egg/bear.png",
+  "icon": "assets/mocreatures/stationapi/icon.png",
 
   "environment": "*",
   "entrypoints": {
@@ -25,7 +25,8 @@
     ],
     "stationapi:event_bus_client": [
       "net.kozibrodka.mocreatures.events.KeybindListener",
-      "net.kozibrodka.mocreatures.events.TextureListener"
+      "net.kozibrodka.mocreatures.events.TextureListener",
+      "net.kozibrodka.mocreatures.events.GUIListener"
     ],
     "stationapi:event_bus_server": [
 

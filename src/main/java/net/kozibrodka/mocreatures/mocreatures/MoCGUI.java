@@ -51,44 +51,12 @@ public class MoCGUI extends Screen
         }
         if(guibutton.id == 0)
         {
-            if(NamedEntity instanceof EntityKitty)
+            if(NamedEntity instanceof MoCreatureNamed)
             {
                 if(NamedEntity.world.isRemote){
-
+                    PacketHelper.send(new NamePacket(NameToSet, NamedEntity.id));
                 }else{
-                    ((EntityKitty)NamedEntity).name = NameToSet;
-                }
-            }
-            if(NamedEntity instanceof EntityHorse)
-            {
-                if(NamedEntity.world.isRemote){
-                    PacketHelper.send(new NamePacket(NameToSet, NamedEntity.id, "horse"));
-                }else{
-                    ((EntityHorse)NamedEntity).setName(NameToSet);
-                }
-            }
-            if(NamedEntity instanceof EntityBigCat)
-            {
-                if(NamedEntity.world.isRemote){
-
-                }else{
-                    ((EntityBigCat)NamedEntity).setName(NameToSet);
-                }
-            }
-            if(NamedEntity instanceof EntityDolphin)
-            {
-                if(NamedEntity.world.isRemote){
-
-                }else{
-                    ((EntityDolphin)NamedEntity).setName(NameToSet);
-                }
-            }
-            if(NamedEntity instanceof EntityShark)
-            {
-                if(NamedEntity.world.isRemote){
-
-                }else{
-                    ((EntityShark)NamedEntity).name = NameToSet;
+                    ((MoCreatureNamed)NamedEntity).setName(NameToSet);
                 }
             }
             minecraft.setScreen(null);

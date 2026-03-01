@@ -21,32 +21,24 @@ import net.modificationstation.stationapi.api.registry.Registry;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.util.Namespace;
 import net.modificationstation.stationapi.api.util.Null;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 public class GUIListener {
 
     @Entrypoint.Namespace
-    public static Namespace MOD_ID = Null.get();
+    public static Namespace NAMESPACE;
 
     @Environment(EnvType.CLIENT)
     @EventListener
-    public void registerGuiHandlers(GuiHandlerRegistryEvent event) {
-        GuiHandlerRegistry registry = event.registry;
-
-//        Registry.register(registry, MOD_ID.id("openHorseFuel"), new GuiHandler((GuiHandler.ScreenFactoryNoMessage) this::openHorseFuel, () -> null));
-
-        Registry.register(registry, MOD_ID.id("openHorseFuel"), new GuiHandler((GuiHandler.ScreenFactoryNoMessage) this::openHorseFuel, EntityHorse::new));
+    public void registerScreenHandlers(@NotNull GuiHandlerRegistryEvent event) {
+        event.register(NAMESPACE.id("openHorseFuel"), new GuiHandler((GuiHandler.ScreenFactoryNoMessage) this::openAirship, () -> null));
     }
-
 
     @Environment(EnvType.CLIENT)
-    public Screen openHorseFuel(PlayerEntity player, Inventory inventoryBase) {
-        return new GuiHorseFuel(player.inventory, tempHorse);
+    @Contract("_, _ -> new")
+    private @NotNull Screen openAirship(@NotNull PlayerEntity player, Inventory inventory) {
+        return new GuiHorseFuel(player.inventory, (EntityHorse) player.vehicle);
     }
-
-    public static EntityHorse tempHorse;
-    public static LivingEntity tempLiving;
-    public static String tempString;
-
-    World world = (World) FabricLoader.getInstance().getGameInstance();
 
 }
