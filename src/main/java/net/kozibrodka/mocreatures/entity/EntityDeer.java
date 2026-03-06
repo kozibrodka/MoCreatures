@@ -54,7 +54,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
             if(type == 1)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/deer.png";
-                health = 18;
+                health = 15;
                 setAdult(true);
                 setAge(2.0F);
             } else
@@ -290,6 +290,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         if(!world.isRemote){
             int type = getRandomRace();
             setType(type);
+            //todo: choose health
         }
     }
 

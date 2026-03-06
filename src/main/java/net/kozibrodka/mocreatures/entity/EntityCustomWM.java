@@ -4,21 +4,27 @@
 
 package net.kozibrodka.mocreatures.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.FabricLoader;
+import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.network.ClientHorsePacket;
+import net.kozibrodka.mocreatures.network.JokeyPacket;
+import net.kozibrodka.mocreatures.network.ServerRidingPacket;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.WaterCreatureEntity;
 import net.minecraft.entity.ai.pathing.Path;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
+import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 
 import java.util.List;
-import java.util.Random;
 
 
 public class EntityCustomWM extends WaterCreatureEntity
@@ -28,7 +34,8 @@ public class EntityCustomWM extends WaterCreatureEntity
     {
         super(world);
         outOfWater = 0;
-        tamed = true;
+        tamed = false;
+//        tamed = true;
         temper = 50;
     }
 
@@ -57,21 +64,44 @@ public class EntityCustomWM extends WaterCreatureEntity
         return temper;
     }
 
-    public boolean istamed() //TODO: Make dolhin overrite THOSE i elo.
+    public boolean getTamed() //TODO: Make dolhin overrite THOSE i elo. nie trzeba chyba/
     {
         return tamed;
     }
 
-    public void setTame()
+    public void setTamed(boolean flag)
     {
-        tamed = true;
+        tamed = flag;
+    }
+
+    public void setJokey(boolean flag)
+    {
+
+    }
+
+    public void setOwner(String owner)
+    {
+
+    }
+
+    public void setDisplayName(boolean flag)
+    {
+
     }
 
     public void travel(float f, float f1)
     {
+        if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER && passenger != null) {
+            PlayerEntity entityplayer3 = (PlayerEntity)passenger;
+            PacketHelper.sendTo(entityplayer3, new ClientHorsePacket(this.prevX, this.prevZ, this.prevY));
+        }
+        if(world.isRemote && passenger != null && getTamed()){
+            PlayerEntity entityplayer3 = (PlayerEntity)passenger;
+            PacketHelper.send(new ServerRidingPacket(entityplayer3.velocityX, entityplayer3.velocityY, entityplayer3.velocityZ,entityplayer3.yaw, entityplayer3.pitch, entityplayer3.jumping));
+        }
         if(checkWaterCollisions())
         {
-            if(passenger != null && !istamed())
+            if(passenger != null && !getTamed() && !world.isRemote)
             {
                 if(random.nextInt(5) == 0 && !jumping)
                 {
@@ -86,10 +116,17 @@ public class EntityCustomWM extends WaterCreatureEntity
                 move(velocityX, velocityY, velocityZ);
                 if(random.nextInt(50) == 0)
                 {
+                    PlayerEntity entityplayer = (PlayerEntity)passenger;
                     world.playSound(this, getUpsetSound(), 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-                    passenger.velocityY += 0.90000000000000002D;
-                    passenger.velocityZ -= 0.29999999999999999D;
+                    sendSound(world, getUpsetSound(), 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F );
+                    entityplayer.velocityY += 0.90000000000000002D;
+                    entityplayer.velocityZ -= 0.29999999999999999D;
+                    entityplayer.setVehicle(null);
                     passenger = null;
+                    setJokey(false);
+                    if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+                        PacketHelper.sendTo(entityplayer, new JokeyPacket(0));
+                    }
                 }
                 if(onGround)
                 {
@@ -97,10 +134,12 @@ public class EntityCustomWM extends WaterCreatureEntity
                 }
                 if(random.nextInt(tametemper() * 8) == 0)
                 {
-                    setTame();
+                    setTamed(true);
+                    PlayerEntity milosc = (PlayerEntity)passenger;
+                    setOwner(milosc.name);
                 }
             }
-            if(passenger != null && istamed())
+            if(passenger != null && getTamed())
             {
                 boundingBox.maxY = passenger.boundingBox.maxY;
                 velocityX += passenger.velocityX * speed();
@@ -264,7 +303,10 @@ public class EntityCustomWM extends WaterCreatureEntity
 
     protected void tickLiving()
     {
-        if(passenger != null && tamed)
+        if(world.isRemote){
+            super.tickLiving();
+        }
+        if(passenger != null && getTamed())
         {
             return;
         }
@@ -431,6 +473,9 @@ public class EntityCustomWM extends WaterCreatureEntity
 
     public void tickMovement()
     {
+        if(world.isRemote){
+            super.tickMovement();
+        }
         if(onGround && submergedInWater && !gettingOutOfWater())
         {
             velocityY += 0.029999999999999999D;
@@ -438,7 +483,7 @@ public class EntityCustomWM extends WaterCreatureEntity
         if(!submergedInWater && random.nextInt(20) == 0 && passenger == null)
         {
             outOfWater++;
-            y += outOfWater / 30;
+            y += (double) outOfWater / 30;
             damage(this, 1);
         }
         if(health <= 0 || !submergedInWater && passenger == null)
@@ -512,6 +557,13 @@ public class EntityCustomWM extends WaterCreatureEntity
         return null;
     }
 
+    public void sendSound(World world, String name, float vol, float pit){
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+            mocr.voicePacket(world, name, this.id, vol, pit);
+        }
+    }
+
+    mod_mocreatures mocr = new mod_mocreatures();
     private Path a;
     private int outOfWater;
     private boolean tamed;

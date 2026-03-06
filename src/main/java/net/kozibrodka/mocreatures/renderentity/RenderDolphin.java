@@ -25,6 +25,7 @@ public class RenderDolphin extends LivingEntityRenderer
         boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entitydolphin.getName().isEmpty();
         boolean flag1 = mocr.mocreaturesGlass.othersettings.displayhealth;
         boolean flag2 = mocr.mocreaturesGlass.othersettings.displayemo;
+        boolean flagEat = entitydolphin.getEaten();
         if(entitydolphin.renderName())
         {
             float f2 = 1.6F;
@@ -56,12 +57,24 @@ public class RenderDolphin extends LivingEntityRenderer
                     float f7 = entitydolphin.maxhealth;
                     float f8 = f6 / f7;
                     float f9 = 40F * f8;
+                    float r1;
+                    float r2;
+                    float r3;
+                    if(!flagEat){
+                        r1 = 0.0F;
+                        r2 = 0.7F;
+                        r3 = 0.0F;
+                    }else{
+                        r1 = 0.9F;
+                        r2 = 0.6F;
+                        r3 = 0.3F;
+                    }
                     tessellator.color(0.7F, 0.0F, 0.0F, 1.0F);
                     tessellator.vertex(-20F + f9, -10 + byte0, 0.0D);
                     tessellator.vertex(-20F + f9, -6 + byte0, 0.0D);
                     tessellator.vertex(20D, -6 + byte0, 0.0D);
                     tessellator.vertex(20D, -10 + byte0, 0.0D);
-                    tessellator.color(0.0F, 0.7F, 0.0F, 1.0F);
+                    tessellator.color(r1, r2, r3, 1.0F); //tessellator1.color(0.0F, 0.7F, 0.0F, 1.0F);
                     tessellator.vertex(-20D, -10 + byte0, 0.0D);
                     tessellator.vertex(-20D, -6 + byte0, 0.0D);
                     tessellator.vertex(f9 - 20F, -6 + byte0, 0.0D);

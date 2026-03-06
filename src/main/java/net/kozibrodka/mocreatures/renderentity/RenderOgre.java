@@ -31,7 +31,7 @@ public class RenderOgre extends LivingEntityRenderer
             float f, float f1)
     {
         EntityOgre entityogre = (EntityOgre)entityliving;
-        if(entityliving.attackCooldown <= 0 && entityogre.ogreattack)
+        if(entityliving.attackCooldown <= 0 && entityogre.ogreattack) //TODO O JA PIERDOLE CO TO MA BYC
         {
             entityogre.ogreattack = false;
             entityogre.DestroyingOgre();

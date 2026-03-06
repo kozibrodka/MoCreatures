@@ -167,7 +167,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 maxhealth = 50;
                 fireImmune = true;
             }
-            health = maxhealth;
+//            health = maxhealth; // TODO EKSPERTYMENT
     }
 
     public void Riding()
@@ -198,11 +198,12 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 }
 
             }
-            addFuel(); ///crashe?
+            addFuel();
             burnFuel(1);
             if(entityplayer.isSneaking())
             {
                 entityplayer.setVehicle(null);
+                passenger = null; //TODO: dodatek czy bedzie ok? bez bylo ok chyba
                 setJokey(false);
             }
             if(getTamed() && animalFuel < -2 && mocr.mocreaturesGlass.balancesettings.horse_fuel){
@@ -336,6 +337,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             entityhorse1.setBred(true);
             entityhorse1.setAdult(false);
             entityhorse1.setType(l);
+            entityhorse1.health = entityhorse1.maxhealth;
             break;
         }
 
@@ -453,23 +455,6 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }else{
             return false;
         }
-
-
-//        if(passenger != null && entity == passenger)
-//        {
-//            return false;
-//        }
-//        if(entity instanceof WolfEntity)
-//        {
-//            MobEntity entitycreature = (MobEntity)entity;
-//            entitycreature.target = (null);
-//
-//            return false;
-//        } else
-//        {
-//            sendHealth(world, (health - i));
-//            return super.damage(entity, i);
-//        }
     }
 
     public void travel(float f, float f1)
@@ -1518,6 +1503,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 setAdult(true);
             }
             setType(getRandomRace());
+            this.health = this.maxhealth;
         }
     }
 

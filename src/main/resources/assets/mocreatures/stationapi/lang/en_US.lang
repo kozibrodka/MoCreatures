@@ -63,6 +63,21 @@ item.@.horse6_egg.name = Horse Pack
 item.@.horse7_egg.name = Horse Nightmare
 item.@.horse8_egg.name = Horse Black Pegasus
 
+item.@.bigcat1_egg.name = BigCat FemaleLion
+item.@.bigcat2_egg.name = BigCat MaleLion
+item.@.bigcat3_egg.name = BigCat Panther
+item.@.bigcat4_egg.name = BigCat Cheetah
+item.@.bigcat5_egg.name = BigCat Tiger
+item.@.bigcat6_egg.name = BigCat Leopard
+item.@.bigcat7_egg.name = BigCat WhiteTiger
+
+item.@.dolphin1_egg.name = Dolphin Blue
+item.@.dolphin2_egg.name = Dolphin Green
+item.@.dolphin3_egg.name = Dolphin Purple
+item.@.dolphin4_egg.name = Dolphin Dark
+item.@.dolphin5_egg.name = Dolphin Pink
+item.@.dolphin6_egg.name = Dolphin Albino
+
 
 item.@.sharkoil.name = Shark Oil
 item.@.greenapple.name = Green Apple

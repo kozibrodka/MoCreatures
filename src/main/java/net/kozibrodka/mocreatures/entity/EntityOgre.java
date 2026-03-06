@@ -123,7 +123,7 @@ public class EntityOgre extends MonsterEntity
 
     public void tickMovement()
     {
-        destroyForce = mocr.mocreaturesGlass.hostilemobs.ogreStrength;
+        destroyForce = mocr.mocreaturesGlass.hostilemobs.ogreStrength; ///Czy musi to byc tu?
         attackRange = mocr.mocreaturesGlass.hostilemobs.ogrerange;
         if(ogrehasenemy && random.nextInt(frequencyA) == 0)
         {

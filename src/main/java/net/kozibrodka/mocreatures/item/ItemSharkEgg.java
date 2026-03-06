@@ -23,9 +23,9 @@ public class ItemSharkEgg extends TemplateItem
 
     public ItemStack use(ItemStack itemstack, World world, PlayerEntity entityplayer)
     {
-        itemstack.count--;
         if(!world.isRemote)
         {
+            itemstack.count--;
             EntitySharkEgg entitysharkegg = new EntitySharkEgg(world, entityplayer.name);
             entitysharkegg.setPosition(entityplayer.x, entityplayer.y, entityplayer.z);
             world.spawnEntity(entitysharkegg);

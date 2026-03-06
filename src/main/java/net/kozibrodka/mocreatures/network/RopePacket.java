@@ -3,10 +3,7 @@ package net.kozibrodka.mocreatures.network;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
-import net.kozibrodka.mocreatures.entity.EntityBigCat;
-import net.kozibrodka.mocreatures.entity.EntityBird;
-import net.kozibrodka.mocreatures.entity.EntityDeer;
-import net.kozibrodka.mocreatures.entity.EntityHorse;
+import net.kozibrodka.mocreatures.entity.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -87,8 +84,8 @@ public class RopePacket extends Packet implements ManagedPacket<RopePacket> {
         if(Objects.equals(entityName, "tiger")){
             EntityBigCat tiger1 = (EntityBigCat) ((ClientWorld)player.world).getEntity(this.entityId);
             if(tiger1 != null){
-                LivingEntity roper2 = tiger1.world.getPlayer(this.entityRoper);
-                tiger1.roper = roper2;
+                LivingEntity roper1 = tiger1.world.getPlayer(this.entityRoper);
+                tiger1.roper = roper1;
             }
         }
 
@@ -96,11 +93,15 @@ public class RopePacket extends Packet implements ManagedPacket<RopePacket> {
             EntityBird bird1 = (EntityBird) ((ClientWorld)player.world).getEntity(this.entityId);
             if(bird1 != null){
                 LivingEntity roper2 = bird1.world.getPlayer(this.entityRoper);
-//                (EntityBird)
                 bird1.setVehicle(roper2);
-//                bird1.vehicle = roper2;
-//                bird1.standingEyeHeight -= 1.15F;
-//                bird1.roper = roper2;
+            }
+        }
+
+        if(Objects.equals(entityName, "bunny")){
+            EntityBunny bunny1 = (EntityBunny) ((ClientWorld)player.world).getEntity(this.entityId);
+            if(bunny1 != null){
+                LivingEntity roper3 = bunny1.world.getPlayer(this.entityRoper);
+                bunny1.setVehicle(roper3);
             }
         }
     }

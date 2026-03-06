@@ -94,9 +94,15 @@ public class RenderHorse extends LivingEntityRenderer
                     float r2;
                     float r3;
                     if(!flagEat){
-                        r1 = 0.0F;
-                        r2 = 0.7F;
-                        r3 = 0.0F;
+                        if(!flagRep){
+                            r1 = 0.0F;
+                            r2 = 0.7F;
+                            r3 = 0.0F;
+                        }else{
+                            r1 = 0.0F;
+                            r2 = 0.4F; /// CIEMNIEJSZY ZIELONY
+                            r3 = 0.0F;
+                        }
                     }else{
                         r1 = 0.9F;
                         r2 = 0.6F;
@@ -117,18 +123,6 @@ public class RenderHorse extends LivingEntityRenderer
                 }
                 if(flag)
                 {
-                    float r1;
-                    float r2;
-                    float r3;
-                    if(!flagRep){
-                        r1 = 0.0F;
-                        r2 = 0.0F;
-                        r3 = 0.0F;
-                    }else{
-                        r1 = 0.65F;
-                        r2 = 1.0F;
-                        r3 = 1.0F;
-                    }
                     GL11.glDepthMask(false);
                     GL11.glDisable(2929 /*GL_DEPTH_TEST*/);
                     GL11.glEnable(3042 /*GL_BLEND*/);
@@ -136,7 +130,7 @@ public class RenderHorse extends LivingEntityRenderer
                     GL11.glDisable(3553 /*GL_TEXTURE_2D*/);
                     tessellator1.startQuads();
                     int i = fontrenderer.getWidth(s) / 2;
-                    tessellator1.color(r1, r2, r3, 0.25F); //tessellator1.color(0.0F, 0.0F, 0.0F, 0.25F);
+                    tessellator1.color(0.0F, 0.0F, 0.0F, 0.25F);
                     tessellator1.vertex(-i - 1, -1 + byte0, 0.0D);
                     tessellator1.vertex(-i - 1, 8 + byte0, 0.0D);
                     tessellator1.vertex(i + 1, 8 + byte0, 0.0D);

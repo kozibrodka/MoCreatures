@@ -22,9 +22,9 @@ public class ItemFishyEgg extends TemplateItem
 
     public ItemStack use(ItemStack itemstack, World world, PlayerEntity entityplayer)
     {
-        itemstack.count--;
         if(!world.isRemote)
         {
+            itemstack.count--;
             EntityFishyEgg entityfishyegg = new EntityFishyEgg(world);
             entityfishyegg.setPosition(entityplayer.x, entityplayer.y, entityplayer.z);
             world.spawnEntity(entityfishyegg);

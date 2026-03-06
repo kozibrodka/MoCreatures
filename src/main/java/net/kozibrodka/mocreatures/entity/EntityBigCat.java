@@ -149,7 +149,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                 force = 8;
                 maxhealth = 40;
             }
-            health = maxhealth;
+//            health = maxhealth;
     }
 
     public int getRandomRace()
@@ -450,7 +450,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof PlayerEntity) || !getAdult() && ((double)entity1.width > 0.5D || (double)entity1.height > 0.5D) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof MonsterEntity) && (!getTamed() || !getAdult()) || getTamed() && (entity1 instanceof EntityKitty) && ((EntityKitty)entity1).kittystate > 2 || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof EntityHorse) && getTamed() && ((EntityHorse) entity1).getTamed() || (entity1 instanceof EntityShark) && ((EntityShark)entity1).tamed && getTamed() || (entity1 instanceof EntityDolphin) && ((EntityDolphin)entity1).getTamed() && getTamed() || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves)
+            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof PlayerEntity) || !getAdult() && ((double)entity1.width > 0.5D || (double)entity1.height > 0.5D) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof MonsterEntity) && (!getTamed() || !getAdult()) || getTamed() && (entity1 instanceof EntityKitty) && ((EntityKitty)entity1).kittystate > 2 || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof EntityHorse) && getTamed() && ((EntityHorse) entity1).getTamed() || (entity1 instanceof EntityShark) && ((EntityShark)entity1).getTamed() && getTamed() || (entity1 instanceof EntityDolphin) && ((EntityDolphin)entity1).getTamed() && getTamed() || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves)
             {
                 continue;
             }
@@ -510,7 +510,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
             if(getTamed() && entitybase instanceof PlayerEntity)
             {
                 PlayerEntity gracz = (PlayerEntity)entitybase;
-                if(!gracz.name.equals(getOwner())) /// && getProtect()
+                if(!gracz.name.equals(getOwner()))
                 {
                     target = entitybase;
                 }
@@ -519,11 +519,11 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
             {
                 target = entitybase;
             }
-            sendHealth(world, health);/// ()health - i)
+            sendHealth(world, health);
             return true;
         } else
         {
-            return false;
+            return false; //TODO: czy łuk logicznie działa? atak na właściciela...
         }
     }
 
@@ -622,6 +622,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                     entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
                 }
                 setTamed(true);
+                setProtect(true);
                 setOwner(entityplayer.name);
                 setNameWithGui(this, entityplayer);
                 return true;
@@ -918,6 +919,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                 setAge(1.0F);
             }
             setType(i);
+            this.health = this.maxhealth;
         }
     }
 

@@ -3,9 +3,7 @@ package net.kozibrodka.mocreatures.network;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
-import net.kozibrodka.mocreatures.entity.EntityBigCat;
-import net.kozibrodka.mocreatures.entity.EntityBird;
-import net.kozibrodka.mocreatures.entity.EntityHorse;
+import net.kozibrodka.mocreatures.entity.*;
 import net.kozibrodka.mocreatures.mocreatures.MoGuiOpener;
 import net.minecraft.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -111,6 +109,33 @@ public class AskPacket extends Packet implements ManagedPacket<AskPacket> {
                 PlayerEntity roper3 = (PlayerEntity) bird1.vehicle;
                 if(roper3 != null) {
                     PacketHelper.sendTo(player, new RopePacket("bird", this.entityId, roper3.name));
+                }
+            }
+        }
+
+        if(Objects.equals(entityType, "dolphin")){
+
+            EntityDolphin dolphin1 = (EntityDolphin) ((ServerWorld)player.world).getEntity(this.entityId);
+            if(dolphin1 != null) {
+                PacketHelper.sendTo(player, new HealthPacket(this.entityId, dolphin1.health));
+            }
+        }
+
+        if(Objects.equals(entityType, "shark")){
+
+            EntityShark shark1 = (EntityShark) ((ServerWorld)player.world).getEntity(this.entityId);
+            if(shark1 != null) {
+                PacketHelper.sendTo(player, new HealthPacket(this.entityId, shark1.health));
+            }
+        }
+
+        if(Objects.equals(entityType, "bunny")){
+
+            EntityBunny bunny1 = (EntityBunny) ((ServerWorld)player.world).getEntity(this.entityId);
+            if(bunny1 != null) {
+                PlayerEntity roper4 = (PlayerEntity) bunny1.vehicle;
+                if(roper4 != null) {
+                    PacketHelper.sendTo(player, new RopePacket("bunny", this.entityId, roper4.name));
                 }
             }
         }

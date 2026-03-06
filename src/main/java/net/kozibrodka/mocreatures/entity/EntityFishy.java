@@ -30,7 +30,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         health = 4;
 //        typeint = 0;
         typechosen = false;
-        setAge(1.0F);
+//        setAge(1.0F); //TODO NIE TUTAJ NA PEWNO
 //        adult = false;
 //        tamed = false;
         killedByOtherEntity = true;
@@ -53,6 +53,9 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
             typechosen = true;
             chooseType(getType());
         }
+        if(world.isRemote){
+            return;
+        }
         if(!getAdult() && random.nextInt(100) == 0)
         {
             setAge(getAge()+0.02F);
@@ -61,7 +64,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
                 setAdult(true);
             }
         }
-        if(!ReadyforParenting(this))
+        if(!ReadyforParenting(this)) //TODO: Rozmnożenie nigdy nie zajdzie - check jak było z modzie.
         {
             return;
         }
@@ -388,6 +391,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         if(!world.isRemote){
             int type = getRandomRace();
             setType(type);
+            setAge(1.0F);
         }
     }
 

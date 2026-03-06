@@ -95,6 +95,7 @@ public class MocreaturesEggItem extends TemplateItem {
         }
         if(ide == 24){
             huj = new EntityShark(arg3);
+            //TODO: żeby megalodona nie było szansy
         }
         if(ide == 25){
             huj = new EntitySharkEgg(arg3, "null");
@@ -117,6 +118,7 @@ public class MocreaturesEggItem extends TemplateItem {
             --arg.count;
             ((EntityHorse)huj).setType(ide - 30 + 1);
             ((EntityHorse)huj).setAdult(true);
+            ((EntityHorse) huj).health = ((EntityHorse) huj).maxhealth;
             return false;
         }
 
@@ -134,6 +136,23 @@ public class MocreaturesEggItem extends TemplateItem {
                 ((EntityBigCat)huj).setAdult(true);
                 ((EntityBigCat)huj).setAge(1.0F);
             }
+            ((EntityBigCat) huj).health = ((EntityBigCat) huj).maxhealth;
+            return false;
+        }
+
+        if(ide >= 50 && ide < 60){
+            huj = new EntityDolphin(arg3);
+            huj.setPositionAndAnglesKeepPrevAngles(i, j, k, arg3.random.nextFloat() * 360F, 0.0F);
+            huj.setPosition(i, j + 1, k);
+            arg3.spawnEntity(huj);
+            --arg.count;
+            ((EntityDolphin)huj).setType(ide - 50 + 1);
+            ((EntityDolphin) huj).setAge((0.8F + random.nextFloat()));
+            if(((EntityDolphin) huj).getAge() < 1.5F){
+                ((EntityDolphin) huj).setAge(1.7F);
+            }
+            ((EntityDolphin)huj).setAdult(true);
+            ((EntityDolphin) huj).health = ((EntityDolphin) huj).maxhealth;
             return false;
         }
 

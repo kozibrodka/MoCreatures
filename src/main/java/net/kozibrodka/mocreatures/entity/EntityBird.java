@@ -26,6 +26,7 @@ import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial
@@ -47,6 +48,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
 //        typechosen = false;
 //        hasreproduced = false;
         killedByOtherEntity = true;
+        //TODO: (also Bunnies) Position on server itself is not Correct, while being passenger of Player.
     }
 
     protected void onLanding(float f)
@@ -55,7 +57,12 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
 
     @Override
     public boolean shouldRender(double distance) {
-        return distance < 1024D; //10000D airship  //512 troche malo
+        if(getPicked()){
+            return distance < 1024D; //10000D airship  //512 troche malo
+
+        }else{
+            return super.shouldRender(distance);
+        }
     }
 
     @Environment(EnvType.CLIENT)
@@ -93,7 +100,6 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
             chooseType(getType());
-//            PacketHelper.send(new AskPacket(this.id, "bird"));
         }
         winge = wingb;
         wingd = wingc;
@@ -174,8 +180,6 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         {
             PlayerEntity entityplayer = (PlayerEntity)vehicle;
             yaw = entityplayer.yaw;
-//            entityplayer.updatePassengerPosition();
-//            setPosition(this.x, this.y + ((double)this.height * (double)0.75F) + this.getStandingEyeHeight(), this.z);
             entityplayer.fallDistance = 0.0F;
             if(entityplayer.velocityY < -0.10000000000000001D)
             {
@@ -224,6 +228,8 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
+    //TODO: DAMAGE METHOD for multiplayer not take damage while on player - possible workaround fix
+
     public void markDead()
     {
         if(getTamed() && health > 0)
@@ -245,10 +251,15 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         {
             return false;
         }
+        if(entityplayer.passenger != null && entityplayer.passenger != this){
+            return false;
+        }
+        if(vehicle instanceof PlayerEntity && !Objects.equals(((PlayerEntity) vehicle).name, entityplayer.name)){
+            return false;
+        }
         yaw = entityplayer.yaw;
         setVehicle(entityplayer);
         if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
-//            sendRopePacket(world, "bird", this.id, entityplayer.name);
             PacketHelper.sendTo(entityplayer, new RopePacket("bird", this.id, entityplayer.name));
         }
         if(vehicle != null)
@@ -691,17 +702,6 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
     @Override
     public Identifier getHandlerIdentifier() {
         return Identifier.of(mod_mocreatures.MOD_ID, "Bird");
-    }
-
-    @Environment(EnvType.SERVER)
-    public void sendRopePacket(World world, String typeName, int entityID, String roperID) {
-        List list2 = world.players;
-        if (list2.size() != 0) {
-            for (int k = 0; k < list2.size(); k++) {
-                ServerPlayerEntity player1 = (ServerPlayerEntity) list2.get(k);
-                PacketHelper.sendTo(player1, new RopePacket(typeName, entityID, roperID));
-            }
-        }
     }
 
     //TYPE

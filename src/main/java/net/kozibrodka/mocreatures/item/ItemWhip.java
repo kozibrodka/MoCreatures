@@ -16,6 +16,8 @@ import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IntHashMap;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.template.item.TemplateItem;
@@ -32,7 +34,7 @@ public class ItemWhip extends TemplateItem
         setMaxDamage(24);
     }
 
-    public ItemStack onItemRightClick2(ItemStack itemstack, World world, PlayerEntity entityplayer)
+    public ItemStack use(ItemStack itemstack, World world, PlayerEntity entityplayer)
     {
         return itemstack;
     }
@@ -97,40 +99,80 @@ public class ItemWhip extends TemplateItem
         }
         if(l != 0 && (k1 == Block.SIGN.id || j1 == Block.SIGN.id) && j1 != 0)
         {
-            SignBlockEntity tileentitysign = (SignBlockEntity)world.getBlockEntity(i, j + 1, k);
-            if(tileentitysign == null)
-            {
-                tileentitysign = (SignBlockEntity)world.getBlockEntity(i, j, k);
-            }
-            if(tileentitysign != null)
-            {
-                int i2 = 0;
-                List list1 = world.getEntities();
-                for(int j2 = 0; j2 < list1.size(); j2++)
+            if((net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER)){
+                SignBlockEntity tileentitysign = (SignBlockEntity)world.getBlockEntity(i, j + 1, k);
+                int tempY = j + 1;
+                if(tileentitysign == null)
                 {
-                    Entity entity1 = (Entity)list1.get(j2);
-                    if(entity1 instanceof EntityBunny)
-                    {
-                        EntityBunny entitybunny = (EntityBunny)entity1;
-                        i2++;
-                        entitybunny.markDead();
-                    }
+                    tileentitysign = (SignBlockEntity)world.getBlockEntity(i, j, k);
+                    tempY = j;
                 }
+                if(tileentitysign != null)
+                {
+                    int i2 = 0;
 
-                String s = String.valueOf(i2);
-                tileentitysign.texts[0] = "";
-                tileentitysign.texts[1] = "R.I.P.";
-                tileentitysign.texts[2] = (new StringBuilder()).append(s).append(" Bunnies").toString();
-                tileentitysign.texts[3] = "";
-                if(i2 > 69)
-                {
-                    entityplayer.incrementStat(mod_mocreatures.BunnyKilla);
+                    IntHashMap list1 = ((ServerWorld)entityplayer.world).entitiesById; //TODO: Server chyba jedynie przy uruchamianiu dodaje do listy Entities.
+                    for(int j2 = 0; j2 < list1.size; j2++)
+                    {
+                        if(list1.get(j2) instanceof EntityBunny entitybunny)
+                        {
+                            i2++;
+                            entitybunny.markDead();
+                        }
+                    }
+
+                    String s = String.valueOf(i2);
+                    tileentitysign.texts[0] = "";
+                    tileentitysign.texts[1] = "R.I.P.";
+                    tileentitysign.texts[2] = (new StringBuilder()).append(s).append(" Bunnies").toString();
+                    tileentitysign.texts[3] = "";
+                    world.blockUpdate(i, tempY, k, Block.SIGN.id);
+                    if(i2 > 69)
+                    {
+                        entityplayer.incrementStat(mod_mocreatures.BunnyKilla);
+                    }
+                    whipFX(world, i, j, k);
+                    world.playSound(entityplayer, "mocreatures:whip", 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+                    sendSound(world,"mocreatures:whip", entityplayer.x, entityplayer.y, entityplayer.z, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+                    itemstack.damage(1, entityplayer);
+                    return true;
                 }
-                whipFX(world, i, j, k);
-                world.playSound(entityplayer, "mocreatures:whip", 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
-                sendSound(world,"mocreatures:whip", entityplayer.x, entityplayer.y, entityplayer.z, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
-                itemstack.damage(1, entityplayer);
-                return true;
+            }else{
+                SignBlockEntity tileentitysign = (SignBlockEntity)world.getBlockEntity(i, j + 1, k);
+                if(tileentitysign == null)
+                {
+                    tileentitysign = (SignBlockEntity)world.getBlockEntity(i, j, k);
+                }
+                if(tileentitysign != null)
+                {
+                    int i2 = 0;
+                    List list1 = world.getEntities();
+                    for(int j2 = 0; j2 < list1.size(); j2++)
+                    {
+                        Entity entity1 = (Entity)list1.get(j2);
+                        if(entity1 instanceof EntityBunny)
+                        {
+                            EntityBunny entitybunny = (EntityBunny)entity1;
+                            i2++;
+                            entitybunny.markDead();
+                        }
+                    }
+
+                    String s = String.valueOf(i2);
+                    tileentitysign.texts[0] = "";
+                    tileentitysign.texts[1] = "R.I.P.";
+                    tileentitysign.texts[2] = (new StringBuilder()).append(s).append(" Bunnies").toString();
+                    tileentitysign.texts[3] = "";
+                    if(i2 > 69)
+                    {
+                        entityplayer.incrementStat(mod_mocreatures.BunnyKilla);
+                    }
+                    whipFX(world, i, j, k);
+                    world.playSound(entityplayer, "mocreatures:whip", 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+                    sendSound(world,"mocreatures:whip", entityplayer.x, entityplayer.y, entityplayer.z, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
+                    itemstack.damage(1, entityplayer);
+                    return true;
+                }
             }
         }
         return false;
@@ -153,13 +195,20 @@ public class ItemWhip extends TemplateItem
         world.addParticle("flame", d, d1 + d3, d2 + d4, 0.0D, 0.0D, 0.0D);
         world.addParticle("smoke", d, d1, d2, 0.0D, 0.0D, 0.0D);
         world.addParticle("flame", d, d1, d2, 0.0D, 0.0D, 0.0D);
-    }
 
-//    public void sendSound(World world, int eID, String name, float vol, float pit){
-//        if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-//            mocr.voicePacket(world, name, eID, vol, pit);
-//        }
-//    }
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+            mocr.particlePacket(world,"smoke", d - d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
+            mocr.particlePacket(world,"flame", d - d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
+            mocr.particlePacket(world,"smoke", d + d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
+            mocr.particlePacket(world,"flame", d + d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
+            mocr.particlePacket(world,"smoke", d, d1 + d3, d2 - d4, 0.0D, 0.0D, 0.0D);
+            mocr.particlePacket(world,"flame", d, d1 + d3, d2 - d4, 0.0D, 0.0D, 0.0D);
+            mocr.particlePacket(world,"smoke", d, d1 + d3, d2 + d4, 0.0D, 0.0D, 0.0D);
+            mocr.particlePacket(world,"flame", d, d1 + d3, d2 + d4, 0.0D, 0.0D, 0.0D);
+            mocr.particlePacket(world,"smoke", d, d1, d2, 0.0D, 0.0D, 0.0D);
+            mocr.particlePacket(world,"flame", d, d1, d2, 0.0D, 0.0D, 0.0D);
+        }
+    }
 
     public void sendSound(World world, String name, double x, double y, double z, float g, float h){
         if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){

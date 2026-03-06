@@ -24,15 +24,15 @@ public class CreaturesListener {
     @EventListener
     private static void registerEntities(EntityRegister event) { //TODO - MULTIPLAYER
         event.register(EntityBear.class, String.valueOf(Identifier.of(MOD_ID, "Bear")));
-        event.register(EntityBird.class, String.valueOf(Identifier.of(MOD_ID, "Bird")));  //TODO
+        event.register(EntityBird.class, String.valueOf(Identifier.of(MOD_ID, "Bird")));
         event.register(EntityBoar.class, String.valueOf(Identifier.of(MOD_ID, "Boar")));  
         event.register(EntityBunny.class, String.valueOf(Identifier.of(MOD_ID, "Bunny")));  //TODO
         event.register(EntityCaveOgre.class, String.valueOf(Identifier.of(MOD_ID, "CaveOgre")));  //TODO
         event.register(EntityDeer.class, String.valueOf(Identifier.of(MOD_ID, "Deer")));
         event.register(EntityDuck.class, String.valueOf(Identifier.of(MOD_ID, "Duck")));
         event.register(EntityFireOgre.class, String.valueOf(Identifier.of(MOD_ID, "FireOgre")));  //TODO
-        event.register(EntityFishy.class, String.valueOf(Identifier.of(MOD_ID, "Fishy")));  //TODO
-        event.register(EntityFishyEgg.class, String.valueOf(Identifier.of(MOD_ID, "FishyEgg")));  //TODO
+        event.register(EntityFishy.class, String.valueOf(Identifier.of(MOD_ID, "Fishy")));
+        event.register(EntityFishyEgg.class, String.valueOf(Identifier.of(MOD_ID, "FishyEgg")));
         event.register(EntityFlameWraith.class, String.valueOf(Identifier.of(MOD_ID, "FlameWraith")));  //TODO
         event.register(EntityFox.class, String.valueOf(Identifier.of(MOD_ID, "Fox")));
         event.register(EntityHellRat.class, String.valueOf(Identifier.of(MOD_ID, "HellRat")));  //TODO
@@ -42,15 +42,15 @@ public class CreaturesListener {
         event.register(EntityOgre.class, String.valueOf(Identifier.of(MOD_ID, "Ogre")));  //TODO
         event.register(EntityPolarBear.class, String.valueOf(Identifier.of(MOD_ID, "PolarBear")));
         event.register(EntityRat.class, String.valueOf(Identifier.of(MOD_ID, "Rat")));  //TODO
-        event.register(EntityShark.class, String.valueOf(Identifier.of(MOD_ID, "Shark")));  //TODO
-        event.register(EntitySharkEgg.class, String.valueOf(Identifier.of(MOD_ID, "SharkEgg")));  //TODO
+        event.register(EntityShark.class, String.valueOf(Identifier.of(MOD_ID, "Shark")));
+        event.register(EntitySharkEgg.class, String.valueOf(Identifier.of(MOD_ID, "SharkEgg")));
         event.register(EntityWerewolf.class, String.valueOf(Identifier.of(MOD_ID, "WereWolf")));  //TODO
         event.register(EntityWraith.class, String.valueOf(Identifier.of(MOD_ID, "Wraith")));  //TODO
         event.register(EntityWWolf.class, String.valueOf(Identifier.of(MOD_ID, "WildWolf")));  //TODO
 
-        event.register(EntityBigCat.class, String.valueOf(Identifier.of(MOD_ID, "BigCat")));  //TODO
-        event.register(EntityDolphin.class, String.valueOf(Identifier.of(MOD_ID, "Dolphin")));  //TODO
-        event.register(EntityHorse.class, String.valueOf(Identifier.of(MOD_ID, "Horse")));  //TODO
+        event.register(EntityBigCat.class, String.valueOf(Identifier.of(MOD_ID, "BigCat")));
+        event.register(EntityDolphin.class, String.valueOf(Identifier.of(MOD_ID, "Dolphin")));
+        event.register(EntityHorse.class, String.valueOf(Identifier.of(MOD_ID, "Horse")));
         event.register(EntityKitty.class, String.valueOf(Identifier.of(MOD_ID, "Kitty")));  //TODO
     }
 

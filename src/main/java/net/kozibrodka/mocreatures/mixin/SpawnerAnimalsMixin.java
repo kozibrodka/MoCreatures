@@ -17,9 +17,7 @@ public class SpawnerAnimalsMixin {
     @Inject(method = "postSpawnEntity", at = @At(value = "TAIL"), cancellable = true)
     private static void Injected(LivingEntity arg, World arg2, float f, float g, float h, CallbackInfo ci){
         if (arg instanceof MoCreatureRacial) {
-//            System.out.println("SPAWNIE MOCR RACIAL");
             ((MoCreatureRacial)arg).setTypeSpawn();
-//            ((SheepEntity)arg).method_2046(SheepEntity.method_2044(arg2.field_214));
         }
     }
 }

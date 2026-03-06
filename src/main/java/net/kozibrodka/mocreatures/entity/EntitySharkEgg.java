@@ -4,6 +4,7 @@
 
 package net.kozibrodka.mocreatures.entity;
 
+import net.fabricmc.api.EnvType;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
@@ -11,10 +12,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
+import net.modificationstation.stationapi.api.server.entity.HasTrackingParameters;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
+import net.modificationstation.stationapi.api.util.TriState;
 
-
+@HasTrackingParameters(trackingDistance = 160, updatePeriod = 2, sendVelocity = TriState.TRUE)
 public class EntitySharkEgg extends LivingEntity implements MobSpawnDataProvider
 {
 
@@ -53,6 +56,9 @@ public class EntitySharkEgg extends LivingEntity implements MobSpawnDataProvider
 
     public void tickMovement()
     {
+        if(world.isRemote){
+            super.tickMovement();
+        }
         sidewaysSpeed = 0.0F;
         forwardSpeed = 0.0F;
         rotationSpeed = 0.0F;
@@ -68,6 +74,7 @@ public class EntitySharkEgg extends LivingEntity implements MobSpawnDataProvider
         if(lCounter > 10 && entityplayer.inventory.addStack(new ItemStack(mod_mocreatures.sharkegg, 1)))
         {
             world.playSound(this, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+            sendSound(world, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
             entityplayer.sendPickup(this, 1);
             markDead();
         }
@@ -76,6 +83,9 @@ public class EntitySharkEgg extends LivingEntity implements MobSpawnDataProvider
     public void tick()
     {
         super.tick();
+        if(world.isRemote){
+            return;
+        }
         if(random.nextInt(20) == 0)
         {
             lCounter++;
@@ -86,12 +96,15 @@ public class EntitySharkEgg extends LivingEntity implements MobSpawnDataProvider
             if(tCounter >= 50)
             {
                 EntityShark entityshark = new EntityShark(world);
-                entityshark.b = 0.3F;
-                entityshark.tamed = true;
-                entityshark.sharkOwner = ktoKto;
+                entityshark.setAge(0.3F);
+                entityshark.setTamed(true);
+                entityshark.setOwner(ktoKto);
+                entityshark.setProtect(true);
+                entityshark.setType(1);
                 entityshark.setPosition(x, y, z);
                 world.spawnEntity(entityshark);
                 world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+                sendSound(world, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
                 markDead();
             }
         }
@@ -130,9 +143,16 @@ public class EntitySharkEgg extends LivingEntity implements MobSpawnDataProvider
     public String ktoKto;
     private int tCounter;
     private int lCounter;
+    mod_mocreatures mocr = new mod_mocreatures();
 
     @Override
     public Identifier getHandlerIdentifier() {
         return Identifier.of(mod_mocreatures.MOD_ID, "SharkEgg");
+    }
+
+    public void sendSound(World world, String name, float vol, float pit){
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+            mocr.voicePacket(world, name, this.id, vol, pit);
+        }
     }
 }

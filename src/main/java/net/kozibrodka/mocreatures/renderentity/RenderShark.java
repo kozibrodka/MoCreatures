@@ -22,7 +22,7 @@ public class RenderShark extends LivingEntityRenderer
     {
         EntityShark entityshark = (EntityShark)entityliving;
         super.render(entityshark, d, d1, d2, f, f1);
-        boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entityshark.name.isEmpty();
+        boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entityshark.getName().isEmpty();
         boolean flag1 = mocr.mocreaturesGlass.othersettings.displayhealth;
         boolean flag2 = mocr.mocreaturesGlass.othersettings.displayemo;
         if(entityshark.renderName())
@@ -33,7 +33,7 @@ public class RenderShark extends LivingEntityRenderer
             if(f4 < 16F)
             {
                 String s = "";
-                s = (new StringBuilder()).append(s).append(entityshark.name).toString();
+                s = (new StringBuilder()).append(s).append(entityshark.getName()).toString();
                 float f5 = 0.1F;
                 TextRenderer fontrenderer = getTextRenderer();
                 GL11.glPushMatrix();
@@ -109,7 +109,7 @@ public class RenderShark extends LivingEntityRenderer
             float f3 = 0.01666667F * f2;
             float f4 = entityliving.getDistance(dispatcher.cameraEntity);
             String s = "";
-            s = (new StringBuilder()).append(s).append(entityshark.name).toString();
+            s = (new StringBuilder()).append(s).append(entityshark.getName()).toString();
             if(f4 < 12F && s.length() > 0)
             {
                 TextRenderer fontrenderer = getTextRenderer();
@@ -166,7 +166,7 @@ public class RenderShark extends LivingEntityRenderer
 
     protected void stretch(EntityShark entityshark)
     {
-        GL11.glScalef(entityshark.b, entityshark.b, entityshark.b);
+        GL11.glScalef(entityshark.getAge(), entityshark.getAge(), entityshark.getAge());
     }
 
     protected float getHeadBob(LivingEntity entityliving, float f)

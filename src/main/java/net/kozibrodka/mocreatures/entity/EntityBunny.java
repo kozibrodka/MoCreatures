@@ -1,18 +1,25 @@
 package net.kozibrodka.mocreatures.entity;
 
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
+import net.kozibrodka.mocreatures.network.AskPacket;
+import net.kozibrodka.mocreatures.network.RopePacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
+import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial
@@ -23,7 +30,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         super(world);
         a = false;
 //        adult = true;
-        setAge(0.5F);
+//        setAge(0.5F);
         movementSpeed = 1.5F;
 //        texture = "/assets/mocreatures/stationapi/textures/mob/bunny.png";
         standingEyeHeight = -0.16F;
@@ -34,6 +41,31 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
 //        typeint = 0;
         typechosen = false;
         killedByOtherEntity = true;
+    }
+
+    @Override
+    public boolean shouldRender(double distance) {
+        if(getPicked()){
+            return distance < 1024D; //10000D airship  //512 troche malo
+
+        }else{
+            return super.shouldRender(distance);
+        }
+    }
+
+    @Environment(EnvType.CLIENT)
+    public void setPositionAndAnglesAvoidEntities(double x, double y, double z, float pitch, float yaw, int interpolationSteps) {
+        this.standingEyeHeight = -0.16F;
+        this.lerpX = x;
+        if(getPicked()){
+            this.lerpY = y + 1.65D; //
+        }else{
+            this.lerpY = y;
+        }
+        this.lerpZ = z;
+        this.lerpYaw = (double)pitch;
+        this.lerpPitch = (double)yaw;
+        this.bodyTrackingIncrements = interpolationSteps;
     }
 
     public void chooseType(int typeint)
@@ -87,15 +119,23 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
             if(getAge() >= 1.0F)
             {
                 setAdult(true);
-                //TODO: DORASTANIE? manioulate age for if statemtnt
             }
         }
         super.tickMovement();
+        if(getPicked()){
+            velocityY = 0.0D;
+            lastWalkAnimationSpeed = 0.0F;
+            walkAnimationSpeed = 0.0F;
+            walkAnimationProgress = 0.0F;
+        }
     }
 
     public void tick()
     {
         super.tick();
+        if(world.isRemote){
+            return;
+        }
         if(!getTamed() || !getAdult() || vehicle != null)
         {
             return;
@@ -142,8 +182,10 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
                 EntityBunny entitybunny1 = new EntityBunny(world);
                 entitybunny1.setPosition(x, y, z);
                 entitybunny1.setAdult(false);
+                entitybunny1.setTypeSpawn(); ///
                 world.spawnEntity(entitybunny1);
                 world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+                sendSound(world, "mob:chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
                 proceed();
                 entitybunny.proceed();
                 flag = true;
@@ -167,14 +209,11 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         {
             velocityY = 0.45000000000000001D;
         }
-        if(!h)
+        if(onGround && pickedSd)
         {
-            super.tickLiving();
-        } else
-        if(onGround)
-        {
-            h = false;
+            pickedSd = false;
             world.playSound(this, "mocreatures:rabbitland", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+            sendSound(world, "mocreatures:rabbitland", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
             List list = world.getEntities(this, boundingBox.expand(12D, 12D, 12D));
             for(int k = 0; k < list.size(); k++)
             {
@@ -187,24 +226,46 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
             }
 
         }
+        if(onGround && getPicked() && this.vehicle == null)
+        {
+            setPicked(false);
+        }
+        super.tickLiving();
     }
 
     public boolean interact(PlayerEntity entityplayer)
     {
-//        ItemInstance itemstack = entityplayer.inventory.getHeldItem();
-        yaw = entityplayer.yaw;
-        setVehicle(entityplayer);
+        //TODO: !!!!!!!!!!!!!! zmiana vehicle itd....
+        if(world.isRemote){
+            return false;
+        }
+        if(entityplayer.passenger != null && entityplayer.passenger != this){
+            return false;
+        }
+        if(vehicle instanceof PlayerEntity && !Objects.equals(((PlayerEntity) vehicle).name, entityplayer.name)){
+            return false;
+        }
         if(vehicle == null)
         {
-            h = true;
+            yaw = entityplayer.yaw;
+            setVehicle(entityplayer);
+            setPicked(true);
+            pickedSd = true;
+            setTamed(true);
+
         } else
         {
+            setVehicle(null);
             world.playSound(this, "mocreatures:rabbitlift", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+            sendSound(world, "mocreatures:rabbitlift", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+            setPicked(false);
+        }
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
+            PacketHelper.sendTo(entityplayer, new RopePacket("bunny", this.id, entityplayer.name));
         }
         velocityX = entityplayer.velocityX * 5D;
         velocityY = entityplayer.velocityY / 2D + 0.5D;
         velocityZ = entityplayer.velocityZ * 5D;
-        setTamed(true);
         return true;
     }
 
@@ -289,6 +350,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         dataTracker.startTracking(17, (int) 0); //Age
         dataTracker.startTracking(18, (byte) 0); //Adult
         dataTracker.startTracking(19, (byte) 0); //Tamed
+        dataTracker.startTracking(20, (byte) 0); //Picked
     }
 
     public boolean canSpawn()
@@ -304,9 +366,10 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
     mod_mocreatures mocr = new mod_mocreatures();
     public boolean a;
     public float d1;
-    public boolean h;
+//    public boolean picked;
     public int j;
     public int i;
+    public boolean pickedSd;
 
 //    public int typeint;
 //    public float edad;
@@ -320,12 +383,19 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         return Identifier.of(mod_mocreatures.MOD_ID, "Bunny");
     }
 
+    public void sendSound(World world, String name, float vol, float pit){
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+            mocr.voicePacket(world, name, this.id, vol, pit);
+        }
+    }
+
     //TYPE
     public void setTypeSpawn()
     {
         if(!world.isRemote){
             int type = getRandomRace();
             setType(type);
+            setAge(0.5F);
         }
     }
 
@@ -381,6 +451,23 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         } else
         {
             dataTracker.set(19, (byte) 0);
+        }
+    }
+
+    //Picked
+    public boolean getPicked()
+    {
+        return (dataTracker.getByte(20) & 1) != 0;
+    }
+
+    public void setPicked(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.set(20, (byte) 1);
+        } else
+        {
+            dataTracker.set(20, (byte) 0);
         }
     }
 }
