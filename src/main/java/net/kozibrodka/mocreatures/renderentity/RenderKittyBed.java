@@ -21,11 +21,11 @@ public class RenderKittyBed extends LivingEntityRenderer
     protected void applyScale(LivingEntity entityliving, float f)
     {
         EntityKittyBed entitykittybed = (EntityKittyBed)entityliving;
-        mycolor = entitykittybed.sheetcolour;
-        kittybed.hasMilk = entitykittybed.hasMilk;
-        kittybed.hasFood = entitykittybed.hasFood;
-        kittybed.pickedUp = entitykittybed.pickedUp;
-        kittybed.milklevel = entitykittybed.milklevel;
+        mycolor = entitykittybed.getSheetColour();
+        kittybed.hasMilk = entitykittybed.getHasMilk();
+        kittybed.hasFood = entitykittybed.getHasFood();
+        kittybed.pickedUp = entitykittybed.getPicked();
+        kittybed.milklevel = entitykittybed.getMilkLevel();
     }
 
     protected boolean bindTexture(LivingEntity entityliving, int i, float f)

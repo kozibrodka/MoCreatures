@@ -28,9 +28,20 @@ public class RenderMouse extends LivingEntityRenderer
         {
             upsideDown(entityliving);
         }
-        if(entitymouse.climbing())
-        {
-            rotateAnimal(entityliving);
+//        if(entitymouse.getClimbing()) //climbing()
+//        {
+//            rotateAnimal(entityliving);
+//        }
+        if(entityliving.world.isRemote){ //TODO: może i nawet lepsze również dla singleplayer
+            if(entitymouse.getClimbing())
+            {
+                rotateAnimal(entityliving);
+            }
+        }else{
+            if(entitymouse.climbing())
+            {
+                rotateAnimal(entityliving);
+            }
         }
     }
 

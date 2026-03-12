@@ -5,6 +5,7 @@
 package net.kozibrodka.mocreatures.mocreatures;
 
 
+import net.fabricmc.api.EnvType;
 import net.kozibrodka.mocreatures.entity.EntityCaveOgre;
 import net.kozibrodka.mocreatures.entity.EntityFireOgre;
 import net.kozibrodka.mocreatures.entity.EntityOgre;
@@ -32,6 +33,7 @@ public class Destroyer
                                     float f, boolean flag, boolean igniteogre, boolean explodeogre, boolean explodecaveogre, boolean explodefireogre)
     {
         world.playSound(d, d1, d2, "mocreatures:destroy", 4F, (1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
+        sendSound(world, "mocreatures:destroy", entity.id, 4F, (1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
         HashSet hashset = new HashSet();
         float f1 = f;
         int i = 16;
@@ -155,6 +157,7 @@ label0:
                 d22 *= d25 - 1.0D;
                 d23 *= d25;
                 world.addParticle("explode", (d14 + d * 1.0D) / 2D, (d16 + d1 * 1.0D) / 2D, (d18 + d2 * 1.0D) / 2D, d20, d22, d23);
+                sendParticle(world,"explode", (d14 + d * 1.0D) / 2D, (d16 + d1 * 1.0D) / 2D, (d18 + d2 * 1.0D) / 2D, d20, d22, d23);
                 entity.velocityX -= 0.0010000000474974511D;
                 entity.velocityY -= 0.0010000000474974511D;
             }
@@ -170,7 +173,7 @@ label0:
             }
         }
 
-        if(flag && igniteogre)
+        if(flag && (igniteogre || world.dimension.isNether)) //TODO: czy to zadziała????
         {
             for(int i3 = arraylist.size() - 1; i3 >= 0; i3--)
             {
@@ -187,5 +190,19 @@ label0:
 
         }
     }
+
+    public static void sendParticle(World world, String name, double x, double y, double z, double i, double j, double k){
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+            mocr.particlePacket(world,name,x,y,z,i,j,k);
+        }
+    }
+
+    public static void sendSound(World world, String name, int entityID, float vol, float pit){
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+            mocr.voicePacket(world, name, entityID, vol, pit);
+        }
+    }
+
+    static mod_mocreatures mocr = new mod_mocreatures();
 
 }

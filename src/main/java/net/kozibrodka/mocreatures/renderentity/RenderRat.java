@@ -1,4 +1,5 @@
 package net.kozibrodka.mocreatures.renderentity;
+import net.kozibrodka.mocreatures.entity.EntityHellRat;
 import net.kozibrodka.mocreatures.entity.EntityRat;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
@@ -18,19 +19,26 @@ public class RenderRat extends LivingEntityRenderer
                                float f, float f1)
     {
         EntityRat entityrat = (EntityRat)entityliving;
-        if(!entityrat.typechosen) //todo remove
-        {
-            entityrat.chooseType();
-        }
         super.render(entityrat, d, d1, d2, f, f1);
     }
 
     protected void applyScale(LivingEntity entityliving, float f)
     {
         EntityRat entityrat = (EntityRat)entityliving;
-        if(entityrat.climbing())
-        {
-            rotateAnimal(entityliving);
+//        if(entityrat.climbing())
+//        {
+//            rotateAnimal(entityliving);
+//        }
+        if(entityliving.world.isRemote){ //TODO: może i nawet lepsze również dla singleplayer
+            if(entityrat.getClimbing())
+            {
+                rotateAnimal(entityliving);
+            }
+        }else{
+            if(entityrat.climbing())
+            {
+                rotateAnimal(entityliving);
+            }
         }
     }
 

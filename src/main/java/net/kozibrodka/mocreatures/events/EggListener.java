@@ -64,6 +64,17 @@ public class EggListener {
     public static Item egg54;
     public static Item egg55;
 
+    public static Item egg60;
+    public static Item egg61;
+    public static Item egg62;
+    public static Item egg63;
+    public static Item egg64;
+    public static Item egg65;
+    public static Item egg66;
+    public static Item egg67;
+    public static Item egg68;
+    public static Item egg69;
+
     @Entrypoint.Namespace
     public static Namespace MOD_ID = Null.get();
 
@@ -122,6 +133,13 @@ public class EggListener {
             egg53 = new MocreaturesEggItem(Identifier.of(MOD_ID, "dolphin4_egg"), 53).setTranslationKey(MOD_ID, "dolphin4_egg");
             egg54 = new MocreaturesEggItem(Identifier.of(MOD_ID, "dolphin5_egg"), 54).setTranslationKey(MOD_ID, "dolphin5_egg");
             egg55 = new MocreaturesEggItem(Identifier.of(MOD_ID, "dolphin6_egg"), 55).setTranslationKey(MOD_ID, "dolphin6_egg");
+
+            egg60 = new MocreaturesEggItem(Identifier.of(MOD_ID, "zebra_egg"), 60).setTranslationKey(MOD_ID, "zebra_egg");
+            egg61 = new MocreaturesEggItem(Identifier.of(MOD_ID, "elephant_egg"), 61).setTranslationKey(MOD_ID, "elephant_egg");
+            egg62 = new MocreaturesEggItem(Identifier.of(MOD_ID, "hippo_egg"), 62).setTranslationKey(MOD_ID, "hippo_egg");
+            egg63 = new MocreaturesEggItem(Identifier.of(MOD_ID, "giraffe_egg"), 63).setTranslationKey(MOD_ID, "giraffe_egg");
+            egg64 = new MocreaturesEggItem(Identifier.of(MOD_ID, "crocodile_egg"), 64).setTranslationKey(MOD_ID, "crocodile_egg");
+//            egg60 = new MocreaturesEggItem(Identifier.of(MOD_ID, "_egg"), 60).setTranslationKey(MOD_ID, "_egg");
         }
     }
 

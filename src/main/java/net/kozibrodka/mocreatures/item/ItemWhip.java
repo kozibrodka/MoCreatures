@@ -85,9 +85,9 @@ public class ItemWhip extends TemplateItem
                     continue;
                 }
                 EntityKitty entitykitty = (EntityKitty)entity;
-                if(entitykitty.kittystate > 2 && entitykitty.whipeable())
+                if(entitykitty.getKittyState() > 2 && entitykitty.whipeable())
                 {
-                    entitykitty.isSitting = !entitykitty.isSitting;
+                    entitykitty.setSitting(!entitykitty.getSitting());
                 }
             }
 

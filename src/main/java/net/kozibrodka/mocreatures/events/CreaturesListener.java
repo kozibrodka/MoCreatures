@@ -26,32 +26,38 @@ public class CreaturesListener {
         event.register(EntityBear.class, String.valueOf(Identifier.of(MOD_ID, "Bear")));
         event.register(EntityBird.class, String.valueOf(Identifier.of(MOD_ID, "Bird")));
         event.register(EntityBoar.class, String.valueOf(Identifier.of(MOD_ID, "Boar")));  
-        event.register(EntityBunny.class, String.valueOf(Identifier.of(MOD_ID, "Bunny")));  //TODO
-        event.register(EntityCaveOgre.class, String.valueOf(Identifier.of(MOD_ID, "CaveOgre")));  //TODO
+        event.register(EntityBunny.class, String.valueOf(Identifier.of(MOD_ID, "Bunny")));
+        event.register(EntityCaveOgre.class, String.valueOf(Identifier.of(MOD_ID, "CaveOgre")));
         event.register(EntityDeer.class, String.valueOf(Identifier.of(MOD_ID, "Deer")));
         event.register(EntityDuck.class, String.valueOf(Identifier.of(MOD_ID, "Duck")));
-        event.register(EntityFireOgre.class, String.valueOf(Identifier.of(MOD_ID, "FireOgre")));  //TODO
+        event.register(EntityFireOgre.class, String.valueOf(Identifier.of(MOD_ID, "FireOgre")));
         event.register(EntityFishy.class, String.valueOf(Identifier.of(MOD_ID, "Fishy")));
         event.register(EntityFishyEgg.class, String.valueOf(Identifier.of(MOD_ID, "FishyEgg")));
-        event.register(EntityFlameWraith.class, String.valueOf(Identifier.of(MOD_ID, "FlameWraith")));  //TODO
+        event.register(EntityFlameWraith.class, String.valueOf(Identifier.of(MOD_ID, "FlameWraith")));
         event.register(EntityFox.class, String.valueOf(Identifier.of(MOD_ID, "Fox")));
-        event.register(EntityHellRat.class, String.valueOf(Identifier.of(MOD_ID, "HellRat")));  //TODO
-        event.register(EntityKittyBed.class, String.valueOf(Identifier.of(MOD_ID, "KittyBed")));  //TODO
-        event.register(EntityLitterBox.class, String.valueOf(Identifier.of(MOD_ID, "LitterBox")));  //TODO
-        event.register(EntityMouse.class, String.valueOf(Identifier.of(MOD_ID, "Mouse")));  //TODO
-        event.register(EntityOgre.class, String.valueOf(Identifier.of(MOD_ID, "Ogre")));  //TODO
+        event.register(EntityHellRat.class, String.valueOf(Identifier.of(MOD_ID, "HellRat")));
+        event.register(EntityKittyBed.class, String.valueOf(Identifier.of(MOD_ID, "KittyBed")));
+        event.register(EntityLitterBox.class, String.valueOf(Identifier.of(MOD_ID, "LitterBox")));
+        event.register(EntityMouse.class, String.valueOf(Identifier.of(MOD_ID, "Mouse")));
+        event.register(EntityOgre.class, String.valueOf(Identifier.of(MOD_ID, "Ogre")));
         event.register(EntityPolarBear.class, String.valueOf(Identifier.of(MOD_ID, "PolarBear")));
-        event.register(EntityRat.class, String.valueOf(Identifier.of(MOD_ID, "Rat")));  //TODO
+        event.register(EntityRat.class, String.valueOf(Identifier.of(MOD_ID, "Rat")));
         event.register(EntityShark.class, String.valueOf(Identifier.of(MOD_ID, "Shark")));
         event.register(EntitySharkEgg.class, String.valueOf(Identifier.of(MOD_ID, "SharkEgg")));
         event.register(EntityWerewolf.class, String.valueOf(Identifier.of(MOD_ID, "WereWolf")));  //TODO
-        event.register(EntityWraith.class, String.valueOf(Identifier.of(MOD_ID, "Wraith")));  //TODO
-        event.register(EntityWWolf.class, String.valueOf(Identifier.of(MOD_ID, "WildWolf")));  //TODO
+        event.register(EntityWraith.class, String.valueOf(Identifier.of(MOD_ID, "Wraith")));
+        event.register(EntityWWolf.class, String.valueOf(Identifier.of(MOD_ID, "WildWolf")));
+
+        event.register(EntityZebra.class, String.valueOf(Identifier.of(MOD_ID, "Zebra")));
+        event.register(EntityHippo.class, String.valueOf(Identifier.of(MOD_ID, "Hippo")));
+        event.register(EntityElephant.class, String.valueOf(Identifier.of(MOD_ID, "Elephant")));
+        event.register(EntityGiraffe.class, String.valueOf(Identifier.of(MOD_ID, "Giraffe")));
+//        event.register(XXXXXXXXXX.class, String.valueOf(Identifier.of(MOD_ID, "Zebra")));
 
         event.register(EntityBigCat.class, String.valueOf(Identifier.of(MOD_ID, "BigCat")));
         event.register(EntityDolphin.class, String.valueOf(Identifier.of(MOD_ID, "Dolphin")));
         event.register(EntityHorse.class, String.valueOf(Identifier.of(MOD_ID, "Horse")));
-        event.register(EntityKitty.class, String.valueOf(Identifier.of(MOD_ID, "Kitty")));  //TODO
+        event.register(EntityKitty.class, String.valueOf(Identifier.of(MOD_ID, "Kitty")));
     }
 
     @EventListener
@@ -80,6 +86,11 @@ public class CreaturesListener {
         Registry.register(event.registry, MOD_ID.id("WereWolf"), EntityWerewolf::new);
         Registry.register(event.registry, MOD_ID.id("Wraith"), EntityWraith::new);
         Registry.register(event.registry, MOD_ID.id("WildWolf"), EntityWWolf::new);
+
+        Registry.register(event.registry, MOD_ID.id("Zebra"), EntityZebra::new);
+        Registry.register(event.registry, MOD_ID.id("Hippo"), EntityHippo::new);
+        Registry.register(event.registry, MOD_ID.id("Elephant"), EntityElephant::new);
+        Registry.register(event.registry, MOD_ID.id("Giraffe"), EntityGiraffe::new);
 
         Registry.register(event.registry, MOD_ID.id("BigCat"), EntityBigCat::new);
         Registry.register(event.registry, MOD_ID.id("Dolphin"), EntityDolphin::new);

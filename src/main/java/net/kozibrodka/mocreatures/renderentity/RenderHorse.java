@@ -1,15 +1,20 @@
 package net.kozibrodka.mocreatures.renderentity;
+import net.fabricmc.loader.api.FabricLoader;
 import net.kozibrodka.mocreatures.entity.EntityHorse;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.modelentity.ModelHorse1;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
+
+import java.util.Objects;
 
 
 public class RenderHorse extends LivingEntityRenderer
@@ -150,7 +155,13 @@ public class RenderHorse extends LivingEntityRenderer
         }
         if(entityhorse.roper != null)
         {
-            //TODO: on Multiplayer second Client has wrong roper.y/prevY
+            double localRoperY = entityhorse.roper.y;
+            double localRoperPrevY = entityhorse.roper.prevY;
+            if(!Objects.equals(mc.player.name, ((PlayerEntity) entityhorse.roper).name)){
+                localRoperY += 1.62D;
+                localRoperPrevY += 1.62D;
+            }
+            /// rope too low fix ^
             Tessellator tessellator = Tessellator.INSTANCE;
             float f4 = ((entityhorse.roper.prevYaw + (entityhorse.roper.yaw - entityhorse.roper.prevYaw) * f1 * 0.5F) * 3.141593F) / 180F;
             float f6 = ((entityhorse.roper.prevPitch + (entityhorse.roper.pitch - entityhorse.roper.prevPitch) * f1 * 0.5F) * 3.141593F) / 180F;
@@ -159,7 +170,8 @@ public class RenderHorse extends LivingEntityRenderer
             double d5 = MathHelper.sin(f6);
             double d6 = MathHelper.cos(f6);
             double d7 = (entityhorse.roper.prevX + (entityhorse.roper.x - entityhorse.roper.prevX) * (double)f1) - d4 * 0.69999999999999996D - d3 * 0.5D * d6;
-            double d8 = (entityhorse.roper.prevY + (entityhorse.roper.y - entityhorse.roper.prevY) * (double)f1) - d5 * 0.5D;
+//            double d8 = (entityhorse.roper.prevY + (entityhorse.roper.y - entityhorse.roper.prevY) * (double)f1) - d5 * 0.5D;
+            double d8 = (localRoperPrevY + (localRoperY - localRoperPrevY) * (double)f1) - d5 * 0.5D;
             double d9 = ((entityhorse.roper.prevZ + (entityhorse.roper.z - entityhorse.roper.prevZ) * (double)f1) - d3 * 0.69999999999999996D) + d4 * 0.5D * d6;
             double d10 = entityhorse.prevX + (entityhorse.x - entityhorse.prevX) * (double)f1;
             double d11 = entityhorse.prevY + (entityhorse.y - entityhorse.prevY) * (double)f1 + 0.25D;
@@ -284,6 +296,6 @@ public class RenderHorse extends LivingEntityRenderer
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
-
+    public static Minecraft mc = Minecraft.class.cast(FabricLoader.getInstance().getGameInstance());
     public ModelHorse1 modelhorse1;
 }

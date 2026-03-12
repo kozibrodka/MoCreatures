@@ -4,8 +4,11 @@
 
 package net.kozibrodka.mocreatures.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
+import net.kozibrodka.mocreatures.network.RopePacket;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -17,10 +20,12 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
+import java.util.Objects;
 
 public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial
 {
@@ -65,6 +70,16 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
             }
     }
 
+    @Override
+    public boolean shouldRender(double distance) {
+        if(getPicked()){
+            return distance < 1024D; //10000D airship  //512 troche malo
+
+        }else{
+            return super.shouldRender(distance);
+        }
+    }
+
     public void tickMovement()
     {
         super.tickMovement();
@@ -72,7 +87,7 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
             typechosen = true;
             chooseType(getType());
         }
-        if(random.nextInt(15) == 0)
+        if(random.nextInt(15) == 0 && !world.isRemote)
         {
             LivingEntity entityliving = getBoogey(6D);
             if(entityliving != null)
@@ -83,6 +98,14 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         if(!onGround && vehicle != null)
         {
             yaw = vehicle.yaw;
+        }
+        if(world.isRemote){
+            return;
+        }
+        if(isOnLadder()){
+            setClimbing(true);
+        }else if(onGround){
+            setClimbing(false);
         }
     }
 
@@ -117,14 +140,29 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
 
     public boolean interact(PlayerEntity entityplayer)
     {
+        if(world.isRemote){
+            return false;
+        }
+        if(entityplayer.passenger != null && entityplayer.passenger != this){
+            return false;
+        }
+        if(vehicle instanceof PlayerEntity && !Objects.equals(((PlayerEntity) vehicle).name, entityplayer.name)){
+            return false;
+        }
         yaw = entityplayer.yaw;
         setVehicle(entityplayer);
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
+            PacketHelper.sendTo(entityplayer, new RopePacket("mouse", this.id, entityplayer.name));
+        }
         if(vehicle != null)
         {
             setPicked(true);
         } else
         {
             world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+            if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+                mocr.voicePacket(world, "mob.chickenplop", this.id, 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+            }
             setPicked(false);
         }
         velocityX = entityplayer.velocityX * 5D;
@@ -137,7 +175,12 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
     {
         if(vehicle instanceof PlayerEntity)
         {
-            return (double)(standingEyeHeight - 1.7F);
+            if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+                return (double)(standingEyeHeight - 0.06F);
+            }else{
+                return (double)(standingEyeHeight - 1.7F);
+            }
+
         } else
         {
             return (double)standingEyeHeight;
@@ -256,6 +299,7 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //Type
         dataTracker.startTracking(17, (byte) 0); //Picked
+        dataTracker.startTracking(18, (byte) 0); //Climbing
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
@@ -307,6 +351,23 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         } else
         {
             dataTracker.set(17, (byte) 0);
+        }
+    }
+
+    //Climbing
+    public boolean getClimbing()
+    {
+        return (dataTracker.getByte(18) & 1) != 0;
+    }
+
+    public void setClimbing(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.set(18, (byte) 1);
+        } else
+        {
+            dataTracker.set(18, (byte) 0);
         }
     }
 }

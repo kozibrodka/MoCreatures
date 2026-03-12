@@ -17,7 +17,7 @@ public class RenderWWolf extends LivingEntityRenderer
     protected boolean a(EntityWWolf entitywwolf, int i)
     {
         bindTexture("/assets/mocreatures/stationapi/textures/mob/wolfb.png");
-        return i == 0 && !entitywwolf.wolfboolean;
+        return i == 0;
     }
 
     protected boolean bindTexture(LivingEntity entityliving, int i, float f)

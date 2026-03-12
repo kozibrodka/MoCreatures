@@ -37,16 +37,20 @@ public class EntityFlameWraith extends EntityWraith
 
     public void tickMovement()
     {
-        if(random.nextInt(40) == 0)
+        if(random.nextInt(40) == 0) //&& !world.isRemote
         {
             fireTicks = 2;
         }
-        if(world.canMonsterSpawn())
+        if(world.canMonsterSpawn() && !world.isRemote) // && !world.isRemote
         {
             float f = getBrightnessAtEyes(1.0F);
             if(f > 0.5F && world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && random.nextFloat() * 30F < (f - 0.4F) * 2.0F)
             {
-                health -= 2;
+                if(health <= 2){
+                    damage(null ,2);
+                }else{
+                    health -= 2;
+                }
             }
         }
         super.tickMovement();

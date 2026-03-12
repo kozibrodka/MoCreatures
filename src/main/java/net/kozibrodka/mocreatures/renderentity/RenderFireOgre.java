@@ -17,7 +17,7 @@ public class RenderFireOgre extends RenderOgre
     protected boolean a(EntityOgre entityogre, int i)
     {
         bindTexture("/assets/mocreatures/stationapi/textures/mob/fireogreb.png");
-        return i == 0 && !entityogre.ogreboolean;
+        return i == 0;
     }
 
     private ModelOgre2 tempOgre;

@@ -47,7 +47,8 @@ public class mod_mocreatures {
     public static Achievement WilfFlyingWest;
     public static Achievement RobertMaklowicz;
 
-    //TODO: horse faliing DMG crazy speed boost, GUI HANDLERS
+
+    //TODO: horse faliing DMG crazy speed boost,
 
     //TODO: remove istypechosen client logic, watch for setting age in render classes.
 

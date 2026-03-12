@@ -17,7 +17,7 @@ public class RenderLitterBox extends LivingEntityRenderer
     protected void applyScale(LivingEntity entityliving, float f)
     {
         EntityLitterBox entitylitterbox = (EntityLitterBox)entityliving;
-        litterbox.usedlitter = entitylitterbox.usedlitter;
+        litterbox.usedlitter = entitylitterbox.getUsedLitter();
     }
 
     public ModelLitterBox litterbox;

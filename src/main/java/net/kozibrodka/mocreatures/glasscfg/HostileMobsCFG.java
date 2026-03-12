@@ -24,13 +24,13 @@ public class HostileMobsCFG {
 
     @ConfigEntry(
             name="Ogre Freq",
-            maxLength = 10
+            maxValue = 10
     )
     public Integer ogrefreq = 6;
 
     @ConfigEntry(
             name="FireOgre Freq",
-            maxLength = 10
+            maxValue = 10
     )
     public Integer fogrefreq = 2;
 

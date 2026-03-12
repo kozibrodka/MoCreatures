@@ -1,15 +1,20 @@
 package net.kozibrodka.mocreatures.renderentity;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.kozibrodka.mocreatures.entity.EntityBigCat;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.modelentity.ModelBigCat1;
 import net.kozibrodka.mocreatures.modelentity.ModelBigCat2;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
+
+import java.util.Objects;
 
 public class RenderBigCat extends LivingEntityRenderer
 {
@@ -126,6 +131,12 @@ public class RenderBigCat extends LivingEntityRenderer
         }
         if(entitybigcat.roper != null)
         {
+            double localRoperY = entitybigcat.roper.y;
+            double localRoperPrevY = entitybigcat.roper.prevY;
+            if(!Objects.equals(mc.player.name, ((PlayerEntity) entitybigcat.roper).name)){
+                localRoperY += 1.62D;
+                localRoperPrevY += 1.62D;
+            }
             Tessellator tessellator = Tessellator.INSTANCE;
             d1 -= 0.40000000000000002D / (double)entitybigcat.getAge();
             float f4 = ((entitybigcat.roper.prevYaw + (entitybigcat.roper.yaw - entitybigcat.roper.prevYaw) * f1 * 0.5F) * 3.141593F) / 180F;
@@ -135,7 +146,8 @@ public class RenderBigCat extends LivingEntityRenderer
             double d5 = MathHelper.sin(f6);
             double d6 = MathHelper.cos(f6);
             double d7 = (entitybigcat.roper.prevX + (entitybigcat.roper.x - entitybigcat.roper.prevX) * (double)f1) - d4 * 0.69999999999999996D - d3 * 0.5D * d6;
-            double d8 = (entitybigcat.roper.prevY + (entitybigcat.roper.y - entitybigcat.roper.prevY) * (double)f1) - d5 * 0.5D;
+//            double d8 = (entitybigcat.roper.prevY + (entitybigcat.roper.y - entitybigcat.roper.prevY) * (double)f1) - d5 * 0.5D;
+            double d8 = (localRoperPrevY + (localRoperY - localRoperPrevY) * (double)f1) - d5 * 0.5D;
             double d9 = ((entitybigcat.roper.prevZ + (entitybigcat.roper.z - entitybigcat.roper.prevZ) * (double)f1) - d3 * 0.69999999999999996D) + d4 * 0.5D * d6;
             double d10 = entitybigcat.prevX + (entitybigcat.x - entitybigcat.prevX) * (double)f1;
             double d11 = entitybigcat.prevY + (entitybigcat.y - entitybigcat.prevY) * (double)f1 + 0.25D;
@@ -182,6 +194,6 @@ public class RenderBigCat extends LivingEntityRenderer
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
-
+    public static Minecraft mc = Minecraft.class.cast(FabricLoader.getInstance().getGameInstance());
     public ModelBigCat2 bigcat1;
 }

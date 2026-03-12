@@ -1,13 +1,16 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
 
 package net.kozibrodka.mocreatures.entity;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCGUI;
+import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
+import net.kozibrodka.mocreatures.mocreatures.MoGuiOpener;
+import net.kozibrodka.mocreatures.network.AskPacket;
+import net.kozibrodka.mocreatures.network.NamePacket;
+import net.kozibrodka.mocreatures.network.RopePacket;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -21,16 +24,19 @@ import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.PickaxeItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.List;
+import java.util.Objects;
 
-public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial
+public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial,  MoCreatureNamed
 {
 
     public EntityKitty(World world)
@@ -39,58 +45,70 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
         setBoundingBoxSpacing(0.7F, 0.5F);
         texture = "/assets/mocreatures/stationapi/textures/mob/pussycata.png";
         killedByOtherEntity = true;
-        adult = true;
-        edad = 0.4F;
+        setAdult(true);
+//        edad = 0.4F;
         inBed = false;
         sleepy = false;
-        kittystate = 1;
+//        kittystate = 1;
         hungry = false;
         kittytimer = 0;
         health = 15;
         madtimer = random.nextInt(5);
         maxhealth = 15;
-        name = "";
-        displayname = false;
-        onTree = false;
+//        name = "";
+//        displayname = false;
+//        onTree = false;
         foundTree = false;
-        displayemo = false;
+//        displayemo = false;
     }
 
     public boolean renderName()
     {
-        return displayname && kittystate != 14 && kittystate != 15 && kittystate > 1;
+        return getDisplayName() && getKittyState() != 14 && getKittyState() != 15 && getKittyState() > 1;
     }
 
     public boolean upsideDown()
     {
-        return kittystate == 14;
+        return getKittyState() == 14;
     }
 
     public boolean onMaBack()
     {
-        return kittystate == 15;
+        return getKittyState() == 15;
     }
 
     public boolean climbingTree()
     {
-        return kittystate == 16 && isOnLadder();
+        return getKittyState() == 16 && isOnLadder();
     }
 
     public double getStandingEyeHeight()
     {
         if(vehicle instanceof PlayerEntity)
         {
-            if(kittystate == 10)
+            if(getKittyState() == 10)
             {
-                return (double)(standingEyeHeight - 1.1F);
+                if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+                    return (double)(standingEyeHeight + 0.54F);
+                }else{
+                    return (double)(standingEyeHeight - 1.1F);
+                }
             }
             if(upsideDown())
             {
-                return (double)(standingEyeHeight - 1.7F);
+                if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+                    return (double)(standingEyeHeight - 0.06F);
+                }else{
+                    return (double)(standingEyeHeight - 1.7F);
+                }
             }
             if(onMaBack())
             {
-                return (double)(standingEyeHeight - 1.5F);
+                if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+                    return (double)(standingEyeHeight + 0.14F);
+                }else{
+                    return (double)(standingEyeHeight - 1.5F);
+                }
             }
         }
         return (double)standingEyeHeight;
@@ -170,7 +188,10 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
     public boolean interact(PlayerEntity entityplayer)
     {
         ItemStack itemstack = entityplayer.inventory.getSelectedItem();
-        if(kittystate == 2 && itemstack != null && itemstack.itemId == mod_mocreatures.medallion.id)
+        if(world.isRemote){
+            return false;
+        }
+        if(getKittyState() == 2 && itemstack != null && itemstack.itemId == mod_mocreatures.medallion.id)
         {
             if(--itemstack.count == 0)
             {
@@ -178,26 +199,29 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
             }
             changeKittyState(3);
             health = maxhealth;
-            setName(this);
+            sendHealth(world, health);
+            setNameWithGui(this, entityplayer);
+            setOwner(entityplayer.name);
             return true;
         }
-        if(kittystate == 7 && itemstack != null && itemstack.itemId == Item.CAKE.id)
+        if(getKittyState() == 7 && itemstack != null && itemstack.itemId == Item.CAKE.id)
         {
             if(--itemstack.count == 0)
             {
                 entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
             world.playSound(this, "moreatures:kittyeatingf", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+            sendSound(world, "moreatures:kittyeatingf", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             changeKittyState(9);
             return true;
         }
-        if(kittystate == 11 && itemstack != null && itemstack.itemId == mod_mocreatures.woolball.id)
+        if(getKittyState() == 11 && itemstack != null && itemstack.itemId == mod_mocreatures.woolball.id)
         {
             if(--itemstack.count == 0)
             {
                 entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
-            kittystate = 8;
+            setKittyState(8);
             ItemEntity entityitem = new ItemEntity(world, x, y + 1.0D, z, new ItemStack(mod_mocreatures.woolball, 1));
             entityitem.pickupDelay = 30;
             entityitem.itemAge = -10000;
@@ -208,51 +232,68 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
             target = entityitem;
             return true;
         }
-        if(kittystate == 13 && itemstack != null && (itemstack.itemId == Item.RAW_FISH.id || itemstack.itemId == Item.COOKED_FISH.id))
+        if(getKittyState() == 13 && itemstack != null && (itemstack.itemId == Item.RAW_FISH.id || itemstack.itemId == Item.COOKED_FISH.id))
         {
             if(--itemstack.count == 0)
             {
                 entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
             world.playSound(this, "kittyeatingf", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+            sendSound(world,"kittyeatingf", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             changeKittyState(7);
             return true;
         }
-        if(itemstack != null && kittystate > 2 && (itemstack.itemId == Item.DIAMOND_PICKAXE.id || itemstack.itemId == Item.WOODEN_PICKAXE.id || itemstack.itemId == Item.STONE_PICKAXE.id || itemstack.itemId == Item.IRON_PICKAXE.id || itemstack.itemId == Item.GOLDEN_PICKAXE.id))
+        if(itemstack != null && getKittyState() > 2 && itemstack.getItem() instanceof PickaxeItem)
         {
-            displayname = !displayname;
+            setDisplayName(!getDisplayName());
             return true;
         }
-        if(itemstack != null && kittystate > 2 && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == Item.BOOK.id))
+        if(itemstack != null && getKittyState() > 2 && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == Item.BOOK.id))
         {
-            setName(this);
+            setNameWithGui(this, entityplayer);
             return true;
         }
-        if(itemstack != null && kittystate > 2 && pickable() && itemstack.itemId == mod_mocreatures.rope.id)
+        if(itemstack != null && getKittyState() > 2 && whipeable() && itemstack.itemId == mod_mocreatures.whip.id)
+        {
+            setSitting(!getSitting());
+            return true;
+        }
+        /// Powinno byc dobre miejsce ale nie ma pewnosci
+        if(entityplayer.passenger != null && entityplayer.passenger != this){
+            return false;
+        }
+        if(vehicle instanceof PlayerEntity && !Objects.equals(((PlayerEntity) vehicle).name, entityplayer.name)){
+            return false;
+        }
+        /// Wydaje sie dzialac
+        if(itemstack != null && getKittyState() > 2 && pickable() && itemstack.itemId == mod_mocreatures.rope.id)
         {
             changeKittyState(14);
             setVehicle(entityplayer);
+            sendRoper(entityplayer, entityplayer.name);
+            setPicked(true);
             return true;
         }
-        if(itemstack != null && kittystate > 2 && whipeable() && itemstack.itemId == mod_mocreatures.whip.id)
-        {
-            isSitting = !isSitting;
-            return true;
-        }
-        if(itemstack == null && kittystate == 10 && vehicle != null)
+        if(itemstack == null && getKittyState() == 10 && vehicle != null)
         {
             vehicle = null;
+            sendRoper(entityplayer, "");
+            setPicked(false);
             return true;
         }
-        if(itemstack == null && kittystate > 2 && pickable())
+        if(itemstack == null && getKittyState() > 2 && pickable())
         {
             changeKittyState(15);
             setVehicle(entityplayer);
+            sendRoper(entityplayer, entityplayer.name);
+            setPicked(true);
             return true;
         }
-        if(itemstack == null && kittystate == 15)
+        if(itemstack == null && getKittyState() == 15)
         {
             changeKittyState(7);
+            sendRoper(entityplayer, "");
+            setPicked(false);
             return true;
         } else
         {
@@ -262,12 +303,12 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
 
     private boolean pickable()
     {
-        return kittystate != 13 && kittystate != 14 && kittystate != 15 && kittystate != 19 && kittystate != 20 && kittystate != 21;
+        return getKittyState() != 13 && getKittyState() != 14 && getKittyState() != 15 && getKittyState() != 19 && getKittyState() != 20 && getKittyState() != 21;
     }
 
     public boolean whipeable()
     {
-        return kittystate != 13;
+        return getKittyState() != 13;
     }
 
     public void tickMovement()
@@ -275,34 +316,52 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
             chooseType(getType());
+            PacketHelper.send(new AskPacket(this.id, "kitty"));
         }
-        if(!adult && kittystate != 10)
+        if(world.isRemote){ /// CLIENT STOP?
+            super.tickMovement(); //todo: czy zawsze?
+            if(getPicked()){
+//                velocityY = 0.0D;
+                lastWalkAnimationSpeed = 0.0F;
+                walkAnimationSpeed = 0.0F;
+                walkAnimationProgress = 0.0F;
+            }
+            if(!getSwinging() && swingAnimationProgress > 0.0F){ /// Added logic for short bugged swing.
+                swingAnimationProgress = 0;
+            }
+            return;
+        }
+        if(!getAdult() && getKittyState() != 10)
         {
-            kittystate = 10;
+            setKittyState(10);
         }
-        if(kittystate != 12)
+        if(getPicked() && this.vehicle == null)
+        {
+            setPicked(false);
+        }
+        if(getKittyState() != 12)
         {
             super.tickMovement();
         }
         if(random.nextInt(200) == 0)
         {
-            displayemo = !displayemo;
+            setDisplayEmoticon(!getDisplayEmoticon());
         }
-        if(!adult && random.nextInt(200) == 0)
+        if(!getAdult() && random.nextInt(200) == 0)
         {
-            edad += 0.005F;
-            if(edad >= 1.0F)
+            setAge(getAge() + 0.005F);
+            if(getAge() >= 1.0F)
             {
-                adult = true;
+                setAdult(true);
                 killedByOtherEntity = false;
             }
         }
-        if(!hungry && !isSitting && random.nextInt(100) == 0)
+        if(!hungry && !getSitting() && random.nextInt(100) == 0)
         {
             hungry = true;
         }
 label0:
-        switch(kittystate)
+        switch(getKittyState())
         {
         case -1:
         case 23: // '\027'
@@ -336,8 +395,9 @@ label0:
             {
                 entityitem.markDead();
                 world.playSound(this, "mocreatures:kittyeatingf", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+                sendSound(world, "mocreatures:kittyeatingf", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
                 hungry = false;
-                kittystate = 2;
+                setKittyState(2);
             }
             break;
 
@@ -369,7 +429,7 @@ label0:
                 break;
             }
             EntityKittyBed entitykittybed = (EntityKittyBed)getKittyStuff(this, 18D, false);
-            if(entitykittybed == null || entitykittybed.passenger != null || !entitykittybed.hasMilk && !entitykittybed.hasFood)
+            if(entitykittybed == null || entitykittybed.passenger != null || !entitykittybed.getHasMilk() && !entitykittybed.getHasFood())
             {
                 break;
             }
@@ -382,7 +442,7 @@ label0:
             {
                 changeKittyState(4);
                 setVehicle(entitykittybed);
-                isSitting = true;
+                setSitting(true);
             }
             break;
 
@@ -390,19 +450,22 @@ label0:
             if(vehicle != null)
             {
                 EntityKittyBed entitykittybed1 = (EntityKittyBed)vehicle;
-                if(entitykittybed1 != null && !entitykittybed1.hasMilk && !entitykittybed1.hasFood)
+                if(entitykittybed1 != null && !entitykittybed1.getHasMilk() && !entitykittybed1.getHasFood())
                 {
                     health = maxhealth;
+                    sendHealth(world, health);
                     changeKittyState(5);
                 }
             } else
             {
                 health = maxhealth;
+                sendHealth(world, health);
                 changeKittyState(5);
             }
             if(random.nextInt(2500) == 0)
             {
                 health = maxhealth;
+                sendHealth(world, health);
                 changeKittyState(7);
             }
             break;
@@ -419,7 +482,7 @@ label0:
                 break;
             }
             EntityLitterBox entitylitterbox = (EntityLitterBox)getKittyStuff(this, 18D, true);
-            if(entitylitterbox == null || entitylitterbox.passenger != null || entitylitterbox.usedlitter)
+            if(entitylitterbox == null || entitylitterbox.passenger != null || entitylitterbox.getUsedLitter())
             {
                 break;
             }
@@ -442,17 +505,18 @@ label0:
                 break;
             }
             world.playSound(this, "mocreatures:kittypoo", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+            sendSound(world, "mocreatures:kittypoo", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             EntityLitterBox entitylitterbox1 = (EntityLitterBox)vehicle;
             if(entitylitterbox1 != null)
             {
-                entitylitterbox1.usedlitter = true;
+                entitylitterbox1.setUsedLitter(true);
                 entitylitterbox1.littertime = 0;
             }
             changeKittyState(7);
             break;
 
         case 7: // '\007'
-            if(isSitting)
+            if(getSitting())
             {
                 break;
             }
@@ -527,7 +591,7 @@ label0:
                         break;
                     }
                     Entity entity = (Entity)list.get(j);
-                    if((entity instanceof EntityKitty) && (entity instanceof EntityKitty) && ((EntityKitty)entity).kittystate == 9)
+                    if((entity instanceof EntityKitty) && (entity instanceof EntityKitty) && ((EntityKitty)entity).getKittyState() == 9)
                     {
                         changeKittyState(18);
                         entity = entity;
@@ -545,7 +609,7 @@ label0:
             break;
 
         case 10: // '\n'
-            if(adult)
+            if(getAdult())
             {
                 changeKittyState(7);
                 break;
@@ -556,7 +620,7 @@ label0:
                 for(int k = 0; k < list1.size(); k++)
                 {
                     Entity entity1 = (Entity)list1.get(k);
-                    if(!(entity1 instanceof EntityKitty) || ((EntityKitty)entity1).kittystate != 21)
+                    if(!(entity1 instanceof EntityKitty) || ((EntityKitty)entity1).getKittyState() != 21)
                     {
                         continue;
                     }
@@ -641,7 +705,7 @@ label0:
                 changeKittyState(7);
                 break;
             }
-            isSitting = true;
+            setSitting(true);
             if(random.nextInt(80) == 0 || !onGround)
             {
                 super.tickMovement();
@@ -702,6 +766,8 @@ label0:
             if(itemstack2 != null && itemstack2.itemId != mod_mocreatures.rope.id)
             {
                 changeKittyState(13);
+                sendRoper(entityplayer2, "");
+                setPicked(false);
             }
             break;
 
@@ -718,11 +784,11 @@ label0:
 
         case 16: // '\020'
             kittytimer++;
-            if(kittytimer > 500 && !onTree)
+            if(kittytimer > 500 && !getOnTree())
             {
                 changeKittyState(7);
             }
-            if(!onTree)
+            if(!getOnTree())
             {
                 if(!foundTree && random.nextInt(50) == 0)
                 {
@@ -761,11 +827,11 @@ label0:
                 Double double1 = Double.valueOf(getSquaredDistance(treeCoord[0], treeCoord[1], treeCoord[2]));
                 if(double1.doubleValue() < 7D)
                 {
-                    onTree = true;
+                    setOnTree(true);
                 }
                 break;
             }
-            if(!onTree)
+            if(!getOnTree())
             {
                 break;
             }
@@ -836,7 +902,7 @@ label0:
                 break;
             }
             EntityKitty entitykitty = (EntityKitty)target;
-            if(entitykitty != null && entitykitty.kittystate == 18)
+            if(entitykitty != null && entitykitty.getKittyState() == 18)
             {
                 if(random.nextInt(50) == 0)
                 {
@@ -899,8 +965,11 @@ label0:
                 entitykitty1.setPosition(x, y, z);
                 world.spawnEntity(entitykitty1);
                 world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-                entitykitty1.adult = false;
-                entitykitty1.changeKittyState(10);
+                sendSound(world, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+                entitykitty1.setTypeSpawn();
+                entitykitty1.setAdult(false);
+                entitykitty1.setOwner(this.getOwner());
+                entitykitty1.changeKittyState(10); ///TODO: set owner logic?
                 damage(null, 1);
             }
 
@@ -916,7 +985,7 @@ label0:
                 for(int l3 = 0; l3 < list2.size(); l3++)
                 {
                     Entity entity2 = (Entity)list2.get(l3);
-                    if((entity2 instanceof EntityKitty) && ((EntityKitty)entity2).kittystate == 10)
+                    if((entity2 instanceof EntityKitty) && ((EntityKitty)entity2).getKittyState() == 10)
                     {
                         i3++;
                     }
@@ -945,20 +1014,20 @@ label0:
 
     private void changeKittyState(int i)
     {
-        kittystate = i;
+        setKittyState(i);
         setVehicle(null);
-        isSitting = false;
+        setSitting(false);
         kittytimer = 0;
-        onTree = false;
+        setOnTree(false);
         foundTree = false;
         target = null;
     }
 
     public boolean isOnLadder()
     {
-        if(kittystate == 16)
+        if(getKittyState() == 16)
         {
-            return horizontalCollision && onTree;
+            return horizontalCollision && getOnTree();
         } else
         {
             return super.isOnLadder();
@@ -1028,7 +1097,7 @@ label0:
 
     protected Entity getTargetInRange()
     {
-        if(world.difficulty > 0 && kittystate != 8 && kittystate != 10 && kittystate != 15 && kittystate != 18 && kittystate != 19 && !isMovementBlocked() && hungry)
+        if(world.difficulty > 0 && getKittyState() != 8 && getKittyState() != 10 && getKittyState() != 15 && getKittyState() != 18 && getKittyState() != 19 && !isMovementBlocked() && hungry)
         {
             LivingEntity entityliving = getClosestTarget(this, 10D);
             return entityliving;
@@ -1046,7 +1115,7 @@ label0:
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityKitty) || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityBigCat) && !mocr.mocreaturesGlass.huntercreatures.attackbigcat || (entity1 instanceof EntityBigCat) && ((EntityBigCat) entity1).getTamed() && kittystate > 2 || (entity1 instanceof EntityDolphin) && ((EntityDolphin) entity1).getTamed() && kittystate > 2 || (entity1 instanceof EntityShark) && ((EntityShark)entity1).getTamed() && kittystate > 2 || (double)entity1.width > 0.5D && (double)entity1.height > 0.5D)
+            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityKitty) || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityBigCat) && !mocr.mocreaturesGlass.huntercreatures.attackbigcat || (entity1 instanceof EntityBigCat) && ((EntityBigCat) entity1).getTamed() && getKittyState() > 2 || (entity1 instanceof EntityDolphin) && ((EntityDolphin) entity1).getTamed() && getKittyState() > 2 || (entity1 instanceof EntityShark) && ((EntityShark)entity1).getTamed() && getKittyState() > 2 || (double)entity1.width > 0.5D && (double)entity1.height > 0.5D)
             {
                 continue;
             }
@@ -1104,13 +1173,13 @@ label0:
         {
             if(entity != this)
             {
-                if(kittystate == 10)
+                if(getKittyState() == 10)
                 {
                     List list = world.getEntities(this, boundingBox.expand(16D, 6D, 16D));
                     for(int j = 0; j < list.size(); j++)
                     {
                         Entity entity1 = (Entity)list.get(j);
-                        if((entity1 instanceof EntityKitty) && ((EntityKitty)entity1).kittystate == 21)
+                        if((entity1 instanceof EntityKitty) && ((EntityKitty)entity1).getKittyState() == 21)
                         {
                             ((EntityKitty)entity1).target = entity;
                             return true;
@@ -1121,26 +1190,27 @@ label0:
                 }
                 if(entity instanceof PlayerEntity)
                 {
-                    if(kittystate < 2)
+                    if(getKittyState() < 2)
                     {
                         entity = entity;
-                        kittystate = -1;
+                        setKittyState(-1);
                     }
-                    if(kittystate == 19 || kittystate == 20 || kittystate == 21)
+                    if(getKittyState() == 19 || getKittyState() == 20 || getKittyState() == 21)
                     {
                         entity = entity;
-                        isSitting = false;
+                        setSitting(false);
                         return true;
                     }
-                    if(kittystate > 1 && kittystate != 10 && kittystate != 19 && kittystate != 20 && kittystate != 21)
+                    if(getKittyState() > 1 && getKittyState() != 10 && getKittyState() != 19 && getKittyState() != 20 && getKittyState() != 21)
                     {
-                        kittystate = 13;
-                        isSitting = false;
+                        setKittyState(13);
+                        setSitting(false);
                     }
                     return true;
                 }
                 entity = entity;
             }
+            sendHealth(world, health);
             return true;
         } else
         {
@@ -1190,7 +1260,7 @@ label0:
                     continue;
                 }
                 EntityLitterBox entitylitterbox = (EntityLitterBox)entity1;
-                if(entitylitterbox.usedlitter)
+                if(entitylitterbox.getUsedLitter())
                 {
                     continue;
                 }
@@ -1221,12 +1291,12 @@ label0:
     public void tick()
     {
         super.tick();
-        if(isSwinging)
+        if(getSwinging())
         {
             swingAnimationProgress += 0.2F;
             if(swingAnimationProgress > 2.0F)
             {
-                isSwinging = false;
+                setSwinging(false);
                 swingAnimationProgress = 0.0F;
             }
         }
@@ -1234,15 +1304,15 @@ label0:
 
     protected boolean isMovementBlocked()
     {
-        return isSitting || kittystate == 6 || kittystate == 16 && onTree || kittystate == 12 || kittystate == 17 || kittystate == 14 || kittystate == 20 || kittystate == 23;
+        return getSitting() || getKittyState() == 6 || getKittyState() == 16 && getOnTree() || getKittyState() == 12 || getKittyState() == 17 || getKittyState() == 14 || getKittyState() == 20 || getKittyState() == 23;
     }
 
     public void swingArm()
     {
-        if(!isSwinging)
+        if(!getSwinging())
         {
-            isSwinging = true;
-            swingAnimationProgress = 0.0F;
+            setSwinging(true);
+            swingAnimationProgress = 0.0F; //TODO: packet? addictional logic
         }
     }
 
@@ -1260,11 +1330,11 @@ label0:
         if((double)f < 2D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
         {
             attackCooldown = 20;
-            if(kittystate != 18 && kittystate != 10)
+            if(getKittyState() != 18 && getKittyState() != 10)
             {
                 swingArm();
             }
-            if(kittystate == 13 && (entity instanceof PlayerEntity) || kittystate == 8 && (entity instanceof ItemEntity) || kittystate == 18 && (entity instanceof EntityKitty) || kittystate == 10)
+            if(getKittyState() == 13 && (entity instanceof PlayerEntity) || getKittyState() == 8 && (entity instanceof ItemEntity) || getKittyState() == 18 && (entity instanceof EntityKitty) || getKittyState() == 10)
             {
                 return;
             }
@@ -1320,73 +1390,49 @@ label0:
         } while(true);
     }
 
-    public void writeNbt(NbtCompound nbttagcompound)
-    {
-        super.writeNbt(nbttagcompound);
-        nbttagcompound.putInt("TypeInt", typeint);
-        nbttagcompound.putBoolean("Adult", adult);
-        nbttagcompound.putBoolean("Sitting", isSitting);
-        nbttagcompound.putFloat("Edad", edad);
-        nbttagcompound.putInt("KittyState", kittystate);
-        nbttagcompound.putString("Name", name);
-        nbttagcompound.putBoolean("DisplayName", displayname);
-    }
-
-    public void readNbt(NbtCompound nbttagcompound)
-    {
-        super.readNbt(nbttagcompound);
-        adult = nbttagcompound.getBoolean("Adult");
-        typeint = nbttagcompound.getInt("TypeInt");
-        edad = nbttagcompound.getFloat("Edad");
-        isSitting = nbttagcompound.getBoolean("Sitting");
-        kittystate = nbttagcompound.getInt("KittyState");
-        name = nbttagcompound.getString("Name");
-        displayname = nbttagcompound.getBoolean("DisplayName");
-    }
-
     protected void onLanding(float f)
     {
     }
 
     protected String getRandomSound()
     {
-        if(kittystate == 4)
+        if(getKittyState() == 4)
         {
             if(vehicle != null)
             {
                 EntityKittyBed entitykittybed = (EntityKittyBed)vehicle;
-                if(entitykittybed != null && !entitykittybed.hasMilk)
+                if(entitykittybed != null && !entitykittybed.getHasMilk())
                 {
                     return "mocreatures:kittyeatingm";
                 }
-                if(entitykittybed != null && !entitykittybed.hasFood)
+                if(entitykittybed != null && !entitykittybed.getHasFood())
                 {
                     return "mocreatures:kittyeatingf";
                 }
             }
             return null;
         }
-        if(kittystate == 6)
+        if(getKittyState() == 6)
         {
             return "mocreatures:kittylitter";
         }
-        if(kittystate == 3)
+        if(getKittyState() == 3)
         {
             return "mocreatures:kittyfood";
         }
-        if(kittystate == 10)
+        if(getKittyState() == 10)
         {
             return "mocreatures:kittengrunt";
         }
-        if(kittystate == 13)
+        if(getKittyState() == 13)
         {
             return "mocreatures:kittyupset";
         }
-        if(kittystate == 17)
+        if(getKittyState() == 17)
         {
             return "mocreatures:kittytrapped";
         }
-        if(kittystate == 18 || kittystate == 12)
+        if(getKittyState() == 18 || getKittyState() == 12)
         {
             return "mocreatures:kittypurr";
         } else
@@ -1397,7 +1443,7 @@ label0:
 
     protected String getHurtSound()
     {
-        if(kittystate == 10)
+        if(getKittyState() == 10)
         {
             return "mocreatures:kittenhurt";
         } else
@@ -1408,7 +1454,7 @@ label0:
 
     protected String getDeathSound()
     {
-        if(kittystate == 10)
+        if(getKittyState() == 10)
         {
             return "mocreatures:kittendying";
         } else
@@ -1429,12 +1475,12 @@ label0:
 
     protected boolean canDespawn()
     {
-        return kittystate < 3;
+        return getKittyState() < 3;
     }
 
     public void markDead()
     {
-        if(kittystate > 2 && health > 0)
+        if(getKittyState() > 2 && health > 0)
         {
             return;
         } else
@@ -1460,7 +1506,7 @@ label0:
 
         float f = MathHelper.sqrt(d * d + d1 * d1);
         float f1 = 0.25F;
-        if(kittystate == 10)
+        if(getKittyState() == 10)
         {
             f1 = 0.1F;
         }
@@ -1478,7 +1524,7 @@ label0:
 
     public String getEmoticon()
     {
-        switch(kittystate)
+        switch(getKittyState())
         {
         case -1:
             return "/assets/mocreatures/stationapi/textures/mob/emoticon2.png";
@@ -1542,41 +1588,104 @@ label0:
         }
     }
 
-    public static void setName(EntityKitty entitykitty)
+    public static void setNameWithGui(EntityKitty entitykitty, PlayerEntity entityPlayer)
     {
-        entitykitty.displayname = true;
-        mc.setScreen(new MoCGUI(entitykitty, entitykitty.name));
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
+            PacketHelper.sendTo(entityPlayer, new NamePacket(entitykitty.getName(), entitykitty.id));
+            entitykitty.setDisplayName(true);
+        }else{
+            MoGuiOpener clientS = new MoGuiOpener();
+            clientS.openTameGui(entitykitty, entitykitty.getName());
+            entitykitty.setDisplayName(true);
+        }
     }
 
-    @SuppressWarnings("deprecation")
-    public static Minecraft mc = Minecraft.class.cast(FabricLoader.getInstance().getGameInstance());
     mod_mocreatures mocr = new mod_mocreatures();
-    public boolean isSitting;
-    public boolean isSwinging;
+//    public boolean isSitting;
+//    public boolean isSwinging;
     public boolean typechosen;
-    public boolean adult;
-    public int typeint;
-    public float edad;
+//    public boolean adult;
+//    public int typeint;
+//    public float edad;
     public boolean inBed;
     public boolean sleepy;
-    public int kittystate;
+//    public int kittystate;
     public boolean hungry;
     private int kittytimer;
     private int madtimer;
     public int maxhealth;
-    public String name;
-    public boolean displayname;
-    public boolean onTree;
+//    public String name;
+//    public boolean displayname;
+//    public boolean onTree;
     private boolean foundTree;
-    public boolean displayemo;
+//    public boolean displayemo;
     private int treeCoord[] = {
         -1, -1, -1
     };
     private int displaycount;
 
+
     protected void initDataTracker()
     {
+        super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //Type
+        dataTracker.startTracking(17, (int) 0); //Age
+        dataTracker.startTracking(18, (byte) 0); //KITTYSTATE
+        dataTracker.startTracking(19, (byte) 0); //Adult
+        dataTracker.startTracking(20, (byte) 0); //Swinging
+        dataTracker.startTracking(21, (byte) 0); //Sitting
+        dataTracker.startTracking(22, (byte) 0); //Display EMO
+        dataTracker.startTracking(23, (byte) 0); //Display Name
+        dataTracker.startTracking(24, (byte) 0); //On Tree
+        dataTracker.startTracking(25, (byte) 0); //Picked
+        dataTracker.startTracking(30, ""); //Owner
+        dataTracker.startTracking(31, ""); //Name
+    }
+
+    public void writeNbt(NbtCompound nbttagcompound)
+    {
+        super.writeNbt(nbttagcompound);
+        nbttagcompound.putInt("TypeInt", getType());
+        nbttagcompound.putBoolean("Adult", getAdult());
+        nbttagcompound.putBoolean("Sitting", getSitting());
+        nbttagcompound.putFloat("Edad", getAge());
+        nbttagcompound.putInt("KittyState", getKittyState());
+        nbttagcompound.putString("Name", getName());
+        nbttagcompound.putBoolean("DisplayName", getDisplayName());
+        nbttagcompound.putString("KittyOwner", getOwner());
+        nbttagcompound.putBoolean("OnTree", getOnTree());
+    }
+
+    public void readNbt(NbtCompound nbttagcompound)
+    {
+        super.readNbt(nbttagcompound);
+        setAdult(nbttagcompound.getBoolean("Adult"));
+        setType(nbttagcompound.getInt("TypeInt"));
+        setAge(nbttagcompound.getFloat("Edad"));
+        setSitting(nbttagcompound.getBoolean("Sitting"));
+        setKittyState(nbttagcompound.getInt("KittyState"));
+        setName(nbttagcompound.getString("Name"));
+        setDisplayName(nbttagcompound.getBoolean("DisplayName"));
+        setOwner(nbttagcompound.getString("KittyOwner"));
+        setOnTree(nbttagcompound.getBoolean("OnTree"));
+    }
+
+    public void sendHealth(World world, int hp){
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+            mocr.healthPacket(world, this.id, hp);
+        }
+    }
+
+    public void sendSound(World world, String name, float vol, float pit){
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+            mocr.voicePacket(world, name, this.id, vol, pit);
+        }
+    }
+
+    public void sendRoper(PlayerEntity player, String nameS){
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
+            PacketHelper.sendTo(player, new RopePacket("kitty", this.id, nameS));
+        }
     }
 
     @Override
@@ -1588,6 +1697,8 @@ label0:
     public void setTypeSpawn() {
         if(!world.isRemote) {
             setType(getRandomRace());
+            setAge(0.4F);
+            setKittyState(1);
         }
     }
 
@@ -1602,5 +1713,168 @@ label0:
     public int getType()
     {
         return dataTracker.getByte(16);
+    }
+
+    //AGE
+    public void setAge(float age)
+    {
+        dataTracker.set(17, Float.floatToRawIntBits(age));
+    }
+
+    public float getAge()
+    {
+        return Float.intBitsToFloat(dataTracker.getInt(17));
+    }
+
+    //STATE
+    public int getKittyState()
+    {
+        return dataTracker.getByte(18);
+    }
+
+    public void setKittyState(int type)
+    {
+        dataTracker.set(18, (byte) type);
+    }
+
+    //ADULT
+    public boolean getAdult()
+    {
+        return (dataTracker.getByte(19) & 1) != 0;
+    }
+
+    public void setAdult(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.set(19, Byte.valueOf((byte)1));
+        } else
+        {
+            dataTracker.set(19, Byte.valueOf((byte)0));
+        }
+    }
+
+    //SWINGING
+    public boolean getSwinging()
+    {
+        return (dataTracker.getByte(20) & 1) != 0;
+    }
+
+    public void setSwinging(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.set(20, Byte.valueOf((byte)1));
+        } else
+        {
+            dataTracker.set(20, Byte.valueOf((byte)0));
+        }
+    }
+
+    //SITTING
+    public boolean getSitting()
+    {
+        return (dataTracker.getByte(21) & 1) != 0;
+    }
+
+    public void setSitting(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.set(21, Byte.valueOf((byte)1));
+        } else
+        {
+            dataTracker.set(21, Byte.valueOf((byte)0));
+        }
+    }
+
+    //EMOTICON
+    public boolean getDisplayEmoticon()
+    {
+        return (dataTracker.getByte(22) & 1) != 0;
+    }
+
+    public void setDisplayEmoticon(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.set(22, Byte.valueOf((byte)1));
+        } else
+        {
+            dataTracker.set(22, Byte.valueOf((byte)0));
+        }
+    }
+
+    //DISPLAY NAME
+    public boolean getDisplayName()
+    {
+        return (dataTracker.getByte(23) & 1) != 0;
+    }
+
+    public void setDisplayName(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.set(23, Byte.valueOf((byte)1));
+        } else
+        {
+            dataTracker.set(23, Byte.valueOf((byte)0));
+        }
+    }
+
+    //DISPLAY NAME
+    public boolean getOnTree()
+    {
+        return (dataTracker.getByte(24) & 1) != 0;
+    }
+
+    public void setOnTree(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.set(24, Byte.valueOf((byte)1));
+        } else
+        {
+            dataTracker.set(24, Byte.valueOf((byte)0));
+        }
+    }
+
+    //Picked
+    public boolean getPicked()
+    {
+        return (dataTracker.getByte(25) & 1) != 0;
+    }
+
+    public void setPicked(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.set(25, (byte) 1);
+        } else
+        {
+            dataTracker.set(25, (byte) 0);
+        }
+    }
+
+    //OWNER
+    public void setOwner(String owner)
+    {
+        this.dataTracker.set(30, owner);
+    }
+
+    public String getOwner()
+    {
+        return this.dataTracker.getString(30);
+    }
+
+    //NAME
+    public void setName(String name)
+    {
+        this.dataTracker.set(31, name);
+    }
+
+    public String getName()
+    {
+        return this.dataTracker.getString(31);
     }
 }

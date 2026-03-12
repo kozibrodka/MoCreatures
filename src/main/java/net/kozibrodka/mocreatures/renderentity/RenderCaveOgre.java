@@ -17,7 +17,7 @@ public class RenderCaveOgre extends RenderOgre
     protected boolean a(EntityOgre entityogre, int i)
     {
         bindTexture("/assets/mocreatures/stationapi/textures/mob/caveogreb.png");
-        return i == 0 && !entityogre.ogreboolean;
+        return i == 0;
     }
 
     private ModelOgre2 tempOgre;

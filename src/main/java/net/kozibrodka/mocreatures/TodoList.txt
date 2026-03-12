@@ -7,6 +7,9 @@ To Do List:
 - setBoundingBoxSpacing - can it be sync on client?
 - sound packets.
 
+-ATTACKABLE INTERFACE
+-NEW SPAWN SYSTEM - no mixin - go with stapi TROPICRAFT example
+
 
 - Packets try/catch - necasary?? ask dany.
 
@@ -17,3 +20,5 @@ To Do List:
 - CONFIG STYLE - GLASSCGF - SUCKSS
 
 - MODERN ARMOR MOD
+
+sendSound(world, );

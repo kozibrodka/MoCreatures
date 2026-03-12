@@ -26,30 +26,33 @@ public class EntityOgre extends MonsterEntity
         super(world);
         attackDamage = 3;
         attackRange = mocr.mocreaturesGlass.hostilemobs.ogrerange;
-        ogreboolean = false;
         texture = "/assets/mocreatures/stationapi/textures/mob/ogre.png";
         setBoundingBoxSpacing(1.5F, 4F);
         health = 35;
         bogrefire = false;
-        ogreattack = false;
+//        ogreattack = false;
         ogrehasenemy = false;
         destroyForce = mocr.mocreaturesGlass.hostilemobs.ogreStrength;
         fireImmune = false;
         frequencyA = 30;
     }
 
+    protected void initDataTracker()
+    {
+        super.initDataTracker();
+        dataTracker.startTracking(16, (byte) 0); //Attack
+    }
+
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
-        nbttagcompound.putBoolean("OgreBoolean", ogreboolean);
-        nbttagcompound.putBoolean("OgreAttack", ogreattack);
+        nbttagcompound.putBoolean("OgreAttack", getOgreAttack());
     }
 
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
-        ogreboolean = nbttagcompound.getBoolean("OgreBoolean");
-        ogreattack = nbttagcompound.getBoolean("OgreAttack");
+        setOgreAttack(nbttagcompound.getBoolean("OgreAttack"));
     }
 
     protected String getRandomSound()
@@ -125,10 +128,15 @@ public class EntityOgre extends MonsterEntity
     {
         destroyForce = mocr.mocreaturesGlass.hostilemobs.ogreStrength; ///Czy musi to byc tu?
         attackRange = mocr.mocreaturesGlass.hostilemobs.ogrerange;
-        if(ogrehasenemy && random.nextInt(frequencyA) == 0)
+        if(ogrehasenemy && random.nextInt(frequencyA) == 0 && !world.isRemote)
         {
-            ogreattack = true;
+            setOgreAttack(true);
             attackCooldown = 15;
+        }
+        if(attackCooldown <= 0 && getOgreAttack() && !world.isRemote)
+        {
+            setOgreAttack(false);
+            DestroyingOgre();
         }
         super.tickMovement();
     }
@@ -185,13 +193,30 @@ public class EntityOgre extends MonsterEntity
     public int frequencyA;
     public float destroyForce;
     public boolean ogrehasenemy;
-    public boolean ogreattack;
+//    public boolean ogreattack;
     public boolean bogrefire;
-    public boolean ogreboolean;
+//    public boolean ogreboolean;
     protected double attackRange;
 
     @Override
     public Identifier getHandlerIdentifier() {
         return Identifier.of(mod_mocreatures.MOD_ID, "Ogre");
+    }
+
+    //DISPLAY NAME
+    public boolean getOgreAttack()
+    {
+        return (dataTracker.getByte(16) & 1) != 0;
+    }
+
+    public void setOgreAttack(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.set(16, Byte.valueOf((byte)1));
+        } else
+        {
+            dataTracker.set(16, Byte.valueOf((byte)0));
+        }
     }
 }

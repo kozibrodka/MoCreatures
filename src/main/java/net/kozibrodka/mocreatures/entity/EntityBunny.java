@@ -6,7 +6,6 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
-import net.kozibrodka.mocreatures.network.AskPacket;
 import net.kozibrodka.mocreatures.network.RopePacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.MonsterEntity;
@@ -57,11 +56,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
     public void setPositionAndAnglesAvoidEntities(double x, double y, double z, float pitch, float yaw, int interpolationSteps) {
         this.standingEyeHeight = -0.16F;
         this.lerpX = x;
-        if(getPicked()){
-            this.lerpY = y + 1.65D; //
-        }else{
-            this.lerpY = y;
-        }
+        this.lerpY = y;
         this.lerpZ = z;
         this.lerpYaw = (double)pitch;
         this.lerpPitch = (double)yaw;
@@ -235,7 +230,6 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
 
     public boolean interact(PlayerEntity entityplayer)
     {
-        //TODO: !!!!!!!!!!!!!! zmiana vehicle itd....
         if(world.isRemote){
             return false;
         }
@@ -273,7 +267,12 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
     {
         if(vehicle instanceof PlayerEntity)
         {
-            return (double)(standingEyeHeight - 1.15F);
+            if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+                return (double)(standingEyeHeight + 0.49F);
+//                return (double)(standingEyeHeight);
+            }else{
+                return (double)(standingEyeHeight - 1.15F);
+            }
         } else
         {
             return (double)standingEyeHeight;

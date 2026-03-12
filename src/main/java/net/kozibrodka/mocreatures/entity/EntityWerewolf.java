@@ -4,6 +4,8 @@
 
 package net.kozibrodka.mocreatures.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.Monster;
@@ -14,8 +16,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.modificationstation.stationapi.api.server.entity.HasTrackingParameters;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
+import net.modificationstation.stationapi.api.util.TriState;
 
 public class EntityWerewolf extends MonsterEntity
     implements Monster, MobSpawnDataProvider
@@ -24,20 +28,19 @@ public class EntityWerewolf extends MonsterEntity
     public EntityWerewolf(World world)
     {
         super(world);
-        wereboolean = false;
         texture = "/assets/mocreatures/stationapi/textures/mob/werehuman.png";
         setBoundingBoxSpacing(0.9F, 1.3F);
-        humanform = true;
+        setHumanForm(true); //TODO: czy dobre miejsce?
         health = 15;
         transforming = false;
         tcounter = 0;
-        hunched = false;
+//        hunched = false;
         isUndead = true;
     }
 
     protected Entity getTargetInRange()
     {
-        if(humanform)
+        if(getHumanForm())
         {
             return null;
         }
@@ -70,7 +73,7 @@ public class EntityWerewolf extends MonsterEntity
 
     protected void attack(Entity entity, float f)
     {
-        if(humanform)
+        if(getHumanForm())
         {
             this.target = null;
             return;
@@ -79,7 +82,7 @@ public class EntityWerewolf extends MonsterEntity
         {
             if(onGround)
             {
-                hunched = true;
+                setHunched(true);
                 double d = entity.x - x;
                 double d1 = entity.z - z;
                 float f1 = MathHelper.sqrt(d * d + d1 * d1);
@@ -95,7 +98,7 @@ public class EntityWerewolf extends MonsterEntity
 
     public boolean damage(Entity entity, int i)
     {
-        if(!humanform && entity != null && (entity instanceof PlayerEntity))
+        if(!getHumanForm() && entity != null && (entity instanceof PlayerEntity))
         {
             PlayerEntity entityplayer = (PlayerEntity)entity;
             ItemStack itemstack = entityplayer.getHand();
@@ -130,21 +133,24 @@ public class EntityWerewolf extends MonsterEntity
     public void tickMovement()
     {
         super.tickMovement();
-        if((IsNight() && humanform || !IsNight() && !humanform) && random.nextInt(250) == 0)
+        if(world.isRemote){
+            return;
+        }
+        if((IsNight() && getHumanForm() || !IsNight() && !getHumanForm()) && random.nextInt(250) == 0)
         {
             transforming = true;
         }
-        if(humanform && target != null)
+        if(getHumanForm() && target != null)
         {
             target = null;
         }
-        if(target != null && !humanform && target.x - x > 3D && target.z - z > 3D)
+        if(target != null && !getHumanForm() && target.x - x > 3D && target.z - z > 3D)
         {
-            hunched = true;
+            setHunched(true);
         }
-        if(hunched && random.nextInt(50) == 0)
+        if(getHunched() && random.nextInt(50) == 0)
         {
-            hunched = false;
+            setHunched(false);
         }
         if(transforming && random.nextInt(3) == 0)
         {
@@ -162,6 +168,7 @@ public class EntityWerewolf extends MonsterEntity
             if(tcounter == 10)
             {
                 world.playSound(this, "mocreatures:weretransform", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+                sendSound(world, "mocreatures:weretransform", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
             }
             if(tcounter > 30)
             {
@@ -187,7 +194,7 @@ public class EntityWerewolf extends MonsterEntity
 
     public void travel(float f, float f1)
     {
-        if(!humanform && onGround)
+        if(!getHumanForm() && onGround)
         {
             velocityX *= 1.2D;
             velocityZ *= 1.2D;
@@ -223,36 +230,44 @@ public class EntityWerewolf extends MonsterEntity
             d4 *= d7;
             d5 *= d7;
             world.addParticle("explode", (d + (double)i * 1.0D) / 2D, (d1 + (double)j * 1.0D) / 2D, (d2 + (double)k * 1.0D) / 2D, d3, d4, d5);
+            sendParticle(world, "explode", (d + (double)i * 1.0D) / 2D, (d1 + (double)j * 1.0D) / 2D, (d2 + (double)k * 1.0D) / 2D, d3, d4, d5);
         }
 
-        if(humanform)
+        if(getHumanForm())
         {
-            humanform = false;
+            setHumanForm(false);
             health = 40;
             transforming = false;
         } else
         {
-            humanform = true;
+            setHumanForm(true);
             health = 15;
             transforming = false;
         }
     }
 
+    protected void initDataTracker()
+    {
+        super.initDataTracker();
+        dataTracker.startTracking(16, (byte) 0); //HumanForm
+        dataTracker.startTracking(17, (byte) 0); //Hunched
+    }
+
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
-        nbttagcompound.putBoolean("HumanForm", humanform);
+        nbttagcompound.putBoolean("HumanForm", getHumanForm());
     }
 
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
-        humanform = nbttagcompound.getBoolean("HumanForm");
+        setHumanForm(nbttagcompound.getBoolean("HumanForm"));
     }
 
     protected String getRandomSound()
     {
-        if(humanform)
+        if(getHumanForm())
         {
             return "mocreatures:werehumangrunt";
         } else
@@ -263,7 +278,7 @@ public class EntityWerewolf extends MonsterEntity
 
     protected String getHurtSound()
     {
-        if(humanform)
+        if(getHumanForm())
         {
             return "mocreatures:werehumanhurt";
         } else
@@ -274,7 +289,7 @@ public class EntityWerewolf extends MonsterEntity
 
     protected String getDeathSound()
     {
-        if(humanform)
+        if(getHumanForm())
         {
             return "mocreatures:werehumandying";
         } else
@@ -286,7 +301,7 @@ public class EntityWerewolf extends MonsterEntity
     protected int getDroppedItemId()
     {
         int i = random.nextInt(12);
-        if(humanform)
+        if(getHumanForm())
         {
             switch(i)
             {
@@ -369,7 +384,10 @@ public class EntityWerewolf extends MonsterEntity
             }
 
         }
-        world.getSkyColor(this, 3F);
+        if(FabricLoader.INSTANCE.getEnvironmentType() == EnvType.CLIENT) {
+            world.getSkyColor(this, 3F);
+        }
+        world.broadcastEntityEvent(this, (byte)3);
     }
 
     public int getLimitPerChunk()
@@ -392,15 +410,60 @@ public class EntityWerewolf extends MonsterEntity
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
-    public boolean wereboolean;
-    public boolean humanform;
+//    public boolean humanform; ///
     private boolean transforming;
     private int tcounter;
-    public boolean hunched;
+//    public boolean hunched; ///
     public boolean isUndead;
 
     @Override
     public Identifier getHandlerIdentifier() {
         return Identifier.of(mod_mocreatures.MOD_ID, "WereWolf");
+    }
+
+    public void sendParticle(World world, String name, double x, double y, double z, double i, double j, double k){
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+            mocr.particlePacket(world,name,x,y,z,i,j,k);
+        }
+    }
+
+    public void sendSound(World world, String name, float vol, float pit){
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+            mocr.voicePacket(world, name, this.id, vol, pit);
+        }
+    }
+
+    //HUMANFORM
+    public boolean getHumanForm()
+    {
+        return (dataTracker.getByte(16) & 1) != 0;
+    }
+
+    public void setHumanForm(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.set(16, Byte.valueOf((byte)1));
+        } else
+        {
+            dataTracker.set(16, Byte.valueOf((byte)0));
+        }
+    }
+
+    //HUNCHED
+    public boolean getHunched()
+    {
+        return (dataTracker.getByte(17) & 1) != 0;
+    }
+
+    public void setHunched(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.set(17, Byte.valueOf((byte)1));
+        } else
+        {
+            dataTracker.set(17, Byte.valueOf((byte)0));
+        }
     }
 }

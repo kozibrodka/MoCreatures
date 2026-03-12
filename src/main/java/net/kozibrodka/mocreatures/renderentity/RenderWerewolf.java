@@ -20,7 +20,7 @@ public class RenderWerewolf extends LivingEntityRenderer
 
     protected boolean setWoolColorAndRender(EntityWerewolf entitywerewolf, int i)
     {
-        if(!entitywerewolf.humanform)
+        if(!entitywerewolf.getHumanForm())
         {
             entitywerewolf.ustawTexture("/assets/mocreatures/stationapi/textures/mob/werewolf.png");
             bindTexture("/assets/mocreatures/stationapi/textures/mob/wereblank.png");
@@ -29,7 +29,7 @@ public class RenderWerewolf extends LivingEntityRenderer
             entitywerewolf.ustawTexture("/assets/mocreatures/stationapi/textures/mob/wereblank.png");
             bindTexture("/assets/mocreatures/stationapi/textures/mob/werehuman.png");
         }
-        return i == 0 && !entitywerewolf.wereboolean;
+        return i == 0;
     }
 
     protected boolean bindTexture(LivingEntity entityliving, int i, float f)
@@ -41,12 +41,12 @@ public class RenderWerewolf extends LivingEntityRenderer
             float f, float f1)
     {
         EntityWerewolf entitywerewolf = (EntityWerewolf)entityliving;
-        if(entitywerewolf.humanform)
+        if(entitywerewolf.getHumanForm())
         {
             super.render(entityliving, d, d1, d2, f, f1);
             return;
         }
-        boolean flag = entitywerewolf.hunched;
+        boolean flag = entitywerewolf.getHunched();
         GL11.glPushMatrix();
         GL11.glDisable(2884 /*GL_CULL_FACE*/);
         model.handSwingProgress = getHandSwingProgress(entityliving, f1);

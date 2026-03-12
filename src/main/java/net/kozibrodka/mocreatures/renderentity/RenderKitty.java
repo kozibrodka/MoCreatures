@@ -23,15 +23,15 @@ public class RenderKitty extends UndeadEntityRenderer
     protected void applyScale(LivingEntity entityliving, float f)
     {
         EntityKitty entitykitty = (EntityKitty)entityliving;
-        pussy1.isSitting = entitykitty.isSitting;
-        pussy1.isSwinging = entitykitty.isSwinging;
+        pussy1.isSitting = entitykitty.getSitting();
+        pussy1.isSwinging = entitykitty.getSwinging();
         pussy1.swingProgress = entitykitty.swingAnimationProgress;
-        pussy1.kittystate = entitykitty.kittystate;
-        if(entitykitty.kittystate == 20)
+        pussy1.kittystate = entitykitty.getKittyState();
+        if(entitykitty.getKittyState() == 20)
         {
             onTheSide(entityliving);
         }
-        if(entitykitty.climbingTree())
+        if(entitykitty.climbingTree()) /// on tree might need datatrack
         {
             rotateAnimal(entityliving);
         }
@@ -54,13 +54,13 @@ public class RenderKitty extends UndeadEntityRenderer
 
     protected void stretch(EntityKitty entitykitty)
     {
-        GL11.glScalef(entitykitty.edad, entitykitty.edad, entitykitty.edad);
+        GL11.glScalef(entitykitty.getAge(), entitykitty.getAge(), entitykitty.getAge());
     }
 
     protected float getHeadBob(LivingEntity entityliving, float f)
     {
         EntityKitty entitykitty = (EntityKitty)entityliving;
-        if(!entitykitty.adult)
+        if(!entitykitty.getAdult())
         {
             stretch(entitykitty);
         }
@@ -72,7 +72,7 @@ public class RenderKitty extends UndeadEntityRenderer
     {
         EntityKitty entitykitty = (EntityKitty)entityliving;
         super.render(entitykitty, d, d1, d2, f, f1);
-        boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entitykitty.name.isEmpty();
+        boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entitykitty.getName().isEmpty();
         boolean flag1 = mocr.mocreaturesGlass.othersettings.displayhealth;
         boolean flag2 = mocr.mocreaturesGlass.othersettings.displayemo;
         if(entitykitty.renderName())
@@ -81,7 +81,7 @@ public class RenderKitty extends UndeadEntityRenderer
             float f3 = 0.01666667F * f2;
             float f4 = entityliving.getDistance(dispatcher.cameraEntity);
             String s = "";
-            s = (new StringBuilder()).append(s).append(entitykitty.name).toString();
+            s = (new StringBuilder()).append(s).append(entitykitty.getName()).toString();
             if(f4 < 12F)
             {
                 float f5 = 0.2F;
@@ -98,7 +98,7 @@ public class RenderKitty extends UndeadEntityRenderer
                 GL11.glDisable(2896 /*GL_LIGHTING*/);
                 Tessellator tessellator = Tessellator.INSTANCE;
                 byte byte0 = -48;
-                if(flag2 && ((EntityKitty)entityliving).displayemo)
+                if(flag2 && ((EntityKitty)entityliving).getDisplayEmoticon())
                 {
                     GL11.glBindTexture(3553 /*GL_TEXTURE_2D*/, mc.textureManager.getTextureId(((EntityKitty)entityliving).getEmoticon()));
                     int i = -83;
@@ -178,7 +178,7 @@ public class RenderKitty extends UndeadEntityRenderer
 
     protected void rotateAnimal(LivingEntity entityliving)
     {
-        if(!entityliving.onGround)
+        if(!entityliving.onGround) //TODO: byc moze extra zmienna potrzebna w datatracker
         {
             GL11.glRotatef(90F, -1F, 0.0F, 0.0F);
         }

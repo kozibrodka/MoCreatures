@@ -23,7 +23,6 @@ public class EntityCaveOgre extends EntityOgre
         super(world);
         attackDamage = 3;
         attackRange = mocr.mocreaturesGlass.hostilemobs.ogrerange;
-        ogreboolean = false;
         texture = "/assets/mocreatures/stationapi/textures/mob/caveogre.png";
         setBoundingBoxSpacing(1.5F, 4F);
         health = 50;
@@ -36,19 +35,28 @@ public class EntityCaveOgre extends EntityOgre
     public void tickMovement()
     {
         getTargetInRange();
-        destroyForce = mocr.mocreaturesGlass.hostilemobs.ogreStrength;
+        destroyForce = mocr.mocreaturesGlass.hostilemobs.cogreStrength;
         attackRange = mocr.mocreaturesGlass.hostilemobs.ogrerange;
-        if(ogrehasenemy && random.nextInt(frequencyA) == 0)
+        if(ogrehasenemy && random.nextInt(frequencyA) == 0 && !world.isRemote)
         {
-            ogreattack = true;
+            setOgreAttack(true);
             attackCooldown = 15;
         }
-        if(world.canMonsterSpawn())
+        if(attackCooldown <= 0 && getOgreAttack() && !world.isRemote)
+        {
+            setOgreAttack(false);
+            DestroyingOgre();
+        }
+        if(world.canMonsterSpawn() && !world.isRemote)
         {
             float f = getBrightnessAtEyes(1.0F);
             if(f > 0.5F && world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && random.nextFloat() * 30F < (f - 0.4F) * 2.0F)
             {
-                health -= 5;
+                if(health <= 5){
+                    damage(null ,5);
+                }else{
+                    health -= 5;
+                }
             }
         }
         super.onLivingUpdate2();
@@ -92,7 +100,7 @@ public class EntityCaveOgre extends EntityOgre
     protected int getDroppedItemId()
     {
         return Item.DIAMOND.id;
-    }
+    } //TODO: TROCHE KURWA OP???
 
     mod_mocreatures mocr = new mod_mocreatures();
 

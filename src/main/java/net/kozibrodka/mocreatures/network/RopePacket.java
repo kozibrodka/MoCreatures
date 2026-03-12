@@ -104,6 +104,38 @@ public class RopePacket extends Packet implements ManagedPacket<RopePacket> {
                 bunny1.setVehicle(roper3);
             }
         }
+
+        if(Objects.equals(entityName, "mouse")){
+            EntityMouse mouse1 = (EntityMouse) ((ClientWorld)player.world).getEntity(this.entityId);
+            if(mouse1 != null){
+                LivingEntity roper4 = mouse1.world.getPlayer(this.entityRoper);
+                mouse1.setVehicle(roper4);
+            }
+        }
+
+        if(Objects.equals(entityName, "box")){
+            EntityLitterBox box1 = (EntityLitterBox) ((ClientWorld)player.world).getEntity(this.entityId);
+            if(box1 != null){
+                LivingEntity roper5 = box1.world.getPlayer(this.entityRoper);
+                box1.setVehicle(roper5);
+            }
+        }
+
+        if(Objects.equals(entityName, "bed")){
+            EntityKittyBed bed1 = (EntityKittyBed) ((ClientWorld)player.world).getEntity(this.entityId);
+            if(bed1 != null){
+                LivingEntity roper6 = bed1.world.getPlayer(this.entityRoper);
+                bed1.setVehicle(roper6);
+            }
+        }
+
+        if(Objects.equals(entityName, "kitty")){
+            EntityKitty kitty1 = (EntityKitty) ((ClientWorld)player.world).getEntity(this.entityId);
+            if(kitty1 != null){
+                LivingEntity roper6 = kitty1.world.getPlayer(this.entityRoper);
+                kitty1.setVehicle(roper6);
+            }
+        }
     }
 
     @Environment(EnvType.SERVER)

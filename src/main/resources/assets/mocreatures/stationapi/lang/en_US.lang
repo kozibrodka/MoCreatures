@@ -54,6 +54,15 @@ item.@.WereWolf_egg.name = SpawnEgg WereWolf
 item.@.Wraith_egg.name = SpawnEgg Wraith
 item.@.WildWolf_egg.name = SpawnEgg WildWolf
 
+item.@.zebra_egg.name = SpawnEgg Zebra
+item.@.elephant_egg.name = SpawnEgg Elephant
+item.@.hippo_egg.name = SpawnEgg Hippo
+item.@.giraffe_egg.name = SpawnEgg Giraffe
+item.@.crocodile_egg.name = SpawnEgg Crocodile
+item.@.collie_egg.name = SpawnEgg Collie
+item.@.sheep_egg.name = SpawnEgg Sheep
+item.@._egg.name = SpawnEgg XXXXX
+
 item.@.horse1_egg.name = Horse Light Brown
 item.@.horse2_egg.name = Horse Brown
 item.@.horse3_egg.name = Horse Dark Grey

@@ -450,7 +450,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof PlayerEntity) || !getAdult() && ((double)entity1.width > 0.5D || (double)entity1.height > 0.5D) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof MonsterEntity) && (!getTamed() || !getAdult()) || getTamed() && (entity1 instanceof EntityKitty) && ((EntityKitty)entity1).kittystate > 2 || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof EntityHorse) && getTamed() && ((EntityHorse) entity1).getTamed() || (entity1 instanceof EntityShark) && ((EntityShark)entity1).getTamed() && getTamed() || (entity1 instanceof EntityDolphin) && ((EntityDolphin)entity1).getTamed() && getTamed() || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves)
+            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof PlayerEntity) || !getAdult() && ((double)entity1.width > 0.5D || (double)entity1.height > 0.5D) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof MonsterEntity) && (!getTamed() || !getAdult()) || getTamed() && (entity1 instanceof EntityKitty) && ((EntityKitty)entity1).getKittyState() > 2 || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof EntityHorse) && getTamed() && ((EntityHorse) entity1).getTamed() || (entity1 instanceof EntityShark) && ((EntityShark)entity1).getTamed() && getTamed() || (entity1 instanceof EntityDolphin) && ((EntityDolphin)entity1).getTamed() && getTamed() || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves)
             {
                 continue;
             }
@@ -523,7 +523,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
             return true;
         } else
         {
-            return false; //TODO: czy łuk logicznie działa? atak na właściciela...
+            return false;
         }
     }
 

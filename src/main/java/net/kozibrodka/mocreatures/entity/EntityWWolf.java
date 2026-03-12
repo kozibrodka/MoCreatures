@@ -30,7 +30,6 @@ public class EntityWWolf extends MonsterEntity
     public EntityWWolf(World world)
     {
         super(world);
-        wolfboolean = false;
         texture = "/assets/mocreatures/stationapi/textures/mob/wolfa.png";
         setBoundingBoxSpacing(0.9F, 1.3F);
         attackDamage = 1;
@@ -92,7 +91,7 @@ public class EntityWWolf extends MonsterEntity
         List list = world.getEntities(this, boundingBox.expand(d, d, d));
         for(int i = 0; i < list.size(); i++)
         {
-            Entity entity1 = (Entity)list.get(i);
+            Entity entity1 = (Entity)list.get(i); //TODO: ignore litter?
             if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityBigCat) || (entity1 instanceof EntityBear) || (entity1 instanceof CowEntity) || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses)
             {
                 continue;
@@ -124,13 +123,11 @@ public class EntityWWolf extends MonsterEntity
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
-        nbttagcompound.putBoolean("WolfBoolean", wolfboolean);
     }
 
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
-        wolfboolean = nbttagcompound.getBoolean("WolfBoolean");
     }
 
     protected String getRandomSound()
@@ -183,7 +180,7 @@ public class EntityWWolf extends MonsterEntity
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
-    public boolean wolfboolean;
+//    public boolean wolfboolean;
 
     @Override
     public Identifier getHandlerIdentifier() {

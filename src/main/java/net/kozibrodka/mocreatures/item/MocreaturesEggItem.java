@@ -95,7 +95,13 @@ public class MocreaturesEggItem extends TemplateItem {
         }
         if(ide == 24){
             huj = new EntityShark(arg3);
-            //TODO: żeby megalodona nie było szansy
+            huj.setPositionAndAnglesKeepPrevAngles(i, j, k, arg3.random.nextFloat() * 360F, 0.0F);
+            huj.setPosition(i, j + 1, k);
+            arg3.spawnEntity(huj);
+            ((EntityShark)huj).setType(1);
+            ((EntityShark)huj).setAge(1.0F + random.nextFloat());;
+            --arg.count;
+            return false; ///anty megalodon from spawn-egg
         }
         if(ide == 25){
             huj = new EntitySharkEgg(arg3, "null");
@@ -109,6 +115,24 @@ public class MocreaturesEggItem extends TemplateItem {
         if(ide == 28){
             huj = new EntityWWolf(arg3);
         }
+        if(ide == 60){
+            huj = new EntityZebra(arg3);
+        }
+        if(ide == 61){
+            huj = new EntityElephant(arg3);
+        }
+        if(ide == 62){
+            huj = new EntityHippo(arg3);
+        }
+        if(ide == 63){
+            huj = new EntityGiraffe(arg3);
+        }
+//        if(ide == 64){
+//            huj = new XXXX(arg3);
+//        }
+//        if(ide == 65){
+//            huj = new XXXX(arg3);
+//        }
 
         if(ide >= 30 && ide < 40){
             huj = new EntityHorse(arg3);

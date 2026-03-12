@@ -11,7 +11,6 @@ import net.minecraft.client.render.entity.model.ChickenEntityModel;
 import net.minecraft.client.render.entity.model.PigEntityModel;
 import net.modificationstation.stationapi.api.client.event.render.entity.EntityRendererRegisterEvent;
 import net.modificationstation.stationapi.api.client.event.texture.TextureRegisterEvent;
-import net.modificationstation.stationapi.api.client.texture.atlas.Atlases;
 import net.modificationstation.stationapi.api.mod.entrypoint.Entrypoint;
 import net.modificationstation.stationapi.api.mod.entrypoint.EntrypointManager;
 import net.modificationstation.stationapi.api.util.Identifier;
@@ -137,5 +136,11 @@ public class TextureListener {
         event.renderers.put(EntityRat.class, new RenderRat(new ModelRat(), 0.2F));
         event.renderers.put(EntityMouse.class, new RenderMouse(new ModelMouse(), 0.1F));
         event.renderers.put(EntityHellRat.class, new RenderHellRat(new ModelRat(), 0.4F));
+
+        event.renderers.put(EntityZebra.class, new RenderZebra(new ModelZebra(), 0.5F));
+        event.renderers.put(EntityHippo.class, new RenderHippo(new ModelHippo(), 0.7F));
+        event.renderers.put(EntityElephant.class, new RenderElephant(new ModelElephant(), 0.7F, 2.8F));
+        event.renderers.put(EntityGiraffe.class, new RenderGiraffe(new ModelGiraffe(), 0.5F));
+//        event.renderers.put(EntityGiraffe.class, new RenderGiraffe(new Model(), 0.4F));
     }
 }

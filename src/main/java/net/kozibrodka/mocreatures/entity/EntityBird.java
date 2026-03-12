@@ -6,7 +6,6 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
-import net.kozibrodka.mocreatures.network.AskPacket;
 import net.kozibrodka.mocreatures.network.RopePacket;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -65,20 +64,20 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
-    @Environment(EnvType.CLIENT)
-    public void setPositionAndAnglesAvoidEntities(double x, double y, double z, float pitch, float yaw, int interpolationSteps) {
-        this.standingEyeHeight = 0.0F;
-        this.lerpX = x;
-        if(getPicked()){
-            this.lerpY = y + 1.65D; //
-        }else{
-            this.lerpY = y;
-        }
-        this.lerpZ = z;
-        this.lerpYaw = (double)pitch;
-        this.lerpPitch = (double)yaw;
-        this.bodyTrackingIncrements = interpolationSteps;
-    }
+//    @Environment(EnvType.CLIENT)
+//    public void setPositionAndAnglesAvoidEntities(double x, double y, double z, float pitch, float yaw, int interpolationSteps) {
+//        this.standingEyeHeight = 0.0F;
+//        this.lerpX = x;
+//        if(getPicked()){
+//            this.lerpY = y + 1.65D; //
+//        }else{
+//            this.lerpY = y;
+//        }
+//        this.lerpZ = z;
+//        this.lerpYaw = (double)pitch;
+//        this.lerpPitch = (double)yaw;
+//        this.bodyTrackingIncrements = interpolationSteps;
+//    }
 
     protected void initDataTracker()
     {
@@ -198,25 +197,11 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         {
             PlayerEntity entityplayer = (PlayerEntity)vehicle;
             yaw = entityplayer.yaw;
-            ///
-////            standingEyeHeight -= 1.15F;
-//            this.y += 2.0D;
-//            this.prevY += 2.0D;
-//                    this.setPosition(this.x, this.y, this.z);
-            ///
             entityplayer.fallDistance = 0.0F;
             if(entityplayer.velocityY < -0.10000000000000001D)
             {
                 entityplayer.velocityY = -0.10000000000000001D;
             }
-//                if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-//                    this.y += 2.0D;
-////                    this.y = entityplayer.y + 5.0D;
-//                    setPosition(this.x, this.y + 1.0D, this.z);
-//                    System.out.println(this.y + "  " + entityplayer.y);
-//                    entityplayer.updatePassengerPosition();
-//                    setPosition(this.x, this.y + ((double)this.height * (double)0.75F) + this.getStandingEyeHeight() -1.0D, this.z);
-//                }
         }
         if(!getFleeing() || !getPicked())
         {
@@ -283,7 +268,12 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
     {
         if(vehicle instanceof PlayerEntity)
         {
-            return (double)(standingEyeHeight - 1.15F);
+            if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+                return (double)(standingEyeHeight + 0.49F);
+//                return (double)(standingEyeHeight);
+            }else{
+                return (double)(standingEyeHeight - 1.15F);
+            }
         } else
         {
             return (double)standingEyeHeight;

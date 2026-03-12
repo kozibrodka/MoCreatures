@@ -19,7 +19,7 @@ public class RenderOgre extends LivingEntityRenderer
     protected boolean a(EntityOgre entityogre, int i)
     {
         bindTexture("/assets/mocreatures/stationapi/textures/mob/ogreb.png");
-        return i == 0 && !entityogre.ogreboolean;
+        return i == 0;
     }
 
     protected boolean bindTexture(LivingEntity entityliving, int i, float f)
@@ -31,11 +31,6 @@ public class RenderOgre extends LivingEntityRenderer
             float f, float f1)
     {
         EntityOgre entityogre = (EntityOgre)entityliving;
-        if(entityliving.attackCooldown <= 0 && entityogre.ogreattack) //TODO O JA PIERDOLE CO TO MA BYC
-        {
-            entityogre.ogreattack = false;
-            entityogre.DestroyingOgre();
-        }
         GL11.glPushMatrix();
         GL11.glDisable(2884 /*GL_CULL_FACE*/);
         model.handSwingProgress = getHandSwingProgress(entityliving, f1);
@@ -65,7 +60,7 @@ public class RenderOgre extends LivingEntityRenderer
             }
             bindDownloadedTexture(entityliving.skinUrl, entityliving.getTexture());
             GL11.glEnable(3008 /*GL_ALPHA_TEST*/);
-            tempOgre.render(f8, f7, f5, f3 - f2, f4, f6, entityogre.ogreattack);
+            tempOgre.render(f8, f7, f5, f3 - f2, f4, f6, entityogre.getOgreAttack());
             for(int i = 0; i < 4; i++)
             {
                 if(bindTexture(entityliving, i, f1))
@@ -89,7 +84,7 @@ public class RenderOgre extends LivingEntityRenderer
                 if(entityliving.hurtTime > 0 || entityliving.deathTime > 0)
                 {
                     GL11.glColor4f(f9, 0.0F, 0.0F, 0.4F);
-                    tempOgre.render(f8, f7, f5, f3 - f2, f4, f6, entityogre.ogreattack);
+                    tempOgre.render(f8, f7, f5, f3 - f2, f4, f6, entityogre.getOgreAttack());
                     for(int k = 0; k < 4; k++)
                     {
                         if(bindTexture(entityliving, k, f1))
@@ -107,7 +102,7 @@ public class RenderOgre extends LivingEntityRenderer
                     float f12 = (float)(j & 0xff) / 255F;
                     float f13 = (float)(j >> 24 & 0xff) / 255F;
                     GL11.glColor4f(f10, f11, f12, f13);
-                    tempOgre.render(f8, f7, f5, f3 - f2, f4, f6, entityogre.ogreattack);
+                    tempOgre.render(f8, f7, f5, f3 - f2, f4, f6, entityogre.getOgreAttack());
                     for(int l = 0; l < 4; l++)
                     {
                         if(bindTexture(entityliving, l, f1))

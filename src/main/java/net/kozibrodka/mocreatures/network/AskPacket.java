@@ -102,16 +102,16 @@ public class AskPacket extends Packet implements ManagedPacket<AskPacket> {
             }
         }
 
-        if(Objects.equals(entityType, "bird")){
-
-            EntityBird bird1 = (EntityBird) ((ServerWorld)player.world).getEntity(this.entityId);
-            if(bird1 != null) {
-                PlayerEntity roper3 = (PlayerEntity) bird1.vehicle;
-                if(roper3 != null) {
-                    PacketHelper.sendTo(player, new RopePacket("bird", this.entityId, roper3.name));
-                }
-            }
-        }
+//        if(Objects.equals(entityType, "bird")){
+//
+//            EntityBird bird1 = (EntityBird) ((ServerWorld)player.world).getEntity(this.entityId);
+//            if(bird1 != null) {
+//                PlayerEntity roper3 = (PlayerEntity) bird1.vehicle;
+//                if(roper3 != null) {
+//                    PacketHelper.sendTo(player, new RopePacket("bird", this.entityId, roper3.name));
+//                }
+//            }
+//        }
 
         if(Objects.equals(entityType, "dolphin")){
 
@@ -129,16 +129,24 @@ public class AskPacket extends Packet implements ManagedPacket<AskPacket> {
             }
         }
 
-        if(Objects.equals(entityType, "bunny")){
+        if(Objects.equals(entityType, "kitty")){
 
-            EntityBunny bunny1 = (EntityBunny) ((ServerWorld)player.world).getEntity(this.entityId);
-            if(bunny1 != null) {
-                PlayerEntity roper4 = (PlayerEntity) bunny1.vehicle;
-                if(roper4 != null) {
-                    PacketHelper.sendTo(player, new RopePacket("bunny", this.entityId, roper4.name));
-                }
+            EntityKitty kitty1 = (EntityKitty) ((ServerWorld)player.world).getEntity(this.entityId);
+            if(kitty1 != null) {
+                PacketHelper.sendTo(player, new HealthPacket(this.entityId, kitty1.health));
             }
         }
+
+//        if(Objects.equals(entityType, "bunny")){
+//
+//            EntityBunny bunny1 = (EntityBunny) ((ServerWorld)player.world).getEntity(this.entityId);
+//            if(bunny1 != null) {
+//                PlayerEntity roper4 = (PlayerEntity) bunny1.vehicle;
+//                if(roper4 != null) {
+//                    PacketHelper.sendTo(player, new RopePacket("bunny", this.entityId, roper4.name));
+//                }
+//            }
+//        }
     }
 
     @Override

@@ -59,7 +59,7 @@ public class EntityWraith extends EntityFlyerMob
         {
             attackStrength = 3;
         }
-        if(world.canMonsterSpawn())
+        if(world.canMonsterSpawn() && !world.isRemote)
         {
             float f = getBrightnessAtEyes(1.0F);
             if(f > 0.5F && world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && random.nextFloat() * 30F < (f - 0.4F) * 2.0F)

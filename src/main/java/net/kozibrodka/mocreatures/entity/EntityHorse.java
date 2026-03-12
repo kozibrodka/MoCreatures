@@ -38,6 +38,7 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 import net.modificationstation.stationapi.api.util.TriState;
 
 import java.util.List;
+import java.util.Objects;
 
 @HasTrackingParameters(trackingDistance = 160, updatePeriod = 1, sendVelocity = TriState.TRUE)
 public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnDataProvider, MoCreatureRacial, MoCreatureNamed
@@ -598,6 +599,9 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 if(random.nextInt(50) == 0)
                 {
                     PlayerEntity entityplayer = (PlayerEntity)passenger;
+                    if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+                        PacketHelper.sendTo(entityplayer, new JokeyPacket(0));
+                    }
                     world.playSound(this, "mocreatures:horsemad", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
                     sendSound(world,"mocreatures:horsemad", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F );
                     entityplayer.velocityY += 0.90000000000000002D;
@@ -605,9 +609,6 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                     entityplayer.setVehicle(null);
                     passenger = null;
                     setJokey(false);
-                    if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-                        PacketHelper.sendTo(entityplayer, new JokeyPacket(0));
-                    }
                 }
                 if(onGround)
                 {
@@ -830,6 +831,9 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
         if(getTamed() && getProtect() && !entityplayer.name.equals(getOwner()))
         {
+            return false;
+        }
+        if(roper instanceof PlayerEntity && !Objects.equals(((PlayerEntity) roper).name, entityplayer.name)){ ///  Anty zabieracz Linki
             return false;
         }
         if(itemstack != null && getTamed() && entityplayer.name.equals(getOwner()) && itemstack.getItem() instanceof SwordItem && entityplayer.isSneaking())
@@ -1118,6 +1122,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             int k = MathHelper.floor(z);
             fuelRemoval(world, i, j, k);
         }
+        world.broadcastEntityEvent(this, (byte)3); //todo: addon?
     }
 
     public void fuelRemoval(World world, int i, int j, int k)

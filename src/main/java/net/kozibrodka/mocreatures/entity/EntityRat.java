@@ -5,6 +5,8 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
+import net.kozibrodka.mocreatures.network.AskPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MonsterEntity;
@@ -14,57 +16,63 @@ import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
+import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
 import java.util.Iterator;
 import java.util.List;
 
-public class EntityRat extends MonsterEntity implements MobSpawnDataProvider
+public class EntityRat extends MonsterEntity implements MobSpawnDataProvider, MoCreatureRacial
 {
-//TODO: racial interface
+
     public EntityRat(World world)
     {
         super(world);
-        texture = "/assets/mocreatures/stationapi/textures/mob/blackrat.png";
+//        texture = "/assets/mocreatures/stationapi/textures/mob/blackrat.png";
         setBoundingBoxSpacing(0.5F, 0.5F);
         health = 10;
         attackDamage = 1;
+        typechosen = false;
     }
 
-    public void chooseType()
+    public void chooseType(int type)
     {
-        if(typeint == 0)
-        {
-            int i = random.nextInt(100);
-            if(i <= 65)
-            {
-                typeint = 1;
-            } else
-            if(i <= 98)
-            {
-                typeint = 2;
-            } else
-            {
-                typeint = 3;
-            }
-        }
-        if(!typechosen)
-        {
-            if(typeint == 1)
+            if(type == 1)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/blackrat.png";
             } else
-            if(typeint == 2)
+            if(type == 2)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/lightrat.png";
             } else
-            if(typeint == 3)
+            if(type == 3)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/whiterat.png";
             }
+            if(type == 4)
+            {
+                texture = "/assets/mocreatures/stationapi/textures/mob/hellrat.png";
+            }
+    }
+
+    public int getRandomRace()
+    {
+        if(fireImmune){
+            return 4;
         }
-        typechosen = true;
+        int i = random.nextInt(100);
+        if(i <= 65)
+        {
+            return  1;
+        } else
+        if(i <= 98)
+        {
+            return 2;
+        } else
+        {
+            return 3;
+        }
     }
 
     public boolean damage(Entity entityBase, int i)
@@ -118,6 +126,22 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider
         }
     }
 
+    public void tickMovement() {
+        super.tickMovement();
+        if(!typechosen && world.isRemote && getType() != 0){
+            typechosen = true;
+            chooseType(getType());
+        }
+        if(world.isRemote){
+            return;
+        }
+        if(isOnLadder()){
+            setClimbing(true);
+        }else if(onGround){
+            setClimbing(false);
+        }
+    }
+
     protected void tickLiving(){
         if(this.target instanceof PlayerEntity){
             PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
@@ -148,21 +172,32 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider
         return 5;
     }
 
+    protected void initDataTracker() {
+        super.initDataTracker();
+        dataTracker.startTracking(16, (byte) 0); //Type
+        dataTracker.startTracking(17, (byte) 0); //Climbing
+    }
+
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
-        nbttagcompound.putInt("TypeInt", typeint);
+        nbttagcompound.putInt("TypeInt", getType());
     }
 
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
-        typeint = nbttagcompound.getInt("TypeInt");
+        setType(nbttagcompound.getInt("TypeInt"));
     }
 
     public boolean canSpawn()
     {
         return mocr.mocreaturesGlass.hostilemobs.ratfreq > 0 && super.canSpawn();
+    }
+
+    public boolean canSpawn2()
+    {
+        return super.canSpawn();
     }
 
     protected String getRandomSound()
@@ -196,11 +231,50 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
-    public int typeint;
+//    public int typeint;
     public boolean typechosen;
 
     @Override
     public Identifier getHandlerIdentifier() {
         return Identifier.of(mod_mocreatures.MOD_ID, "Rat");
+    }
+
+    //TYPE
+    public void setTypeSpawn()
+    {
+        if(!world.isRemote){
+            int type = getRandomRace();
+            setType(type);
+        }
+    }
+
+    public void setType(int type)
+    {
+        if(!world.isRemote) {
+            dataTracker.set(16, (byte) type);
+            chooseType(type);
+        }
+    }
+
+    public int getType()
+    {
+        return dataTracker.getByte(16);
+    }
+
+    //Climbing
+    public boolean getClimbing()
+    {
+        return (dataTracker.getByte(17) & 1) != 0;
+    }
+
+    public void setClimbing(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.set(17, (byte) 1);
+        } else
+        {
+            dataTracker.set(17, (byte) 0);
+        }
     }
 }
