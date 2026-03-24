@@ -127,12 +127,41 @@ public class MocreaturesEggItem extends TemplateItem {
         if(ide == 63){
             huj = new EntityGiraffe(arg3);
         }
-//        if(ide == 64){
-//            huj = new XXXX(arg3);
+        if(ide == 64){
+            huj = new EntityCrocodile(arg3);
+            /// anty agro spawn for testing
+            huj.setPositionAndAnglesKeepPrevAngles(i, j, k, arg3.random.nextFloat() * 360F, 0.0F);
+            huj.setPosition(i + 15, j + 1, k);
+            arg3.spawnEntity(huj);
+            ((EntityCrocodile)huj).setTypeSpawn();
+            --arg.count;
+            return false;
+        }
+        if(ide == 65){
+            huj = new EntityCamel(arg3);
+        }
+        if(ide == 66){
+            huj = new EntityMummy(arg3);
+        }
+        if(ide == 67){
+            huj = new EntityScorpion(arg3);
+        }
+        if(ide == 68){
+            huj = new EntityTurtle(arg3);
+        }
+        if(ide == 69){
+            huj = new EntityRay(arg3);
+        }
+//        if(ide == 70){
+//            huj = new EntityCollie(arg3);
 //        }
-//        if(ide == 65){
-//            huj = new XXXX(arg3);
+//        if(ide == 71){
+//            huj = new EntitySheep(arg3);
 //        }
+//        if(ide == 72){
+//            huj = new EntityMonsterSquid(arg3);
+//        }
+
 
         if(ide >= 30 && ide < 40){
             huj = new EntityHorse(arg3);
@@ -180,6 +209,10 @@ public class MocreaturesEggItem extends TemplateItem {
             return false;
         }
 
+
+        if(huj == null){
+            return false;
+        }
 
         huj.setPositionAndAnglesKeepPrevAngles(i, j, k, arg3.random.nextFloat() * 360F, 0.0F);
         huj.setPosition(i, j + 1, k);

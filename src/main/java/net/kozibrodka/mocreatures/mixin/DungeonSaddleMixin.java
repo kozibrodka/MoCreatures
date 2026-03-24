@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(DungeonFeature.class)
-public class DungeonSaddleMixin {
+public class DungeonSaddleMixin { //todo
 
     @Inject(method = "getRandomChestItem", at = @At(value = "RETURN", ordinal = 0), cancellable = true)
     private void injected(CallbackInfoReturnable<ItemStack> cir) {

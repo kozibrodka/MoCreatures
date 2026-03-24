@@ -13,7 +13,7 @@ public class RenderGiraffe extends LivingEntityRenderer
     public RenderGiraffe(ModelGiraffe creepsmodelrocketgiraffe, float f)
     {
         super(creepsmodelrocketgiraffe, f);
-        setDecorationModel(new ModelGiraffe());
+//        setDecorationModel(new ModelGiraffe());
     }
 
 

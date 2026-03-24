@@ -103,8 +103,10 @@ public class mod_mocreatures {
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("rope"), RopePacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("horse_riding"), RidingHorsePacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("jokey"), JokeyPacket.TYPE);
+        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("poison"), PoisonPacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("sound"), SoundPacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("particle"), ParticlePacket.TYPE);
+        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("custom_particle"), CustomParticlePacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("health"), HealthPacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("ask"), AskPacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("server_riding"), ServerRidingPacket.TYPE);

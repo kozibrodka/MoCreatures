@@ -1,6 +1,9 @@
 package net.kozibrodka.mocreatures.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.network.JokeyPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -8,6 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 import net.modificationstation.stationapi.api.util.Identifier;
 
@@ -19,7 +23,8 @@ public class EntityGiraffe extends AnimalEntity implements MobSpawnDataProvider 
         texture = "/assets/mocreatures/stationapi/textures/mob/giraffe.png";
         setBoundingBoxSpacing(1.5F, 4.0F);
         health = 45;
-        movementSpeed = 0.65F;
+        movementSpeed = 0.65F; ///wolna
+        knockCooldown = 0;
     }
 
     protected void tickLiving(){
@@ -31,6 +36,9 @@ public class EntityGiraffe extends AnimalEntity implements MobSpawnDataProvider 
                     target = null;
                 }
             }
+        }
+        if(knockCooldown > 0){
+            knockCooldown --;
         }
         super.tickLiving();
     }
@@ -45,12 +53,25 @@ public class EntityGiraffe extends AnimalEntity implements MobSpawnDataProvider 
             velocityX = (d / (double)f1) * 0.40000000000000002D * 0.10000000192092896D + velocityX * 0.18000000098023225D;
             velocityZ = (d1 / (double)f1) * 0.40000000000000002D * 0.14000000192092896D + velocityZ * 0.18000000098023225D;
         }
-        if((double)f < 2.0D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
+        if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
         {
             attackCooldown = 10;
-            entity.damage(this, 2); //todo
+            if(MathHelper.abs((float)this.velocityZ) < 0.05 && MathHelper.abs((float)this.velocityX) < 0.05){
+
+                if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER && entity instanceof PlayerEntity && knockCooldown == 0){
+                    knockCooldown = 20;
+                    PacketHelper.sendTo((PlayerEntity) entity, new JokeyPacket(2, this.velocityX, this.velocityZ));
+                } else {
+                    entity.velocityX += (this.velocityX * 10.0D);
+                    entity.velocityZ += (this.velocityZ * 10.0D);
+                    if(entity.velocityY < 0.3D){
+                        entity.velocityY += 0.2D;
+                    }
+                }
+            }
+            entity.damage(this, 2);
         }
-        super.attack(entity, f);//todo
+//        super.attack(entity, f);
     }
 
 
@@ -110,7 +131,7 @@ public class EntityGiraffe extends AnimalEntity implements MobSpawnDataProvider 
 
     protected String getDeathSound()
     {
-        return "mocreatures:giraffe";
+        return "mocreatures:giraffedead";
     }
 
     public boolean canSpawn()
@@ -119,6 +140,7 @@ public class EntityGiraffe extends AnimalEntity implements MobSpawnDataProvider 
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
+    private int knockCooldown;
 
     @Override
     public Identifier getHandlerIdentifier() {return Identifier.of(mod_mocreatures.MOD_ID, "Giraffe");}

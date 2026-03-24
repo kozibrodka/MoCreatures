@@ -32,23 +32,18 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
         attackRange = 16D;
     }
 
-    public void tickMovement()
-    {
-        super.tickMovement();
-    }
-
-    protected void tickLiving(){
-        if(this.target instanceof PlayerEntity){
-            PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
-            if(uciekinier == null && target.isAlive()){
-                if(random.nextInt(30) == 0)
-                {
-                    target = null;
-                }
-            }
-        }
-        super.tickLiving();
-    }
+//    protected void tickLiving(){ //TODO: Stara Logika która myślałem, że ma sens. Usunięta wszędzie. MOŻE MIEĆ SENS DLA MOBÓW PRZED KTÓRYMI ŁATWO UCIEĆ!!! HIPPO + CROC
+//        if(this.target instanceof PlayerEntity){
+//            PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
+//            if(uciekinier == null && target.isAlive()){
+//                if(random.nextInt(200) == 0) //30
+//                {
+//                    target = null;
+//                }
+//            }
+//        }
+//        super.tickLiving();
+//    }
 
     protected Entity getTargetInRange()
     {

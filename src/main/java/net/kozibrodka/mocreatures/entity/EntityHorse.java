@@ -1109,14 +1109,14 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         if(FabricLoader.INSTANCE.getEnvironmentType() == EnvType.CLIENT) {
         world.getSkyColor(this, 3F);
         }
-        if(getChested() && (getType() == 6 || getType() == 8))
+        if(getChested() && (getType() == 6 || getType() == 8) && !world.isRemote)
         {
             int i = MathHelper.floor(x);
             int j = MathHelper.floor(boundingBox.minY);
             int k = MathHelper.floor(z);
             HorseRemoval(world, i, j, k);
         }
-        if(mocr.mocreaturesGlass.balancesettings.horse_fuel){
+        if(mocr.mocreaturesGlass.balancesettings.horse_fuel && !world.isRemote){
             int i = MathHelper.floor(x);
             int j = MathHelper.floor(boundingBox.minY);
             int k = MathHelper.floor(z);

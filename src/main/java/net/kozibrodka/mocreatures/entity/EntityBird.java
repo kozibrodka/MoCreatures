@@ -173,7 +173,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
-    public void tickLivingClient()
+    public void tickLivingClient() //TODO: dla bunny i mouse coś podobnego i osłabić speed boosta.
     {
         if(vehicle != null && (vehicle instanceof PlayerEntity))
         {
@@ -207,13 +207,13 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         {
             super.tickLiving();
         } else
-        if(onGround && getPicked())
+        if(onGround && getPicked()) /// czy to działa dobrze? zmien na -> vehicle == null ? zamiast on ground
         {
             setPicked(false);
         }
     }
 
-    //TODO: DAMAGE METHOD for multiplayer not take damage while on player - possible workaround fix
+    //TODO: DAMAGE METHOD for multiplayer not take damage while on player - possible workaround fix - chyba naprawione poprzez prawidlowo pozycje
 
     public void markDead()
     {

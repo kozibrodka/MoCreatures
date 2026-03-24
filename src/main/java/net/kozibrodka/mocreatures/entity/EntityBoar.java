@@ -47,19 +47,6 @@ public class EntityBoar extends PigEntity implements MobSpawnDataProvider
         super.tickMovement();
     }
 
-    protected void tickLiving(){
-        if(this.target instanceof PlayerEntity){
-            PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
-            if(uciekinier == null && target.isAlive()){
-                if(random.nextInt(30) == 0)
-                {
-                    target = null;
-                }
-            }
-        }
-        super.tickLiving();
-    }
-
     protected Entity getTargetInRange()
     {
         if(world.difficulty > 0)

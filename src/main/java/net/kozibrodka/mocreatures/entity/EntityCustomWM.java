@@ -29,6 +29,11 @@ import java.util.List;
 
 public class EntityCustomWM extends WaterCreatureEntity
 {
+    mod_mocreatures mocr = new mod_mocreatures();
+    private Path pathEntity;
+    private int outOfWater;
+    private boolean tamed;
+    private int temper;
 
     public EntityCustomWM(World world)
     {
@@ -37,11 +42,6 @@ public class EntityCustomWM extends WaterCreatureEntity
         tamed = false;
 //        tamed = true;
         temper = 50;
-    }
-
-    public boolean checkWaterCollisions()
-    {
-        return world.updateMovementInFluid(boundingBox, Material.WATER, this);
     }
 
     public boolean gettingOutOfWater()
@@ -54,40 +54,6 @@ public class EntityCustomWM extends WaterCreatureEntity
         return l == 0;
     }
 
-    public double speed()
-    {
-        return 1.5D;
-    }
-
-    public int tametemper()
-    {
-        return temper;
-    }
-
-    public boolean getTamed() //TODO: Make dolhin overrite THOSE i elo. nie trzeba chyba/
-    {
-        return tamed;
-    }
-
-    public void setTamed(boolean flag)
-    {
-        tamed = flag;
-    }
-
-    public void setJokey(boolean flag)
-    {
-
-    }
-
-    public void setOwner(String owner)
-    {
-
-    }
-
-    public void setDisplayName(boolean flag)
-    {
-
-    }
 
     public void travel(float f, float f1)
     {
@@ -317,7 +283,7 @@ public class EntityCustomWM extends WaterCreatureEntity
             target = getTargetInRange();
             if(target != null && target.submergedInWater)
             {
-                a = world.findPath(this, target, f);
+                pathEntity = world.findPath(this, target, f);
             }
         } else
         if(!target.isAlive() || !target.submergedInWater)
@@ -331,11 +297,11 @@ public class EntityCustomWM extends WaterCreatureEntity
                 attack(target, f1);
             }
         }
-        if(!movementBlocked && target != null && target.submergedInWater && (a == null || random.nextInt(20) == 0))
+        if(!movementBlocked && target != null && target.submergedInWater && (pathEntity == null || random.nextInt(20) == 0))
         {
-            a = world.findPath(this, target, f);
+            pathEntity = world.findPath(this, target, f);
         } else
-        if(a == null && random.nextInt(80) == 0 || random.nextInt(80) == 0)
+        if(pathEntity == null && random.nextInt(80) == 0 || random.nextInt(80) == 0)
         {
             boolean flag = false;
             int j = -1;
@@ -360,30 +326,30 @@ public class EntityCustomWM extends WaterCreatureEntity
 
             if(flag)
             {
-                a = world.findPath(this, j, k, l, 10F);
+                pathEntity = world.findPath(this, j, k, l, 10F);
             }
         }
         int i = MathHelper.floor(boundingBox.minY);
         boolean flag1 = checkWaterCollisions();
         boolean flag2 = isTouchingLava();
         pitch = 0.0F;
-        if(a == null || random.nextInt(100) == 0)
+        if(pathEntity == null || random.nextInt(100) == 0)
         {
             super.tickLiving();
-            a = null;
+            pathEntity = null;
             return;
         }
-        Vec3d vec3d = a.getNodePosition(this);
+        Vec3d vec3d = pathEntity.getNodePosition(this);
         for(double d = width * 2.0F; vec3d != null && vec3d.squaredDistanceTo(x, vec3d.y, z) < d * d;)
         {
-            a.next();
-            if(a.isFinished())
+            pathEntity.next();
+            if(pathEntity.isFinished())
             {
                 vec3d = null;
-                a = null;
+                pathEntity = null;
             } else
             {
-                vec3d = a.getNodePosition(this);
+                vec3d = pathEntity.getNodePosition(this);
             }
         }
 
@@ -522,6 +488,21 @@ public class EntityCustomWM extends WaterCreatureEntity
         }
     }
 
+
+    public boolean checkWaterCollisions()
+    {
+        return world.updateMovementInFluid(boundingBox, Material.WATER, this);
+    }
+
+
+    public double speed() {
+        return 1.5D;
+    }
+
+//    public boolean isSwimming() {
+//        return this.isInFluid(Material.WATER);
+//    }
+
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
@@ -557,15 +538,34 @@ public class EntityCustomWM extends WaterCreatureEntity
         return null;
     }
 
+    public int tametemper()
+    {
+        return temper;
+    }
+
+    public boolean getTamed() //TODO: Make dolhin overrite THOSE i elo. nie trzeba chyba/
+    {
+        return tamed;
+    }
+
+    public void setTamed(boolean flag)
+    {
+        tamed = flag;
+    }
+
+    public void setJokey(boolean flag) {
+    }
+
+    public void setOwner(String owner) {
+    }
+
+    public void setDisplayName(boolean flag) {
+    }
+
     public void sendSound(World world, String name, float vol, float pit){
         if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
             mocr.voicePacket(world, name, this.id, vol, pit);
         }
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
-    private Path a;
-    private int outOfWater;
-    private boolean tamed;
-    private int temper;
 }

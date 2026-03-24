@@ -52,7 +52,13 @@ public class CreaturesListener {
         event.register(EntityHippo.class, String.valueOf(Identifier.of(MOD_ID, "Hippo")));
         event.register(EntityElephant.class, String.valueOf(Identifier.of(MOD_ID, "Elephant")));
         event.register(EntityGiraffe.class, String.valueOf(Identifier.of(MOD_ID, "Giraffe")));
-//        event.register(XXXXXXXXXX.class, String.valueOf(Identifier.of(MOD_ID, "Zebra")));
+        event.register(EntityCamel.class, String.valueOf(Identifier.of(MOD_ID, "Camel")));
+        event.register(EntityMummy.class, String.valueOf(Identifier.of(MOD_ID, "Mummy")));
+        event.register(EntityCrocodile.class, String.valueOf(Identifier.of(MOD_ID, "Crocodile")));
+        event.register(EntityScorpion.class, String.valueOf(Identifier.of(MOD_ID, "Scorpion")));
+        event.register(EntityTurtle.class, String.valueOf(Identifier.of(MOD_ID, "Turtle")));
+        event.register(EntityRay.class, String.valueOf(Identifier.of(MOD_ID, "Ray")));
+//        event.register(XXXXXXXXXX.class, String.valueOf(Identifier.of(MOD_ID, "XXXXXX")));
 
         event.register(EntityBigCat.class, String.valueOf(Identifier.of(MOD_ID, "BigCat")));
         event.register(EntityDolphin.class, String.valueOf(Identifier.of(MOD_ID, "Dolphin")));
@@ -91,6 +97,12 @@ public class CreaturesListener {
         Registry.register(event.registry, MOD_ID.id("Hippo"), EntityHippo::new);
         Registry.register(event.registry, MOD_ID.id("Elephant"), EntityElephant::new);
         Registry.register(event.registry, MOD_ID.id("Giraffe"), EntityGiraffe::new);
+        Registry.register(event.registry, MOD_ID.id("Camel"), EntityCamel::new);
+        Registry.register(event.registry, MOD_ID.id("Mummy"), EntityMummy::new);
+        Registry.register(event.registry, MOD_ID.id("Crocodile"), EntityCrocodile::new);
+        Registry.register(event.registry, MOD_ID.id("Scorpion"), EntityScorpion::new);
+        Registry.register(event.registry, MOD_ID.id("Turtle"), EntityTurtle::new);
+        Registry.register(event.registry, MOD_ID.id("Ray"), EntityRay::new);
 
         Registry.register(event.registry, MOD_ID.id("BigCat"), EntityBigCat::new);
         Registry.register(event.registry, MOD_ID.id("Dolphin"), EntityDolphin::new);

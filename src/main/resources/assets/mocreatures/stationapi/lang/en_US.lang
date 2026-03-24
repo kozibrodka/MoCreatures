@@ -61,7 +61,14 @@ item.@.giraffe_egg.name = SpawnEgg Giraffe
 item.@.crocodile_egg.name = SpawnEgg Crocodile
 item.@.collie_egg.name = SpawnEgg Collie
 item.@.sheep_egg.name = SpawnEgg Sheep
-item.@._egg.name = SpawnEgg XXXXX
+item.@.camel_egg.name = SpawnEgg Camel
+item.@.mummy_egg.name = SpawnEgg Mummy
+item.@.scorpion_egg.name = SpawnEgg Scorpion
+item.@.turtle_egg.name = SpawnEgg Turtle
+item.@.mantaray_egg.name = SpawnEgg Ray
+item.@.collie_egg.name = SpawnEgg Collie
+item.@.sheep_egg.name = SpawnEgg Sheep
+item.@.giantSquid_egg.name = SpawnEgg MonsterSquid
 
 item.@.horse1_egg.name = Horse Light Brown
 item.@.horse2_egg.name = Horse Brown

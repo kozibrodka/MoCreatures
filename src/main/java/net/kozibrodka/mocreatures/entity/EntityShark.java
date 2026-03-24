@@ -1,6 +1,4 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
+
 
 package net.kozibrodka.mocreatures.entity;
 
@@ -67,19 +65,6 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
             }
         }
         //TODO: szukanie ryby + heal?
-    }
-
-    protected void tickLiving(){
-        if(this.target instanceof LivingEntity){
-            PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
-            if(uciekinier == null && target.isAlive()){
-                if(random.nextInt(30) == 0)
-                {
-                    target = null;
-                }
-            }
-        }
-        super.tickLiving();
     }
 
     protected Entity getTargetInRange()

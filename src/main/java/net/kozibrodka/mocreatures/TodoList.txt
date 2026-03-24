@@ -1,17 +1,15 @@
 To Do List:
 
-- Clean up typechoosen mechanic client.
-- Watch for setting age in render class.
+
 - (DONE) Get data right with deer first
 - Config descriptions
 - setBoundingBoxSpacing - can it be sync on client?
-- sound packets.
 
 -ATTACKABLE INTERFACE
 -NEW SPAWN SYSTEM - no mixin - go with stapi TROPICRAFT example
 
 
-- Packets try/catch - necasary?? ask dany.
+-DOUBLE CLIENT RENDER???? tamed ones.
 
 (server fix mod:)
 - Fix player animation when riding - VANILLA ALSO - boats
@@ -20,5 +18,6 @@ To Do List:
 - CONFIG STYLE - GLASSCGF - SUCKSS
 
 - MODERN ARMOR MOD
+- DISABLE NETHER x8 TRAVEL
 
-sendSound(world, );
+

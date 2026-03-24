@@ -6,10 +6,7 @@ package net.kozibrodka.mocreatures.item;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.FabricLoader;
-import net.kozibrodka.mocreatures.entity.EntityBigCat;
-import net.kozibrodka.mocreatures.entity.EntityBunny;
-import net.kozibrodka.mocreatures.entity.EntityHorse;
-import net.kozibrodka.mocreatures.entity.EntityKitty;
+import net.kozibrodka.mocreatures.entity.*;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.SignBlockEntity;
@@ -75,9 +72,17 @@ public class ItemWhip extends TemplateItem
                 if(entity instanceof EntityHorse)
                 {
                     EntityHorse entityhorse = (EntityHorse)entity;
-                    if((entityhorse.getTamed() && entityplayer.name.equals(entityhorse.getOwner()) || (entityhorse.getTamed() && entityhorse.getProtect())))
+                    if((entityhorse.getTamed() && entityplayer.name.equals(entityhorse.getOwner()) || (entityhorse.getTamed() && !entityhorse.getProtect())))
                     {
                         entityhorse.setSitting(!entityhorse.getSitting());
+                    }
+                }
+                if(entity instanceof EntityTurtle)
+                {
+                    EntityTurtle entityturtle = (EntityTurtle)entity;
+                    if((entityturtle.getTamed() && entityplayer.name.equals(entityturtle.getOwner()) || (entityturtle.getTamed() && !entityturtle.getProtect())))
+                    {
+                        entityturtle.setSitting(!entityturtle.getSitting());
                     }
                 }
                 if(!(entity instanceof EntityKitty))

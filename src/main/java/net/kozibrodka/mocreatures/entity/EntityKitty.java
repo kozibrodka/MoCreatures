@@ -1877,4 +1877,9 @@ label0:
     {
         return this.dataTracker.getString(31);
     }
+
+    @Override
+    public boolean getTamed() {
+        return  getKittyState() > 2;
+    }
 }

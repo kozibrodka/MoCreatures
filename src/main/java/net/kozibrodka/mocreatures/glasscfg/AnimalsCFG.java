@@ -99,5 +99,14 @@ public class AnimalsCFG {
     @ConfigEntry(name="Giraffe Freq", maxValue = 10)
     public Integer giraffefreq = 5;
 
+    @ConfigEntry(name="Giraffe Freq", maxValue = 10)
+    public Integer camelfreq = 1;
+
+    @ConfigEntry(name="Turtle Freq", maxValue = 10)
+    public Integer turtlefreq = 1;
+
+    @ConfigEntry(name="Ray Freq", maxValue = 10)
+    public Integer rayfreq = 1;
+
 
 }

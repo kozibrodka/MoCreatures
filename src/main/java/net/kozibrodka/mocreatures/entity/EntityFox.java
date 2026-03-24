@@ -33,24 +33,6 @@ public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
         attackRange = 4D;
     }
 
-    public void tickMovement()
-    {
-        super.tickMovement();
-    }
-
-    protected void tickLiving(){
-        if(this.target instanceof PlayerEntity){ //TODO: w teorii nie działa na zawieszenie na Zwierzaku jakimś
-            PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
-            if(uciekinier == null && target.isAlive()){
-                if(random.nextInt(30) == 0)
-                {
-                    target = null;
-                }
-            }
-        }
-        super.tickLiving();
-    }
-
     protected Entity getTargetInRange()
     {
         if(random.nextInt(80) == 0 && world.difficulty > 0)
@@ -160,7 +142,7 @@ public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
             if (a < 8) {
                 int k = random.nextInt(2);
                 for (int j = 0; j < k; j++) {
-                    dropItem(new ItemStack(mod_mocreatures.wildleather, 1, 0), 0.0F);
+                    dropItem(new ItemStack(mod_mocreatures.wildleather.id, 1, 0), 0.0F);
                 }
             }
         }

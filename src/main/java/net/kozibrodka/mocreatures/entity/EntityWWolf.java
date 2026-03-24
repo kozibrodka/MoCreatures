@@ -53,19 +53,6 @@ public class EntityWWolf extends MonsterEntity
         return 6;
     }
 
-    protected void tickLiving(){
-        if(this.target instanceof PlayerEntity){
-            PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
-            if(uciekinier == null && target.isAlive()){
-                if(random.nextInt(30) == 0)
-                {
-                    target = null;
-                }
-            }
-        }
-        super.tickLiving();
-    }
-
     protected Entity getTargetInRange()
     {
         float f = getBrightnessAtEyes(1.0F);

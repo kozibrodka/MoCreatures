@@ -22,10 +22,7 @@ public class HostileMobsCFG {
     @ConfigEntry(name="Spawn FlameWraith Difficulty")
     public DifficultyEnum fwraithSpawnDifficulty = DifficultyEnum.HARD;
 
-    @ConfigEntry(
-            name="Ogre Freq",
-            maxValue = 10
-    )
+    @ConfigEntry(name="Ogre Freq", maxValue = 10)
     public Integer ogrefreq = 6;
 
     @ConfigEntry(
@@ -81,6 +78,12 @@ public class HostileMobsCFG {
             maxLength = 24
     )
     public Integer ogrerange = 12;
+
+    @ConfigEntry(name="Mummy Freq", maxValue = 10)
+    public Integer mummyfreq = 6;
+
+    @ConfigEntry(name="Scorpion Freq", maxValue = 10)
+    public Integer scorpionfreq = 6;
 
     @ConfigEntry(
             name="Ogre Strength",

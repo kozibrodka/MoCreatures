@@ -3,6 +3,7 @@ package net.kozibrodka.mocreatures.renderentity;
 
 import net.kozibrodka.mocreatures.entity.EntityElephant;
 import net.kozibrodka.mocreatures.entity.EntityWerewolf;
+import net.kozibrodka.mocreatures.modelentity.ModelElephant;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.LivingEntity;
@@ -15,6 +16,7 @@ public class RenderElephant extends LivingEntityRenderer
     public RenderElephant(EntityModel modelbase, float f, float f1)
     {
         super(modelbase, f * f1);
+        setDecorationModel(new ModelElephant());
         scale = f1;
     }
 
@@ -39,7 +41,9 @@ public class RenderElephant extends LivingEntityRenderer
 
     protected void preRenderScale(EntityElephant entityelephant, float f)
     {
-        GL11.glScalef(scale, scale, scale);
+//        GL11.glScalef(scale, scale, scale);
+        float fAge = entityelephant.getAge();
+        GL11.glScalef(fAge, fAge, fAge);
     }
 
     protected void applyScale(LivingEntity entityliving, float f)

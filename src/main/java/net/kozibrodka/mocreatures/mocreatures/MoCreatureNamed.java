@@ -7,4 +7,6 @@ public interface MoCreatureNamed {
 
     String getName();
 
+    boolean getTamed();
+
 }

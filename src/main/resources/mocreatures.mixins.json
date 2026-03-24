@@ -6,7 +6,6 @@
   "mixins": [
     "DungeonSaddleMixin",
     "LimitsMixin",
-    "MixinEntityBase",
     "MixinFixDepthBuffer",
     "MixinFixThreadCheckHasPaid",
     "MocreaturesHellMixin",
@@ -17,6 +16,8 @@
   "server": [
   ],
   "client": [
+    "GameRendererMixin",
+    "InGameHudMixin",
     "MinecraftMixin"
   ],
   "injectors": {

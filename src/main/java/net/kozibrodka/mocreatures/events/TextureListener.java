@@ -1,16 +1,20 @@
 package net.kozibrodka.mocreatures.events;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.kozibrodka.mocreatures.entity.*;
 import net.kozibrodka.mocreatures.modelentity.*;
 import net.kozibrodka.mocreatures.renderentity.*;
 import net.mine_diver.unsafeevents.listener.EventListener;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.render.entity.ChickenEntityRenderer;
 import net.minecraft.client.render.entity.PigEntityRenderer;
 import net.minecraft.client.render.entity.UndeadEntityRenderer;
 import net.minecraft.client.render.entity.model.ChickenEntityModel;
 import net.minecraft.client.render.entity.model.PigEntityModel;
+import net.minecraft.client.render.entity.model.ZombieEntityModel;
 import net.modificationstation.stationapi.api.client.event.render.entity.EntityRendererRegisterEvent;
 import net.modificationstation.stationapi.api.client.event.texture.TextureRegisterEvent;
+import net.modificationstation.stationapi.api.client.texture.atlas.Atlases;
 import net.modificationstation.stationapi.api.mod.entrypoint.Entrypoint;
 import net.modificationstation.stationapi.api.mod.entrypoint.EntrypointManager;
 import net.modificationstation.stationapi.api.util.Identifier;
@@ -26,6 +30,8 @@ public class TextureListener {
 
     @Entrypoint.Namespace
     public static Namespace MOD_ID = Null.get();
+
+    public static int bubble_particle;
 
     @EventListener
     public void registerTextures(TextureRegisterEvent event) {
@@ -103,7 +109,29 @@ public class TextureListener {
             EggListener.egg53.setTexture(Identifier.of(MOD_ID, "item/egg/Dark_dolphin"));
             EggListener.egg54.setTexture(Identifier.of(MOD_ID, "item/egg/Pink_dolphin"));
             EggListener.egg55.setTexture(Identifier.of(MOD_ID, "item/egg/Albino_dolphin"));
+
+            EggListener.egg60.setTexture(Identifier.of(MOD_ID, "item/egg/zebra"));
+            EggListener.egg61.setTexture(Identifier.of(MOD_ID, "item/egg/elephant"));
+            EggListener.egg62.setTexture(Identifier.of(MOD_ID, "item/egg/hippo"));
+            EggListener.egg63.setTexture(Identifier.of(MOD_ID, "item/egg/giraffe"));
+            EggListener.egg64.setTexture(Identifier.of(MOD_ID, "item/egg/crocodile"));
+            EggListener.egg65.setTexture(Identifier.of(MOD_ID, "item/egg/camel"));
+            EggListener.egg66.setTexture(Identifier.of(MOD_ID, "item/egg/mummy"));
+            EggListener.egg67.setTexture(Identifier.of(MOD_ID, "item/egg/scorpion"));
+            EggListener.egg68.setTexture(Identifier.of(MOD_ID, "item/egg/turtle"));
+            EggListener.egg69.setTexture(Identifier.of(MOD_ID, "item/egg/ray"));
+            EggListener.egg70.setTexture(Identifier.of(MOD_ID, "item/egg/collie"));
+            EggListener.egg71.setTexture(Identifier.of(MOD_ID, "item/egg/sheep"));
+            EggListener.egg72.setTexture(Identifier.of(MOD_ID, "item/egg/squid"));
+//            EggListener.egg68.setTexture(Identifier.of(MOD_ID, "item/egg/XXXXXX"));
         }
+
+//        bubble_particle = registerItemTexture("item/bubble");
+        // Particles
+        if (FabricLoader.getInstance().getGameInstance() instanceof Minecraft minecraft) {
+            bubble_particle = minecraft.textureManager.getTextureId("/assets/mocreatures/stationapi/textures/particle/bubble.png");
+        }
+
     }
 
     @EventListener
@@ -141,6 +169,23 @@ public class TextureListener {
         event.renderers.put(EntityHippo.class, new RenderHippo(new ModelHippo(), 0.7F));
         event.renderers.put(EntityElephant.class, new RenderElephant(new ModelElephant(), 0.7F, 2.8F));
         event.renderers.put(EntityGiraffe.class, new RenderGiraffe(new ModelGiraffe(), 0.5F));
-//        event.renderers.put(EntityGiraffe.class, new RenderGiraffe(new Model(), 0.4F));
+        event.renderers.put(EntityCamel.class, new RenderCamel(new ModelCamel(), 0.5F));
+        event.renderers.put(EntityMummy.class, new UndeadEntityRenderer(new ZombieEntityModel(), 0.5F));
+        event.renderers.put(EntityCrocodile.class, new RenderCrocodile(new ModelCrocodile(), 0.5F));
+        event.renderers.put(EntityScorpion.class, new RenderScorpion(new ModelScorpion(), 0.6F));
+        event.renderers.put(EntityTurtle.class, new RenderTurtle(new ModelTurtle(), 0.4F));
+        event.renderers.put(EntityRay.class, new RenderRay(new ModelRay(), 0.4F));
+    }
+
+    private int registerItemTexture(String s) {
+        if (s == null) {
+            return 0;
+        }
+        return Atlases.getGuiItems().addTexture(Identifier.of(MOD_ID, s)).index;
+    }
+
+
+    public int getItemTexture(String path) {
+        return Atlases.getGuiItems().addTexture(Identifier.of(MOD_ID, path)).index;
     }
 }

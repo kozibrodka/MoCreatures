@@ -63,7 +63,7 @@ public class ModelShark extends EntityModel
 
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
-        ModelBase(f, f1, f2, f3, f4, f5);
+        setAngles(f, f1, f2, f3, f4, f5);
         Body.render(f5);
         PTail.render(f5);
         UHead.render(f5);
@@ -77,7 +77,7 @@ public class ModelShark extends EntityModel
         RightFin.render(f5);
     }
 
-    public void ModelBase(float f, float f1, float f2, float f3, float f4, float f5)
+    public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
     {
         UpperTailFin.yaw = MathHelper.cos(f * 0.6662F) * f1;
         LowerTailFin.yaw = MathHelper.cos(f * 0.6662F) * f1;

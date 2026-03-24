@@ -30,7 +30,8 @@ import net.modificationstation.stationapi.api.util.TriState;
 import java.util.List;
 
 @HasTrackingParameters(trackingDistance = 160, updatePeriod = 1, sendVelocity = TriState.TRUE)
-public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvider, MoCreatureRacial, MoCreatureNamed
+public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProvider, MoCreatureRacial, MoCreatureNamed
+    //extends EntityCustomWM or EntityCustomAquaM
 {
 
     public EntityDolphin(World world)
@@ -288,6 +289,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
 
     public void tickMovement()
     {
+//        System.out.println("velox:  " + velocityX + "    veloz:  " + velocityZ);
         super.tickMovement();
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;

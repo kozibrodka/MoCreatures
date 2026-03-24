@@ -2,6 +2,7 @@ package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MonsterEntity;
@@ -23,24 +24,31 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
         super(world);
         texture = "/assets/mocreatures/stationapi/textures/mob/hippo.png";
         setBoundingBoxSpacing(2.0F, 1.4F);
-        health = 55;
+        health = 60;
         movementSpeed = 0.45F;
     }
 
     public void tickMovement() {
         super.tickMovement();
+        if(world.isRemote){
+            return;
+        }
+        if(hippoClock > 1200 && random.nextInt(250) == 0){ //1200
+            hungry = true;
+        }
+        if(hungry && target == null && random.nextInt(250) == 0 && hippoClock > 1250){
+            hungry = false;
+            hippoClock = 0;
+        }
+        hippoClock++;
+    }
+
+    protected boolean canDespawn() {
+//        return !this.checkWaterCollisions();
+        return !this.isInFluid(Material.WATER);
     }
 
     protected void tickLiving(){
-        if(this.target instanceof PlayerEntity){
-            PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
-            if(uciekinier == null && target.isAlive()){
-                if(random.nextInt(30) == 0)
-                {
-                    target = null;
-                }
-            }
-        }
         if(checkWaterCollisions())
         {
             standingEyeHeight = -0.76F;
@@ -65,17 +73,23 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
 
     protected Entity getTargetInRange()
     {
-        if(world.difficulty > 0 && false)
+        if(world.difficulty > 0 && hungry)
         {
-            PlayerEntity entityplayer = world.getClosestPlayer(this, 8D);
+            PlayerEntity entityplayer = world.getClosestPlayer(this, 12D);
             if(entityplayer != null)
             {
+                hungry = false;
+                hippoClock = 0;
                 return entityplayer;
             }
             if(random.nextInt(20) == 0)
             {
                 LivingEntity entityliving = getClosestTarget(this, 8D);
-                return entityliving;
+                if(entityliving != null){
+                    hungry = false;
+                    hippoClock = 0;
+                    return entityliving;
+                }
             }
         }
         return null;
@@ -89,7 +103,7 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof EntityHippo) || (entity1 instanceof MonsterEntity))
+            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof EntityHippo) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityElephant))
             {
                 continue;
             }
@@ -118,8 +132,8 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
         }
         if((double)f < 3.1000000000000001D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
         {
-            attackCooldown = 20;
-            entity.damage(this, 2); //todo
+            attackCooldown = 40; //20
+            entity.damage(this, 16);
         }
     }
 
@@ -150,11 +164,13 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
+        nbttagcompound.putBoolean("Hungry", hungry);
     }
 
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
+        hungry = (nbttagcompound.getBoolean("Hungry"));
     }
 
     public int getLimitPerChunk()
@@ -191,4 +207,7 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
 
     @Override
     public Identifier getHandlerIdentifier() {return Identifier.of(mod_mocreatures.MOD_ID, "Hippo");}
+
+    public boolean hungry;
+    public int hippoClock;
 }

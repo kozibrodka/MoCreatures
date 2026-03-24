@@ -14,7 +14,7 @@ public class RenderHippo extends LivingEntityRenderer
     public RenderHippo(ModelHippo creepsmodelhippo, float f)
     {
         super(creepsmodelhippo, f);
-        setDecorationModel(new ModelHippo());
+//        setDecorationModel(new ModelHippo());
         modelBipedMain = creepsmodelhippo;
     }
 

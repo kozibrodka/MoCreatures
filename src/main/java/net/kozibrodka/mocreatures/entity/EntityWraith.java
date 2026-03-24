@@ -70,19 +70,6 @@ public class EntityWraith extends EntityFlyerMob
         super.tickMovement();
     }
 
-    protected void tickLiving(){
-        if(this.target instanceof PlayerEntity){
-            PlayerEntity uciekinier = world.getClosestPlayer(this, 20D);
-            if(uciekinier == null && target.isAlive()){
-                if(random.nextInt(30) == 0)
-                {
-                    target = null;
-                }
-            }
-        }
-        super.tickLiving();
-    }
-
     public void markDead()
     {
         super.markDead();
