@@ -342,11 +342,7 @@ public class EntityWerewolf extends MonsterEntity
         case 9: // '\t'
             return Item.STONE_SWORD.id;
         }
-        if(mocr.mocreaturesGlass.balancesettings.balance_drop){
-            return mod_mocreatures.greenapple.id;
-        }else{
-            return Item.GOLDEN_APPLE.id;
-        }
+        return mod_mocreatures.greenapple.id;
     }
 
     public void onKilledBy(Entity entity)

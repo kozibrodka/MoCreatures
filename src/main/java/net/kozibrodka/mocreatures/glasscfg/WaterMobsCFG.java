@@ -5,39 +5,28 @@ import net.kozibrodka.mocreatures.glasscfg.enums.DifficultyEnum;
 
 public class WaterMobsCFG {
 
-    @ConfigEntry(
-            name="Shark Freq",
-            maxLength = 10
-    )
-    public Integer sharkfreq = 2;
+
+    @ConfigEntry(name="Aggresive Dolphins?", description = "dolphins attack sharks")
+    public Boolean attackdolphins = false; //TODO to jest bez sensu troche
+
+    @ConfigEntry(name="Spawn Piranhas?")
+    public Boolean spawnpiranha = true;
 
     @ConfigEntry(name="Spawn Sharks Difficulty")
     public DifficultyEnum sharkSpawnDifficulty = DifficultyEnum.EASY;
 
-    @ConfigEntry(
-            name="Squid Freq",
-            maxLength = 10  //oryginal 3
-    )
-    public Integer squidfreq = 1;
+    @ConfigEntry(name="Shark Freq", maxValue = 10)
+    public Integer sharkfreq = 2;
 
-    @ConfigEntry(
-            name="Dolphin Freq",
-            maxLength = 10
-    )
+    @ConfigEntry(name="Squid Freq", maxValue = 10)
+    public Integer squidfreq = 3;
+
+    @ConfigEntry(name="Dolphin Freq", maxValue = 10)
     public Integer dolphinfreq = 2;
 
-    @ConfigEntry(
-            name="Fishy Freq",
-            maxLength = 20
-    )
+    @ConfigEntry(name="Fishy Freq", maxValue = 20)
     public Integer fishfreq = 10;
 
-    @ConfigEntry(
-            name="Aggresive Dolphins?",
-            description = "dolphins attack sharks"
-    )
-    public Boolean attackdolphins = true;
-
-    @ConfigEntry(name="Spawn Piranhas?")
-    public Boolean spawnpiranha = true;
+    @ConfigEntry(name="Ray Freq", maxValue = 10)
+    public Integer rayfreq = 1;
 }

@@ -12,6 +12,18 @@ item.@.woolball.name = Wool Ball
 item.@.rope.name = Rope
 item.@.petfood.name = Kitty Food
 
+item.@.greenapple.name = Green Apple
+item.@.wildleather.name = Wild Leather
+item.@.polarleather.name = Polar Leather
+item.@.elephanttusk.name = Tusk
+item.@.megalodonteeth.name = Megalodon Teeth
+item.@.baobabfruit.name = Baobab Fruit
+item.@.crochide.name = Croc Hide
+item.@.helmetcroc.name = Croc Helmet
+item.@.platecroc.name = Croc Plate
+item.@.legscroc.name = Croc Legs
+item.@.bootscroc.name = Croc Boots
+
 item.@.kittybed.0.name = Black Kitty Bed
 item.@.kittybed.1.name = Red Kitty Bed
 item.@.kittybed.2.name = Green Kitty Bed
@@ -94,14 +106,6 @@ item.@.dolphin4_egg.name = Dolphin Dark
 item.@.dolphin5_egg.name = Dolphin Pink
 item.@.dolphin6_egg.name = Dolphin Albino
 
-
-item.@.sharkoil.name = Shark Oil
-item.@.greenapple.name = Green Apple
-item.@.wildleather.name = Wild Leather
-item.@.polarleather.name = Polar Leather
-item.@.bigcatfood.name = Big Cat Food
-item.@.sharkfood.name = Shark Food
-item.@.goldenshears.name = Golden Shears
 
 gui.stationapi.achievementPage.@.mocreaturesAchievements=Mo Creatures
 stationapi\:achievementPage.mocreaturesAchievements=Mo Creatures

@@ -14,7 +14,6 @@ public class RenderZebra extends LivingEntityRenderer
     public RenderZebra(ModelZebra creepsmodelzebra, float f)
     {
         super(creepsmodelzebra, f);
-//        setDecorationModel(new ModelZebra());
         modelBipedMain = creepsmodelzebra;
     }
 

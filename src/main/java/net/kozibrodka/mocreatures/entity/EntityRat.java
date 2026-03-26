@@ -132,9 +132,9 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider, Mo
         if(world.isRemote){
             return;
         }
-        if(isOnLadder()){
+        if(climbing()){
             setClimbing(true);
-        }else if(onGround){
+        }else{
             setClimbing(false);
         }
     }

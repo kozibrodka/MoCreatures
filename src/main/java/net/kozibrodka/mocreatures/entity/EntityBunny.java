@@ -5,6 +5,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.kozibrodka.mocreatures.network.RopePacket;
 import net.minecraft.entity.Entity;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial
+public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial, MoCreatureNamed
 {
 
     public EntityBunny(World world)
@@ -436,6 +437,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
             dataTracker.set(18, (byte) 0);
         }
     }
+
     //TAMED
     public boolean getTamed()
     {
@@ -469,4 +471,11 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
             dataTracker.set(20, (byte) 0);
         }
     }
+
+
+    @Override
+    public void setName(String name) {}
+
+    @Override
+    public String getName() {return "";}
 }

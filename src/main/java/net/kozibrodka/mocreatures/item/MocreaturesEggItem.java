@@ -3,6 +3,7 @@ package net.kozibrodka.mocreatures.item;
 
 import net.kozibrodka.mocreatures.entity.*;
 import net.kozibrodka.mocreatures.events.TextureListener;
+import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;

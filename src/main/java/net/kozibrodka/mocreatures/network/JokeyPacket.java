@@ -100,8 +100,9 @@ public class JokeyPacket extends Packet implements ManagedPacket<JokeyPacket> {
             return;
         }
         if(action == 0) {
-            player.velocityY += 0.90000000000000002D;
-            player.velocityZ -= 0.29999999999999999D;
+            double c = 0.8D;
+            player.velocityY += (0.9D);
+            player.velocityZ -= (0.3D);
 //            System.out.println("DOSZŁO CLIENT.");
             //todo dlaczego to wyzej niz na singlepl?
         }
@@ -114,7 +115,7 @@ public class JokeyPacket extends Packet implements ManagedPacket<JokeyPacket> {
                 }
                 player.velocityX += (this.VelX  * 0.1D);
                 player.velocityZ += (this.VelZ  * 0.1D);
-                //TODO: zostaw tak na razie
+                /// Żyrafa na serwie nie jest idealna, ale cieżko cokolwiek zrobić z tym.
 
         }
         if(action == 3){

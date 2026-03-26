@@ -266,7 +266,6 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         if(random.nextInt(300) == 0 && health < maxhealth && deathTime == 0)
         {
             health++;
-            sendHealth(world, health);
         }
         if(getType() == 7 && passenger != null && nightmareInt > 0 && random.nextInt(2) == 0)
         {
@@ -358,6 +357,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 getPathOrWalkableBlock(roper, f);
             }
         }
+        this.dataTracker.set(29, (byte) health);
     }
 
     private void getPathOrWalkableBlock(Entity entity, float f)
@@ -451,7 +451,6 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
         if(super.damage(entity, i))
         {
-            sendHealth(world, health);
             return true;
         }else{
             return false;
@@ -874,7 +873,6 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             {
                 health = maxhealth;
             }
-            sendHealth(world, health);
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             sendSound(world, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             if(!getAdult() && getAge() < 1.0F)
@@ -897,7 +895,6 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             {
                 health = maxhealth;
             }
-            sendHealth(world, health);
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             sendSound(world, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             if(!getAdult() && getAge() < 1.0F)
@@ -920,7 +917,6 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             {
                 health = maxhealth;
             }
-            sendHealth(world, health);
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             sendSound(world, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             if(!getAdult() && getAge() < 1.0F)
@@ -937,7 +933,6 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             }
             setTamed(true);
             health = maxhealth;
-            sendHealth(world, health);
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             sendSound(world, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             if(!getAdult() && getAge() < 1.0F)
@@ -973,12 +968,11 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             sendSound(world, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             health = maxhealth;
-            sendHealth(world, health);
             return true;
         }
         if(itemstack != null && (itemstack.itemId == Block.PUMPKIN.id || itemstack.itemId == Item.MUSHROOM_STEW.id || itemstack.itemId == Item.CAKE.id))
         {
-            if(getReproduced() || !getAdult())
+            if((getReproduced() && !mocr.mocreaturesGlass.animals.easybreeding) || !getAdult()) /// reproduced jedynie brane pod uwage wraz z easy_breadin = false
             {
                 return false;
             }
@@ -993,7 +987,6 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             }
             setEaten(true);
             health = maxhealth;
-            sendHealth(world, health);
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             sendSound(world, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             return true;
@@ -1382,7 +1375,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
 
         if(getSaddled() && mocr.mocreaturesGlass.balancesettings.horse_saddle_drop) {
-            dropItem(new ItemStack(mod_mocreatures.horsesaddle, 1, 0), 0.0F);
+            dropItem(new ItemStack(mod_mocreatures.horsesaddle.id, 1, 0), 0.0F);
         }
     }
 
@@ -1461,6 +1454,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         dataTracker.startTracking(26, (byte) 0); //RenderName
         dataTracker.startTracking(27, (byte) 0); //Reproduced
         dataTracker.startTracking(28, (byte) 0); //Has Jokey
+        dataTracker.startTracking(29, (byte) 0); //HEALTH
         dataTracker.startTracking(30, ""); //Owner
         dataTracker.startTracking(31, ""); //Name
     }
@@ -1468,12 +1462,6 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     @Override
     public Identifier getHandlerIdentifier() {
         return Identifier.of(mod_mocreatures.MOD_ID, "Horse");
-    }
-
-    public void sendHealth(World world, int hp){
-        if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.healthPacket(world, this.id, hp);
-        }
     }
 
     public void sendParticle(World world, String name, double x, double y, double z, double i, double j, double k){
@@ -1743,6 +1731,12 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         {
             dataTracker.set(28, (byte) 0);
         }
+    }
+
+    /// HEALTH
+    public int getHealth()
+    {
+        return dataTracker.getByte(29);
     }
 
 }

@@ -1,5 +1,6 @@
 package net.kozibrodka.mocreatures.renderentity;
 
+import net.kozibrodka.mocreatures.entity.EntityCustomAquaM;
 import net.kozibrodka.mocreatures.entity.EntityFishy;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
@@ -9,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderFishy extends LivingEntityRenderer
 {
+    float depth = 0.0F;
 
     public RenderFishy(EntityModel modelbase, float f)
     {
@@ -30,6 +32,9 @@ public class RenderFishy extends LivingEntityRenderer
     protected float getHeadBob(LivingEntity entityliving, float f)
     {
         EntityFishy entityfishy = (EntityFishy)entityliving;
+        this.depth = -0.35F;
+        /// Ryba potrzebuje zanóżenia dodatkowego jeżeli używa AquaMob - nie widze potrzeby, ryby powinny być płytko
+//        GL11.glTranslatef(0.0F, this.depth, 0.0F);
         if(!entityfishy.getAdult())
         {
             stretch(entityfishy);

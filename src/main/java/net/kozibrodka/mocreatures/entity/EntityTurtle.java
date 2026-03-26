@@ -15,6 +15,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -28,7 +29,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.modificationstation.stationapi.api.item.Items;
 import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 import net.modificationstation.stationapi.api.util.Identifier;
@@ -145,7 +145,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
                 }
                 return true;
             }
-            if (itemstack != null  && itemstack.itemId == mod_mocreatures.whip.id) {   //TODO: CZY BICZOWANIE POWINNO DZIAŁAĆ NA ŻÓŁWIA??
+            if (itemstack != null  && itemstack.itemId == mod_mocreatures.whip.id) {   //TODO: CZY BICZOWANIE POWINNO DZIAŁAĆ NA ŻÓŁWIA?? - WYŁĄCZYĆ na razie.
                 if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
                     PacketHelper.sendTo(entityplayer, new JokeyPacket(1));
                 }
@@ -251,7 +251,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
 
         if(!getUpsideDown()) {
             LivingEntity entityplayer = getClosestEntityLiving(this, 4.0D);
-            if(entityplayer != null && canSee(entityplayer)) {
+            if(entityplayer != null && canSee(entityplayer) && !MoCTools.entitiesTamedIgnore(this, entityplayer)) {
                 if(!getHiding()) {
                     world.playSound(this, "mocreatures:turtlehissing", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
                     sendSound(world, "mocreatures:turtlehissing", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
@@ -325,7 +325,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
 
         for(int i = 0; i < list.size(); ++i) {
             Entity entity1 = (Entity)list.get(i);
-            if(!entitiesToIgnore2(this, entity1)) {
+            if(!privateToIgnore(this, entity1)) {
                 double d2 = entity1.getSquaredDistance(entity.x, entity.y, entity.z);
                 if((d < 0.0D || d2 < d * d) && (d1 == -1.0D || d2 < d1) && ((LivingEntity)entity1).canSee(entity)) {
                     d1 = d2;
@@ -337,13 +337,9 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         return entityliving;
     }
 
-    public boolean entitiesToIgnore(Entity entity) {
-        return entity instanceof EntityTurtle || entity.height <= this.height && entity.width <= this.width || entity instanceof PlayerEntity && getTamed(); //|| super.entitiesToIgnore(entity)
-    }
-
-    public boolean entitiesToIgnore2(Entity hunter, Entity victim) {
-        return !(victim instanceof LivingEntity) || (victim instanceof MonsterEntity) ||victim instanceof EntityTurtle || victim.height <= this.height && victim.width <= this.width || victim instanceof PlayerEntity && getTamed()|| (victim instanceof EntityKittyBed) || (victim instanceof EntityLitterBox); //|| super.entitiesToIgnore(entity)
-    }
+    public boolean privateToIgnore(Entity hunter, Entity victim) {
+        return !(victim instanceof LivingEntity) || (victim instanceof MonsterEntity) ||victim instanceof EntityTurtle || victim.height <= this.height && victim.width <= this.width || victim instanceof PlayerEntity && getTamed() && Objects.equals(((PlayerEntity) victim).name, getOwner()) || (victim instanceof EntityKittyBed) || (victim instanceof EntityLitterBox);
+    } /// ZOLW uzywa troche innej logiki, m in. poniewaz nie boi sie z graczy jedynie wlasciciela - aby trudniej było go ograbić.
 
     public boolean swimmerEntity() {
         return true;
@@ -390,8 +386,11 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
                     flipflop(true);
                 }
             }else{
-                if(random.nextInt(500) == 0 && !getTamed()) {
+                if(random.nextInt(250) == 0 && !getTamed()) {
                     flipflop(true);
+                }
+                if(random.nextInt(100) == 0 && getTamed() && damagesource instanceof MobEntity){ /// zabawa z hunterem
+                    ((MobEntity)damagesource).target = null;
                 }
             }
             return false;
@@ -858,12 +857,6 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
     public String getName()
     {
         return this.dataTracker.getString(31);
-    }
-
-    public void sendHealth(World world, int hp){ //TODO DO WYJEBANIA WSZEDZIE
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.healthPacket(world, this.id, hp);
-        }
     }
 
     public void sendParticle(World world, String name, double x, double y, double z, double i, double j, double k){

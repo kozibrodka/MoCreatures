@@ -31,7 +31,7 @@ import java.util.List;
 
 @HasTrackingParameters(trackingDistance = 160, updatePeriod = 1, sendVelocity = TriState.TRUE)
 public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProvider, MoCreatureRacial, MoCreatureNamed
-    //extends EntityCustomWM or EntityCustomAquaM
+        ///extends EntityCustomWM or EntityCustomAquaM
 {
 
     public EntityDolphin(World world)
@@ -43,7 +43,8 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
 //        adult = false;
 //        tamed = false;
         dolphinspeed = 1.3D;
-        maxhealth = 30; //TODO DELFIN zaczyna z 10, mozna dokarmic do 30 - zamierzone?
+        health = 12;
+        maxhealth = 20; /// Delfin zaczyna z 10 i mozna dokarmić. (oryg. 30)
         temper = 50;
         killedByOtherEntity = true;
 //        name = "";
@@ -72,6 +73,18 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
     public int tametemper()
     {
         return temper;
+    }
+
+    protected void tickLiving() {
+        super.tickLiving();
+        this.dataTracker.set(29, (byte) health);
+        if(target == null){
+            return;
+        }
+        if(!target.isAlive() || !target.submergedInWater) /// LOL delfin atakuje pod wodą ostro
+        {
+            target = null;
+        }
     }
 
     public int getRandomRace()
@@ -109,36 +122,42 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
                 texture = "/assets/mocreatures/stationapi/textures/mob/dolphin.png";
                 dolphinspeed = 1.5D;
                 temper = 50;
+                maxhealth = 20;
             } else
             if(typeint == 2)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/dolphin2.png";
                 dolphinspeed = 2.5D;
                 temper = 100;
+                maxhealth = 25;
             } else
             if(typeint == 3)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/dolphin3.png";
                 dolphinspeed = 3.5D;
                 temper = 150;
+                maxhealth = 30;
             } else
             if(typeint == 4)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/dolphin4.png";
                 dolphinspeed = 4.5D;
                 temper = 200;
+                maxhealth = 35;
             } else
             if(typeint == 5)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/dolphin5.png";
                 dolphinspeed = 5.5D;
                 temper = 250;
+                maxhealth = 40;
             } else
             if(typeint == 6)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/dolphin6.png";
                 dolphinspeed = 6.5D;
                 temper = 300;
+                maxhealth = 45;
             }
     }
 
@@ -166,7 +185,6 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
             {
                 health = maxhealth;
             }
-            sendHealth(world, health);
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             sendSound(world, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             if(!getAdult())
@@ -185,7 +203,6 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
             {
                 health = maxhealth;
             }
-            sendHealth(world, health);
             setEaten(true);
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             sendSound(world, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
@@ -294,7 +311,6 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
             chooseType(getType());
-            PacketHelper.send(new AskPacket(this.id, "dolphin"));
         }
         if(world.isRemote){
             return;
@@ -327,7 +343,6 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
                         temper = 1;
                     }
                     health = maxhealth;
-                    sendHealth(world, health);
                 }
             }
         }
@@ -503,7 +518,6 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
             {
                 target = entitybase;
             }
-            sendHealth(world, health);
             return true;
         } else
         {
@@ -621,6 +635,7 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
         dataTracker.startTracking(22, (byte) 0); //Bred
         dataTracker.startTracking(23, (byte) 0); //RenderName
         dataTracker.startTracking(24, (byte) 0); //Has Jokey
+        dataTracker.startTracking(29, (byte) 0); //HEALTH
         dataTracker.startTracking(30, ""); //Owner
         dataTracker.startTracking(31, ""); //Name
     }
@@ -628,12 +643,6 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
     @Override
     public Identifier getHandlerIdentifier() {
         return Identifier.of(mod_mocreatures.MOD_ID, "Dolphin");
-    }
-
-    public void sendHealth(World world, int hp){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.healthPacket(world, this.id, hp);
-        }
     }
 
     public void sendParticle(World world, String name, double x, double y, double z, double i, double j, double k){
@@ -653,7 +662,7 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
         if(!world.isRemote) {
             setType(getRandomRace());
             setAge(0.8F + random.nextFloat());
-//            this.health = this.maxhealth;
+//            this.health = this.maxhealth; //TODO:
         }
     }
 
@@ -808,7 +817,11 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
         }
     }
 
-
+    /// HEALTH
+    public int getHealth()
+    {
+        return dataTracker.getByte(29);
+    }
 
     //OWNER
     public void setOwner(String owner)

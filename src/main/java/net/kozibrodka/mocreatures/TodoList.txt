@@ -1,11 +1,16 @@
 To Do List:
 
+items / drops
+achievements
+todos //
+
+
+
 
 - (DONE) Get data right with deer first
 - Config descriptions
 - setBoundingBoxSpacing - can it be sync on client?
 
--ATTACKABLE INTERFACE
 -NEW SPAWN SYSTEM - no mixin - go with stapi TROPICRAFT example
 
 

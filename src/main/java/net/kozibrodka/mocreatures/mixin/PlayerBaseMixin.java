@@ -50,6 +50,8 @@ public abstract class PlayerBaseMixin extends LivingEntity {
             return;
         }
 
+        //TODO rewrite with interface
+
         if (entityliving instanceof WolfEntity) {
             WolfEntity entitywolf = (WolfEntity)entityliving;
             if(entitywolf.isTamed() && name.equals(entitywolf.getOwnerName()))
@@ -65,7 +67,7 @@ public abstract class PlayerBaseMixin extends LivingEntity {
             }
         }
 
-        if ((entityliving instanceof EntityHorse && ((EntityHorse)entityliving).getTamed()) || (entityliving instanceof EntityDolphin && ((EntityDolphin)entityliving).getTamed()) || (entityliving instanceof EntityShark && ((EntityShark)entityliving).getTamed()) || (entityliving instanceof EntityKitty && ((EntityKitty)entityliving).getKittyState() > 2 )) {
+        if ((entityliving instanceof EntityHorse && ((EntityHorse)entityliving).getTamed()) || (entityliving instanceof EntityDolphin && ((EntityDolphin)entityliving).getTamed()) || (entityliving instanceof EntityShark && ((EntityShark)entityliving).getTamed()) || (entityliving instanceof EntityTurtle && ((EntityTurtle)entityliving).getTamed()) || (entityliving instanceof EntityKitty && ((EntityKitty)entityliving).getKittyState() > 2 )) {
             return;
         }
 
@@ -85,7 +87,7 @@ public abstract class PlayerBaseMixin extends LivingEntity {
             if (entitybigcat.getTamed() && entitybigcat.getAdult() && entitybigcat.getTarget() == null && name.equals(entitybigcat.getOwner()) && (!flag || !entitybigcat.getSitting())) {
                 if (entitybigcat.getProtect()) {
                     entitybigcat.wstanSzybko();
-                    entitybigcat.ustawCel(entityliving);
+                    entitybigcat.ustawCel(entityliving); //TODO wyjeb bensensowne Funkcje
                 }
 //                if (!(entityliving instanceof PlayerEntity && !entitybigcat.getProtect())) {
 //                    entitybigcat.wstanSzybko();

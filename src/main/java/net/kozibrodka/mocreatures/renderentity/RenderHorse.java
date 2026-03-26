@@ -91,7 +91,7 @@ public class RenderHorse extends LivingEntityRenderer
                         byte0 += 8;
                     }
                     tessellator1.startQuads();
-                    float f8 = entityhorse.health;
+                    float f8 = entityhorse.getHealth();
                     float f9 = entityhorse.maxhealth;
                     float f10 = f8 / f9;
                     float f11 = 40F * f10;
@@ -110,7 +110,7 @@ public class RenderHorse extends LivingEntityRenderer
                         }
                     }else{
                         r1 = 0.9F;
-                        r2 = 0.6F;
+                        r2 = 0.6F;  /// POMARAŃCZ
                         r3 = 0.3F;
                     }
                     tessellator1.color(0.7F, 0.0F, 0.0F, 1.0F);

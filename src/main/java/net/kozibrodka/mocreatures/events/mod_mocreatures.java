@@ -7,6 +7,8 @@ import net.glasslauncher.mods.gcapi3.api.ConfigRoot;
 import net.kozibrodka.mocreatures.glasscfg.MocreaturesCFG;
 import net.kozibrodka.mocreatures.item.*;
 import net.kozibrodka.mocreatures.network.*;
+import net.kozibrodka.wolves.events.ItemListener;
+import net.kozibrodka.wolves.items.RefinedArmorItem;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.mine_diver.unsafeevents.listener.ListenerPriority;
 import net.minecraft.achievement.Achievements;
@@ -42,15 +44,8 @@ public class mod_mocreatures {
     @Entrypoint.Namespace
     public static Namespace MOD_ID = Null.get();
 
-    public static Achievement Indiana;
-    public static Achievement BunnyKilla;
-    public static Achievement WilfFlyingWest;
-    public static Achievement RobertMaklowicz;
-
-
     //TODO: horse faliing DMG crazy speed boost,
 
-    //TODO: remove istypechosen client logic, watch for setting age in render classes.
 
     @Environment(EnvType.SERVER)
     public void particlePacket(World world, String name, double x, double y, double z, double i, double j, double k) {
@@ -85,17 +80,6 @@ public class mod_mocreatures {
         }
     }
 
-    @Environment(EnvType.SERVER)
-    public void healthPacket(World world, int id, int hp) {
-        List list2 = world.players;
-        if (list2.size() != 0) {
-            for (int k = 0; k < list2.size(); k++) {
-                ServerPlayerEntity player1 = (ServerPlayerEntity) list2.get(k);
-                PacketHelper.sendTo(player1, new HealthPacket(id, hp));
-            }
-        }
-    }
-
     @EventListener
     public void registerPacket(PacketRegisterEvent event) {
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("adult"), AdultPacket.TYPE);
@@ -115,7 +99,13 @@ public class mod_mocreatures {
 
     }
 
-    @EventListener(priority = ListenerPriority.HIGHEST)
+    public static Achievement Indiana;
+    public static Achievement BunnyKilla;
+    public static Achievement WilfFlyingWest;
+    public static Achievement RobertMaklowicz;
+
+
+    @EventListener //(priority = ListenerPriority.HIGHEST)
     public void registerAchievements(AchievementRegisterEvent event) {
         Indiana = new Achievement(77, MOD_ID.id("indiana").toString(), -4, -4, mod_mocreatures.whip, Achievements.OPEN_INVENTORY).addStat();
         BunnyKilla = new Achievement(78, MOD_ID.id("bunnykilla").toString(), -5, -5, mod_mocreatures.whip, Achievements.OPEN_INVENTORY).addStat();
@@ -125,6 +115,13 @@ public class mod_mocreatures {
 
         BunnyKilla.challenge();
         Indiana.challenge();
+
+
+
+        event.achievements.add(BunnyKilla);
+        event.achievements.add(Indiana);
+
+        Achievements.initialize();
 //        WilfFlyingWest.setUnusual();
 //        RobertMaklowicz.setUnusual();
 
@@ -155,17 +152,20 @@ public class mod_mocreatures {
         rope = new TemplateItem(Identifier.of(MOD_ID, "rope")).setTranslationKey(MOD_ID, "rope");
         petfood = new TemplateItem(Identifier.of(MOD_ID, "petfood")).setTranslationKey(MOD_ID, "petfood");
         greenapple = new GreenApple(Identifier.of(MOD_ID, "greenapple")).setTranslationKey(MOD_ID, "greenapple");
+        elephanttusk = new TemplateItem(Identifier.of(MOD_ID, "elephanttusk")).setTranslationKey(MOD_ID, "elephanttusk").setMaxCount(8);
+        megalodonteeth = new TemplateItem(Identifier.of(MOD_ID, "megalodonteeth")).setTranslationKey(MOD_ID, "megalodonteeth").setMaxCount(16);
+        polarleather = new TemplateItem(Identifier.of(MOD_ID, "polarleather")).setTranslationKey(MOD_ID, "polarleather");
+//        baobabfruit = new FruitBaobab(Identifier.of(MOD_ID, "baobabfruit")).setTranslationKey(MOD_ID, "baobabfruit");
 
-        //TODO: extra items, optional for balance propably going to remove some of it
-        if(mocreaturesGlass.balancesettings.balance_drop) {
-//            sharkoil = new TemplateItem(Identifier.of(MOD_ID, "sharkoil")).setTranslationKey(MOD_ID, "sharkoil");
+        crochide = new FruitBaobab(Identifier.of(MOD_ID, "crochide")).setTranslationKey(MOD_ID, "crochide");
+        helmetcroc = new CrocHideArmorItem(MOD_ID.id("helmetcroc"), 0).setTranslationKey(MOD_ID, "helmetcroc");
+        platecroc = new CrocHideArmorItem(MOD_ID.id("platecroc"), 1).setTranslationKey(MOD_ID, "platecroc");
+        legscroc = new CrocHideArmorItem(MOD_ID.id("legscroc"), 2).setTranslationKey(MOD_ID, "legscroc");
+        bootscroc = new CrocHideArmorItem(MOD_ID.id("bootscroc"), 3).setTranslationKey(MOD_ID, "bootscroc");
+
+
 //            wildleather = new TemplateItem(Identifier.of(MOD_ID, "wildleather")).setTranslationKey(MOD_ID, "wildleather");
-//            polarleather = new TemplateItem(Identifier.of(MOD_ID, "polarleather")).setTranslationKey(MOD_ID, "polarleather");
-//            greenapple = new GreenApple(Identifier.of(MOD_ID, "greenapple")).setTranslationKey(MOD_ID, "greenapple");
-//            bigcatfood = new WildFood(Identifier.of(MOD_ID, "bigcatfood")).setTranslationKey(MOD_ID, "bigcatfood");
-//            sharkfood = new WildFood(Identifier.of(MOD_ID, "sharkfood")).setTranslationKey(MOD_ID, "sharkfood");
-//        goldenshears = new GoldenShears(Identifier.of(MOD_ID, "goldenshears")).setTranslationKey(MOD_ID, "goldenshears").setContainerItem(mod_mocreatures.goldenshears);
-        }
+
     }
 
     @EventListener
@@ -192,8 +192,6 @@ public class mod_mocreatures {
         CraftingRegistry.addShapelessRecipe(new ItemStack(petfood, 4), new ItemStack(Item.RAW_FISH, 1), new ItemStack(Item.RAW_PORKCHOP, 1));
         CraftingRegistry.addShapedRecipe(new ItemStack(woolball, 1), " # ", "# #", " # ", '#', Item.STRING);
         CraftingRegistry.addShapedRecipe(new ItemStack(litterbox, 1), "###", "#X#", "###", '#', Block.PLANKS, 'X', Block.SAND);
-        CraftingRegistry.addShapedRecipe(new ItemStack(medallion, 1), "# #", "XZX", " X ", '#', Item.LEATHER, 'Z', Item.DIAMOND, 'X', Item.GOLD_INGOT);
-        CraftingRegistry.addShapedRecipe(new ItemStack(medallion, 1), "# #", " X ", '#', Item.LEATHER, 'X', Item.GOLD_INGOT);
         CraftingRegistry.addShapedRecipe(new ItemStack(whip, 1), "#X#", "X X", "# Z", '#', bigcatclaw, 'X', Item.LEATHER, 'Z', Item.IRON_INGOT);
         CraftingRegistry.addShapedRecipe(new ItemStack(haystack, 1), "XXX", "XXX", 'X', Item.WHEAT);
         CraftingRegistry.addShapedRecipe(new ItemStack(Item.WHEAT, 6), "X", 'X', haystack);
@@ -204,28 +202,26 @@ public class mod_mocreatures {
         CraftingRegistry.addShapedRecipe(new ItemStack(Item.CHAIN_BOOTS, 1), "X X", "X X", 'X', sharkteeth);
 
         CraftingRegistry.addShapedRecipe(new ItemStack(horsesaddle, 1), "X", "#", 'X', Item.SADDLE, '#', Item.IRON_INGOT);
-        CraftingRegistry.addShapedRecipe(new ItemStack(horsesaddle, 1), "XXX", "X#X", "# #", '#', Item.IRON_INGOT, 'X', Item.LEATHER);
+        if(mocreaturesGlass.balancesettings.easy_saddle_recipe) {
+            CraftingRegistry.addShapedRecipe(new ItemStack(horsesaddle, 1), "XXX", "X#X", "# #", '#', Item.IRON_INGOT, 'X', Item.LEATHER);
+        }
+        CraftingRegistry.addShapedRecipe(new ItemStack(medallion, 1), "# #", "XZX", " X ", '#', Item.LEATHER, 'Z', Item.DIAMOND, 'X', Item.GOLD_INGOT);
+        if(mocreaturesGlass.balancesettings.easy_medallion_recipe) {
+            CraftingRegistry.addShapedRecipe(new ItemStack(medallion, 1), "# #", " X ", '#', Item.LEATHER, 'X', Item.GOLD_INGOT);
+        }
 
-        //TODO: extra, now doesnt make sense, also make recipes for all items (delete json)
-        if(mocreaturesGlass.balancesettings.balance_drop) {
+        CraftingRegistry.addShapedRecipe(new ItemStack(helmetcroc, 1), "XXX", "X X", 'X', crochide);
+        CraftingRegistry.addShapedRecipe(new ItemStack(platecroc, 1), "X X", "XXX", "XXX", 'X', crochide);
+        CraftingRegistry.addShapedRecipe(new ItemStack(legscroc, 1), "XXX", "X X", "X X", 'X', crochide);
+        CraftingRegistry.addShapedRecipe(new ItemStack(bootscroc, 1), "X X", "X X", 'X', crochide);
+
+
 //            for (int j = 0; j < 16; j++) {
 //                CraftingRegistry.addShapelessRecipe(new ItemInstance(BlockBase.WOOL, 8, 15 - j), new ItemInstance(ItemBase.dyePowder, 1, j), new ItemInstance(wildleather, 1));
 //            }
-//
-//            for (int j = 0; j < 16; j++) {
-//                CraftingRegistry.addShapelessRecipe(new ItemInstance(BlockBase.WOOL, 16, 15 - j), new ItemInstance(ItemBase.dyePowder, 1, j), new ItemInstance(polarleather, 1));
-//            }
-//
-//            CraftingRegistry.addShapelessRecipe(new ItemInstance(ItemBase.dyePowder, 16, 0), new ItemInstance(ItemBase.dyePowder, 1, 0), new ItemInstance(sharkoil, 1));
-//            CraftingRegistry.addShapelessRecipe(new ItemInstance(ItemBase.dyePowder, 8, 3), new ItemInstance(ItemBase.dyePowder, 1, 3), new ItemInstance(sharkoil, 1));
-//            CraftingRegistry.addShapelessRecipe(new ItemInstance(ItemBase.dyePowder, 4, 4), new ItemInstance(ItemBase.dyePowder, 1, 4), new ItemInstance(sharkoil, 1));
-            CraftingRegistry.addShapelessRecipe(new ItemStack(bigcatfood, 3), new ItemStack(Item.RAW_PORKCHOP, 1), new ItemStack(Item.EGG, 1), new ItemStack(Item.RAW_FISH, 1));
-            CraftingRegistry.addShapelessRecipe(new ItemStack(sharkfood, 3), new ItemStack(Item.RAW_FISH, 1), new ItemStack(fishyegg, 1), new ItemStack(Item.RAW_FISH, 1));
 
-            if (!FabricLoader.getInstance().isModLoaded("aether")) {
-                CraftingRegistry.addShapedRecipe(new ItemStack(horsesaddle, 1), "X", "#", 'X', Item.SADDLE, '#', Item.IRON_INGOT);
-            }
-        }
+
+
     }
 
     public static int colorize(int i)
@@ -248,11 +244,16 @@ public class mod_mocreatures {
     public static Item petfood ;
     public static Item kittybed;
 
-    public static Item sharkoil;
-    public static Item wildleather;
     public static Item polarleather;
     public static Item greenapple;
-    public static Item bigcatfood;
-    public static Item sharkfood;
-    public static Item goldenshears;
+    public static Item elephanttusk;
+    public static Item megalodonteeth;
+//    public static Item baobabfruit;
+
+    public static Item crochide;
+    public static Item platecroc;
+    public static Item helmetcroc;
+    public static Item legscroc;
+    public static Item bootscroc;
+
 }

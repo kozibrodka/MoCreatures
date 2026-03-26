@@ -102,9 +102,9 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         if(world.isRemote){
             return;
         }
-        if(isOnLadder()){
+        if(climbing()){
             setClimbing(true);
-        }else if(onGround){
+        }else{
             setClimbing(false);
         }
     }

@@ -163,12 +163,17 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
             dropItem(new ItemStack(getDroppedItemId(), 1, 0), 0.0F);
         }
 
-        int i2 = random.nextInt(3);
+        int i2 = random.nextInt(2);
         for(int j2 = 0; j2 < i2; j2++)
         {
-            dropItem(new ItemStack(Item.SUGAR_CANE.id, 1, 0), 0.0F);
+            dropItem(new ItemStack(Block.WATER.id, 1, 0), 0.0F);
         }
 
+    }
+
+    protected int getDroppedItemId()
+    {
+        return Item.LEATHER.id;
     }
 
     public void markDead()
@@ -196,12 +201,7 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
 
     public int getLimitPerChunk()
     {
-        return 6;
-    }
-
-    protected int getDroppedItemId()
-    {
-        return Item.RAW_PORKCHOP.id;
+        return 4;
     }
 
     protected String getRandomSound()

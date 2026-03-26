@@ -52,7 +52,7 @@ public class RenderShark extends LivingEntityRenderer
                         byte0 += 8;
                     }
                     tessellator.startQuads();
-                    float f6 = entityshark.health;
+                    float f6 = entityshark.getHealth();
                     float f7 = entityshark.maxhealth;
                     float f8 = f6 / f7;
                     float f9 = 40F * f8;

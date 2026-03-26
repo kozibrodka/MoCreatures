@@ -25,20 +25,9 @@ public class RenderRat extends LivingEntityRenderer
     protected void applyScale(LivingEntity entityliving, float f)
     {
         EntityRat entityrat = (EntityRat)entityliving;
-//        if(entityrat.climbing())
-//        {
-//            rotateAnimal(entityliving);
-//        }
-        if(entityliving.world.isRemote){ //TODO: może i nawet lepsze również dla singleplayer
-            if(entityrat.getClimbing())
-            {
-                rotateAnimal(entityliving);
-            }
-        }else{
-            if(entityrat.climbing())
-            {
-                rotateAnimal(entityliving);
-            }
+        if(entityrat.getClimbing())
+        {
+            rotateAnimal(entityliving);
         }
     }
 

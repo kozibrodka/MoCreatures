@@ -53,7 +53,7 @@ public class RenderDolphin extends LivingEntityRenderer
                         byte0 += 8;
                     }
                     tessellator.startQuads();
-                    float f6 = entitydolphin.health;
+                    float f6 = entitydolphin.getHealth();
                     float f7 = entitydolphin.maxhealth;
                     float f8 = f6 / f7;
                     float f9 = 40F * f8;

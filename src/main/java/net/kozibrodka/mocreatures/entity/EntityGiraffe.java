@@ -4,10 +4,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.network.JokeyPacket;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -117,6 +119,19 @@ public class EntityGiraffe extends AnimalEntity implements MobSpawnDataProvider 
     protected int getDroppedItemId()
     {
         return Item.RAW_PORKCHOP.id;
+    }
+
+    protected void dropItems()
+    {
+        int i = random.nextInt(3);
+        for(int j = 0; j < i; j++)
+        {
+            dropItem(new ItemStack(getDroppedItemId(), 1, 0), 0.0F);
+        }
+        int k = random.nextInt(2);
+        for (int j = 0; j < k; j++) {
+                dropItem(new ItemStack(Item.APPLE.id, 1, 0), 0.0F);
+        }
     }
 
     protected String getRandomSound()

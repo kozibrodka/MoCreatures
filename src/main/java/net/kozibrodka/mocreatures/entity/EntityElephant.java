@@ -8,6 +8,7 @@ import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -154,6 +155,21 @@ public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider
     protected int getDroppedItemId()
     {
         return Item.BONE.id;
+    }
+
+    protected void dropItems()
+    {
+        int i = random.nextInt(5);
+        for(int j = 0; j < i; j++)
+        {
+            dropItem(new ItemStack(getDroppedItemId(), 1, 0), 0.0F);
+        }
+        int k = random.nextInt(2);
+        for (int j = 0; j < k; j++) {
+            if(world.difficulty > 0) {
+                dropItem(new ItemStack(mod_mocreatures.elephanttusk.id, 1, 0), 0.0F);
+            }
+        }
     }
 
     protected String getRandomSound()

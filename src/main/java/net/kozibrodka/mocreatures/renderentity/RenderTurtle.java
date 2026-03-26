@@ -23,6 +23,7 @@ public class RenderTurtle extends LivingEntityRenderer {
 	protected void applyScale(LivingEntity entityliving, float f) {
 		EntityTurtle entityturtle = (EntityTurtle)entityliving;
 		this.turtly.upsidedown = entityturtle.getUpsideDown();
+		/// alternatywnie, niepłynna animacja ale skordynowana z serwerem
 //		this.turtly.swingProgress = entityturtle.getSwingProgress();
 		this.turtly.swingProgress = entityturtle.swingProgress;
 		this.turtly.isHiding = entityturtle.getHiding();
@@ -92,7 +93,7 @@ public class RenderTurtle extends LivingEntityRenderer {
 					}
 
 					tessellator.startQuads();
-					float i = (float)entityturtle.getHealth(); //TODO WSZEDZIE
+					float i = (float)entityturtle.getHealth();
 					float f7 = (float)entityturtle.maxhealth;
 					float f8 = i / f7;
 					float f9 = 40.0F * f8;

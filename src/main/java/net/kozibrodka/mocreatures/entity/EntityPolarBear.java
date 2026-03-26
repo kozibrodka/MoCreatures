@@ -5,6 +5,7 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -121,10 +122,10 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
         {
             dropItem(new ItemStack(getDroppedItemId(), 1, 0), 0.0F);
         }
-        if(mocr.mocreaturesGlass.balancesettings.balance_drop) {
-            int k = random.nextInt(2);
-            for (int j = 0; j < k; j++) {
-                dropItem(new ItemStack(mod_mocreatures.polarleather, 1, 0), 0.0F);
+        int k = random.nextInt(2);
+        for (int j = 0; j < k; j++) {
+            if(world.difficulty > 0) {
+                dropItem(new ItemStack(mod_mocreatures.polarleather.id, 1, 0), 0.0F);
             }
         }
     }
@@ -155,7 +156,7 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
 //        int j = MathHelper.floor(boundingBox.minY);
 //        int k = MathHelper.floor(velocityX);
 //        return (level.getTileId(i, j - 1, k) == BlockBase.SNOW.id || level.getTileId(i, j, k) == BlockBase.SNOW.id || level.getTileId(i, j - 1, k) == BlockBase.SNOW_BLOCK.id || level.getTileId(i, j, k) == BlockBase.SNOW_BLOCK.id) && mocr.mocreaturesGlass.huntercreatures.pbearfreq > 0 && super.cS2();
-        return NearSnowWithDistance(this, Double.valueOf(1.0D)) && mocr.mocreaturesGlass.huntercreatures.pbearfreq > 0 && super.cS2();
+        return NearSnowWithDistance(this, Double.valueOf(1.0D)) && mocr.mocreaturesGlass.huntercreatures.pbearfreq > 0 && !MoCTools.isNearTorch(this) && super.cS2();
     }
 
     mod_mocreatures mocr = new mod_mocreatures();

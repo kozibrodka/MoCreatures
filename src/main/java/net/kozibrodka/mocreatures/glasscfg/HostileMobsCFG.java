@@ -22,90 +22,6 @@ public class HostileMobsCFG {
     @ConfigEntry(name="Spawn FlameWraith Difficulty")
     public DifficultyEnum fwraithSpawnDifficulty = DifficultyEnum.HARD;
 
-    @ConfigEntry(name="Ogre Freq", maxValue = 10)
-    public Integer ogrefreq = 6;
-
-    @ConfigEntry(
-            name="FireOgre Freq",
-            maxValue = 10
-    )
-    public Integer fogrefreq = 2;
-
-    @ConfigEntry(
-            name="CaveOgre Freq",
-            maxLength = 10
-    )
-    public Integer cogrefreq = 3;
-
-    @ConfigEntry(
-            name="WereWolf Freq",
-            maxLength = 10
-    )
-    public Integer werewolffreq = 6;
-
-    @ConfigEntry(
-            name="Wraith Freq",
-            maxLength = 10
-    )
-    public Integer wraithfreq = 5;
-
-    @ConfigEntry(
-            name="FlameWraith Freq",
-            maxLength = 10
-    )
-    public Integer fwraithfreq = 2;
-
-    @ConfigEntry(
-            name="WildWolf Freq",
-            maxLength = 10
-    )
-    public Integer wwolffreq = 8;
-
-    @ConfigEntry(
-            name="Rat Freq",
-            maxLength = 10
-    )
-    public Integer ratfreq = 8;
-
-    @ConfigEntry(
-            name="HellRat Freq",
-            maxLength = 10
-    )
-    public Integer hellratfreq = 8;
-
-    @ConfigEntry(
-            name="Ogre Range",
-            maxLength = 24
-    )
-    public Integer ogrerange = 12;
-
-    @ConfigEntry(name="Mummy Freq", maxValue = 10)
-    public Integer mummyfreq = 6;
-
-    @ConfigEntry(name="Scorpion Freq", maxValue = 10)
-    public Integer scorpionfreq = 6;
-
-    @ConfigEntry(
-            name="Ogre Strength",
-            description = "maximum 5.0F",
-            maxLength = 5
-    )
-    public Float ogreStrength = 2.5F;
-
-    @ConfigEntry(
-            name="Fire Ogre Strength",
-            description = "maximum 5.0F",
-            maxLength = 5
-    )
-    public Float fogreStrength = 2.0F;
-
-    @ConfigEntry(
-            name="Cave Ogre Strength",
-            description = "maximum 5.0F",
-            maxLength = 5
-    )
-    public Float cogreStrength = 3.0F;
-
     @ConfigEntry(name="Fire Ogre Explosions")
     public Boolean explodefireogre = true;
 
@@ -117,4 +33,50 @@ public class HostileMobsCFG {
 
     @ConfigEntry(name="Fire Ogre Ignite")
     public Boolean igniteogre = true;
+
+    @ConfigEntry(name="Ogre Strength", maxValue = 5.0F)
+    public Float ogreStrength = 2.5F;
+
+    @ConfigEntry(name="Fire Ogre Strength", maxValue = 5.0F)
+    public Float fogreStrength = 2.0F;
+
+    @ConfigEntry(name="Cave Ogre Strength", maxValue = 5.0F)
+    public Float cogreStrength = 3.0F;
+
+    @ConfigEntry(name="Ogre Range", maxValue = 24)
+    public Integer ogrerange = 12;
+
+    @ConfigEntry(name="Ogre Freq", maxValue = 10)
+    public Integer ogrefreq = 6;
+
+    @ConfigEntry(name="FireOgre Freq", maxValue = 10)
+    public Integer fogrefreq = 2;
+
+    @ConfigEntry(name="CaveOgre Freq", maxValue = 10)
+    public Integer cogrefreq = 3;
+
+    @ConfigEntry(name="WereWolf Freq", maxValue = 10)
+    public Integer werewolffreq = 6;
+
+    @ConfigEntry(name="Wraith Freq", maxValue = 10)
+    public Integer wraithfreq = 5;
+
+    @ConfigEntry(name="FlameWraith Freq", maxValue = 10)
+    public Integer fwraithfreq = 2;
+
+    @ConfigEntry(name="WildWolf Freq", maxValue = 10)
+    public Integer wwolffreq = 8;
+
+    @ConfigEntry(name="Rat Freq", maxValue = 10)
+    public Integer ratfreq = 8;
+
+    @ConfigEntry(name="HellRat Freq", maxValue = 10)
+    public Integer hellratfreq = 8;
+
+    @ConfigEntry(name="Mummy Freq", maxValue = 10)
+    public Integer mummyfreq = 4;
+
+    @ConfigEntry(name="Scorpion Freq", maxValue = 10)
+    public Integer scorpionfreq = 4;
+
 }

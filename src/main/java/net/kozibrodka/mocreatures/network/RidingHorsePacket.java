@@ -43,6 +43,7 @@ public class RidingHorsePacket extends Packet implements ManagedPacket<RidingHor
     public RidingHorsePacket() {
     }
 
+    /// Ten Pakiet nie jest używany już.
     public RidingHorsePacket(int entityID, double veloX, double veloY, double veloZ) {
         this.horseID = entityID;
         this.VelX = veloX;
@@ -137,8 +138,6 @@ public class RidingHorsePacket extends Packet implements ManagedPacket<RidingHor
         if(horse1 == null){
             return;
         }
-
-        //TODO: uporządkować horseentity SYF
 
             player.jumping = skok;
             player.yaw = this.Yaw;

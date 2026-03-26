@@ -16,11 +16,6 @@ public class RenderCrocodile extends LivingEntityRenderer {
 		this.croc = modelbase;
 	}
 
-//	public void doRenderLiving(EntityLiving entityliving, double d, double d1, double d2, float f, float f1) {
-//		MoCEntityCrocodile entitycrocodile = (MoCEntityCrocodile)entityliving;
-//		super.doRender(entitycrocodile, d, d1, d2, f, f1);
-//	}
-
 	protected void applyScale(LivingEntity entityliving, float f) {
 		EntityCrocodile entitycrocodile = (EntityCrocodile)entityliving;
 		if(entitycrocodile.world.isRemote){
@@ -28,7 +23,6 @@ public class RenderCrocodile extends LivingEntityRenderer {
 		}else{
 			this.croc.biteProgress = entitycrocodile.getBiteProgress();
 		}
-//		this.croc.biteProgress = entitycrocodile.biteProgress;
 		this.croc.swimming = entitycrocodile.isSwimming();
 		this.croc.resting = entitycrocodile.getIsSitting();
 		if(entitycrocodile.isSpinning()) {

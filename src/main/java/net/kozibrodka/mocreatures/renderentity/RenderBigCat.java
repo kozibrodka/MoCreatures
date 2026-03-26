@@ -85,7 +85,7 @@ public class RenderBigCat extends LivingEntityRenderer
                         byte0 += 8;
                     }
                     tessellator1.startQuads();
-                    float f8 = entitybigcat.health;
+                    float f8 = entitybigcat.getHealth();
                     float f9 = entitybigcat.maxhealth;
                     float f10 = f8 / f9;
                     float f11 = 40F * f10;

@@ -50,15 +50,22 @@ public class TextureListener {
         mod_mocreatures.petfood.setTexture(Identifier.of(MOD_ID, "item/petfood"));
         mod_mocreatures.kittybed.setTexture(Identifier.of(MOD_ID, "item/bedkitty"));
         mod_mocreatures.greenapple.setTexture(Identifier.of(MOD_ID, "item/greenapple"));
+        mod_mocreatures.elephanttusk.setTexture(Identifier.of(MOD_ID, "item/tusk"));
+        mod_mocreatures.megalodonteeth.setTexture(Identifier.of(MOD_ID, "item/megateeth"));
+        mod_mocreatures.polarleather.setTexture(Identifier.of(MOD_ID, "item/polarleather"));
+//        mod_mocreatures.baobabfruit.setTexture(Identifier.of(MOD_ID, "item/baobab"));
 
-        if(mod_mocreatures.mocreaturesGlass.balancesettings.balance_drop) {
-//            mod_mocreatures.sharkoil.setTexture(Identifier.of(MOD_ID, "item/sharkoil"));
+        mod_mocreatures.crochide.setTexture(Identifier.of(MOD_ID, "item/crochide"));
+        mod_mocreatures.helmetcroc.setTexture(Identifier.of(MOD_ID, "item/crochelmet"));
+        mod_mocreatures.platecroc.setTexture(Identifier.of(MOD_ID, "item/crocplate"));
+        mod_mocreatures.legscroc.setTexture(Identifier.of(MOD_ID, "item/croclegs"));
+        mod_mocreatures.bootscroc.setTexture(Identifier.of(MOD_ID, "item/crocboots"));
+
+
+
+
 //            mod_mocreatures.wildleather.setTexture(Identifier.of(MOD_ID, "item/wildleather"));
-//            mod_mocreatures.polarleather.setTexture(Identifier.of(MOD_ID, "item/polarleather"));
-//            mod_mocreatures.greenapple.setTexture(Identifier.of(MOD_ID, "item/greenapple"));
-//            mod_mocreatures.bigcatfood.setTexture(Identifier.of(MOD_ID, "item/bigcatfood"));
-//            mod_mocreatures.sharkfood.setTexture(Identifier.of(MOD_ID, "item/sharkfood"));
-        }
+
 
         if(mod_mocreatures.mocreaturesGlass.balancesettings.spawn_eggs) {
             EggListener.egg1.setTexture(Identifier.of(MOD_ID, "item/egg/bear"));

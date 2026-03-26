@@ -11,7 +11,8 @@
     "MocreaturesHellMixin",
     "MocreaturesMixin",
     "PlayerBaseMixin",
-    "SpawnerAnimalsMixin"
+    "SpawnerAnimalsMixin",
+    "SpongeMixin"
   ],
   "server": [
   ],

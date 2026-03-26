@@ -5,6 +5,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.kozibrodka.mocreatures.network.RopePacket;
 import net.minecraft.block.Block;
@@ -28,7 +29,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial
+public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial, MoCreatureNamed
 {
 
     public EntityBird(World world)
@@ -764,5 +765,11 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
             dataTracker.set(20, (byte) 0);
         }
     }
+
+    @Override
+    public void setName(String name) {}
+
+    @Override
+    public String getName() {return "";}
 }
 

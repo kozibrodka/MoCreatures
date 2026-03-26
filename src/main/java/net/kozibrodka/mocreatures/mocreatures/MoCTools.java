@@ -1,9 +1,6 @@
 package net.kozibrodka.mocreatures.mocreatures;
 
-import net.kozibrodka.mocreatures.entity.EntityDolphin;
-import net.kozibrodka.mocreatures.entity.EntityHorse;
-import net.kozibrodka.mocreatures.entity.EntityKittyBed;
-import net.kozibrodka.mocreatures.entity.EntityLitterBox;
+import net.kozibrodka.mocreatures.entity.*;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -124,7 +121,7 @@ public class MoCTools {
         int k = MathHelper.floor(entity.z);
         int l = entity.world.getBlockId(i, j, k);
         if(l != 0 && Block.BLOCKS[l].material == Material.WATER) {
-            for(int x = 1; x < 5; ++x) {
+            for(int x = 1; x < 10; ++x) { /// Oryginalnie patrzy jedynie x < 5 (5 bloków wody w górę) co powoduje utknięcie na pewnej głębokości.
                 l = entity.world.getBlockId(i, j + x, k);
                 if(l == 0 || Block.BLOCKS[l].material != Material.WATER) {
                     return (float)x;
@@ -159,6 +156,45 @@ public class MoCTools {
 
             }
 
+        }
+
+        return false;
+    }
+
+    public static boolean isNearTorch(Entity entity) {
+        if(mocr.mocreaturesGlass.huntercreatures.huntersSpawnOnTorch){
+            return false;
+        }else{
+            return isNearBlockName(entity, Double.valueOf(8.0D), "tile.torch");
+        }
+    }
+
+    public static boolean isNearTorch(Entity entity, Double dist) {
+        return isNearBlockName(entity, dist, "tile.torch");
+    }
+
+    public static boolean isNearBlockName(Entity entity, Double dist, String blockName) {
+        Box axisalignedbb = entity.boundingBox.expand(dist.doubleValue(), dist.doubleValue() / 2.0D, dist.doubleValue());
+        int i = MathHelper.floor(axisalignedbb.minX);
+        int j = MathHelper.floor(axisalignedbb.maxX + 1.0D);
+        int k = MathHelper.floor(axisalignedbb.minY);
+        int l = MathHelper.floor(axisalignedbb.maxY + 1.0D);
+        int i1 = MathHelper.floor(axisalignedbb.minZ);
+        int j1 = MathHelper.floor(axisalignedbb.maxZ + 1.0D);
+
+        for(int k1 = i; k1 < j; ++k1) {
+            for(int l1 = k; l1 < l; ++l1) {
+                for(int i2 = i1; i2 < j1; ++i2) {
+                    int j2 = entity.world.getBlockId(k1, l1, i2);
+                    if(j2 != 0) {
+                        String nameToCheck = "";
+                        nameToCheck = Block.BLOCKS[j2].getTranslationKey();
+                        if(nameToCheck != null && nameToCheck != "" && nameToCheck.equals(blockName)) {
+                            return true;
+                        }
+                    }
+                }
+            }
         }
 
         return false;
@@ -212,8 +248,9 @@ public class MoCTools {
     }
 
     public static boolean entitiesToIgnore(Entity hunter, Entity victim) {
-        return !(victim instanceof LivingEntity) || (victim instanceof MonsterEntity) || victim == hunter || victim == hunter.passenger || victim == hunter.vehicle || (victim instanceof PlayerEntity) || (victim instanceof EntityKittyBed) || (victim instanceof EntityLitterBox) || (victim instanceof WolfEntity) && ((WolfEntity)victim).isTamed() && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (victim instanceof EntityHorse) && ((EntityHorse)victim).getTamed() && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (victim instanceof EntityDolphin) && ((EntityDolphin)victim).getTamed();
+        return !(victim instanceof LivingEntity) || (victim instanceof MonsterEntity) && !(hunter instanceof EntityBigCat) || victim == hunter || victim == hunter.passenger || victim == hunter.vehicle || (victim instanceof PlayerEntity) || (victim instanceof EntityKittyBed) || (victim instanceof EntityLitterBox) || (victim instanceof WolfEntity) && ((WolfEntity)victim).isTamed() && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (victim instanceof EntityHorse) && ((EntityHorse)victim).getTamed() && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (victim instanceof EntityDolphin) && ((EntityDolphin)victim).getTamed();
     }
+    /// ^ nie obejmuje tamed kotów - jebać koty, trzeba trzymać w domu...
 
     public static boolean entitiesTamedIgnore(Entity hunter, Entity victim) {
         return (hunter instanceof MoCreatureNamed && victim instanceof MoCreatureNamed && ((MoCreatureNamed) hunter).getTamed() && ((MoCreatureNamed) victim).getTamed());

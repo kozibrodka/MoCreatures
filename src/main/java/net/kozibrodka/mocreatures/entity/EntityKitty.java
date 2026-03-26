@@ -4,10 +4,7 @@ package net.kozibrodka.mocreatures.entity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.kozibrodka.mocreatures.mocreatures.MoCGUI;
-import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
-import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
-import net.kozibrodka.mocreatures.mocreatures.MoGuiOpener;
+import net.kozibrodka.mocreatures.mocreatures.*;
 import net.kozibrodka.mocreatures.network.AskPacket;
 import net.kozibrodka.mocreatures.network.NamePacket;
 import net.kozibrodka.mocreatures.network.RopePacket;
@@ -79,7 +76,12 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
 
     public boolean climbingTree()
     {
-        return getKittyState() == 16 && isOnLadder();
+        return getKittyState() == 16 && isOnLadder() && !onGround;
+    }
+
+    protected void tickLiving() {
+        super.tickLiving();
+        this.dataTracker.set(29, (byte) health);
     }
 
     public double getStandingEyeHeight()
@@ -199,7 +201,6 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
             }
             changeKittyState(3);
             health = maxhealth;
-            sendHealth(world, health);
             setNameWithGui(this, entityplayer);
             setOwner(entityplayer.name);
             return true;
@@ -316,7 +317,6 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
             chooseType(getType());
-            PacketHelper.send(new AskPacket(this.id, "kitty"));
         }
         if(world.isRemote){ /// CLIENT STOP?
             super.tickMovement(); //todo: czy zawsze?
@@ -359,6 +359,11 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
         if(!hungry && !getSitting() && random.nextInt(100) == 0)
         {
             hungry = true;
+        }
+        if(climbingTree()){
+            setClimbing(true);
+        }else{
+            setClimbing(false);
         }
 label0:
         switch(getKittyState())
@@ -453,19 +458,16 @@ label0:
                 if(entitykittybed1 != null && !entitykittybed1.getHasMilk() && !entitykittybed1.getHasFood())
                 {
                     health = maxhealth;
-                    sendHealth(world, health);
                     changeKittyState(5);
                 }
             } else
             {
                 health = maxhealth;
-                sendHealth(world, health);
                 changeKittyState(5);
             }
             if(random.nextInt(2500) == 0)
             {
                 health = maxhealth;
-                sendHealth(world, health);
                 changeKittyState(7);
             }
             break;
@@ -1115,7 +1117,11 @@ label0:
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityKitty) || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityBigCat) && !mocr.mocreaturesGlass.huntercreatures.attackbigcat || (entity1 instanceof EntityBigCat) && ((EntityBigCat) entity1).getTamed() && getKittyState() > 2 || (entity1 instanceof EntityDolphin) && ((EntityDolphin) entity1).getTamed() && getKittyState() > 2 || (entity1 instanceof EntityShark) && ((EntityShark)entity1).getTamed() && getKittyState() > 2 || (double)entity1.width > 0.5D && (double)entity1.height > 0.5D)
+//            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityKitty) || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityBigCat) && !mocr.mocreaturesGlass.huntercreatures.attackbigcat || (entity1 instanceof EntityBigCat) && ((EntityBigCat) entity1).getTamed() && getKittyState() > 2 || (entity1 instanceof EntityDolphin) && ((EntityDolphin) entity1).getTamed() && getKittyState() > 2 || (entity1 instanceof EntityShark) && ((EntityShark)entity1).getTamed() && getKittyState() > 2 || (double)entity1.width > 0.5D && (double)entity1.height > 0.5D)
+//            {
+//                continue;
+//            }
+            if(privateToIgnore(this, entity1) || MoCTools.entitiesToIgnore(this, entity1) || MoCTools.entitiesTamedIgnore(this, entity1))
             {
                 continue;
             }
@@ -1129,6 +1135,10 @@ label0:
 
         return entityliving;
     }
+
+    public boolean privateToIgnore(Entity hunter, Entity victim) {
+        return ((victim instanceof EntityKitty) || (victim instanceof EntityBigCat) && !mocr.mocreaturesGlass.huntercreatures.attackbigcat || (double)victim.width > 0.5D && (double)victim.height > 0.5D);
+    } /// Wydaje mi się, ze wykluczając rozmiar 0.5F, kot nie zaatakuje nigdy BigCatsa. Dziwny kod
 
     public ItemEntity getClosestItem(Entity entity, double d, int i, int j)
     {
@@ -1210,7 +1220,6 @@ label0:
                 }
                 entity = entity;
             }
-            sendHealth(world, health);
             return true;
         } else
         {
@@ -1638,6 +1647,8 @@ label0:
         dataTracker.startTracking(23, (byte) 0); //Display Name
         dataTracker.startTracking(24, (byte) 0); //On Tree
         dataTracker.startTracking(25, (byte) 0); //Picked
+        dataTracker.startTracking(26, (byte) 0); //Climbing
+        dataTracker.startTracking(29, (byte) 0); //HEALTH
         dataTracker.startTracking(30, ""); //Owner
         dataTracker.startTracking(31, ""); //Name
     }
@@ -1668,12 +1679,6 @@ label0:
         setDisplayName(nbttagcompound.getBoolean("DisplayName"));
         setOwner(nbttagcompound.getString("KittyOwner"));
         setOnTree(nbttagcompound.getBoolean("OnTree"));
-    }
-
-    public void sendHealth(World world, int hp){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.healthPacket(world, this.id, hp);
-        }
     }
 
     public void sendSound(World world, String name, float vol, float pit){
@@ -1822,7 +1827,7 @@ label0:
         }
     }
 
-    //DISPLAY NAME
+    //Get on Tree
     public boolean getOnTree()
     {
         return (dataTracker.getByte(24) & 1) != 0;
@@ -1854,6 +1859,29 @@ label0:
         {
             dataTracker.set(25, (byte) 0);
         }
+    }
+
+    //Climbing
+    public boolean getClimbing()
+    {
+        return (dataTracker.getByte(26) & 1) != 0;
+    }
+
+    public void setClimbing(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.set(26, (byte) 1);
+        } else
+        {
+            dataTracker.set(26, (byte) 0);
+        }
+    }
+
+    /// HEALTH
+    public int getHealth()
+    {
+        return dataTracker.getByte(29);
     }
 
     //OWNER

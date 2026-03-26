@@ -22,6 +22,8 @@ import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import java.util.List;
 
 public class EntityCustomAquaM extends WaterCreatureEntity {
+/// Zawiesi sie na dnie gdyby jakimś cudem pojawił się głębiej niż 10 bloków pod wodą (nie zajdzie tyle naturalnie).
+/// Może utknąć pod lodem.
 
     mod_mocreatures mocr = new mod_mocreatures();
     private Path pathEntity;
@@ -79,10 +81,6 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
 
             move(velocityX, velocityY, velocityZ);
             if(random.nextInt(50) == 0) {
-//                world.playSound(this, getUpsetSound(), 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-//                passenger.velocityY += 0.9D;
-//                passenger.velocityZ -= 0.3D;
-//                passenger = null;
                 PlayerEntity entityplayer = (PlayerEntity)passenger;
                 world.playSound(this, getUpsetSound(), 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
                 sendSound(world, getUpsetSound(), 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F );
@@ -202,26 +200,32 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
         return f + f3;
     }
 
-    protected void tickLiving()
-    {
-        super.tickLiving();
-        if(target == null){
-            return;
-        }
-        if(!target.isAlive() || !target.submergedInWater) /// LOL delfin atakuje pod wodą ostro
-        {
-            target = null;
-        }
-    }
+//    protected void tickLiving()
+//    {
+//        super.tickLiving();
+//        if(target == null){
+//            return;
+//        }
+//        if(!target.isAlive() || !target.submergedInWater) /// LOL delfin atakuje pod wodą ostro
+//        {
+//            target = null;
+//        }
+//    }
+
 
     public void floating() {
         float distY = MoCTools.distanceToSurface(this);
         if(passenger != null) {
             PlayerEntity ep = (PlayerEntity)passenger;
             if(ep.jumping) {
-                velocityY += 0.09D;
+                velocityY += 0.09D; //TODO nie moze skakać w zamknietym akwenie głębokim na 2 kratki??? wtf.  |   można spróbować poprostu dodać to do zwykłego CustomWaterMob...
             } else {
                 velocityY = -0.008D;
+            }
+
+
+            if(this instanceof EntityDolphin && getTamed()){
+                System.out.println(velocityY + " " + isSwimming() + " " + isSubmergedInWater() + " " + isInsideWall());
             }
 
         } else if(target != null && target.y < y - 0.5D && getDistance(target) < 10.0F) {
@@ -247,6 +251,8 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
             }
 
         }
+
+
     }
 
     protected void onLanding(float f) {
@@ -309,9 +315,14 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
             if(divingCount > 100 || passenger != null) {
                 diving = false;
                 divingCount = 0;
+
+//                if(onGround){
+//                    diving = false;
+//                    divingCount = 0;
+//                }
+                /// opcja z nurkowaniem do samego dna
             }
         }
-
         super.tickMovement();
     }
 
@@ -346,9 +357,16 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
+//        nbttagcompound.putBoolean("Diving", diving);
+//        nbttagcompound.putInt("DiveCount", divingCount);
     }
 
-    public void readNbt(NbtCompound nbttagcompound) {super.readNbt(nbttagcompound);}
+    public void readNbt(NbtCompound nbttagcompound) {
+        super.readNbt(nbttagcompound);
+//        diving = (nbttagcompound.getBoolean("Diving"));
+//        divingCount = (nbttagcompound.getInt("DiveCount"));
+
+    }
 
     protected String getDeathSound() {return null;}
 

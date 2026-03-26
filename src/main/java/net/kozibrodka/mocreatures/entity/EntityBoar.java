@@ -5,6 +5,7 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
@@ -58,6 +59,7 @@ public class EntityBoar extends PigEntity implements MobSpawnDataProvider
             }
             if(random.nextInt(80) == 0)
             {
+                /// Nie znajduje nigdy ofiary, prawdopodobnie przez Extend EntityPig, ale imo nawet dobrze w praktyce.
                 LivingEntity entityliving = getClosestTarget(this, 10D);
                 return entityliving;
             }
@@ -73,7 +75,11 @@ public class EntityBoar extends PigEntity implements MobSpawnDataProvider
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || height <= entity1.height || width <= entity1.width)
+//            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || height <= entity1.height || width <= entity1.width)
+//            {
+//                continue;
+//            }
+            if(privateToIgnore(this, entity1) || MoCTools.entitiesToIgnore(this, entity1))
             {
                 continue;
             }
@@ -86,6 +92,10 @@ public class EntityBoar extends PigEntity implements MobSpawnDataProvider
         }
 
         return entityliving;
+    }
+
+    public boolean privateToIgnore(Entity hunter, Entity victim) {
+        return (height <= victim.height || width <= victim.width || victim instanceof EntityBoar);
     }
 
     public boolean damage(Entity entityBase, int i)

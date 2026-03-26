@@ -14,7 +14,8 @@ import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 import net.modificationstation.stationapi.api.util.Identifier;
 
-public class EntityRay extends EntityCustomWM implements MobSpawnDataProvider, MoCreatureRacial {
+public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider, MoCreatureRacial {
+    ///extends EntityCustomWM or EntityCustomAquaM
 
     public EntityRay(World world)
     {
@@ -105,7 +106,7 @@ public class EntityRay extends EntityCustomWM implements MobSpawnDataProvider, M
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.animals.rayfreq > 0 && super.canSpawn();
+        return mocr.mocreaturesGlass.watermobs.rayfreq > 0 && super.canSpawn();
     }
 
     public boolean isSwimming() {

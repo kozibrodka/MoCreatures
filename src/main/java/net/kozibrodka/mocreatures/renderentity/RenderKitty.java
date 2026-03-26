@@ -31,7 +31,7 @@ public class RenderKitty extends UndeadEntityRenderer
         {
             onTheSide(entityliving);
         }
-        if(entitykitty.climbingTree()) /// on tree might need datatrack
+        if(entitykitty.getClimbing())
         {
             rotateAnimal(entityliving);
         }
@@ -130,7 +130,7 @@ public class RenderKitty extends UndeadEntityRenderer
                     }
                     GL11.glDisable(3553 /*GL_TEXTURE_2D*/);
                     tessellator.startQuads();
-                    float f6 = entitykitty.health;
+                    float f6 = entitykitty.getHealth();
                     float f7 = entitykitty.maxhealth;
                     float f8 = f6 / f7;
                     float f10 = 30F * f8;
@@ -178,10 +178,7 @@ public class RenderKitty extends UndeadEntityRenderer
 
     protected void rotateAnimal(LivingEntity entityliving)
     {
-        if(!entityliving.onGround) //TODO: byc moze extra zmienna potrzebna w datatracker
-        {
-            GL11.glRotatef(90F, -1F, 0.0F, 0.0F);
-        }
+        GL11.glRotatef(90F, -1F, 0.0F, 0.0F);
     }
 
     protected void upsideDown(LivingEntity entityliving)

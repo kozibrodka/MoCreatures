@@ -5,6 +5,7 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
@@ -78,8 +79,12 @@ public class EntityWWolf extends MonsterEntity
         List list = world.getEntities(this, boundingBox.expand(d, d, d));
         for(int i = 0; i < list.size(); i++)
         {
-            Entity entity1 = (Entity)list.get(i); //TODO: ignore litter?
-            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityBigCat) || (entity1 instanceof EntityBear) || (entity1 instanceof CowEntity) || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses)
+            Entity entity1 = (Entity)list.get(i); //TODO: ignore litter? atakuje wszystko lol???
+//            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityBigCat) || (entity1 instanceof EntityBear) || (entity1 instanceof CowEntity) || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses)
+//            {
+//                continue;
+//            }
+            if(privateToIgnore(this, entity1) || MoCTools.entitiesToIgnore(this, entity1))
             {
                 continue;
             }
@@ -93,6 +98,10 @@ public class EntityWWolf extends MonsterEntity
 
         return entityliving;
     }
+
+    public boolean privateToIgnore(Entity hunter, Entity victim) {
+        return ((victim instanceof EntityBigCat) || (victim instanceof EntityBear || (victim instanceof CowEntity) || (victim instanceof EntityShark) || (victim instanceof EntityDolphin) || (victim instanceof EntityCrocodile) || (victim instanceof EntityHippo) || (victim instanceof EntityElephant)));
+    } /// Wilki będą atakowane chyba tylko przez Adult Tamed BigCat ze zwierząt. Jako, że są potworem są dosyć "nietykalne"
 
     protected void attack(Entity entity, float f)
     {

@@ -1,6 +1,7 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -9,6 +10,7 @@ import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -103,7 +105,11 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof EntityHippo) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityElephant))
+//            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof EntityHippo) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityElephant))
+//            {
+//                continue;
+//            }
+            if(privateToIgnore(this, entity1) || MoCTools.entitiesToIgnore(this, entity1))
             {
                 continue;
             }
@@ -117,6 +123,10 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
 
         return entityliving;
     }
+
+    public boolean privateToIgnore(Entity hunter, Entity victim) {
+        return ((victim instanceof EntityHippo) || (victim instanceof EntityElephant) && ((EntityElephant)victim).getAdult() || (victim instanceof EntityShark) || victim.width < 0.6F && victim.height < 0.6F);
+    } /// Zobaczymy, ogólnie Rekin atakujący wszystko może być przeginką
 
     protected void attack(Entity entity, float f)
     {
@@ -180,7 +190,22 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
 
     protected int getDroppedItemId()
     {
-        return Item.RAW_PORKCHOP.id;
+        return Item.LEATHER.id;
+    }
+
+    protected void dropItems()
+    {
+        int i = random.nextInt(5);
+        for(int j = 0; j < i; j++)
+        {
+            dropItem(new ItemStack(getDroppedItemId(), 1, 0), 0.0F);
+        }
+        int k = random.nextInt(2);
+        for (int j = 0; j < k; j++) {
+            if(world.difficulty > 0) {
+                dropItem(new ItemStack(Block.SPONGE.id, 1, 0), 0.0F);
+            }
+        }
     }
 
     protected String getRandomSound()
@@ -200,7 +225,7 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.huntercreatures.hippofreq > 0 && super.canSpawn();
+        return mocr.mocreaturesGlass.huntercreatures.hippofreq > 0 && !MoCTools.isNearTorch(this) && super.canSpawn();
     }
 
     mod_mocreatures mocr = new mod_mocreatures();

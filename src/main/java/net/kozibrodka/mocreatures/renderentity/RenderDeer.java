@@ -18,12 +18,6 @@ public class RenderDeer extends LivingEntityRenderer
                                float f, float f1)
     {
         EntityDeer entitydeer = (EntityDeer)entityliving;
-//        bindTexture(entitydeer.getMyTexture(entitydeer.getType()));
-//        bindTexture("/assets/mocreatures/stationapi/textures/mob/deer.png");
-//        if(!entitydeer.typechosen)
-//        {
-//            entitydeer.setType(entitydeer.getRandomRace());
-//        }
         super.render(entitydeer, d, d1, d2, f, f1);
     }
 

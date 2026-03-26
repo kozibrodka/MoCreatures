@@ -371,7 +371,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
 
         for(int i = 0; i < list.size(); ++i) {
             Entity entity1 = (Entity)list.get(i);
-            if(!entitiesToIgnore(entity1)) {
+            if(!privateToIgnore(this, entity1) || !MoCTools.entitiesToIgnore(this, entity)) { //TODO: CHECK
                 double d2 = entity1.getSquaredDistance(entity.x, entity.y, entity.z);
                 if((d < 0.0D || d2 < d * d) && (d1 == -1.0D || d2 < d1) && ((LivingEntity)entity1).canSee(entity)) {
                     d1 = d2;
@@ -382,6 +382,10 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
 
         return entityliving;
     }
+
+    public boolean privateToIgnore(Entity hunter, Entity victim) {
+        return (victim instanceof EntityCustomWM || victim instanceof EntityCustomAquaM || victim instanceof EntityHippo || victim instanceof EntityCrocodile || victim instanceof EntityElephant && ((EntityElephant) victim).getAdult() || victim.height < this.height && victim.width < this.width);
+    } ///Żeby bez sensu nie wpierdalał się do wody, ma zaciągać do wody lądowe.
 
     public boolean entitiesToIgnore(Entity entity) {
         return MoCTools.entitiesToIgnore(this, entity) || entity instanceof EntityCrocodile || entity.height < this.height && entity.width < this.width;
@@ -476,7 +480,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
 
     protected int getDroppedItemId()
     {
-        return Item.RAW_PORKCHOP.id; //todo
+        return mod_mocreatures.crochide.id;
     }
 
     protected String getRandomSound()
@@ -496,7 +500,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.huntercreatures.crocodilefreq > 0 && super.canSpawn(); //todo
+        return mocr.mocreaturesGlass.huntercreatures.crocodilefreq > 0 && !MoCTools.isNearTorch(this) && super.canSpawn(); //todo
     }
 
     mod_mocreatures mocr = new mod_mocreatures();

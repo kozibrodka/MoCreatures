@@ -5,6 +5,7 @@ package net.kozibrodka.mocreatures.entity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.kozibrodka.mocreatures.mocreatures.MoGuiOpener;
@@ -13,6 +14,7 @@ import net.kozibrodka.mocreatures.network.NamePacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.SquidEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -29,6 +31,9 @@ import java.util.List;
 
 
 public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider, MoCreatureRacial, MoCreatureNamed
+        ///extends EntityCustomWM or EntityCustomAquaM
+
+        ///Nie rozumiem czemu Shark nie działa w systemie AquaM a Pirania działa??? wtf
 {
 
     public EntityShark(World world)
@@ -45,7 +50,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
 //        displayname = false;
 //        sharkOwner = "";
 //        protectFromPlayers = true;
-        typechosen = false; //TODO shark healt+pacticle packets
+        typechosen = false;
     }
 
     public void tickMovement()
@@ -54,7 +59,6 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
             chooseType(getType());
-            PacketHelper.send(new AskPacket(this.id, "shark"));
         }
         if(!getAdult() && random.nextInt(50) == 0)
         {
@@ -64,7 +68,21 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
                 setAdult(true);
             }
         }
-        //TODO: szukanie ryby + heal?
+        if(target != null && target.y < y - 0.5D && getDistance(target) < 5.0F) {
+            velocityY -= 0.1D; /// Lekkie ala nurkowanie, troche buggy
+        }
+        if(target != null && (this.y - target.y > 6.0D) ){
+            target = null; /// Odpuszcza jak target jest na dnie, zeby nie stal zablokowany
+        }
+    }
+
+    protected void tickLiving() {
+        super.tickLiving();
+        if(random.nextInt(300) == 0 && health < maxhealth && deathTime == 0 && getTamed())
+        {
+            health++;
+        }
+        this.dataTracker.set(29, (byte) health);
     }
 
     protected Entity getTargetInRange()
@@ -72,7 +90,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         if(world.difficulty > 0 && getAge() >= 1.0F)
         {
             PlayerEntity entityplayer = world.getClosestPlayer(this, 16D);
-            if(entityplayer != null && entityplayer.submergedInWater && !getTamed())
+            if(entityplayer != null && entityplayer.submergedInWater && !getTamed() && (this.y - entityplayer.y < 6.0D))
             {
                 return entityplayer;
             }
@@ -96,7 +114,11 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityShark) || (entity1 instanceof EntitySharkEgg) || (entity1 instanceof PlayerEntity) || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof EntityDolphin) && (getTamed() || !mocr.mocreaturesGlass.watermobs.attackdolphins) || (entity1 instanceof EntityHorse) && getTamed() && ((EntityHorse) entity1).getTamed() || (entity1 instanceof EntityBigCat) && getTamed() && ((EntityBigCat) entity1).getTamed())
+//            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityShark) || (entity1 instanceof EntitySharkEgg) || (entity1 instanceof PlayerEntity) || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof EntityDolphin) && (getTamed() || !mocr.mocreaturesGlass.watermobs.attackdolphins) || (entity1 instanceof EntityHorse) && getTamed() && ((EntityHorse) entity1).getTamed() || (entity1 instanceof EntityBigCat) && getTamed() && ((EntityBigCat) entity1).getTamed())
+//            {
+//                continue;
+//            }
+            if(privateToIgnore(this, entity1) || MoCTools.entitiesToIgnore(this, entity1) || MoCTools.entitiesTamedIgnore(this, entity1))
             {
                 continue;
             }
@@ -110,6 +132,10 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
 
         return entityliving;
     }
+
+    public boolean privateToIgnore(Entity hunter, Entity victim) {
+        return ((victim instanceof EntityShark) || (victim instanceof EntitySharkEgg) || (victim instanceof SquidEntity) || (hunter.y - victim.y > 6.0D)); /// (victim instanceof EntityDolphin) && !mocr.mocreaturesGlass.watermobs.attackdolphins
+    } /// Dziki Rekin Bardzo agrewywny jest w takim ustawieniu.
 
     public boolean damage(Entity entitybase, int i)
     {
@@ -130,9 +156,6 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
             if(entitybase != this)
             {
                 target = entitybase;
-            }
-            if(getTamed()){
-                sendHealth(world, health);
             }
             return true;
         } else
@@ -162,6 +185,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         dataTracker.startTracking(19, (byte) 0); //Tamed
         dataTracker.startTracking(20, (byte) 0); //Protect From Players
         dataTracker.startTracking(21, (byte) 0); //Display Name
+        dataTracker.startTracking(29, (byte) 0); //HEALTH
         dataTracker.startTracking(30, ""); //Owner
         dataTracker.startTracking(31, ""); //Name
     }
@@ -205,13 +229,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
             int j = random.nextInt(3) + 1;
             for(int l = 0; l < j; l++)
             {
-                dropItem(new ItemStack(mod_mocreatures.sharkteeth, 1, 0), 0.0F);
-            }
-            if(mocr.mocreaturesGlass.balancesettings.balance_drop) {
-                int j1 = random.nextInt(2);
-                for (int l1 = 0; l1 < j1; l1++) {
-                    dropItem(new ItemStack(mod_mocreatures.sharkoil, 1, 0), 0.0F);
-                }
+                dropItem(new ItemStack(mod_mocreatures.sharkteeth.id, 1, 0), 0.0F);
             }
 
         } else if(world.difficulty > 0 && getAge() > 1.5F)
@@ -219,12 +237,12 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
             int k = random.nextInt(3) + 1;
             for(int i1 = 0; i1 < k; i1++)
             {
-                dropItem(new ItemStack(mod_mocreatures.sharkegg, 1, 0), 0.0F);
+                dropItem(new ItemStack(mod_mocreatures.sharkegg.id, 1, 0), 0.0F);
             }
 
         }
-        if(getType() == 2){
-            //TODO: mega drop
+        if(getType() == 2 && world.difficulty > 0){
+            dropItem(new ItemStack(mod_mocreatures.megalodonteeth.id, 1, 0), 0.0F);
         }
     }
 
@@ -336,7 +354,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.watermobs.sharkfreq > 0 && world.difficulty >= mocr.mocreaturesGlass.watermobs.sharkSpawnDifficulty.ordinal() + 1 && super.canSpawn();
+        return mocr.mocreaturesGlass.watermobs.sharkfreq > 0 && !MoCTools.isNearTorch(this) && world.difficulty >= mocr.mocreaturesGlass.watermobs.sharkSpawnDifficulty.ordinal() + 1 && super.canSpawn();
     }
 
     public void setNameWithGui(EntityShark entityShark, PlayerEntity entityPlayer)
@@ -348,12 +366,6 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
             MoGuiOpener clientS = new MoGuiOpener();
             clientS.openTameGui(entityShark, entityShark.getName());
             setDisplayName(true);
-        }
-    }
-
-    public void sendHealth(World world, int hp){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.healthPacket(world, this.id, hp);
         }
     }
 
@@ -400,7 +412,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         if(typeint == 2)
         {
             texture = "/assets/mocreatures/stationapi/textures/mob/sharkmega.png";
-            maxhealth = 50;
+            maxhealth = 60;
             setAge(6.0F); /// 6.0F na bukkit było
         }
     }
@@ -503,6 +515,12 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         {
             dataTracker.set(21, Byte.valueOf((byte)0));
         }
+    }
+
+    /// HEALTH
+    public int getHealth()
+    {
+        return dataTracker.getByte(29);
     }
 
     //OWNER

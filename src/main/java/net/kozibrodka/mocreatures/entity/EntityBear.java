@@ -2,6 +2,8 @@ package net.kozibrodka.mocreatures.entity;
 
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.mocreatures.MoCTools;
+import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
@@ -75,7 +77,11 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityBear) || (entity1 instanceof EntityBigCat) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses)
+//            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityBear) || (entity1 instanceof EntityBigCat) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses)
+//            {
+//                continue;
+//            }
+            if(privateToIgnore(this, entity1) || MoCTools.entitiesToIgnore(this, entity1))
             {
                 continue;
             }
@@ -88,6 +94,10 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
         }
 
         return entityliving;
+    }
+
+    public boolean privateToIgnore(Entity hunter, Entity victim) {
+        return ((victim instanceof EntityBear) || (victim instanceof EntityBigCat) || (victim instanceof EntityShark) || (victim instanceof EntityDolphin) || (victim instanceof EntityCrocodile) || (victim instanceof EntityHippo) || (victim instanceof EntityElephant));
     }
 
     public boolean damage(Entity entitybase, int i)
@@ -154,12 +164,6 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
         {
             dropItem(new ItemStack(getDroppedItemId(), 1, 0), 0.0F);
         }
-        if(mocr.mocreaturesGlass.balancesettings.balance_drop) {
-            int k = random.nextInt(2);
-            for (int j = 0; j < k; j++) {
-                dropItem(new ItemStack(mod_mocreatures.wildleather, 1, 0), 0.0F);
-            }
-        }
     }
 
     protected int getDroppedItemId()
@@ -203,7 +207,7 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.huntercreatures.bearfreq > 0 && super.canSpawn();
+        return mocr.mocreaturesGlass.huntercreatures.bearfreq > 0 && !MoCTools.isNearTorch(this) && super.canSpawn();
     }
 
     mod_mocreatures mocr = new mod_mocreatures();

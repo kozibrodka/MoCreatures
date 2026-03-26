@@ -5,6 +5,7 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -20,6 +21,9 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 import java.util.List;
 
 public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider, MoCreatureRacial
+        ///extends EntityCustomWM or EntityCustomAquaM
+
+        /// Piranha nie goni idealnie prawidłowo gdy nurkujesz.
 {
 
     public EntityFishy(World world)
@@ -34,6 +38,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
 //        adult = false;
 //        tamed = false;
         killedByOtherEntity = true;
+//        standingEyeHeight = 1.0F; //TODO TEST
     }
 
 //    public void setTame()
@@ -132,7 +137,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
     }
 
     protected void tickLiving(){
-        if(this.target instanceof PlayerEntity){
+        if(this.target instanceof PlayerEntity){ //TODO: do wyjebanie
             PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
             if(uciekinier == null && target.isAlive()){
                 if(random.nextInt(30) == 0)
@@ -173,7 +178,11 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityCustomWM) || (entity1 instanceof EntitySharkEgg) || (entity1 instanceof EntityFishyEgg) || (entity1 instanceof PlayerEntity) || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves)
+//            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityCustomWM) || (entity1 instanceof EntitySharkEgg) || (entity1 instanceof EntityFishyEgg) || (entity1 instanceof PlayerEntity) || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves)
+//            {
+//                continue;
+//            }
+            if(privateToIgnore(this, entity1) || MoCTools.entitiesToIgnore(this, entity1))
             {
                 continue;
             }
@@ -187,6 +196,10 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
 
         return entityliving;
     }
+
+    public boolean privateToIgnore(Entity hunter, Entity victim) {
+        return ((victim instanceof EntityCustomWM) || (victim instanceof EntityCustomAquaM) || (victim instanceof EntitySharkEgg) || (victim instanceof EntityFishyEgg) || victim.width > 0.7F);
+    } /// nie uwzględniam Tamed Piranii. Szansa jeden na milion, że będzie problem z tym.        >0.7 - nic wiekszego od gracza nie dziabnie
 
     public void markDead()
     {
@@ -331,7 +344,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
             int j = random.nextInt(2) + 1;
             for(int k = 0; k < j; k++)
             {
-                dropItem(new ItemStack(mod_mocreatures.fishyegg, 1, 0), 0.0F);
+                dropItem(new ItemStack(mod_mocreatures.fishyegg.id, 1, 0), 0.0F);
             }
 
         }

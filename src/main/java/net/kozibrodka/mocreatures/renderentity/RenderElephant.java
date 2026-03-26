@@ -25,11 +25,9 @@ public class RenderElephant extends LivingEntityRenderer
         if(!entityelephan.getMad())
         {
             entityelephan.ustawTexture("/assets/mocreatures/stationapi/textures/mob/elephant.png");
-//            bindTexture("/assets/mocreatures/stationapi/textures/mob/elephant.png");
         } else
         {
             entityelephan.ustawTexture("/assets/mocreatures/stationapi/textures/mob/elephantangry.png");
-//            bindTexture("/assets/mocreatures/stationapi/textures/mob/elephantangry.png");
         }
         return i == 0;
     }
@@ -41,7 +39,6 @@ public class RenderElephant extends LivingEntityRenderer
 
     protected void preRenderScale(EntityElephant entityelephant, float f)
     {
-//        GL11.glScalef(scale, scale, scale);
         float fAge = entityelephant.getAge();
         GL11.glScalef(fAge, fAge, fAge);
     }
