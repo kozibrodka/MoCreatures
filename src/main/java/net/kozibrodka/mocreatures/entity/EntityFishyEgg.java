@@ -1,6 +1,3 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
 
 package net.kozibrodka.mocreatures.entity;
 
@@ -53,7 +50,7 @@ public class EntityFishyEgg extends LivingEntity implements MobSpawnDataProvider
         if(lCounter > 10 && entityplayer.inventory.addStack(new ItemStack(mod_mocreatures.fishyegg, 1)))
         {
             world.playSound(this, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-            sendSound(world, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F); //TODO: this.id null? on client
+            sendSound(world, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
             entityplayer.sendPickup(this, 1);
             markDead();
         }

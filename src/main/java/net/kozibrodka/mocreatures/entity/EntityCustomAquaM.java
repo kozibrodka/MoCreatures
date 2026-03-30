@@ -32,7 +32,6 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
     private float edad;
     private boolean displayName;
     private boolean isAdult;
-//    private boolean isTamed;
     private int type;
     private String myName = "";
     private boolean chosenType;

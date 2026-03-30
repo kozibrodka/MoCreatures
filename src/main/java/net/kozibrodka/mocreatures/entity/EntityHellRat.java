@@ -14,17 +14,11 @@ public class EntityHellRat extends EntityRat implements MobSpawnDataProvider, Mo
     public EntityHellRat(World world)
     {
         super(world);
-//        texture = "/assets/mocreatures/stationapi/textures/mob/hellrat.png";
         setBoundingBoxSpacing(0.7F, 0.7F);
         health = 20;
         attackDamage = 2;
         fireImmune = true;
     }
-
-//    public void chooseType(int type)
-//    {
-//        texture = "/assets/mocreatures/stationapi/textures/mob/hellrat.png";
-//    }
 
     protected int getDroppedItemId()
     {
@@ -43,20 +37,4 @@ public class EntityHellRat extends EntityRat implements MobSpawnDataProvider, Mo
 
     mod_mocreatures mocr = new mod_mocreatures();
 
-//    //TYPE
-//    public void setTypeSpawn()
-//    {
-//        if(!world.isRemote){
-//            int type = getRandomRace();
-//            setType(type);
-//        }
-//    }
-//
-//    public void setType(int type)
-//    {
-//        if(!world.isRemote) {
-//            dataTracker.set(16, (byte) type);
-//            chooseType(type);
-//        }
-//    }
 }

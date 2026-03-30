@@ -1,6 +1,3 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
 
 package net.kozibrodka.mocreatures.entity;
 
@@ -40,7 +37,6 @@ public class EntityCustomWM extends WaterCreatureEntity
         super(world);
         outOfWater = 0;
         tamed = false;
-//        tamed = true;
         temper = 50;
     }
 
@@ -543,7 +539,7 @@ public class EntityCustomWM extends WaterCreatureEntity
         return temper;
     }
 
-    public boolean getTamed() //TODO: Make dolhin overrite THOSE i elo. nie trzeba chyba/
+    public boolean getTamed()
     {
         return tamed;
     }

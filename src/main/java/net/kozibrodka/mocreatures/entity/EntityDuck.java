@@ -1,6 +1,3 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
 
 package net.kozibrodka.mocreatures.entity;
 
@@ -36,11 +33,6 @@ public class EntityDuck extends ChickenEntity implements MobSpawnDataProvider
     protected String getDeathSound()
     {
         return "mocreatures:duckhurt";
-    }
-
-    public void markDead()
-    {
-        super.markDead();
     }
 
     public void writeNbt(NbtCompound nbttagcompound)

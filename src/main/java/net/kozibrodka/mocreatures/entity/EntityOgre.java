@@ -1,6 +1,3 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
 
 package net.kozibrodka.mocreatures.entity;
 
@@ -30,7 +27,6 @@ public class EntityOgre extends MonsterEntity
         setBoundingBoxSpacing(1.5F, 4F);
         health = 35;
         bogrefire = false;
-//        ogreattack = false;
         ogrehasenemy = false;
         destroyForce = mocr.mocreaturesGlass.hostilemobs.ogreStrength;
         fireImmune = false;
@@ -146,11 +142,6 @@ public class EntityOgre extends MonsterEntity
         Destroyer.DestroyBlast(world, this, x, y + 1.0D, z, destroyForce, bogrefire, mocr.mocreaturesGlass.hostilemobs.igniteogre, mocr.mocreaturesGlass.hostilemobs.explodeogre, mocr.mocreaturesGlass.hostilemobs.explodecaveogre, mocr.mocreaturesGlass.hostilemobs.explodefireogre);
     }
 
-    public void markDead()
-    {
-        super.markDead();
-    }
-
     public boolean canSpawn()
     {
         return mocr.mocreaturesGlass.hostilemobs.ogrefreq > 0 && world.difficulty >= mocr.mocreaturesGlass.hostilemobs.ogreSpawnDifficulty.ordinal() + 1 && super.canSpawn();
@@ -180,9 +171,7 @@ public class EntityOgre extends MonsterEntity
     public int frequencyA;
     public float destroyForce;
     public boolean ogrehasenemy;
-//    public boolean ogreattack;
     public boolean bogrefire;
-//    public boolean ogreboolean;
     protected double attackRange;
 
     @Override

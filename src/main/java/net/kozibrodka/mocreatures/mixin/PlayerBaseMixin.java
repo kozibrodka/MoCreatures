@@ -1,6 +1,7 @@
 package net.kozibrodka.mocreatures.mixin;
 
 import net.kozibrodka.mocreatures.entity.*;
+import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.CreeperEntity;
@@ -50,27 +51,19 @@ public abstract class PlayerBaseMixin extends LivingEntity {
             return;
         }
 
-        //TODO rewrite with interface
-
-        if (entityliving instanceof WolfEntity) {
-            WolfEntity entitywolf = (WolfEntity)entityliving;
+        if (entityliving instanceof WolfEntity entitywolf) {
             if(entitywolf.isTamed() && name.equals(entitywolf.getOwnerName()))
             {
                 return;
             }
         }
 
-        if(entityliving instanceof EntityBigCat) {
-            EntityBigCat tygrys = (EntityBigCat)entityliving;
-            if (tygrys.getTamed() && name.equals(tygrys.getOwner())) {
+        if(entityliving instanceof MoCreatureNamed moNamed){
+            if(moNamed.getTamed() && name.equals(moNamed.getOwner()))
+            {
                 return;
             }
         }
-
-        if ((entityliving instanceof EntityHorse && ((EntityHorse)entityliving).getTamed()) || (entityliving instanceof EntityDolphin && ((EntityDolphin)entityliving).getTamed()) || (entityliving instanceof EntityShark && ((EntityShark)entityliving).getTamed()) || (entityliving instanceof EntityTurtle && ((EntityTurtle)entityliving).getTamed()) || (entityliving instanceof EntityKitty && ((EntityKitty)entityliving).getKittyState() > 2 )) {
-            return;
-        }
-
 
         if ((entityliving instanceof PlayerEntity) && !isPvpEnabled()) {
             return;
@@ -86,13 +79,9 @@ public abstract class PlayerBaseMixin extends LivingEntity {
             EntityBigCat entitybigcat = (EntityBigCat)entity;
             if (entitybigcat.getTamed() && entitybigcat.getAdult() && entitybigcat.getTarget() == null && name.equals(entitybigcat.getOwner()) && (!flag || !entitybigcat.getSitting())) {
                 if (entitybigcat.getProtect()) {
-                    entitybigcat.wstanSzybko();
-                    entitybigcat.ustawCel(entityliving); //TODO wyjeb bensensowne Funkcje
+                    entitybigcat.setSitting(false);
+                    entitybigcat.target = entityliving;
                 }
-//                if (!(entityliving instanceof PlayerEntity && !entitybigcat.getProtect())) {
-//                    entitybigcat.wstanSzybko();
-//                    entitybigcat.ustawCel(entityliving);
-//                }
             }
         } while(true);
     }

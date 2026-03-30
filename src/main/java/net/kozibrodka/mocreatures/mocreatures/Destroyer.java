@@ -1,6 +1,3 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
 
 package net.kozibrodka.mocreatures.mocreatures;
 
@@ -169,11 +166,11 @@ label0:
                     Block.BLOCKS[l4].dropStacks(world, j3, l3, j4, world.getBlockMeta(j3, l3, j4), 0.3F);
                     world.setBlock(j3, l3, j4, 0);
                     Block.BLOCKS[l4].onDestroyedByExplosion(world, j3, l3, j4);
-                }
+                } /// Działa
             }
         }
 
-        if(flag && (igniteogre || world.dimension.isNether)) //TODO: czy to zadziała????
+        if(flag && (igniteogre || world.dimension.isNether))
         {
             for(int i3 = arraylist.size() - 1; i3 >= 0; i3--)
             {
@@ -182,7 +179,7 @@ label0:
                 int i4 = chunkposition1.y;
                 int k4 = chunkposition1.z;
                 int i5 = world.getBlockId(k3, i4, k4);
-                if(i5 == 0 && world.random.nextInt(8) == 0)
+                if(i5 == 0 && world.random.nextInt(8) == 0) /// Jedynie podpala miejsce które zniszczy.
                 {
                     world.setBlock(k3, i4, k4, Block.FIRE.id);
                 }

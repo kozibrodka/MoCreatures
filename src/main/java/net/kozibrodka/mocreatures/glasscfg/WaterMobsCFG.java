@@ -7,7 +7,7 @@ public class WaterMobsCFG {
 
 
     @ConfigEntry(name="Aggresive Dolphins?", description = "dolphins attack sharks")
-    public Boolean attackdolphins = false; //TODO to jest bez sensu troche
+    public Boolean attackdolphins = false;
 
     @ConfigEntry(name="Spawn Piranhas?")
     public Boolean spawnpiranha = true;

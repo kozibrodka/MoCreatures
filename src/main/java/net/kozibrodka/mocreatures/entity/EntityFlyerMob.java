@@ -1,10 +1,6 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
 
 package net.kozibrodka.mocreatures.entity;
 
-import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.pathing.Path;
@@ -13,10 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.modificationstation.stationapi.api.util.Identifier;
-import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
-import java.util.Random;
 
 
 public class EntityFlyerMob extends MonsterEntity

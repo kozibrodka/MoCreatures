@@ -5,7 +5,6 @@ import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.kozibrodka.mocreatures.network.PoisonPacket;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
@@ -20,12 +19,9 @@ public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider
     public EntityRay(World world)
     {
         super(world);
-//        texture = "/assets/mocreatures/stationapi/textures/mob/XXXXXXXXXXXX.png";
-        setBoundingBoxSpacing(0.6F, 0.5F); //todo
+        setBoundingBoxSpacing(0.6F, 0.5F);
         health = 10; ///
         movementSpeed = 0.3F;
-//        setEdad(0.5F + random.nextFloat(0.5F));
-
     }
 
     public void tickMovement() {
@@ -50,12 +46,7 @@ public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider
             if(getType() > 1 && poisoncounter > 250 && world.difficulty > 0) {
                 PlayerEntity entityplayertarget = world.getClosestPlayer(x, y, z, 2.0D);
                 if(entityplayertarget != null) {
-
                     PacketHelper.sendTo((PlayerEntity) entityplayertarget, new PoisonPacket(1));
-//                    mod_mocreatures.poisonPlayer(entityplayertarget);
-//                    entityplayertarget.addPotionEffect(new PotionEffect(Potion.poison.id, 120, 0));
-
-
                     poisoncounter = 0;
                     setAttacking(true);
                 }
@@ -115,7 +106,6 @@ public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider
 
     mod_mocreatures mocr = new mod_mocreatures();
     public int maxhealth;
-//    public boolean attacking;
     public int poisoncounter;
     public boolean typechosen;
     public boolean adult;

@@ -15,6 +15,7 @@ import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -161,6 +162,10 @@ public class MoCTools {
         return false;
     }
 
+    public static boolean isNearWater(Entity entity) { /// Może 8 kratek za dużo???
+        return isNearBlockName(entity, Double.valueOf(8.0D), "tile.water");
+    }
+
     public static boolean isNearTorch(Entity entity) {
         if(mocr.mocreaturesGlass.huntercreatures.huntersSpawnOnTorch){
             return false;
@@ -247,10 +252,25 @@ public class MoCTools {
         return entityitem;
     }
 
-    public static boolean entitiesToIgnore(Entity hunter, Entity victim) {
-        return !(victim instanceof LivingEntity) || (victim instanceof MonsterEntity) && !(hunter instanceof EntityBigCat) || victim == hunter || victim == hunter.passenger || victim == hunter.vehicle || (victim instanceof PlayerEntity) || (victim instanceof EntityKittyBed) || (victim instanceof EntityLitterBox) || (victim instanceof WolfEntity) && ((WolfEntity)victim).isTamed() && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (victim instanceof EntityHorse) && ((EntityHorse)victim).getTamed() && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (victim instanceof EntityDolphin) && ((EntityDolphin)victim).getTamed();
+    public static void checkForTwistedEntities(World world) {
+        /// SPRAWDZA wszystkie entitities na mapie... czy nie za duzo.
+        List list1 = world.entities;
+        for(int j2 = 0; j2 < list1.size(); j2++)
+        {
+            if(list1.get(j2) instanceof LivingEntity twistedEntity)
+            {
+                if(twistedEntity.deathTime > 0 && twistedEntity.vehicle == null && twistedEntity.health > 0) {
+                    twistedEntity.deathTime = 0;
+                }
+            }
+        }
+
     }
-    /// ^ nie obejmuje tamed kotów - jebać koty, trzeba trzymać w domu...
+
+    public static boolean entitiesToIgnore(Entity hunter, Entity victim) {
+        return !(victim instanceof LivingEntity) || (victim instanceof MonsterEntity) && !(hunter instanceof EntityBigCat) && !(victim instanceof EntityWWolf) || victim == hunter || victim == hunter.passenger || victim == hunter.vehicle || (victim instanceof PlayerEntity) || (victim instanceof EntityKittyBed) || (victim instanceof EntityLitterBox) || (victim instanceof WolfEntity) && ((WolfEntity)victim).isTamed() && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (victim instanceof EntityHorse) && ((EntityHorse)victim).getTamed() && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (victim instanceof EntityDolphin) && ((EntityDolphin)victim).getTamed() && !mocr.mocreaturesGlass.huntercreatures.attackdolphins;
+    }
+    ///  opcje dla nie-atakowania bigcats tamed i cats na razie nie ma.
 
     public static boolean entitiesTamedIgnore(Entity hunter, Entity victim) {
         return (hunter instanceof MoCreatureNamed && victim instanceof MoCreatureNamed && ((MoCreatureNamed) hunter).getTamed() && ((MoCreatureNamed) victim).getTamed());

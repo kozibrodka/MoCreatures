@@ -1,6 +1,4 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
+
 
 package net.kozibrodka.mocreatures.entity;
 
@@ -79,11 +77,7 @@ public class EntityWWolf extends MonsterEntity
         List list = world.getEntities(this, boundingBox.expand(d, d, d));
         for(int i = 0; i < list.size(); i++)
         {
-            Entity entity1 = (Entity)list.get(i); //TODO: ignore litter? atakuje wszystko lol???
-//            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityBigCat) || (entity1 instanceof EntityBear) || (entity1 instanceof CowEntity) || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses)
-//            {
-//                continue;
-//            }
+            Entity entity1 = (Entity)list.get(i);
             if(privateToIgnore(this, entity1) || MoCTools.entitiesToIgnore(this, entity1))
             {
                 continue;
@@ -100,8 +94,8 @@ public class EntityWWolf extends MonsterEntity
     }
 
     public boolean privateToIgnore(Entity hunter, Entity victim) {
-        return ((victim instanceof EntityBigCat) || (victim instanceof EntityBear || (victim instanceof CowEntity) || (victim instanceof EntityShark) || (victim instanceof EntityDolphin) || (victim instanceof EntityCrocodile) || (victim instanceof EntityHippo) || (victim instanceof EntityElephant)));
-    } /// Wilki będą atakowane chyba tylko przez Adult Tamed BigCat ze zwierząt. Jako, że są potworem są dosyć "nietykalne"
+        return ((victim instanceof EntityBigCat) || (victim instanceof EntityBear) || (victim instanceof EntityWWolf) || (victim instanceof CowEntity) || (victim instanceof EntityShark) || (victim instanceof EntityDolphin) || (victim instanceof EntityCrocodile) || (victim instanceof EntityHippo) || (victim instanceof EntityElephant));
+    } /// Wilki będą atakowane normalnie jako Animal, mimo, ze są monster (od BigCat w gore)
 
     protected void attack(Entity entity, float f)
     {
@@ -115,6 +109,8 @@ public class EntityWWolf extends MonsterEntity
             }
         }
     }
+
+    /// damage - wilk za słaby na obrone przed krokodylem
 
     public void writeNbt(NbtCompound nbttagcompound)
     {
@@ -165,18 +161,12 @@ public class EntityWWolf extends MonsterEntity
 
     }
 
-    public void markDead()
-    {
-        super.markDead();
-    }
-
     public boolean canSpawn()
     {
         return world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && mocr.mocreaturesGlass.hostilemobs.wwolffreq > 0 && super.canSpawn();
-    }
+    }   /// Brak spawnu w jaskiniach.
 
     mod_mocreatures mocr = new mod_mocreatures();
-//    public boolean wolfboolean;
 
     @Override
     public Identifier getHandlerIdentifier() {

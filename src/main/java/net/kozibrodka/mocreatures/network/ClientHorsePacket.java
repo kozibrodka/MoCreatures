@@ -70,7 +70,8 @@ public class ClientHorsePacket extends Packet implements ManagedPacket<ClientHor
     public void handleClient(NetworkHandler networkHandler) {
         ClientPlayerEntity player = (ClientPlayerEntity) PlayerHelper.getPlayerFromPacketHandler(networkHandler);
         if(player.vehicle != null) {
-            //TODO: MOGĄ przyjsc ZLE dane jak serwer MOCNO zamuli - zobacz o co chodzi
+            //TODO: Raz mi Koń zniknął, jakby przyszły złe kordy. Nie udało mi się odwzorować na DUŻYCH prędkościach i poza granicą załadowanego świata.
+//            System.out.println(this.prePosX + " " + this.prePosY + " " + this.prePosZ);
             player.vehicle.prevX = this.prePosX;
             player.vehicle.prevY = this.prePosY;
             player.vehicle.prevZ = this.prePosZ;

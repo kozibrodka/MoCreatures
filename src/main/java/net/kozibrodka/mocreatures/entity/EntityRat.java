@@ -26,7 +26,6 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider, Mo
     public EntityRat(World world)
     {
         super(world);
-//        texture = "/assets/mocreatures/stationapi/textures/mob/blackrat.png";
         setBoundingBoxSpacing(0.5F, 0.5F);
         health = 10;
         attackDamage = 1;
@@ -215,7 +214,6 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider, Mo
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
-//    public int typeint;
     public boolean typechosen;
 
     @Override

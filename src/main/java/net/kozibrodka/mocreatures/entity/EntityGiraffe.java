@@ -73,7 +73,6 @@ public class EntityGiraffe extends AnimalEntity implements MobSpawnDataProvider 
             }
             entity.damage(this, 2);
         }
-//        super.attack(entity, f);
     }
 
 
@@ -94,11 +93,6 @@ public class EntityGiraffe extends AnimalEntity implements MobSpawnDataProvider 
         {
             return false;
         }
-    }
-
-    public void markDead()
-    {
-        super.markDead();
     }
 
     public void writeNbt(NbtCompound nbttagcompound)

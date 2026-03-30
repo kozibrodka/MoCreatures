@@ -4,14 +4,17 @@ import net.glasslauncher.mods.gcapi3.api.ConfigEntry;
 
 public class HunterCreaturesCFG {
 
-    @ConfigEntry(name="Target horses?", description = "hunters attack tamed horses")
+    @ConfigEntry(name="Target Horses?", description = "hunters attack tamed horses")
     public Boolean attackhorses = false;
 
-    @ConfigEntry(name="Target dogs?", description = "hunters attack tamed dogs")
+    @ConfigEntry(name="Target Dogs?", description = "hunters attack tamed dogs")
     public Boolean attackwolves = false;
 
     @ConfigEntry(name="Spawn near Torches", description = "option to disable spawning of hunters <=8 blocks next to torch")
     public Boolean huntersSpawnOnTorch = true;
+
+    @ConfigEntry(name="Target Dolphins?", description = "hunters attack tamed dolphins")
+    public Boolean attackdolphins = false;
 
     @ConfigEntry(name="Destroy drops?", description = "hunters destroy drops")
     public Boolean destroyitems = false;

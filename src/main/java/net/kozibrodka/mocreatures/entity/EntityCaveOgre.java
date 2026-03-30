@@ -5,9 +5,11 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.Monster;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -77,11 +79,6 @@ public class EntityCaveOgre extends EntityOgre
         return false;
     }
 
-    public void markDead()
-    {
-        super.markDead();
-    }
-
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
@@ -100,7 +97,56 @@ public class EntityCaveOgre extends EntityOgre
     protected int getDroppedItemId()
     {
         return Item.DIAMOND.id;
-    } //TODO: TROCHE KURWA OP???
+    }
+
+    protected void dropItems()
+    {
+        if(mod_mocreatures.mocreaturesGlass.hostilemobs.caveogrediamond){
+            int i = random.nextInt(3);
+            for(int j = 0; j < i; j++)
+            {
+                dropItem(new ItemStack(getDroppedItemId(), 1, 0), 0.0F);
+            }
+        }else{
+            int i = random.nextInt(15);
+            int baseDura = 1200;
+            int randomDura = 360;
+            int betaDura = 100; ///armor durability, minimalnie ~10 chyba moge przestrzelić, ale chuj...
+            switch (i){
+                case 0:
+                    dropItem(new ItemStack(Item.DIAMOND_PICKAXE.id, 1, random.nextInt(randomDura) + baseDura), 0.0F);
+                    break;
+                case 1:
+                    dropItem(new ItemStack(Item.DIAMOND_AXE.id, 1, random.nextInt(randomDura) + baseDura), 0.0F);
+                    break;
+                case 2:
+                    dropItem(new ItemStack(Item.DIAMOND_SHOVEL.id, 1, random.nextInt(randomDura) + baseDura), 0.0F);
+                    break;
+                case 3:
+                    dropItem(new ItemStack(Item.DIAMOND_SWORD.id, 1, random.nextInt(randomDura) + baseDura), 0.0F);
+                    break;
+                case 4:
+                    dropItem(new ItemStack(Item.DIAMOND_HOE.id, 1, random.nextInt(randomDura) + baseDura), 0.0F);
+                    break;
+                case 5:
+                    dropItem(new ItemStack(Item.DIAMOND_HELMET.id, 1, random.nextInt(109) + 253 - betaDura), 0.0F); //363
+                    break;
+                case 6:
+                    dropItem(new ItemStack(Item.DIAMOND_CHESTPLATE.id, 1, random.nextInt(169) + 358 - betaDura), 0.0F); //528
+                    break;
+                case 7:
+                    dropItem(new ItemStack(Item.DIAMOND_LEGGINGS.id, 1, random.nextInt(149) + 345 - betaDura), 0.0F); //495
+                    break;
+                case 8:
+                    dropItem(new ItemStack(Item.DIAMOND_BOOTS.id, 1, random.nextInt(129) + 299 - betaDura), 0.0F); //429
+                    break;
+                case 9,10,11:
+                    dropItem(new ItemStack(Block.COBWEB.id, 1, 0), 0.0F);
+                    break;
+            }
+
+        }
+    }
 
     mod_mocreatures mocr = new mod_mocreatures();
 

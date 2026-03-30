@@ -51,10 +51,6 @@ public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-//            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || height <= entity1.height || width <= entity1.width)
-//            {
-//                continue;
-//            }
             if(privateToIgnore(this, entity1) || MoCTools.entitiesToIgnore(this, entity1))
             {
                 continue;
@@ -172,11 +168,6 @@ public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
             }
         }
 
-    }
-
-    public void markDead()
-    {
-        super.markDead();
     }
 
     public boolean canSpawn()

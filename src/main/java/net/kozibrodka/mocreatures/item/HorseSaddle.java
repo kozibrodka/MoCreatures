@@ -1,6 +1,4 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
+
 
 package net.kozibrodka.mocreatures.item;
 
@@ -32,8 +30,9 @@ public class HorseSaddle extends TemplateItem
         }
     }
 
-    public void postHit(ItemStack itemstack, LivingEntity entityliving)
+    public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker)
     {
-        useOnEntity(itemstack, entityliving);
+        useOnEntity(stack, target);
+        return false;
     }
 }

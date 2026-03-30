@@ -1,6 +1,3 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
 
 package net.kozibrodka.mocreatures.entity;
 
@@ -71,50 +68,6 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
         }
     }
 
-//    public void tickMovement()
-//    {
-//        if(world.difficulty == 1)
-//        {
-//            attackRange = 5D;
-//            force = 3;
-//        } else
-//        if(world.difficulty > 1)
-//        {
-//            attackRange = 8D;
-//            force = 5;
-//        }
-//        super.tickMovement();
-//    }
-
-    public boolean NearSnowWithDistance(Entity entity, Double double1)
-    {
-        Box axisalignedbb = entity.boundingBox.expand(double1.doubleValue(), double1.doubleValue(), double1.doubleValue());
-        int i = MathHelper.floor(axisalignedbb.minX);
-        int j = MathHelper.floor(axisalignedbb.maxX + 1.0D);
-        int k = MathHelper.floor(axisalignedbb.minY);
-        int l = MathHelper.floor(axisalignedbb.maxY + 1.0D);
-        int i1 = MathHelper.floor(axisalignedbb.minZ);
-        int j1 = MathHelper.floor(axisalignedbb.maxZ + 1.0D);
-        for(int k1 = i; k1 < j; k1++)
-        {
-            for(int l1 = k; l1 < l; l1++)
-            {
-                for(int i2 = i1; i2 < j1; i2++)
-                {
-                    int j2 = world.getBlockId(k1, l1, i2);
-                    if(j2 != 0 && Block.BLOCKS[j2].material == Material.SNOW_LAYER)
-                    {
-                        return true;
-                    }
-                }
-
-            }
-
-        }
-
-        return false;
-    }
-
     protected void dropItems()
     {
         int i = random.nextInt(3);
@@ -135,11 +88,6 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
         return 2;
     }
 
-    public void markDead()
-    {
-        super.markDead();
-    }
-
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
@@ -152,11 +100,7 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
 
     public boolean canSpawn()
     {
-//        int i = MathHelper.floor(y);
-//        int j = MathHelper.floor(boundingBox.minY);
-//        int k = MathHelper.floor(velocityX);
-//        return (level.getTileId(i, j - 1, k) == BlockBase.SNOW.id || level.getTileId(i, j, k) == BlockBase.SNOW.id || level.getTileId(i, j - 1, k) == BlockBase.SNOW_BLOCK.id || level.getTileId(i, j, k) == BlockBase.SNOW_BLOCK.id) && mocr.mocreaturesGlass.huntercreatures.pbearfreq > 0 && super.cS2();
-        return NearSnowWithDistance(this, Double.valueOf(1.0D)) && mocr.mocreaturesGlass.huntercreatures.pbearfreq > 0 && !MoCTools.isNearTorch(this) && super.cS2();
+        return MoCTools.NearMaterialWithDistance(this, Double.valueOf(1.0D), Material.SNOW_LAYER) && mocr.mocreaturesGlass.huntercreatures.pbearfreq > 0 && !MoCTools.isNearTorch(this) && super.cS2();
     }
 
     mod_mocreatures mocr = new mod_mocreatures();

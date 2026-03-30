@@ -100,11 +100,9 @@ public class JokeyPacket extends Packet implements ManagedPacket<JokeyPacket> {
             return;
         }
         if(action == 0) {
-            double c = 0.8D;
-            player.velocityY += (0.9D);
-            player.velocityZ -= (0.3D);
-//            System.out.println("DOSZŁO CLIENT.");
-            //todo dlaczego to wyzej niz na singlepl?
+            player.velocityY += 0.9D;
+            player.velocityZ -= 0.3D;
+            /// Wydaje się jakby minimalnie(0,5 serduszka) na serwie wyżej podbijało
         }
         if(action == 1){
             player.swingHand();

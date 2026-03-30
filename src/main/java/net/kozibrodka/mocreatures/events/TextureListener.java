@@ -67,7 +67,7 @@ public class TextureListener {
 //            mod_mocreatures.wildleather.setTexture(Identifier.of(MOD_ID, "item/wildleather"));
 
 
-        if(mod_mocreatures.mocreaturesGlass.balancesettings.spawn_eggs) {
+        if(mod_mocreatures.mocreaturesGlass.othersettings.spawn_eggs) {
             EggListener.egg1.setTexture(Identifier.of(MOD_ID, "item/egg/bear"));
             EggListener.egg2.setTexture(Identifier.of(MOD_ID, "item/egg/bigcat"));
             EggListener.egg3.setTexture(Identifier.of(MOD_ID, "item/egg/bird"));

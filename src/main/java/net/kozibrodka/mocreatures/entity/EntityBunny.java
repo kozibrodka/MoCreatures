@@ -29,16 +29,12 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
     {
         super(world);
         a = false;
-//        adult = true;
-//        setAge(0.5F);
         movementSpeed = 1.5F;
-//        texture = "/assets/mocreatures/stationapi/textures/mob/bunny.png";
         standingEyeHeight = -0.16F;
         setBoundingBoxSpacing(0.4F, 0.4F);
         health = 4;
         j = random.nextInt(64);
         i = 0;
-//        typeint = 0;
         typechosen = false;
         killedByOtherEntity = true;
     }
@@ -46,10 +42,19 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
     @Override
     public boolean shouldRender(double distance) {
         if(getPicked()){
-            return distance < 1024D; //10000D airship  //512 troche malo
+//            return distance < mocr.fullRenderDist;
+            return true;
 
         }else{
             return super.shouldRender(distance);
+        }
+    }
+
+    public void onCollision(Entity otherEntity) {
+        if(vehicle instanceof PlayerEntity && otherEntity == vehicle.vehicle){
+            return;
+        }else {
+            super.onCollision(otherEntity);
         }
     }
 
@@ -270,7 +275,6 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         {
             if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
                 return (double)(standingEyeHeight + 0.49F);
-//                return (double)(standingEyeHeight);
             }else{
                 return (double)(standingEyeHeight - 1.15F);
             }
@@ -321,11 +325,6 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         return false;
     }
 
-    public void markDead()
-    {
-        super.markDead();
-    }
-
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
@@ -366,16 +365,9 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
     mod_mocreatures mocr = new mod_mocreatures();
     public boolean a;
     public float d1;
-//    public boolean picked;
     public int j;
     public int i;
     public boolean pickedSd;
-
-//    public int typeint;
-//    public float edad;
-//    public boolean tamed;
-//    public boolean adult;
-
     public boolean typechosen;
 
     @Override
@@ -478,4 +470,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
 
     @Override
     public String getName() {return "";}
+
+    @Override
+    public String getOwner() {return "";}
 }

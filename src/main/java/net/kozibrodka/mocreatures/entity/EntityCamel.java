@@ -105,17 +105,10 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
             double d3 = MathHelper.cos((yaw * 3.141593F) / 180F);
             for(int i = 0; i < 40; i++)
             {
-//                world.addParticle();
                 if(FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
                     sendPartPacket(world, x + d1 * 3.5D, y + 2.4000000953674316D, z + d3 * 3.5D);
                 }else{
                     sendPartClient(world, x + d1 * 3.5D, y + 2.4000000953674316D, z + d3 * 3.5D);
-
-//                    CREEPSFxSpit creepsfxspit = new CREEPSFxSpit(world, x + d1 * 4.5D, y + 2.4000000953674316D, z + d3 * 4.5D, TextureListener.bubble_particle);
-
-//                    CREEPSFxSpit creepsfxspit = new CREEPSFxSpit(world, x + d1 * 3.5D, y + 2.4000000953674316D, z + d3 * 3.5D, TextureListener.bubble_particle);
-//                    creepsfxspit.renderDistanceMultiplier = 10D;
-//                    addClientParticle(creepsfxspit);
                 }
             }
 
@@ -176,11 +169,6 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
         return Item.LEATHER.id;
     }
 
-    public void markDead()
-    {
-        super.markDead();
-    }
-
     protected void initDataTracker()
     {
         super.initDataTracker();
@@ -221,8 +209,13 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.animals.camelfreq > 0 && super.canSpawn();
+        int var1 = MathHelper.floor(x);
+        int var2 = MathHelper.floor(boundingBox.minY);
+        int var3 = MathHelper.floor(z);
+        return mocr.mocreaturesGlass.animals.camelfreq > 0 && world.getBlockId(var1, var2 - 1, var3) == Block.SAND.id && world.getBrightness(var1, var2, var3) > 8 && getPathfindingFavor(var1, var2, var3) >= 0.0F && world.canSpawnEntity(boundingBox) && world.getEntityCollisions(this, boundingBox).isEmpty() && !world.isBoxSubmergedInFluid(boundingBox);
     }
+
+
 
     mod_mocreatures mocr = new mod_mocreatures();
     public int spittimer;

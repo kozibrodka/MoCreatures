@@ -232,6 +232,10 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                     ropeRemoval(world, this.x,this.y,this.z);
                 }
             }
+            if(roper == null && hasRopeOnNeck){
+                ropeRemoval(world, this.x,this.y,this.z);
+                hasRopeOnNeck = false;
+            }
             if (deathTime == 0 && getHungry()) {
                 ItemEntity entityitem = getClosestItem(this, 12D, Item.RAW_PORKCHOP.id, Item.RAW_FISH.id);
                 if (entityitem != null) {
@@ -406,9 +410,13 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
 
     protected Entity getTargetInRange()
     {
-        if(roper != null && getProtect())
+        if(roper != null) /// Na lince nie poluje. Procect=off - w ogole nie broni.
         {
-            return getMastersEnemy((PlayerEntity)roper, 12D);
+            if(getProtect()) {
+                return getMastersEnemy((PlayerEntity) roper, 12D);
+            }else{
+                return null;
+            }
         }
         if(world.difficulty > 0)
         {
@@ -505,7 +513,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
     {
         if(super.damage(entitybase, i))
         {
-            if(passenger == entitybase || vehicle == entitybase)
+            if(passenger == entitybase || (vehicle == entitybase && !(vehicle instanceof EntityCrocodile)))
             {
                 return true;
             }
@@ -553,7 +561,11 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
         {
             attackCooldown = 20;
-            entity.damage(this, force);
+            if(getAge() > 0.8F){
+                entity.damage(this, force);
+            }else{
+                entity.damage(this, (force/3)); ///małe tygryski mniejszy dmg
+            }
             if(!(entity instanceof PlayerEntity))
             {
                 destroyDrops(this, 3D);
@@ -585,6 +597,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         nbttagcompound.putBoolean("ProtectFromPlayers", getProtect());
         nbttagcompound.putBoolean("Hungry", getHungry());
         nbttagcompound.putBoolean("Eaten", getEaten());
+        nbttagcompound.putBoolean("Roper", hasRopeOnNeck);
     }
 
     public void readNbt(NbtCompound nbttagcompound)
@@ -602,6 +615,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         setProtect(nbttagcompound.getBoolean("ProtectFromPlayers"));
         setHungry(nbttagcompound.getBoolean("Hungry"));
         setEaten(nbttagcompound.getBoolean("Eaten"));
+        hasRopeOnNeck = (nbttagcompound.getBoolean("Roper"));
     }
 
     public boolean interact(PlayerEntity entityplayer)
@@ -669,6 +683,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                 world.playSound(this, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
                 sendSound(world, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
                 roper = entityplayer;
+                hasRopeOnNeck = true;
                 if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
                     sendRopePacket(world, "tiger", this.id, entityplayer.name);
                 }
@@ -679,6 +694,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                 world.playSound(this, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
                 sendSound(world, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
                 roper = null;
+                hasRopeOnNeck = false;
                 if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
                     sendRopePacket(world, "tiger", this.id, "");
                 }
@@ -759,9 +775,9 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         return !getTamed();
     }
 
-    public void markDead()
+    public void markDead() /// Czy to ma jakikolwiek sens??? - bez checku remote, to powoduje duplikaty modelu na client
     {
-        if(getTamed() && health > 0)
+        if(getTamed() && health > 0  && !world.isRemote)
         {
             return;
         } else
@@ -795,7 +811,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.huntercreatures.lionfreq > 0 && !MoCTools.isNearTorch(this) && super.canSpawn(); /// Opcja z pochodniami dodatkowo dla Hunters??? //todo obczaj KOD
+        return mocr.mocreaturesGlass.huntercreatures.lionfreq > 0 && !MoCTools.isNearTorch(this) && super.canSpawn();
     }
 
     public boolean renderName()
@@ -803,16 +819,6 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         return !getName().isEmpty() && getDisplayName() && mocr.mocreaturesGlass.othersettings.displayname;
     }
 
-    public Entity ustawCel(LivingEntity gracz)
-    {
-        this.target = gracz;
-        return null;
-    }
-
-    public void wstanSzybko()
-    {
-        setSitting(false);
-    }
 
     public static void setNameWithGui(EntityBigCat entitybigcat, PlayerEntity entityPlayer)
     {
@@ -835,6 +841,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
     public float lengthF;
     public int maxhealth;
     public LivingEntity roper;
+    public boolean hasRopeOnNeck;
 
     @Override
     public Identifier getHandlerIdentifier() {

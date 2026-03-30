@@ -1,6 +1,3 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
 
 package net.kozibrodka.mocreatures.item;
 
@@ -24,7 +21,7 @@ public class SugarLump extends TemplateItem
 
     public ItemStack use(ItemStack itemstack, World world, PlayerEntity entityplayer)
     {
-        if(mod_mocreatures.mocreaturesGlass.balancesettings.sugar_lump) {
+        if(mod_mocreatures.mocreaturesGlass.othersettings.sugar_lump) {
             itemstack.count--;
             entityplayer.heal(a);
         }

@@ -8,6 +8,7 @@ import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.kozibrodka.mocreatures.network.JokeyPacket;
 import net.kozibrodka.mocreatures.network.RopePacket;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
@@ -16,6 +17,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.SquidEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
@@ -36,9 +38,8 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
         super(world);
         texture = "/assets/mocreatures/stationapi/textures/mob/crocodile.png";
         setBoundingBoxSpacing(2.0F, 0.6F);
-        health = 25; ///malutko
+        health = 35; ///oryg: 25, dodałem mechanice wyzwalania sie z paszczy dla zwierząt, wiec health+
         movementSpeed = 0.5F;
-//        setAge(0.7F);
     }
 
     protected void jump() {
@@ -46,20 +47,17 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
             if(getCaughtPrey() || target == null && random.nextInt(20) != 0) {
                 return;
             }
-
             velocityY = 0.3D;
-//            if(func_35117_Q()) { // jakies funckje z b1.8.1
-//                float f = yaw * 0.01745329F;
-//                velocityX -= (double)(MathHelper.sin(f) * 0.2F);
-//                velocityZ += (double)(MathHelper.cos(f) * 0.2F);
-//            }
-//
-//            field_35118_ao = true;
         } else if(target != null || getCaughtPrey()) {
             super.jump();
         }
 
     }
+
+//    /// ANTY despawn w wodzie - disabled
+//    protected boolean canDespawn() {
+//        return !this.isInFluid(Material.WATER);
+//    }
 
     protected boolean isMovementBlocked() {
         return getIsResting();
@@ -69,7 +67,17 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
         if(!getIsResting()) {
             super.tickLiving();
         }
-
+        if(this.target instanceof PlayerEntity){
+            PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
+            if(uciekinier == null && target.isAlive()){
+                deAgroClock++;
+                if(random.nextInt(200) == 0 && deAgroClock > 300) /// De-Agro mechanic - for Slow Agrresive animals
+                {
+                    target = null;
+                    deAgroClock = 0;
+                }
+            }
+        }
     }
 
     public boolean swimmerEntity() {
@@ -157,7 +165,6 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
 //                setAdult(true);
 //            }
         }
-
         if(waterbound) {
             if(!isInFluid(Material.WATER)) {
                 MoCTools.MoveToWater(this);
@@ -216,9 +223,6 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
         if(isSwimming() && swimmerEntity()) {
             floating();
         }
-//        if(getCaughtPrey() && passenger == null){
-//            setCaughtPrey(false); ///ADDON for rendering
-//        }
         super.tickMovement();
     }
 
@@ -245,8 +249,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
 
     public boolean getIsSitting() {
         double d1 = 0.01D;
-//        return getIsResting() || velocityX < d1 && velocityX > -d1 && velocityZ < d1 && velocityZ > -d1;
-        return getIsResting(); ///dla render client
+        return getIsResting();
     }
 
     public void crocBite() {
@@ -313,12 +316,21 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
         if(world.isRemote){
             return false;
         }
-        if(passenger != null) {
+        if(passenger instanceof PlayerEntity) {
             if(entity != null && passenger == entity) {
                 if(random.nextInt(10) != 0) {
                     return false;
                 }
                 unMount();
+            }
+        } else {
+            if (passenger instanceof LivingEntity) {
+                if (entity != null && passenger == entity) {
+                    if (random.nextInt(200) != 0) { /// 200 - daje przyzwoity random.
+                        return false;
+                    }
+                    unMount();
+                }
             }
         }
 
@@ -371,20 +383,23 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
 
         for(int i = 0; i < list.size(); ++i) {
             Entity entity1 = (Entity)list.get(i);
-            if(!privateToIgnore(this, entity1) || !MoCTools.entitiesToIgnore(this, entity)) { //TODO: CHECK
+                if(privateToIgnore(this, entity1) || MoCTools.entitiesToIgnore(this, entity1))
+                {
+                    continue;
+                }
                 double d2 = entity1.getSquaredDistance(entity.x, entity.y, entity.z);
                 if((d < 0.0D || d2 < d * d) && (d1 == -1.0D || d2 < d1) && ((LivingEntity)entity1).canSee(entity)) {
                     d1 = d2;
                     entityliving = (LivingEntity)entity1;
                 }
-            }
+
         }
 
         return entityliving;
     }
 
     public boolean privateToIgnore(Entity hunter, Entity victim) {
-        return (victim instanceof EntityCustomWM || victim instanceof EntityCustomAquaM || victim instanceof EntityHippo || victim instanceof EntityCrocodile || victim instanceof EntityElephant && ((EntityElephant) victim).getAdult() || victim.height < this.height && victim.width < this.width);
+        return (victim instanceof EntityCustomWM || victim instanceof EntityCustomAquaM || victim instanceof SquidEntity || victim instanceof EntityHippo || victim instanceof EntityCrocodile || victim instanceof EntityElephant && ((EntityElephant) victim).getAdult() || victim.height < this.height && victim.width < this.width);
     } ///Żeby bez sensu nie wpierdalał się do wody, ma zaciągać do wody lądowe.
 
     public boolean entitiesToIgnore(Entity entity) {
@@ -439,8 +454,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
 
     public void onKilledBy(Entity damagesource) {
         unMount();
-//        MoCTools.checkForTwistedEntities();
-        /// dziwny kod, wedlug mnie bez sensu.... Death time powinien obslugiwac JokeyPacket raczej.
+        MoCTools.checkForTwistedEntities(world);
         super.onKilledBy(damagesource);
     }
 
@@ -458,14 +472,14 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
             }
             passenger.setVehicle((Entity)null);
             setCaughtPrey(false);
-            setBiteProgress(0.0F); ///ADDON
+            setBiteProgress(0.0F);
         }
 
     }
 
 
     public boolean isSpinning() {
-        return getCaughtPrey() && isInFluid(Material.WATER); //&& passenger != null
+        return getCaughtPrey() && isInFluid(Material.WATER);
     }
 
 
@@ -500,19 +514,23 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.huntercreatures.crocodilefreq > 0 && !MoCTools.isNearTorch(this) && super.canSpawn(); //todo
+        return mocr.mocreaturesGlass.huntercreatures.crocodilefreq > 0 && !MoCTools.isNearTorch(this) && MoCTools.isNearWater(this) && canSpawnCroc();
+    }
+
+    public boolean canSpawnCroc() /// Spawni róznież na piasku.
+    {
+        int var1 = MathHelper.floor(x);
+        int var2 = MathHelper.floor(boundingBox.minY);
+        int var3 = MathHelper.floor(z);
+        return (world.getBlockId(var1, var2 - 1, var3) == Block.SAND.id || world.getBlockId(var1, var2 - 1, var3) == Block.GRASS.id) && world.getBrightness(var1, var2, var3) > 8 && getPathfindingFavor(var1, var2, var3) >= 0.0F && world.canSpawnEntity(boundingBox) && world.getEntityCollisions(this, boundingBox).isEmpty() && !world.isBoxSubmergedInFluid(boundingBox);
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
-//    public boolean isBiting;
-//    private boolean isResting;
-//    private boolean caughtPrey;
     public float biteProgress;
-    public float spin;
     public int spinInt;
-//    public float edad;
     private boolean waterbound;
     private int hunting;
+    public int deAgroClock;
 
     @Environment(EnvType.SERVER)
     public void sendJokeyPacket(World world, int entityID, int roperID) {

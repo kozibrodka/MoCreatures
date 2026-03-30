@@ -1,6 +1,3 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
 
 package net.kozibrodka.mocreatures.entity;
 
@@ -29,7 +26,6 @@ import java.util.Objects;
 public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
 {
 
-    //TODO: kittybed & litterbox aggro monsters... (only wild-wolf?)
     public EntityKittyBed(World world)
     {
         super(world);
@@ -50,6 +46,14 @@ public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
         if(vehicle != null || !onGround || !mocr.mocreaturesGlass.othersettings.staticbed)
         {
             super.move(d, d1, d2);
+        }
+    }
+
+    public void onCollision(Entity otherEntity) {
+        if(vehicle instanceof PlayerEntity && otherEntity == vehicle.vehicle){
+            return;
+        }else {
+            super.onCollision(otherEntity);
         }
     }
 
@@ -238,11 +242,7 @@ public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
-//    public boolean hasMilk;
-//    public boolean hasFood;
-//    public boolean pickedUp;
-//    public float milklevel;
-//    public int sheetcolour;
+
 
     public void sendSound(World world, String name, float vol, float pit){
         if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){

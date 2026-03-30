@@ -1,7 +1,5 @@
 package net.kozibrodka.mocreatures.entity;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -9,7 +7,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -103,11 +100,6 @@ public class EntityZebra extends AnimalEntity implements MobSpawnDataProvider {
             }
             l++;
         } while(true);
-    }
-
-    public void markDead()
-    {
-        super.markDead();
     }
 
     public void writeNbt(NbtCompound nbttagcompound)

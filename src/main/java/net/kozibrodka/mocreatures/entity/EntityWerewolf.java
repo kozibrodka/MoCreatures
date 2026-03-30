@@ -27,11 +27,10 @@ public class EntityWerewolf extends MonsterEntity
         super(world);
         texture = "/assets/mocreatures/stationapi/textures/mob/werehuman.png";
         setBoundingBoxSpacing(0.9F, 1.3F);
-        setHumanForm(true); //TODO: czy dobre miejsce?
+        setHumanForm(true);
         health = 15;
         transforming = false;
         tcounter = 0;
-//        hunched = false;
         isUndead = true;
     }
 
@@ -379,11 +378,6 @@ public class EntityWerewolf extends MonsterEntity
         return 1;
     }
 
-    public void markDead()
-    {
-        super.markDead();
-    }
-
     public boolean canSpawn()
     {
         return mocr.mocreaturesGlass.hostilemobs.werewolffreq > 0 && world.difficulty >= mocr.mocreaturesGlass.hostilemobs.wereSpawnDifficulty.ordinal() + 1 && super.canSpawn();
@@ -394,10 +388,8 @@ public class EntityWerewolf extends MonsterEntity
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
-//    public boolean humanform; ///
     private boolean transforming;
     private int tcounter;
-//    public boolean hunched; ///
     public boolean isUndead;
 
     @Override

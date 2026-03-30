@@ -54,7 +54,7 @@ public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider
     {
         if(super.damage(entitybase, i))
         {
-            if(passenger == entitybase || vehicle == entitybase)
+            if(passenger == entitybase || (vehicle == entitybase && !(vehicle instanceof EntityCrocodile)))
             {
                 return true;
             }
@@ -112,12 +112,6 @@ public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider
             }
             entity.damage(this, byte0);
         }
-    }
-
-
-    public void markDead()
-    {
-        super.markDead();
     }
 
     public void ustawTexture(String tex){

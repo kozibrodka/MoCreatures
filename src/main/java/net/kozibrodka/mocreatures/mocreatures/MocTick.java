@@ -26,7 +26,6 @@ public class MocTick {
         {
             gameClock = minecraft.world.getTime();
             onTick(minecraft);
-//            mc = minecraft;
         }
         renderTick();
 
@@ -40,6 +39,7 @@ public class MocTick {
         if(freezed){
             renderHaze(0.1F, "/assets/mocreatures/stationapi/textures/particle/maskblue.png");
         }
+        /// czerwony na podpalenie ewentualnie.
         return true;
     }
 
@@ -53,7 +53,6 @@ public class MocTick {
                     poisoncounter = 0;
                     poisoned = false;
                 }
-//                renderHaze(0.2F, "/assets/mocreatures/stationapi/textures/particle/maskgreen.png");
                 MoCTools.disorientEntity(player);
                 if(poisoncounter % 20 == 0) {
                     if(!player.world.isRemote){
@@ -71,7 +70,6 @@ public class MocTick {
                     freezedcounter = 0;
                     freezed = false;
                 }
-//                renderHaze(0.2F, "/assets/mocreatures/stationapi/textures/particle/maskblue.png");
                 MoCTools.slowEntity(player);
                 if(freezedcounter % 20 == 0) {
                     if(!player.world.isRemote){

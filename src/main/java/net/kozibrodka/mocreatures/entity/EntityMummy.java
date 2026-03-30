@@ -4,16 +4,13 @@ package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
-import net.kozibrodka.mocreatures.network.AskPacket;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.MonsterEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 import net.modificationstation.stationapi.api.util.Identifier;
 
@@ -23,7 +20,6 @@ public class EntityMummy extends MonsterEntity implements MobSpawnDataProvider, 
     public EntityMummy(World world)
     {
         super(world);
-//        texture = "/assets/mocreatures/stationapi/textures/mob/mummy.png";
         movementSpeed = 0.4F;
         attackDamage = 3;
         health = random.nextInt(6) + 25;
@@ -68,8 +64,9 @@ public class EntityMummy extends MonsterEntity implements MobSpawnDataProvider, 
         int j = MathHelper.floor(boundingBox.minY);
         int k = MathHelper.floor(z);
         int i1 = world.getBlockId(i, j - 1, k);
-        /// uproszczone bo chyba chodzi o spawnienie w piramidach jakis
-        return (i1 == Block.STONE.id || i1 == Block.SAND.id || i1 == Block.GRAVEL.id || i1 == Block.BEDROCK.id || i1 == Block.SANDSTONE.id) && mocr.mocreaturesGlass.hostilemobs.mummyfreq > 0 && super.canSpawn();
+        /// Moge dac biome pustynia jedynie, albo zostawić to i dac ją tylko na piasku i w podziemiach, mogę ją również dac jak WIlka bez jaskiń.
+//        return (i1 == Block.STONE.id || i1 == Block.SAND.id || i1 == Block.GRAVEL.id || i1 == Block.BEDROCK.id || i1 == Block.SANDSTONE.id) && mocr.mocreaturesGlass.hostilemobs.mummyfreq > 0 && super.canSpawn();
+        return world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && mocr.mocreaturesGlass.hostilemobs.mummyfreq > 0 && super.canSpawn();
     }
 
     public void tickMovement()

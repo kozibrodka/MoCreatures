@@ -30,6 +30,13 @@ public class MocreaturesEggItem extends TemplateItem {
         }
         if(ide == 2){
             huj = new EntityBigCat(arg3);
+            /// anty agro spawn for testing
+            huj.setPositionAndAnglesKeepPrevAngles(i, j, k, arg3.random.nextFloat() * 360F, 0.0F);
+            huj.setPosition(i + 12, j + 1, k);
+            arg3.spawnEntity(huj);
+            ((EntityBigCat)huj).setTypeSpawn();
+            --arg.count;
+            return false;
         }
         if(ide == 3){
             huj = new EntityBird(arg3);
@@ -132,7 +139,7 @@ public class MocreaturesEggItem extends TemplateItem {
             huj = new EntityCrocodile(arg3);
             /// anty agro spawn for testing
             huj.setPositionAndAnglesKeepPrevAngles(i, j, k, arg3.random.nextFloat() * 360F, 0.0F);
-            huj.setPosition(i + 15, j + 1, k);
+            huj.setPosition(i + 12, j + 1, k);
             arg3.spawnEntity(huj);
             ((EntityCrocodile)huj).setTypeSpawn();
             --arg.count;

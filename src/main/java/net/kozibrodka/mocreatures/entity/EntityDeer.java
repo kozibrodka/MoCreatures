@@ -1,6 +1,3 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
 
 package net.kozibrodka.mocreatures.entity;
 
@@ -19,11 +16,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ShovelItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-//import net.modificationstation.stationapi.api.packet.Message;
 import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.HasTrackingParameters;
@@ -54,21 +49,21 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
             if(type == 1)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/deer.png";
-                health = 15;
+                maxhealth = 15;
                 setAdult(true);
                 setAge(2.0F);
             } else
             if(type == 2)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/deerf.png";
-                health = 15;
+                maxhealth = 15;
                 setAdult(true);
                 setAge(2.0F);
             }
             if(type == 3)
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/deerb.png";
-                health = 5;
+                maxhealth = 5;
                 setAdult(false);
                 setAge(0.75F);
             }
@@ -82,7 +77,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
             texture = "/assets/mocreatures/stationapi/textures/mob/deerf.png";
         }else if(i == 3){
             texture = "/assets/mocreatures/stationapi/textures/mob/deerb.png";
-            //todo czy rozmiar bedzie updated? na client, extra
+            /// Czy można ustawić różny Rozmiar entity??? (przyda sie do ww2)
         }
     }
 
@@ -125,6 +120,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
             {
                 int newType = getRandomAdultRace();
                 setType(newType);
+                health = 15;
                 if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
                     adultPacket("deer", this.id, newType);
                 }
@@ -290,7 +286,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         if(!world.isRemote){
             int type = getRandomRace();
             setType(type);
-            //todo: choose health
+            health = maxhealth;
         }
     }
 
@@ -332,54 +328,6 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         return Identifier.of(mod_mocreatures.MOD_ID, "Deer");
     }
 
-    //TODO DEBUG INTERACT
-    public boolean interact(PlayerEntity entityplayer)
-    {
-        ItemStack itemstack = entityplayer.inventory.getSelectedItem();
-        if(itemstack == null){
-            return false;
-        }
-        ///
-        if(itemstack.itemId == Item.DIAMOND_HOE.id)
-        {
-            setAge(getAge() + 0.21F);
-            System.out.println("DEBUG + AGE");
-            return true;
-        }
-        ///
-        if(itemstack.itemId == Item.IRON_HOE.id)
-        {
-            System.out.println("TYPE: " + getType());
-            System.out.println("ADULT? " + getAdult());
-            System.out.println("AGE: " + getAge());
-//            System.out.println("BOX: " + this.width + " " + this.height);
-            return true;
-        }
-        if(itemstack.itemId == Item.GOLDEN_HOE.id && !world.isRemote)
-        {
-            setAge(getAge()+0.2F);
-        }
-        if(itemstack.itemId == mod_mocreatures.sugarlump.id) {
-            if (--itemstack.count == 0) {
-                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
-            }
-            world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-        }
-        if(itemstack.itemId == mod_mocreatures.haystack.id && !world.isRemote) {
-            if (--itemstack.count == 0) {
-                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
-            }
-            world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-        }
-        if(itemstack.itemId == mod_mocreatures.petfood.id && world.isRemote) {
-            if (--itemstack.count == 0) {
-                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
-            }
-            world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-        }
-        return false;
-    }
-
     public boolean canSpawn()
     {
         return mocr.mocreaturesGlass.animals.deerfreq > 0 && super.canSpawn();
@@ -387,6 +335,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
 
     mod_mocreatures mocr = new mod_mocreatures();
     public boolean typechosen;
+    public int maxhealth;
 
     @Environment(EnvType.SERVER)
     public void adultPacket(String name, int id, int type) {

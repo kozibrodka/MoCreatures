@@ -45,10 +45,10 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
         hippoClock++;
     }
 
-    protected boolean canDespawn() {
-//        return !this.checkWaterCollisions();
-        return !this.isInFluid(Material.WATER);
-    }
+//    /// ANTY despawn w wodzie - disabled
+//    protected boolean canDespawn() {
+//        return !this.isInFluid(Material.WATER);
+//    }
 
     protected void tickLiving(){
         if(checkWaterCollisions())
@@ -58,6 +58,17 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
         if((double)standingEyeHeight < 0.0050000000000000001D)
         {
             standingEyeHeight += 0.005F;
+        }
+        if(this.target instanceof PlayerEntity){
+            PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
+            if(uciekinier == null && target.isAlive()){
+                deAgroClock++;
+                if(random.nextInt(200) == 0 && deAgroClock > 300) /// De-Agro mechanic - for Slow Agrresive animals
+                {
+                    target = null;
+                    deAgroClock = 0;
+                }
+            }
         }
         super.tickLiving();
     }
@@ -105,10 +116,6 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-//            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof EntityHippo) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityElephant))
-//            {
-//                continue;
-//            }
             if(privateToIgnore(this, entity1) || MoCTools.entitiesToIgnore(this, entity1))
             {
                 continue;
@@ -126,7 +133,7 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
 
     public boolean privateToIgnore(Entity hunter, Entity victim) {
         return ((victim instanceof EntityHippo) || (victim instanceof EntityElephant) && ((EntityElephant)victim).getAdult() || (victim instanceof EntityShark) || victim.width < 0.6F && victim.height < 0.6F);
-    } /// Zobaczymy, ogólnie Rekin atakujący wszystko może być przeginką
+    }
 
     protected void attack(Entity entity, float f)
     {
@@ -151,7 +158,7 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
     {
         if(super.damage(entitybase, i))
         {
-            if(passenger == entitybase || vehicle == entitybase)
+            if(passenger == entitybase || (vehicle == entitybase && !(vehicle instanceof EntityCrocodile)))
             {
                 return true;
             }
@@ -164,11 +171,6 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
         {
             return false;
         }
-    }
-
-    public void markDead()
-    {
-        super.markDead();
     }
 
     public void writeNbt(NbtCompound nbttagcompound)
@@ -225,7 +227,15 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.huntercreatures.hippofreq > 0 && !MoCTools.isNearTorch(this) && super.canSpawn();
+        return mocr.mocreaturesGlass.huntercreatures.hippofreq > 0 && !MoCTools.isNearTorch(this) && MoCTools.isNearWater(this) && canSpawnCroc();
+    }
+
+    public boolean canSpawnCroc() /// Spawni róznież na piasku.
+    {
+        int var1 = MathHelper.floor(x);
+        int var2 = MathHelper.floor(boundingBox.minY);
+        int var3 = MathHelper.floor(z);
+        return (world.getBlockId(var1, var2 - 1, var3) == Block.SAND.id || world.getBlockId(var1, var2 - 1, var3) == Block.GRASS.id) && world.getBrightness(var1, var2, var3) > 8 && getPathfindingFavor(var1, var2, var3) >= 0.0F && world.canSpawnEntity(boundingBox) && world.getEntityCollisions(this, boundingBox).isEmpty() && !world.isBoxSubmergedInFluid(boundingBox);
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
@@ -235,4 +245,5 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
 
     public boolean hungry;
     public int hippoClock;
+    public int deAgroClock;
 }

@@ -10,6 +10,15 @@ public class AnimalsCFG {
     @ConfigEntry(name="Spawn Mouse Indoors")
     public Boolean mouseinhouse = true;
 
+    @ConfigEntry(name="Horse Drop Saddle")
+    public Boolean horse_saddle_drop = false;
+
+    @ConfigEntry(name="Horse speed boost glitch", description = "While player has mouse, bunny or bird on his head")
+    public Boolean horse_speed_glitch = false;
+
+    @ConfigEntry(name="Horse Fuel system", description = "Press H while riding horse to open stomach and put HayStack or SugarLump inside")
+    public Boolean horse_fuel = false;
+
     @ConfigEntry(name="Pegasus chance", maxValue = 3)
     public Integer pegasusChanceS = 1;
 

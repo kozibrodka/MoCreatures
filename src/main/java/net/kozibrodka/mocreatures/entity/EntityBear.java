@@ -34,19 +34,6 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
         attackRange = 16D;
     }
 
-//    protected void tickLiving(){ //TODO: Stara Logika która myślałem, że ma sens. Usunięta wszędzie. MOŻE MIEĆ SENS DLA MOBÓW PRZED KTÓRYMI ŁATWO UCIEĆ!!! HIPPO + CROC
-//        if(this.target instanceof PlayerEntity){
-//            PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
-//            if(uciekinier == null && target.isAlive()){
-//                if(random.nextInt(200) == 0) //30
-//                {
-//                    target = null;
-//                }
-//            }
-//        }
-//        super.tickLiving();
-//    }
-
     protected Entity getTargetInRange()
     {
         if(world.difficulty > 0)
@@ -77,10 +64,6 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-//            if(!(entity1 instanceof LivingEntity) || entity1 == entity || entity1 == entity.passenger || entity1 == entity.vehicle || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityBear) || (entity1 instanceof EntityBigCat) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses)
-//            {
-//                continue;
-//            }
             if(privateToIgnore(this, entity1) || MoCTools.entitiesToIgnore(this, entity1))
             {
                 continue;
@@ -97,14 +80,14 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
     }
 
     public boolean privateToIgnore(Entity hunter, Entity victim) {
-        return ((victim instanceof EntityBear) || (victim instanceof EntityBigCat) || (victim instanceof EntityShark) || (victim instanceof EntityDolphin) || (victim instanceof EntityCrocodile) || (victim instanceof EntityHippo) || (victim instanceof EntityElephant));
+        return ((victim instanceof EntityBear) || (victim instanceof EntityBigCat) || (victim instanceof EntityShark) || (victim instanceof EntityWWolf) || (victim instanceof EntityDolphin) || (victim instanceof EntityCrocodile) || (victim instanceof EntityHippo) || (victim instanceof EntityElephant));
     }
 
     public boolean damage(Entity entitybase, int i)
     {
         if(super.damage(entitybase, i))
         {
-            if(passenger == entitybase || vehicle == entitybase)
+            if(passenger == entitybase || (vehicle == entitybase && !(vehicle instanceof EntityCrocodile)))
             {
                 return true;
             }
@@ -193,11 +176,6 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
             }
         }
 
-    }
-
-    public void markDead()
-    {
-        super.markDead();
     }
 
     public boolean cS2()

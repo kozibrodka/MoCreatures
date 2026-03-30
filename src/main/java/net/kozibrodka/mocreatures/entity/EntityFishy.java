@@ -1,15 +1,12 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
 
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCTools;
+import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -20,36 +17,20 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 
 import java.util.List;
 
-public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider, MoCreatureRacial
+public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider, MoCreatureRacial, MoCreatureNamed
         ///extends EntityCustomWM or EntityCustomAquaM
-
-        /// Piranha nie goni idealnie prawidłowo gdy nurkujesz.
+        /// Piranha nie goni idealnie prawidłowo gdy nurkujesz w systemie Aqua.
 {
 
     public EntityFishy(World world)
     {
         super(world);
-//        texture = "/assets/mocreatures/stationapi/textures/mob/fishy1.png";
         setBoundingBoxSpacing(0.3F, 0.3F);
         health = 4;
-//        typeint = 0;
         typechosen = false;
-//        setAge(1.0F); //TODO NIE TUTAJ NA PEWNO
-//        adult = false;
-//        tamed = false;
         killedByOtherEntity = true;
-//        standingEyeHeight = 1.0F; //TODO TEST
     }
 
-//    public void setTame()
-//    {
-//        setTamed(true);
-//    }
-//
-//    public boolean istamed()
-//    {
-//        return getTamed();
-//    }
 
     public void tickMovement()
     {
@@ -69,7 +50,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
                 setAdult(true);
             }
         }
-        if(!ReadyforParenting(this)) //TODO: Rozmnożenie nigdy nie zajdzie - check jak było z modzie.
+        if(!ReadyforParenting(this)) /// Rozmnożenie nigdy nie zajdzie, zostawiam kod.
         {
             return;
         }
@@ -136,18 +117,6 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         return entityfishy.getTamed() && entityfishy.eaten && entityfishy.getAdult();
     }
 
-    protected void tickLiving(){
-        if(this.target instanceof PlayerEntity){ //TODO: do wyjebanie
-            PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
-            if(uciekinier == null && target.isAlive()){
-                if(random.nextInt(30) == 0)
-                {
-                    target = null;
-                }
-            }
-        }
-        super.tickLiving();
-    }
 
     protected Entity getTargetInRange()
     {
@@ -178,11 +147,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-//            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityCustomWM) || (entity1 instanceof EntitySharkEgg) || (entity1 instanceof EntityFishyEgg) || (entity1 instanceof PlayerEntity) || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves)
-//            {
-//                continue;
-//            }
-            if(privateToIgnore(this, entity1) || MoCTools.entitiesToIgnore(this, entity1))
+            if(privateToIgnore(this, entity1) || MoCTools.entitiesToIgnore(this, entity1) || MoCTools.entitiesTamedIgnore(this, entity1))
             {
                 continue;
             }
@@ -199,11 +164,11 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
 
     public boolean privateToIgnore(Entity hunter, Entity victim) {
         return ((victim instanceof EntityCustomWM) || (victim instanceof EntityCustomAquaM) || (victim instanceof EntitySharkEgg) || (victim instanceof EntityFishyEgg) || victim.width > 0.7F);
-    } /// nie uwzględniam Tamed Piranii. Szansa jeden na milion, że będzie problem z tym.        >0.7 - nic wiekszego od gracza nie dziabnie
+    }
 
     public void markDead()
     {
-        if(getTamed() && health > 0)
+        if(getTamed() && health > 0 && !world.isRemote)
         {
             return;
         } else
@@ -385,12 +350,6 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
 
     public int gestationtime;
     public boolean eaten;
-
-//    public int typeint;
-//    public float b;
-//    public boolean adult;
-//    public boolean tamed;
-
     public boolean typechosen;
 
     @Override
@@ -446,10 +405,16 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
             dataTracker.set(18, (byte) 0);
         }
     }
+
     //TAMED
     public boolean getTamed()
     {
         return (dataTracker.getByte(19) & 1) != 0;
+    }
+
+    @Override
+    public String getOwner() {
+        return "";
     }
 
     public void setTamed(boolean flag)
@@ -462,4 +427,11 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
             dataTracker.set(19, (byte) 0);
         }
     }
+
+    @Override
+    public void setName(String name) {}
+
+    @Override
+    public String getName() {return "";}
+
 }

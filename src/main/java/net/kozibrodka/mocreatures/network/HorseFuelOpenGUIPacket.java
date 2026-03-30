@@ -53,7 +53,7 @@ public class HorseFuelOpenGUIPacket extends Packet implements ManagedPacket<Hors
     @Environment(EnvType.CLIENT)
     private void handleClient(NetworkHandler networkHandler) {
         PlayerEntity player = PlayerHelper.getPlayerFromPacketHandler(networkHandler);
-        if (player == null || !(player.vehicle instanceof EntityHorse) || !mocr.mocreaturesGlass.balancesettings.horse_fuel) return;
+        if (player == null || !(player.vehicle instanceof EntityHorse) || !mocr.mocreaturesGlass.animals.horse_fuel) return;
         EntityHorse airship = (EntityHorse) player.vehicle;
 
         GuiHelper.openGUI(
@@ -67,7 +67,7 @@ public class HorseFuelOpenGUIPacket extends Packet implements ManagedPacket<Hors
     @Environment(EnvType.SERVER)
     public void handleServer(NetworkHandler networkHandler) {
         PlayerEntity player = PlayerHelper.getPlayerFromPacketHandler(networkHandler);
-        if (player == null || !(player.vehicle instanceof EntityHorse) || !mocr.mocreaturesGlass.balancesettings.horse_fuel) return;
+        if (player == null || !(player.vehicle instanceof EntityHorse) || !mocr.mocreaturesGlass.animals.horse_fuel) return;
         EntityHorse airship = (EntityHorse) player.vehicle;
 
         GuiHelper.openGUI(

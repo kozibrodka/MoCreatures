@@ -41,15 +41,8 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         super(world);
         texture = "/assets/mocreatures/stationapi/textures/mob/shark.png";
         setBoundingBoxSpacing(1.8F, 1.3F);
-//        b = 1.0F + random.nextFloat();
-//        adult = false;
-//        tamed = false;
         health = 25;
         maxhealth = 25;
-//        name = "";
-//        displayname = false;
-//        sharkOwner = "";
-//        protectFromPlayers = true;
         typechosen = false;
     }
 
@@ -114,10 +107,6 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-//            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityShark) || (entity1 instanceof EntitySharkEgg) || (entity1 instanceof PlayerEntity) || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof EntityDolphin) && (getTamed() || !mocr.mocreaturesGlass.watermobs.attackdolphins) || (entity1 instanceof EntityHorse) && getTamed() && ((EntityHorse) entity1).getTamed() || (entity1 instanceof EntityBigCat) && getTamed() && ((EntityBigCat) entity1).getTamed())
-//            {
-//                continue;
-//            }
             if(privateToIgnore(this, entity1) || MoCTools.entitiesToIgnore(this, entity1) || MoCTools.entitiesTamedIgnore(this, entity1))
             {
                 continue;
@@ -134,14 +123,14 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
     }
 
     public boolean privateToIgnore(Entity hunter, Entity victim) {
-        return ((victim instanceof EntityShark) || (victim instanceof EntitySharkEgg) || (victim instanceof SquidEntity) || (hunter.y - victim.y > 6.0D)); /// (victim instanceof EntityDolphin) && !mocr.mocreaturesGlass.watermobs.attackdolphins
-    } /// Dziki Rekin Bardzo agrewywny jest w takim ustawieniu.
+        return ((victim instanceof EntityShark) || (victim instanceof EntitySharkEgg) || (victim instanceof SquidEntity) || (hunter.y - victim.y > 6.0D) || (victim instanceof EntityDolphin) && !mocr.mocreaturesGlass.watermobs.attackdolphins || victim instanceof EntityElephant && ((EntityElephant) victim).getAdult() || victim instanceof EntityHippo || (victim instanceof EntityCrocodile) && ((EntityCrocodile) victim).getAge() > 1.2F);
+    } /// Dziki rekin jest zbalansowanie agresywny.
 
     public boolean damage(Entity entitybase, int i)
     {
         if(super.damage(entitybase, i) && world.difficulty > 0)
         {
-            if(passenger == entitybase || vehicle == entitybase)
+            if(passenger == entitybase || (vehicle == entitybase && !(vehicle instanceof EntityCrocodile)))
             {
                 return true;
             }
@@ -295,20 +284,6 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
             }
             return true;
         }
-//        if(itemstack !=null && entityplayer.name.equals(getOwner()) && getTamed() && itemstack.itemId == mod_mocreatures.sharkfood.id)
-//        {
-//            if(--itemstack.count == 0)
-//            {
-//                entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
-//            }
-//            if(health + 15 > maxhealth)
-//            {
-//                health = maxhealth;
-//            }else{
-//                health += 15;
-//            }
-//            return true;
-//        }
         if(itemstack != null && getTamed() && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == Item.BOOK.id))
         {
             setNameWithGui(this, entityplayer);
@@ -326,7 +301,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
 
     public void markDead()
     {
-        if(getTamed() && health > 0)
+        if(getTamed() && health > 0  && !world.isRemote)
         {
             return;
         } else
@@ -378,13 +353,6 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
 
 
     mod_mocreatures mocr = new mod_mocreatures();
-//    public boolean protectFromPlayers;
-//    public String sharkOwner;
-//    public String name;
-//    public boolean displayname;
-//    public float b;
-//    public boolean adult;
-//    public boolean tamed;
     public int maxhealth;
     public boolean typechosen;
 

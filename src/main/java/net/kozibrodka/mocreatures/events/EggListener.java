@@ -83,7 +83,7 @@ public class EggListener {
 
     @EventListener
     public void registerItems(ItemRegistryEvent event) {
-        if(mod_mocreatures.mocreaturesGlass.balancesettings.spawn_eggs){
+        if(mod_mocreatures.mocreaturesGlass.othersettings.spawn_eggs){
             egg1 = new MocreaturesEggItem(Identifier.of(MOD_ID, "Bear_egg"), 1).setTranslationKey(MOD_ID, "Bear_egg");
             egg2 = new MocreaturesEggItem(Identifier.of(MOD_ID, "BigCat_egg"), 2).setTranslationKey(MOD_ID, "BigCat_egg");
             egg3 = new MocreaturesEggItem(Identifier.of(MOD_ID, "Bird_egg"), 3).setTranslationKey(MOD_ID, "Bird_egg");

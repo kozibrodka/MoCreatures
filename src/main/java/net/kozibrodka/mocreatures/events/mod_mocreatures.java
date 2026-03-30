@@ -2,13 +2,12 @@ package net.kozibrodka.mocreatures.events;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.FabricLoader;
 import net.glasslauncher.mods.gcapi3.api.ConfigRoot;
+import net.kozibrodka.mocreatures.entity.EntityBunny;
 import net.kozibrodka.mocreatures.glasscfg.MocreaturesCFG;
 import net.kozibrodka.mocreatures.item.*;
+import net.kozibrodka.mocreatures.mixin.AchievementPageAccessor;
 import net.kozibrodka.mocreatures.network.*;
-import net.kozibrodka.wolves.events.ItemListener;
-import net.kozibrodka.wolves.items.RefinedArmorItem;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.mine_diver.unsafeevents.listener.ListenerPriority;
 import net.minecraft.achievement.Achievements;
@@ -16,7 +15,6 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stat.Stat;
 import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.client.gui.screen.achievement.AchievementPage;
 import net.modificationstation.stationapi.api.event.achievement.AchievementRegisterEvent;
@@ -34,7 +32,9 @@ import net.modificationstation.stationapi.api.util.Namespace;
 import net.modificationstation.stationapi.api.util.Null;
 import net.minecraft.achievement.Achievement;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class mod_mocreatures {
 
@@ -43,9 +43,6 @@ public class mod_mocreatures {
 
     @Entrypoint.Namespace
     public static Namespace MOD_ID = Null.get();
-
-    //TODO: horse faliing DMG crazy speed boost,
-
 
     @Environment(EnvType.SERVER)
     public void particlePacket(World world, String name, double x, double y, double z, double i, double j, double k) {
@@ -105,34 +102,39 @@ public class mod_mocreatures {
     public static Achievement RobertMaklowicz;
 
 
-    @EventListener //(priority = ListenerPriority.HIGHEST)
+    @EventListener (priority = ListenerPriority.LOWEST)
     public void registerAchievements(AchievementRegisterEvent event) {
-        Indiana = new Achievement(77, MOD_ID.id("indiana").toString(), -4, -4, mod_mocreatures.whip, Achievements.OPEN_INVENTORY).addStat();
-        BunnyKilla = new Achievement(78, MOD_ID.id("bunnykilla").toString(), -5, -5, mod_mocreatures.whip, Achievements.OPEN_INVENTORY).addStat();
-        //TODO: extra example achievement, make not retarded names
+        Indiana = new Achievement(77, MOD_ID+(".indiana").toString(), -4, -4, mod_mocreatures.whip, Achievements.OPEN_INVENTORY).addStat();
+        BunnyKilla = new Achievement(78, MOD_ID+(".bunnykilla").toString(), -5, -5, mod_mocreatures.whip, Achievements.OPEN_INVENTORY).addStat();
+        //TODO: extra example achievement, make not retarded names - LANG names...
 //        WilfFlyingWest = new Achievement(79, MOD_ID.id("wildflyingwest").toString(), -6, -6, mod_mocreatures.horsesaddle, Achievements.OPEN_INVENTORY).method_1041();
 //        RobertMaklowicz = new Achievement(80, MOD_ID.id("robertmaklowicz").toString(), -7, -7, BlockBase.FLOWING_WATER, Achievements.OPEN_INVENTORY).method_1041();
+//
+//        BunnyKilla.challenge();
+//        Indiana.challenge();
 
-        BunnyKilla.challenge();
-        Indiana.challenge();
 
 
+        final ArrayList<Achievement> MOCRACHIEVEMENTS = new ArrayList<>();
 
-        event.achievements.add(BunnyKilla);
-        event.achievements.add(Indiana);
+        MOCRACHIEVEMENTS.add(BunnyKilla);
+        MOCRACHIEVEMENTS.add(Indiana);
 
-        Achievements.initialize();
-//        WilfFlyingWest.setUnusual();
-//        RobertMaklowicz.setUnusual();
+        AchievementPage vanillaPage = null;
+        List list = AchievementPageAccessor.getPAGES();
+        for(int j2 = 0; j2 < list.size(); j2++)
+        {
+            if(Objects.equals(((AchievementPage) list.get(j2)).name(), "stationapi.minecraft"))
+            {
+                vanillaPage = (AchievementPage)list.get(j2);
+            }
+        }
 
-        /* A few options below for adding achievements */
-//        event.achievements.add(Indiana);
-//        event.achievements.add(BunnyKilla);
+        if(vanillaPage != null) {
+            vanillaPage.addAchievements(MOCRACHIEVEMENTS.toArray(Achievement[]::new));
+        }
 
-//        AchievementPage achievementPage = new MoCreaturesAchievementPage(MOD_ID.id("mocreaturesAchievements"));
-//        event.achievements.addAll(MoCreaturesAchievementPage.ACHIEVEMENTS);
-//        achievementPage.addAchievements(MoCreaturesAchievementPage.ACHIEVEMENTS.toArray(Achievement[]::new));
-//        MoCreaturesAchievementPage.ACHIEVEMENTS.forEach(Stat::addStat);
+
     }
 
     @EventListener
@@ -155,9 +157,9 @@ public class mod_mocreatures {
         elephanttusk = new TemplateItem(Identifier.of(MOD_ID, "elephanttusk")).setTranslationKey(MOD_ID, "elephanttusk").setMaxCount(8);
         megalodonteeth = new TemplateItem(Identifier.of(MOD_ID, "megalodonteeth")).setTranslationKey(MOD_ID, "megalodonteeth").setMaxCount(16);
         polarleather = new TemplateItem(Identifier.of(MOD_ID, "polarleather")).setTranslationKey(MOD_ID, "polarleather");
-//        baobabfruit = new FruitBaobab(Identifier.of(MOD_ID, "baobabfruit")).setTranslationKey(MOD_ID, "baobabfruit");
+//        baobabfruit = new TemplateItem(Identifier.of(MOD_ID, "baobabfruit")).setTranslationKey(MOD_ID, "baobabfruit");
 
-        crochide = new FruitBaobab(Identifier.of(MOD_ID, "crochide")).setTranslationKey(MOD_ID, "crochide");
+        crochide = new TemplateItem(Identifier.of(MOD_ID, "crochide")).setTranslationKey(MOD_ID, "crochide");
         helmetcroc = new CrocHideArmorItem(MOD_ID.id("helmetcroc"), 0).setTranslationKey(MOD_ID, "helmetcroc");
         platecroc = new CrocHideArmorItem(MOD_ID.id("platecroc"), 1).setTranslationKey(MOD_ID, "platecroc");
         legscroc = new CrocHideArmorItem(MOD_ID.id("legscroc"), 2).setTranslationKey(MOD_ID, "legscroc");
@@ -202,11 +204,11 @@ public class mod_mocreatures {
         CraftingRegistry.addShapedRecipe(new ItemStack(Item.CHAIN_BOOTS, 1), "X X", "X X", 'X', sharkteeth);
 
         CraftingRegistry.addShapedRecipe(new ItemStack(horsesaddle, 1), "X", "#", 'X', Item.SADDLE, '#', Item.IRON_INGOT);
-        if(mocreaturesGlass.balancesettings.easy_saddle_recipe) {
+        if(mocreaturesGlass.othersettings.easy_saddle_recipe) {
             CraftingRegistry.addShapedRecipe(new ItemStack(horsesaddle, 1), "XXX", "X#X", "# #", '#', Item.IRON_INGOT, 'X', Item.LEATHER);
         }
         CraftingRegistry.addShapedRecipe(new ItemStack(medallion, 1), "# #", "XZX", " X ", '#', Item.LEATHER, 'Z', Item.DIAMOND, 'X', Item.GOLD_INGOT);
-        if(mocreaturesGlass.balancesettings.easy_medallion_recipe) {
+        if(mocreaturesGlass.othersettings.easy_medallion_recipe) {
             CraftingRegistry.addShapedRecipe(new ItemStack(medallion, 1), "# #", " X ", '#', Item.LEATHER, 'X', Item.GOLD_INGOT);
         }
 
@@ -255,5 +257,7 @@ public class mod_mocreatures {
     public static Item helmetcroc;
     public static Item legscroc;
     public static Item bootscroc;
+
+    public static double fullRenderDist = 25000D; ///10000D airship 512/1024 troche malo  TRUE - może lepiej?
 
 }

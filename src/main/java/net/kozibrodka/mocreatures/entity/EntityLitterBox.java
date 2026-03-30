@@ -1,6 +1,3 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
 
 package net.kozibrodka.mocreatures.entity;
 
@@ -83,6 +80,14 @@ public class EntityLitterBox extends LivingEntity implements MobSpawnDataProvide
         if(vehicle != null || !onGround || !mocr.mocreaturesGlass.othersettings.staticlitter)
         {
             super.move(d, d1, d2);
+        }
+    }
+
+    public void onCollision(Entity otherEntity) {
+        if(vehicle instanceof PlayerEntity && otherEntity == vehicle.vehicle){
+            return;
+        }else {
+            super.onCollision(otherEntity);
         }
     }
 
@@ -225,7 +230,6 @@ public class EntityLitterBox extends LivingEntity implements MobSpawnDataProvide
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
-//    public boolean usedlitter;
     public boolean pickedUp; ///useless?
     public int littertime;
 

@@ -4,6 +4,22 @@ import net.glasslauncher.mods.gcapi3.api.ConfigEntry;
 import net.kozibrodka.mocreatures.glasscfg.enums.DifficultyEnum;
 
 public class HostileMobsCFG {
+
+    @ConfigEntry(name="§6Fire Ogre Explosions Destroy Blocks")
+    public Boolean explodefireogre = true;
+
+    @ConfigEntry(name="§6Cave Ogre Explosions Destroy Blocks")
+    public Boolean explodecaveogre = true;
+
+    @ConfigEntry(name="§6Ogre Explosions Destroy Blocks")
+    public Boolean explodeogre = true;
+
+    @ConfigEntry(name="§6Fire Ogre Ignite Blocks")
+    public Boolean igniteogre = true;
+
+    @ConfigEntry(name="§bCave Ogre Drop Diamonds", description = "Disable to get more balanced drops - damaged diamond tools")
+    public Boolean caveogrediamond = true;
+
     @ConfigEntry(name="Spawn Ogre Difficulty")
     public DifficultyEnum ogreSpawnDifficulty = DifficultyEnum.NORMAL;
 
@@ -21,18 +37,6 @@ public class HostileMobsCFG {
 
     @ConfigEntry(name="Spawn FlameWraith Difficulty")
     public DifficultyEnum fwraithSpawnDifficulty = DifficultyEnum.HARD;
-
-    @ConfigEntry(name="Fire Ogre Explosions")
-    public Boolean explodefireogre = true;
-
-    @ConfigEntry(name="Cave Ogre Explosions")
-    public Boolean explodecaveogre = true;
-
-    @ConfigEntry(name="Ogre Explosions")
-    public Boolean explodeogre = true;
-
-    @ConfigEntry(name="Fire Ogre Ignite")
-    public Boolean igniteogre = true;
 
     @ConfigEntry(name="Ogre Strength", maxValue = 5.0F)
     public Float ogreStrength = 2.5F;

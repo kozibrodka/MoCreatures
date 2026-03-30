@@ -1,6 +1,3 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
 
 package net.kozibrodka.mocreatures.entity;
 
@@ -33,10 +30,8 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
     public EntityMouse(World world)
     {
         super(world);
-//        texture = "/assets/mocreatures/stationapi/textures/mob/miceg.png";
         setBoundingBoxSpacing(0.3F, 0.3F);
         health = 4;
-//        picked = false;
     }
 
     public int getRandomRace(){
@@ -73,7 +68,8 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
     @Override
     public boolean shouldRender(double distance) {
         if(getPicked()){
-            return distance < 1024D; //10000D airship  //512 troche malo
+//            return distance < mocr.fullRenderDist;
+            return true;
 
         }else{
             return super.shouldRender(distance);
@@ -108,6 +104,15 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
             setClimbing(false);
         }
     }
+
+    public void onCollision(Entity otherEntity) {
+        if(vehicle instanceof PlayerEntity && otherEntity == vehicle.vehicle){
+            return;
+        }else {
+            super.onCollision(otherEntity);
+        }
+    }
+
 
     private void checkFertility()
     {
@@ -272,7 +277,7 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         int i = MathHelper.floor(x);
         int j = MathHelper.floor(boundingBox.minY);
         int k = MathHelper.floor(z);
-        return mocr.mocreaturesGlass.animals.micefreq > 0 && world.canSpawnEntity(boundingBox) && world.getEntityCollisions(this, boundingBox).size() == 0 && !world.isBoxSubmergedInFluid(boundingBox) && world.getBlockId(i, j - 1, k) == Block.COBBLESTONE.id && mocr.mocreaturesGlass.animals.mouseinhouse || world.getBlockId(i, j - 1, k) == Block.PLANKS.id && mocr.mocreaturesGlass.animals.mouseinhouse || world.getBlockId(i, j - 1, k) == Block.DIRT.id || world.getBlockId(i, j - 1, k) == Block.STONE.id  && mocr.mocreaturesGlass.animals.mouseinhouse || world.getBlockId(i, j - 1, k) == Block.GRASS_BLOCK.id;
+        return mocr.mocreaturesGlass.animals.micefreq > 0 && world.canSpawnEntity(boundingBox) && world.getEntityCollisions(this, boundingBox).isEmpty() && !world.isBoxSubmergedInFluid(boundingBox) && world.getBlockId(i, j - 1, k) == Block.COBBLESTONE.id && mocr.mocreaturesGlass.animals.mouseinhouse || world.getBlockId(i, j - 1, k) == Block.PLANKS.id && mocr.mocreaturesGlass.animals.mouseinhouse || world.getBlockId(i, j - 1, k) == Block.DIRT.id || world.getBlockId(i, j - 1, k) == Block.STONE.id  && mocr.mocreaturesGlass.animals.mouseinhouse || world.getBlockId(i, j - 1, k) == Block.GRASS_BLOCK.id;
     }
 
     protected String getRandomSound()
@@ -305,9 +310,6 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
     mod_mocreatures mocr = new mod_mocreatures();
     private boolean fertile;
     private int micetimer;
-
-//    public int typeint;
-//    public boolean picked;
 
     public boolean typechosen;
 

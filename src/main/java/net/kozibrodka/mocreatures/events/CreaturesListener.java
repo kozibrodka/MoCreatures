@@ -22,7 +22,7 @@ public class CreaturesListener {
     public static Namespace MOD_ID = Null.get();
 
     @EventListener
-    private static void registerEntities(EntityRegister event) { //TODO - MULTIPLAYER
+    private static void registerEntities(EntityRegister event) {
         event.register(EntityBear.class, String.valueOf(Identifier.of(MOD_ID, "Bear")));
         event.register(EntityBird.class, String.valueOf(Identifier.of(MOD_ID, "Bird")));
         event.register(EntityBoar.class, String.valueOf(Identifier.of(MOD_ID, "Boar")));  
@@ -44,7 +44,7 @@ public class CreaturesListener {
         event.register(EntityRat.class, String.valueOf(Identifier.of(MOD_ID, "Rat")));
         event.register(EntityShark.class, String.valueOf(Identifier.of(MOD_ID, "Shark")));
         event.register(EntitySharkEgg.class, String.valueOf(Identifier.of(MOD_ID, "SharkEgg")));
-        event.register(EntityWerewolf.class, String.valueOf(Identifier.of(MOD_ID, "WereWolf")));  //TODO
+        event.register(EntityWerewolf.class, String.valueOf(Identifier.of(MOD_ID, "WereWolf")));
         event.register(EntityWraith.class, String.valueOf(Identifier.of(MOD_ID, "Wraith")));
         event.register(EntityWWolf.class, String.valueOf(Identifier.of(MOD_ID, "WildWolf")));
 

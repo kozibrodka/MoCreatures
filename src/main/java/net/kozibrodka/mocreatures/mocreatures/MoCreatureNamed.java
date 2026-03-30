@@ -9,4 +9,6 @@ public interface MoCreatureNamed {
 
     boolean getTamed();
 
+    String getOwner();
+
 }

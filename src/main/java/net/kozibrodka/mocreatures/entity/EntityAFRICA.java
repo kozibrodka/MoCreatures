@@ -19,12 +19,6 @@
 //
 //    }
 //
-//    public void markDead()
-//    {
-//        super.markDead();
-//    }
-//
-//
 //
 //    public void writeNbt(NbtCompound nbttagcompound)
 //    {

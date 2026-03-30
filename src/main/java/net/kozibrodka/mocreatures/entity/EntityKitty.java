@@ -43,20 +43,31 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
         texture = "/assets/mocreatures/stationapi/textures/mob/pussycata.png";
         killedByOtherEntity = true;
         setAdult(true);
-//        edad = 0.4F;
         inBed = false;
         sleepy = false;
-//        kittystate = 1;
         hungry = false;
         kittytimer = 0;
         health = 15;
         madtimer = random.nextInt(5);
         maxhealth = 15;
-//        name = "";
-//        displayname = false;
-//        onTree = false;
         foundTree = false;
-//        displayemo = false;
+    }
+
+    @Override
+    public boolean shouldRender(double distance) {
+        if(getPicked()){
+            return distance < mocr.fullRenderDist;
+        }else{
+            return super.shouldRender(distance);
+        }
+    }
+
+    public void onCollision(Entity otherEntity) {
+        if(vehicle instanceof PlayerEntity && otherEntity == vehicle.vehicle){
+            return;
+        }else {
+            super.onCollision(otherEntity);
+        }
     }
 
     public boolean renderName()
@@ -318,10 +329,9 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
             typechosen = true;
             chooseType(getType());
         }
-        if(world.isRemote){ /// CLIENT STOP?
-            super.tickMovement(); //todo: czy zawsze?
+        if(world.isRemote){
+            super.tickMovement();
             if(getPicked()){
-//                velocityY = 0.0D;
                 lastWalkAnimationSpeed = 0.0F;
                 walkAnimationSpeed = 0.0F;
                 walkAnimationProgress = 0.0F;
@@ -971,7 +981,7 @@ label0:
                 entitykitty1.setTypeSpawn();
                 entitykitty1.setAdult(false);
                 entitykitty1.setOwner(this.getOwner());
-                entitykitty1.changeKittyState(10); ///TODO: set owner logic?
+                entitykitty1.changeKittyState(10);
                 damage(null, 1);
             }
 
@@ -1117,10 +1127,6 @@ label0:
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-//            if(!(entity1 instanceof LivingEntity) || (entity1 instanceof EntityKitty) || (entity1 instanceof PlayerEntity) || (entity1 instanceof MonsterEntity) || (entity1 instanceof EntityKittyBed) || (entity1 instanceof EntityLitterBox) || (entity1 instanceof EntityHorse) && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (entity1 instanceof WolfEntity) && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (entity1 instanceof EntityBigCat) && !mocr.mocreaturesGlass.huntercreatures.attackbigcat || (entity1 instanceof EntityBigCat) && ((EntityBigCat) entity1).getTamed() && getKittyState() > 2 || (entity1 instanceof EntityDolphin) && ((EntityDolphin) entity1).getTamed() && getKittyState() > 2 || (entity1 instanceof EntityShark) && ((EntityShark)entity1).getTamed() && getKittyState() > 2 || (double)entity1.width > 0.5D && (double)entity1.height > 0.5D)
-//            {
-//                continue;
-//            }
             if(privateToIgnore(this, entity1) || MoCTools.entitiesToIgnore(this, entity1) || MoCTools.entitiesTamedIgnore(this, entity1))
             {
                 continue;
@@ -1321,7 +1327,7 @@ label0:
         if(!getSwinging())
         {
             setSwinging(true);
-            swingAnimationProgress = 0.0F; //TODO: packet? addictional logic
+            swingAnimationProgress = 0.0F;
         }
     }
 
@@ -1489,7 +1495,7 @@ label0:
 
     public void markDead()
     {
-        if(getKittyState() > 2 && health > 0)
+        if(getKittyState() > 2 && health > 0 && !world.isRemote)
         {
             return;
         } else
@@ -1610,24 +1616,14 @@ label0:
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
-//    public boolean isSitting;
-//    public boolean isSwinging;
     public boolean typechosen;
-//    public boolean adult;
-//    public int typeint;
-//    public float edad;
     public boolean inBed;
     public boolean sleepy;
-//    public int kittystate;
     public boolean hungry;
     private int kittytimer;
     private int madtimer;
     public int maxhealth;
-//    public String name;
-//    public boolean displayname;
-//    public boolean onTree;
     private boolean foundTree;
-//    public boolean displayemo;
     private int treeCoord[] = {
         -1, -1, -1
     };

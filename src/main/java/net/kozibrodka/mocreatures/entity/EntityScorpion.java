@@ -23,28 +23,14 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
     public EntityScorpion(World world)
     {
         super(world);
-//        texture = "/assets/mocreatures/stationapi/textures/mob/XXXXXXXXXXXX.png";
         setBoundingBoxSpacing(1.4F, 0.9F);
         movementSpeed = 0.8F;
         health = 15;
         poisontimer = 0;
         typechosen = false;
-//        setAdult(true);
-//        edad = 0.2F;
     }
 
-
-
-
     public void tickMovement() {
-//        if(!onGround && ridingEntity != null) {
-//            rotationYaw = ridingEntity.rotationYaw;
-//        }
-//
-//        if(getAdult() && field_35174_at > 0) {
-//            field_35174_at = 0;
-//        }
-
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
             chooseType(getType());
@@ -133,18 +119,14 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
                 if(getType() <= 2) {
                     if(flag) {
                         PacketHelper.sendTo((PlayerEntity) entity, new PoisonPacket(1));
-//                        mod_mocreatures.poisoned = true; //TODO
                     }
-                        /// 1.8.1 poison
-//                    ((EntityLiving)entity).func_35165_a(new PotionEffect(Potion.field_35689_u.field_35670_H, 70, 0));
                 } else if(getType() == 4) {
                     if(flag) {
-//                        mod_mocreatures.freezed = true; //TODO
                         PacketHelper.sendTo((PlayerEntity) entity, new PoisonPacket(2));
                     }
                 } else if(getType() == 3) {
                     if(flag) {
-//                        mod_mocreatures.burned = true; //TODO
+                        /// czerwony haze na podpalenie gdybym chcial
                     }
                     entity.fireTicks = 30;
                 }
@@ -187,8 +169,6 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
     }
 
     public void onKilledBy(Entity damagesource) {
-//        super.onKilledBy(damagesource);
-
         if(!world.isRemote) {
             if (getAdult() && random.nextInt(5) == 0) {
                 int k = random.nextInt(5);
@@ -207,9 +187,7 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
                 }
             }
         }
-
         super.onKilledBy(damagesource);
-
     }
 
     public boolean swingingTail() {
@@ -226,7 +204,7 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
 
     public int getLimitPerChunk()
     {
-        return 4; //standard
+        return 4;
     }
 
     protected int getDroppedItemId()
@@ -255,13 +233,8 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
-//    public float edad;
-    private boolean isSwinging;
-    private boolean isPoisoning;
     private int poisontimer;
     public boolean typechosen;
-    private int typeint;
-    private boolean isPicked;
     public float swingProgress;
 
 
@@ -274,14 +247,14 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
             return;
         }
         byte i = 0;
-        if(MoCTools.NearMaterialWithDistance(this, Double.valueOf(1.0D), Material.SNOW_LAYER)) { //todo na piasku inny tez?
+        if(MoCTools.NearMaterialWithDistance(this, Double.valueOf(1.0D), Material.SNOW_LAYER)) {
             i = 4;
         } else if(world.dimension.isNether) {
             i = 3;
-        }else if(random.nextInt(10) < 4){
-            i = 2;
-        }else{
+        }else if(MoCTools.NearMaterialWithDistance(this, Double.valueOf(1.0D), Material.SAND)){
             i = 1;
+        }else{
+            i = 2;
         }
         setAdult(true);
         setAge(1.1F);

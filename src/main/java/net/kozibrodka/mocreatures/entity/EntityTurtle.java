@@ -55,7 +55,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         if(vehicle instanceof PlayerEntity)
         {
             if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-                return (double)(standingEyeHeight - (-0.64F + getAge() / 6.0F)); /// czy dobrze obliczylem?
+                return (double)(standingEyeHeight - (-0.64F + getAge() / 6.0F));
             }else{
                 return (double)(standingEyeHeight - (1.0F + getAge() / 6.0F));
             }
@@ -63,11 +63,29 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         {
             return (double)standingEyeHeight;
         }
-        
-//        return vehicle instanceof EntityPlayer && !worldObj.multiplayerWorld ? (double)(yOffset - (1.0F + getAge() / 6.0F)) : (double)yOffset;
     }
 
-    public int getTurtleChestSize(){ ///  1.1F  -    3.0F (2.2F)
+    @Override
+    public boolean shouldRender(double distance) {
+        if(getPicked()){
+//            return distance < mocr.fullRenderDist;
+            return true;
+
+        }else{
+            return super.shouldRender(distance);
+        }
+    }
+
+    public void onCollision(Entity otherEntity) {
+        if(vehicle instanceof PlayerEntity && otherEntity == vehicle.vehicle){
+            return;
+        }else {
+            super.onCollision(otherEntity);
+        }
+    }
+
+    public int getTurtleChestSize(){
+        /// Oryginalny rozmiar zostawiam kod
 //        if(getAge() <= 1.4F){
 //            return 9;
 //        } else
@@ -145,19 +163,20 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
                 }
                 return true;
             }
-            if (itemstack != null  && itemstack.itemId == mod_mocreatures.whip.id) {   //TODO: CZY BICZOWANIE POWINNO DZIAŁAĆ NA ŻÓŁWIA?? - WYŁĄCZYĆ na razie.
-                if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-                    PacketHelper.sendTo(entityplayer, new JokeyPacket(1));
-                }
-                setSitting(!getSitting());
-                entityplayer.swingHand();
-                return true;
-            }
-
-            if(itemstack != null && itemstack.itemId == Item.DIAMOND.id){ //TODO DEBUG
-                setAge(maxAge);
-                return true;
-            }
+            /// ŻÓŁW wyłączony na razie - żeby śmiesznie chodził
+//            if (itemstack != null  && itemstack.itemId == mod_mocreatures.whip.id) {
+//                if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+//                    PacketHelper.sendTo(entityplayer, new JokeyPacket(1));
+//                }
+//                setSitting(!getSitting());
+//                entityplayer.swingHand();
+//                return true;
+//            }
+            /// Debug Age
+//            if(itemstack != null && itemstack.itemId == Item.DIAMOND.id){
+//                setAge(maxAge);
+//                return true;
+//            }
 
             if(getUpsideDown()) {
                 flipflop(false);
@@ -173,7 +192,6 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
             }
             if(itemstack != null && (itemstack.itemId == Item.SUGAR_CANE.id))
             {
-//                heal(10);
                 if(--itemstack.count == 0)
                 {
                     entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
@@ -193,7 +211,6 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
             }
             if(entityplayer.isSneaking()){
                 localturtlechest = new AnimalChest(localstack, "Turtle chest", getTurtleChestSize());
-//                localturtlechest = new AnimalChest(localstack, "Turtle chest", localstack.length);
                 entityplayer.openChestScreen(localturtlechest);
                 return true;
             }
@@ -227,15 +244,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
     protected void jump() {
         if(isInFluid(Material.WATER)) {
             velocityY = 0.3D;
-//            if(func_35117_Q()) {
-//                float f = rotationYaw * 0.01745329F;
-//                motionX -= (double)(MathHelper.sin(f) * 0.2F);
-//                motionZ += (double)(MathHelper.cos(f) * 0.2F);
-//            }
-//
-//            field_35118_ao = true;
         }
-
     }
 
     public void tickMovement() {
@@ -405,7 +414,6 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
     }
 
     public void flipflop(boolean flip) {
-//        field_35174_at = 0;
         setUpsideDown(flip);
         setHiding(false);
         setPath((Path)null);
@@ -426,11 +434,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
     }
 
     public void tick() {
-//        if(world.isRemote){
-//            super.tick();
-//            return;
-//        }
-        if(getTamed() && getAge() < maxAge && random.nextInt(800) == 0 && !world.isRemote) { //Oryginalny rozmiar max = 3.0F
+        if(getTamed() && getAge() < maxAge && random.nextInt(800) == 0 && !world.isRemote) { /// Oryginalny rozmiar max = 3.0F
             setAge(getAge()+0.01F);
         }
         if(getUpsideDown() && vehicle == null && random.nextInt(20) == 0) {
@@ -460,14 +464,11 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
                 }
 //                flopcounter = 0;
             }
-
-
-
-//            dataTracker.set(24, Float.floatToRawIntBits(swingProgress));  - //todo chyba mozna wywalic
+//            dataTracker.set(24, Float.floatToRawIntBits(swingProgress));
         }
-        //TODO: ewentualnie zrobić to client side TYLKO i pakiecik że sie obrucił??? - tak zrobione jest
-
         /// oryginalnie BARDZO CHUJOWY KOD POD multiplayer.
+        /// Zrobiłem, że client sam oblicza animacje, a serwer daje znać kiedy obrócić, Alternatywą jest ZLAGOWANA animacja, ale skordynowana z serwerem
+        /// Na razie zostawiam kod datatrackingu zamazany.
 
         super.tick();
     }
@@ -522,18 +523,29 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
+    public void markDead() /// Czy to ma jakikolwiek sens??? - bez checku remote, to powoduje duplikaty modelu na client
+    {
+        if(getTamed() && health > 0  && !world.isRemote)
+        {
+            return;
+        } else
+        {
+            super.markDead();
+            return;
+        }
+    }
+
     protected boolean canDespawn()
     {
         return !getTamed();
     }
 
     protected boolean isMovementBlocked() {
-        return getUpsideDown() || getHiding() || getSitting(); //TODO: on death chest removal
+        return getUpsideDown() || getHiding() || getSitting();
     }
 
     public boolean renderName() {
-//        System.out.println(getPicked());
-        return getDisplayName() && !getPicked(); //&& ridingEntity == null
+        return getDisplayName() && !getPicked();
     }
 
     public int getFlipDirection() {
@@ -571,12 +583,9 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
     }
 
     mod_mocreatures mocr = new mod_mocreatures();
-    private boolean upsidedown;
-    private boolean isHiding;
     private boolean isSwinging;
     private boolean twistright;
     private int flopcounter;
-//    public float edad;
     public float maxAge = 2.2F;
     public int maxhealth;
     public float swingProgress;

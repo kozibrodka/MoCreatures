@@ -37,33 +37,13 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
     public EntityDolphin(World world)
     {
         super(world);
-//        texture = "/assets/mocreatures/stationapi/textures/mob/dolphin.png";
         setBoundingBoxSpacing(1.5F, 0.8F);
-//        setAge(0.8F + random.nextFloat());
-//        adult = false;
-//        tamed = false;
         dolphinspeed = 1.3D;
         health = 12;
-        maxhealth = 20; /// Delfin zaczyna z 10 i mozna dokarmić. (oryg. 30)
+        maxhealth = 20; /// Delfin zaczyna z 10 i mozna dokarmić. (max health oryg. 30)
         temper = 50;
         killedByOtherEntity = true;
-//        name = "";
-//        displayname = false;
-//        isDolphinPublic = false;
-//        dolphinOwner = "";
     }
-
-//    @Environment(EnvType.CLIENT)
-//    public void setPositionAndAnglesAvoidEntities(double x, double y, double z, float pitch, float yaw, int interpolationSteps) {
-//        this.standingEyeHeight = 0.0F;
-//        this.lerpX = x;
-//        this.lerpY = y;
-//        this.lerpZ = z;
-//        this.lerpYaw = (double)pitch;
-//        this.lerpPitch = (double)yaw;
-//        this.bodyTrackingIncrements = interpolationSteps;
-//        setPosition(x,y,z);
-//    }
 
     public double speed()
     {
@@ -73,6 +53,17 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
     public int tametemper()
     {
         return temper;
+    }
+
+    @Override
+    public boolean shouldRender(double distance) {
+        if(getJokey()){
+//            return distance < mocr.fullRenderDist;
+            return true;
+
+        }else{
+            return super.shouldRender(distance);
+        }
     }
 
     protected void tickLiving() {
@@ -161,6 +152,14 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
             }
     }
 
+    public void onCollision(Entity otherEntity) {
+        if(passenger instanceof PlayerEntity && passenger.passenger == otherEntity && !mocr.mocreaturesGlass.animals.horse_speed_glitch){
+            return;
+        }else {
+            super.onCollision(otherEntity);
+        }
+    }
+
     public boolean interact(PlayerEntity entityplayer)
     {
         ItemStack itemstack = entityplayer.inventory.getSelectedItem();
@@ -189,7 +188,7 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
             sendSound(world, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             if(!getAdult())
             {
-                setAge(getAge()+0.01F); //TODO bardzo niewiele niby, ale kon tak samo prawie
+                setAge(getAge()+0.01F);
             }
             return true;
         }
@@ -231,6 +230,15 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
             }
             return true;
         }
+        /// DEBUG //TODO
+        if(itemstack != null && (itemstack.itemId == mod_mocreatures.greenapple.id))
+        {
+            setTamed(true);
+            setOwner(entityplayer.name);
+            setDisplayName(true);
+            return true;
+        }
+        ///
         if(itemstack != null && getTamed() && (itemstack.itemId == mod_mocreatures.medallion.id || itemstack.itemId == Item.BOOK.id))
         {
             setNameWithGui(this, entityplayer);
@@ -248,7 +256,7 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
             entityplayer.y = y;
             entityplayer.setVehicle(this);
             setJokey(true);
-            if(getType() == 6)
+            if(getType() == 6) //TODO ZRÓB OVERRITE COMMAND w dolphin ale call w watermob.
             {
                 entityplayer.incrementStat(mod_mocreatures.RobertMaklowicz);
             }
@@ -290,7 +298,7 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
             if(entityplayer.isSneaking())
             {
                 entityplayer.setVehicle(null);
-                passenger = null; //TODO: dodatek czy bedzie ok? bez bylo ok chyba
+                passenger = null;
                 setJokey(false);
             }
         }
@@ -306,7 +314,6 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
 
     public void tickMovement()
     {
-//        System.out.println("velox:  " + velocityX + "    veloz:  " + velocityZ);
         super.tickMovement();
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
@@ -328,7 +335,7 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
             hungry = true;
         }
         Riding();
-        if(passenger != null && deathTime == 0 && (!getTamed() || hungry)) //TODO: SPRAWDŹ O CO CHODZI? jak jeździ ktos na nim??? + może dodaj SHARKOWI
+        if(passenger != null && deathTime == 0 && (!getTamed() || hungry)) /// Chyba Szuka ryby jak jest ujeżdzany.
         {
             ItemEntity entityitem = getClosestFish(this, 12D);
             if(entityitem != null)
@@ -411,7 +418,8 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
     }
 
     private int Genetics(EntityDolphin entitydolphin, EntityDolphin entitydolphin1)
-    { //TODO: No EASY dolphin breeding OPTION. Hard to get pink/albino right now.
+    {
+        ///  Nie ma Opcji "EASY DOLPHIN BREED" jak dla KONI, więc jest tylko tryb "HARD"
         if(entitydolphin.getType() == entitydolphin1.getType())
         {
             return entitydolphin.getType();
@@ -428,7 +436,7 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
             return i;
         } else
         {
-            return getRandomRace(); ///return zero oryginalnei stworzy mutanta
+            return getRandomRace(); ///anty mutant
         }
     }
 
@@ -544,9 +552,9 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
         return mocr.mocreaturesGlass.watermobs.dolphinfreq > 0 && super.canSpawn();
     }
 
-    public void markDead()
+    public void markDead() /// Czy to ma jakikolwiek sens??? - bez checku remote, to powoduje duplikaty modelu na client
     {
-        if((getTamed() || getBred()) && health > 0)
+        if((getTamed() || getBred()) && health > 0 && !world.isRemote)
         {
             return;
         } else
@@ -609,18 +617,6 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
     public int maxhealth;
     private int temper;
     public boolean hungry;
-//    public boolean displayname;
-
-//    public int typeint;
-//    public float b;
-//    public boolean adult;
-//    private boolean eaten;
-//    public boolean tamed;
-//    public boolean isDolphinPublic;
-//    public boolean bred;
-//    public String dolphinOwner;
-//    public String name;
-
     public boolean typechosen;
 
     protected void initDataTracker()
@@ -662,7 +658,7 @@ public class EntityDolphin extends EntityCustomAquaM implements MobSpawnDataProv
         if(!world.isRemote) {
             setType(getRandomRace());
             setAge(0.8F + random.nextFloat());
-//            this.health = this.maxhealth; //TODO:
+            /// bez healt set maxhealth, zaczyna nisko mozna dokarmic.
         }
     }
 

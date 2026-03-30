@@ -1,10 +1,6 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) braces deadcode 
 
 package net.kozibrodka.mocreatures.mocreatures;
 
-import net.kozibrodka.mocreatures.entity.*;
 import net.kozibrodka.mocreatures.network.NamePacket;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -69,18 +65,6 @@ public class MoCGUI extends Screen
         {
             NameToSet = NameToSet.substring(0, NameToSet.length() - 1);
         }
-//        if(allowedCharacters.indexOf(c) < 0 || NameToSet.length() >= 15) goto _L2; else goto _L1
-//_L1:
-//        new StringBuilder();
-//        this;
-//        JVM INSTR dup_x1 ;
-//        NameToSet;
-//        append();
-//        c;
-//        append();
-//        toString();
-//        NameToSet;
-//_L2:
         if (!(allowedCharacters.indexOf(c) < 0 || NameToSet.length() >= 15)) {
             this.NameToSet = this.NameToSet + c;
         }

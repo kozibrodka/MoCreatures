@@ -2,7 +2,6 @@ package net.kozibrodka.mocreatures.entity;
 
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
@@ -15,7 +14,6 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.Box;
@@ -35,20 +33,13 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
     public EntityBird(World world)
     {
         super(world);
-//        texture = "/assets/mocreatures/stationapi/textures/mob/birdblue.png";
         setBoundingBoxSpacing(0.4F, 0.3F);
         health = 2;
         verticalCollision = true;
         wingb = 0.0F;
         wingc = 0.0F;
         wingh = 1.0F;
-//        fleeing = false;
-//        tamed = false;
-//        typeint = 0;
-//        typechosen = false;
-//        hasreproduced = false;
         killedByOtherEntity = true;
-        //TODO: (also Bunnies) Position on server itself is not Correct, while being passenger of Player.
     }
 
     protected void onLanding(float f)
@@ -58,27 +49,21 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
     @Override
     public boolean shouldRender(double distance) {
         if(getPicked()){
-            return distance < 1024D; //10000D airship  //512 troche malo
+//            return distance < mocr.fullRenderDist;
+            return true;
 
         }else{
             return super.shouldRender(distance);
         }
     }
 
-//    @Environment(EnvType.CLIENT)
-//    public void setPositionAndAnglesAvoidEntities(double x, double y, double z, float pitch, float yaw, int interpolationSteps) {
-//        this.standingEyeHeight = 0.0F;
-//        this.lerpX = x;
-//        if(getPicked()){
-//            this.lerpY = y + 1.65D; //
-//        }else{
-//            this.lerpY = y;
-//        }
-//        this.lerpZ = z;
-//        this.lerpYaw = (double)pitch;
-//        this.lerpPitch = (double)yaw;
-//        this.bodyTrackingIncrements = interpolationSteps;
-//    }
+    public void onCollision(Entity otherEntity) {
+        if(vehicle instanceof PlayerEntity && otherEntity == vehicle.vehicle){
+            return;
+        }else {
+            super.onCollision(otherEntity);
+        }
+    }
 
     protected void initDataTracker()
     {
@@ -174,7 +159,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
-    public void tickLivingClient() //TODO: dla bunny i mouse coś podobnego i osłabić speed boosta.
+    public void tickLivingClient()
     {
         if(vehicle != null && (vehicle instanceof PlayerEntity))
         {
@@ -208,17 +193,15 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         {
             super.tickLiving();
         } else
-        if(onGround && getPicked()) /// czy to działa dobrze? zmien na -> vehicle == null ? zamiast on ground
+        if(onGround && getPicked() && this.vehicle == null)
         {
             setPicked(false);
         }
     }
 
-    //TODO: DAMAGE METHOD for multiplayer not take damage while on player - possible workaround fix - chyba naprawione poprzez prawidlowo pozycje
-
     public void markDead()
     {
-        if(getTamed() && health > 0)
+        if(getTamed() && health > 0  && !world.isRemote)
         {
             return;
         } else
@@ -271,7 +254,6 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         {
             if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
                 return (double)(standingEyeHeight + 0.49F);
-//                return (double)(standingEyeHeight);
             }else{
                 return (double)(standingEyeHeight - 1.15F);
             }
@@ -681,13 +663,6 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
     public float wingd;
     public float winge;
     public float wingh;
-
-//    public boolean tamed;
-//    public boolean picked;
-//    private boolean hasreproduced;
-//    public int typeint;
-//    private boolean fleeing;
-
     public boolean typechosen;
 
     @Override
@@ -771,5 +746,8 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
 
     @Override
     public String getName() {return "";}
+
+    @Override
+    public String getOwner() {return "";}
 }
 
