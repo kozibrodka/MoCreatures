@@ -1,21 +1,7 @@
 To Do List:
 
-items / drops
-achievements
-todos //
-MARK DEAD ovverites WHYYYY?
-
-
-
-
-- (DONE) Get data right with deer first
-- Config descriptions
 - setBoundingBoxSpacing - can it be sync on client?
 
--NEW SPAWN SYSTEM - no mixin - go with stapi TROPICRAFT example
-
-
--DOUBLE CLIENT RENDER???? tamed ones.
 
 (server fix mod:)
 - Fix player animation when riding - VANILLA ALSO - boats

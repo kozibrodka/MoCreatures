@@ -22,9 +22,9 @@ public class RenderDolphin extends LivingEntityRenderer
     {
         EntityDolphin entitydolphin = (EntityDolphin)entityliving;
         super.render(entitydolphin, d, d1, d2, f, f1);
-        boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entitydolphin.getName().isEmpty();
-        boolean flag1 = mocr.mocreaturesGlass.othersettings.displayhealth;
-        boolean flag2 = mocr.mocreaturesGlass.othersettings.displayemo;
+        boolean flag = mod_mocreatures.mocGlass.othersettings.displayname && !entitydolphin.getName().isEmpty();
+        boolean flag1 = mod_mocreatures.mocGlass.othersettings.displayhealth;
+        boolean flag2 = mod_mocreatures.mocGlass.othersettings.displayemo;
         boolean flagEat = entitydolphin.getEaten();
         if(entitydolphin.renderName())
         {
@@ -146,7 +146,7 @@ public class RenderDolphin extends LivingEntityRenderer
                 tessellator.vertex(-i - 1, 8 + byte0, 0.0D);
                 tessellator.vertex(i + 1, 8 + byte0, 0.0D);
                 tessellator.vertex(i + 1, -1 + byte0, 0.0D);
-                if(mocr.mocreaturesGlass.othersettings.displayhealth)
+                if(mod_mocreatures.mocGlass.othersettings.displayhealth)
                 {
                     float f5 = entitydolphin.health;
                     float f6 = entitydolphin.maxhealth;
@@ -187,7 +187,5 @@ public class RenderDolphin extends LivingEntityRenderer
         stretch((EntityDolphin)entityliving);
         return (float)entityliving.age + f;
     }
-
-    mod_mocreatures mocr = new mod_mocreatures();
 
 }

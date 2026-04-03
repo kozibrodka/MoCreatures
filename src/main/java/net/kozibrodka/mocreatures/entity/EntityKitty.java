@@ -2,22 +2,17 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.*;
-import net.kozibrodka.mocreatures.network.AskPacket;
 import net.kozibrodka.mocreatures.network.NamePacket;
 import net.kozibrodka.mocreatures.network.RopePacket;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.pathing.Path;
-import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -56,7 +51,7 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
     @Override
     public boolean shouldRender(double distance) {
         if(getPicked()){
-            return distance < mocr.fullRenderDist;
+            return distance < mod_mocreatures.fullRenderDist;
         }else{
             return super.shouldRender(distance);
         }
@@ -805,7 +800,7 @@ label0:
                 if(!foundTree && random.nextInt(50) == 0)
                 {
                     int ai[] = ReturnNearestMaterialCoord(this, Material.WOOD, Double.valueOf(18D));
-                    if(ai[0] != -1)
+                    if(ai[1] != -1)
                     {
                         int i1 = 0;
                         do
@@ -1103,7 +1098,7 @@ label0:
         }
 
         return (new int[] {
-            -1, 0, 0
+            0, -1, 0
         });
     }
 
@@ -1143,7 +1138,7 @@ label0:
     }
 
     public boolean privateToIgnore(Entity hunter, Entity victim) {
-        return ((victim instanceof EntityKitty) || (victim instanceof EntityBigCat) && !mocr.mocreaturesGlass.huntercreatures.attackbigcat || (double)victim.width > 0.5D && (double)victim.height > 0.5D);
+        return ((victim instanceof EntityKitty) || (victim instanceof EntityBigCat) && !mod_mocreatures.mocGlass.huntercreatures.attackbigcat || (double)victim.width > 0.5D && (double)victim.height > 0.5D);
     } /// Wydaje mi się, ze wykluczając rozmiar 0.5F, kot nie zaatakuje nigdy BigCatsa. Dziwny kod
 
     public ItemEntity getClosestItem(Entity entity, double d, int i, int j)
@@ -1507,7 +1502,7 @@ label0:
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.animals.kittyfreq > 0 && super.canSpawn();
+        return mod_mocreatures.mocGlass.animals.kittyfreq > 0 && super.canSpawn();
     }
 
     public void kittySmack(Entity entity, Entity entity1)
@@ -1615,7 +1610,6 @@ label0:
         }
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
     public boolean typechosen;
     public boolean inBed;
     public boolean sleepy;
@@ -1679,7 +1673,7 @@ label0:
 
     public void sendSound(World world, String name, float vol, float pit){
         if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.voicePacket(world, name, this.id, vol, pit);
+            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
         }
     }
 

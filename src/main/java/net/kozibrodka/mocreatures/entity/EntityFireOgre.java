@@ -18,12 +18,12 @@ public class EntityFireOgre extends EntityOgre implements MobSpawnDataProvider
     {
         super(world);
         attackDamage = 3;
-        attackRange = mocr.mocreaturesGlass.hostilemobs.ogrerange;
+        attackRange = mod_mocreatures.mocGlass.hostilemobs.ogrerange;
         texture = "/assets/mocreatures/stationapi/textures/mob/fireogre.png";
         setBoundingBoxSpacing(1.5F, 4F);
         health = 35;
         bogrefire = true;
-        destroyForce = mocr.mocreaturesGlass.hostilemobs.fogreStrength;
+        destroyForce = mod_mocreatures.mocGlass.hostilemobs.fogreStrength;
         fireImmune = true;
         frequencyA = 35;
     }
@@ -36,8 +36,8 @@ public class EntityFireOgre extends EntityOgre implements MobSpawnDataProvider
     public void tickMovement()
     {
         getTargetInRange();
-        destroyForce = mocr.mocreaturesGlass.hostilemobs.fogreStrength;
-        attackRange = mocr.mocreaturesGlass.hostilemobs.ogrerange;
+        destroyForce = mod_mocreatures.mocGlass.hostilemobs.fogreStrength;
+        attackRange = mod_mocreatures.mocGlass.hostilemobs.ogrerange;
         if(ogrehasenemy && random.nextInt(frequencyA) == 0 && !world.isRemote)
         {
             setOgreAttack(true);
@@ -75,7 +75,7 @@ public class EntityFireOgre extends EntityOgre implements MobSpawnDataProvider
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.hostilemobs.fogrefreq > 0 && world.difficulty >= mocr.mocreaturesGlass.hostilemobs.fogreSpawnDifficulty.ordinal() + 1 && super.d2();
+        return mod_mocreatures.mocGlass.hostilemobs.fogrefreq > 0 && world.difficulty >= mod_mocreatures.mocGlass.hostilemobs.fogreSpawnDifficulty.ordinal() + 1 && super.d2();
     }
 
     public int getLimitPerChunk()
@@ -83,7 +83,6 @@ public class EntityFireOgre extends EntityOgre implements MobSpawnDataProvider
         return 2;
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
 
     @Override
     public Identifier getHandlerIdentifier() {

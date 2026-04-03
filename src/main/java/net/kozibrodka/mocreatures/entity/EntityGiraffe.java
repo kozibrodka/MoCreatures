@@ -4,7 +4,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.network.JokeyPacket;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -107,7 +106,7 @@ public class EntityGiraffe extends AnimalEntity implements MobSpawnDataProvider 
 
     public int getLimitPerChunk()
     {
-        return 2;
+        return 3;
     }
 
     protected int getDroppedItemId()
@@ -145,10 +144,9 @@ public class EntityGiraffe extends AnimalEntity implements MobSpawnDataProvider 
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.animals.giraffefreq > 0 && super.canSpawn();
+        return mod_mocreatures.mocGlass.animals.giraffefreq > 0 && super.canSpawn();
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
     private int knockCooldown;
 
     @Override

@@ -82,7 +82,6 @@ public class PoisonPacket extends Packet implements ManagedPacket<PoisonPacket> 
             return;
         }
         if(action == 1){
-//            System.out.println("DOSZŁO POISOIN");
             MocTick.poisoned = true;
         }
         if(action == 2){
@@ -97,16 +96,15 @@ public class PoisonPacket extends Packet implements ManagedPacket<PoisonPacket> 
             return;
         }
         if(action == 3){
-            mocr.particlePacket(player.world, "slime", player.x, player.y + 0.5D, player.z, 0.0D, 0.5D, 0.0D);
+            mod_mocreatures.particlePacket(player.world, "slime", player.x, player.y + 0.5D, player.z, 0.0D, 0.5D, 0.0D);
             player.damage(null,1);
         }
         if(action == 4){
-            mocr.particlePacket(player.world, "snowballpoof", player.x, player.y + 0.5D, player.z, 0.0D, 0.5D, 0.0D);
+            mod_mocreatures.particlePacket(player.world, "snowballpoof", player.x, player.y + 0.5D, player.z, 0.0D, 0.5D, 0.0D);
             player.damage(null,1);
         }
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
 
     @Override
     public int size() {

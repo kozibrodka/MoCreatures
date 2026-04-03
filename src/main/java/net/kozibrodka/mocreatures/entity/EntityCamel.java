@@ -8,10 +8,8 @@ import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.CREEPSFxSpit;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.kozibrodka.mocreatures.network.CustomParticlePacket;
-import net.kozibrodka.mocreatures.network.RopePacket;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.ClientPlayerEntity;
@@ -97,7 +95,7 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
         {
             world.playSound(this, "mocreatures:camelspits", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
             if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-                mocr.voicePacket(world, "mocreatures:camelspits", this.id, 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+                mod_mocreatures.voicePacket(world, "mocreatures:camelspits", this.id, 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
             }
             spittimer = 30;
             lookAt(entity, 360F, 0.0F);
@@ -108,7 +106,7 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
                 if(FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
                     sendPartPacket(world, x + d1 * 3.5D, y + 2.4000000953674316D, z + d3 * 3.5D);
                 }else{
-                    sendPartClient(world, x + d1 * 3.5D, y + 2.4000000953674316D, z + d3 * 3.5D);
+                    addClientParticle(d1,d3);
                 }
             }
 
@@ -122,8 +120,10 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
     }
 
     @Environment(EnvType.CLIENT)
-    public void addClientParticle(Particle particle){
-        Minecraft.INSTANCE.particleManager.addParticle(particle);
+    public void addClientParticle(double d1, double d3){
+        CREEPSFxSpit creepsfxspit = new CREEPSFxSpit(world, x + d1 * 3.5D, y + 2.4000000953674316D, z + d3 * 3.5D, TextureListener.bubble_particle);
+        creepsfxspit.renderDistanceMultiplier = 10D;
+        Minecraft.INSTANCE.particleManager.addParticle(creepsfxspit);
     }
 
     @Environment(EnvType.SERVER)
@@ -212,12 +212,10 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
         int var1 = MathHelper.floor(x);
         int var2 = MathHelper.floor(boundingBox.minY);
         int var3 = MathHelper.floor(z);
-        return mocr.mocreaturesGlass.animals.camelfreq > 0 && world.getBlockId(var1, var2 - 1, var3) == Block.SAND.id && world.getBrightness(var1, var2, var3) > 8 && getPathfindingFavor(var1, var2, var3) >= 0.0F && world.canSpawnEntity(boundingBox) && world.getEntityCollisions(this, boundingBox).isEmpty() && !world.isBoxSubmergedInFluid(boundingBox);
+        return mod_mocreatures.mocGlass.animals.camelfreq > 0 && world.getBlockId(var1, var2 - 1, var3) == Block.SAND.id && world.getBrightness(var1, var2, var3) > 8 && getPathfindingFavor(var1, var2, var3) >= 0.0F && world.canSpawnEntity(boundingBox) && world.getEntityCollisions(this, boundingBox).isEmpty() && !world.isBoxSubmergedInFluid(boundingBox);
     }
 
 
-
-    mod_mocreatures mocr = new mod_mocreatures();
     public int spittimer;
     protected int attack;
     protected double attackrange;

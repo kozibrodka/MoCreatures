@@ -7,20 +7,16 @@ import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.kozibrodka.mocreatures.network.JokeyPacket;
-import net.kozibrodka.mocreatures.network.RopePacket;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.pathing.Path;
-import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.SquidEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -514,7 +510,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.huntercreatures.crocodilefreq > 0 && !MoCTools.isNearTorch(this) && MoCTools.isNearWater(this) && canSpawnCroc();
+        return mod_mocreatures.mocGlass.huntercreatures.crocodilefreq > 0 && !MoCTools.isNearTorch(this) && MoCTools.isNearWater(this) && canSpawnCroc();
     }
 
     public boolean canSpawnCroc() /// Spawni róznież na piasku.
@@ -522,10 +518,9 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
         int var1 = MathHelper.floor(x);
         int var2 = MathHelper.floor(boundingBox.minY);
         int var3 = MathHelper.floor(z);
-        return (world.getBlockId(var1, var2 - 1, var3) == Block.SAND.id || world.getBlockId(var1, var2 - 1, var3) == Block.GRASS.id) && world.getBrightness(var1, var2, var3) > 8 && getPathfindingFavor(var1, var2, var3) >= 0.0F && world.canSpawnEntity(boundingBox) && world.getEntityCollisions(this, boundingBox).isEmpty() && !world.isBoxSubmergedInFluid(boundingBox);
+        return (world.getBlockId(var1, var2 - 1, var3) == Block.SAND.id || world.getBlockId(var1, var2 - 1, var3) == Block.GRASS_BLOCK.id) && world.getBrightness(var1, var2, var3) > 8 && getPathfindingFavor(var1, var2, var3) >= 0.0F && world.canSpawnEntity(boundingBox) && world.getEntityCollisions(this, boundingBox).isEmpty() && !world.isBoxSubmergedInFluid(boundingBox);
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
     public float biteProgress;
     public int spinInt;
     private boolean waterbound;

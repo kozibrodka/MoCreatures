@@ -26,7 +26,6 @@ import java.util.List;
 
 public class EntityCustomWM extends WaterCreatureEntity
 {
-    mod_mocreatures mocr = new mod_mocreatures();
     private Path pathEntity;
     private int outOfWater;
     private boolean tamed;
@@ -50,6 +49,9 @@ public class EntityCustomWM extends WaterCreatureEntity
         return l == 0;
     }
 
+    public void giveAchievement(PlayerEntity player){
+
+    }
 
     public void travel(float f, float f1)
     {
@@ -58,8 +60,10 @@ public class EntityCustomWM extends WaterCreatureEntity
             PacketHelper.sendTo(entityplayer3, new ClientHorsePacket(this.prevX, this.prevZ, this.prevY));
         }
         if(world.isRemote && passenger != null && getTamed()){
-            PlayerEntity entityplayer3 = (PlayerEntity)passenger;
-            PacketHelper.send(new ServerRidingPacket(entityplayer3.velocityX, entityplayer3.velocityY, entityplayer3.velocityZ,entityplayer3.yaw, entityplayer3.pitch, entityplayer3.jumping));
+//            PlayerEntity entityplayer3 = (PlayerEntity)passenger;
+//            PacketHelper.send(new ServerRidingPacket(entityplayer3.velocityX, entityplayer3.velocityY, entityplayer3.velocityZ,entityplayer3.yaw, entityplayer3.pitch, entityplayer3.jumping));
+            PacketHelper.send(new ServerRidingPacket(passenger.velocityX, passenger.velocityY, passenger.velocityZ,passenger.yaw, passenger.pitch, ((PlayerEntity)passenger).jumping));
+
         }
         if(checkWaterCollisions())
         {
@@ -99,6 +103,7 @@ public class EntityCustomWM extends WaterCreatureEntity
                     setTamed(true);
                     PlayerEntity milosc = (PlayerEntity)passenger;
                     setOwner(milosc.name);
+                    giveAchievement(milosc);
                 }
             }
             if(passenger != null && getTamed())
@@ -106,10 +111,25 @@ public class EntityCustomWM extends WaterCreatureEntity
                 boundingBox.maxY = passenger.boundingBox.maxY;
                 velocityX += passenger.velocityX * speed();
                 velocityZ += passenger.velocityZ * speed();
-                if(velocityY != 0.0D)
-                {
-                    velocityY = 0.0D;
+                PlayerEntity ep = (PlayerEntity)passenger;
+                if(ep.jumping) {
+                        velocityY += 0.006D;
+                } else {
+                    velocityY = -0.008D;
                 }
+                if(!isSwimming()){
+
+                    if(random.nextInt(2) == 0){
+                        velocityY = -0.07D - (random.nextInt(10) * 0.01D / 8);;
+                    }else{
+                        velocityY = -0.07D + (random.nextInt(10) * 0.01D / 8);;
+                    }
+                }
+                /// ORYG
+//                if(velocityY != 0.0D)
+//                {
+//                    velocityY = 0.0D;
+//                }
                 move(velocityX, velocityY, velocityZ);
                 pitch = passenger.pitch * 0.5F;
                 prevYaw = yaw = passenger.yaw;
@@ -138,20 +158,30 @@ public class EntityCustomWM extends WaterCreatureEntity
             }
         }
         float f2 = 0.91F;
+        float sliperMark;
+        if(passenger == null){
+            sliperMark = 0.91F;
+        }else{
+            if(mod_mocreatures.mocGlass.watermobs.shallowdolphin){
+                sliperMark = 0.51F;
+            }else{
+                sliperMark = 0.91F;
+            }
+        }
         f2 = 0.5460001F;
         int i = world.getBlockId(MathHelper.floor(x), MathHelper.floor(boundingBox.minY) - 1, MathHelper.floor(z));
-        if(i > 0)
+        if(i > 0 && i != 9 && i != 8) /// Anty-ocieranie się o wodę
         {
-            f2 = Block.BLOCKS[i].slipperiness * 0.91F;
+            f2 = Block.BLOCKS[i].slipperiness * sliperMark;
         }
         float f3 = 0.162771F / (f2 * f2 * f2);
         moveNonSolid(f, f1, 0.1F * f3);
         f2 = 0.91F;
         f2 = 0.5460001F;
         int j = world.getBlockId(MathHelper.floor(x), MathHelper.floor(boundingBox.minY) - 1, MathHelper.floor(z));
-        if(j > 0)
+        if(i > 0 && i != 9 && i != 8) /// Anty-ocieranie się o wodę
         {
-            f2 = Block.BLOCKS[j].slipperiness * 0.91F;
+            f2 = Block.BLOCKS[j].slipperiness * sliperMark;
         }
         if(isOnLadder())
         {
@@ -461,7 +491,7 @@ public class EntityCustomWM extends WaterCreatureEntity
         }
         boolean flag = checkWaterCollisions();
         boolean flag1 = gettingOutOfWater();
-        if(jumping && flag && !flag1)
+        if(jumping && flag && !flag1 && passenger == null) /// pass null ważny addon.
         {
             velocityY += 0.02D;
         }
@@ -495,9 +525,9 @@ public class EntityCustomWM extends WaterCreatureEntity
         return 1.5D;
     }
 
-//    public boolean isSwimming() {
-//        return this.isInFluid(Material.WATER);
-//    }
+    public boolean isSwimming() {
+        return this.isInFluid(Material.WATER);
+    }
 
     public void writeNbt(NbtCompound nbttagcompound)
     {
@@ -560,7 +590,7 @@ public class EntityCustomWM extends WaterCreatureEntity
 
     public void sendSound(World world, String name, float vol, float pit){
         if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.voicePacket(world, name, this.id, vol, pit);
+            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
         }
     }
 

@@ -4,7 +4,6 @@ import net.fabricmc.api.EnvType;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
-import net.kozibrodka.mocreatures.network.JokeyPacket;
 import net.kozibrodka.mocreatures.network.PoisonPacket;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -229,10 +228,10 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.hostilemobs.scorpionfreq > 0 && super.canSpawn();
+        return mod_mocreatures.mocGlass.hostilemobs.scorpionfreq > 0 && super.canSpawn();
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
+
     private int poisontimer;
     public boolean typechosen;
     public float swingProgress;
@@ -312,7 +311,7 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
 
     public void sendSound(World world, String name, float vol, float pit){
         if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.voicePacket(world, name, this.id, vol, pit);
+            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
         }
     }
 

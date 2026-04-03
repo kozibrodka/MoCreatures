@@ -66,7 +66,7 @@ public class EntityMummy extends MonsterEntity implements MobSpawnDataProvider, 
         int i1 = world.getBlockId(i, j - 1, k);
         /// Moge dac biome pustynia jedynie, albo zostawić to i dac ją tylko na piasku i w podziemiach, mogę ją również dac jak WIlka bez jaskiń.
 //        return (i1 == Block.STONE.id || i1 == Block.SAND.id || i1 == Block.GRAVEL.id || i1 == Block.BEDROCK.id || i1 == Block.SANDSTONE.id) && mocr.mocreaturesGlass.hostilemobs.mummyfreq > 0 && super.canSpawn();
-        return world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && mocr.mocreaturesGlass.hostilemobs.mummyfreq > 0 && super.canSpawn();
+        return world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && mod_mocreatures.mocGlass.hostilemobs.mummyfreq > 0 && super.canSpawn();
     }
 
     public void tickMovement()
@@ -123,7 +123,6 @@ public class EntityMummy extends MonsterEntity implements MobSpawnDataProvider, 
     }
 
     public boolean typechosen;
-    mod_mocreatures mocr = new mod_mocreatures();
 
     @Override
     public Identifier getHandlerIdentifier() {return Identifier.of(mod_mocreatures.MOD_ID, "Mummy");}

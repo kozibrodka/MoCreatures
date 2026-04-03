@@ -24,12 +24,12 @@ public class EntityCaveOgre extends EntityOgre
     {
         super(world);
         attackDamage = 3;
-        attackRange = mocr.mocreaturesGlass.hostilemobs.ogrerange;
+        attackRange = mod_mocreatures.mocGlass.hostilemobs.ogrerange;
         texture = "/assets/mocreatures/stationapi/textures/mob/caveogre.png";
         setBoundingBoxSpacing(1.5F, 4F);
         health = 50;
         bogrefire = false;
-        destroyForce = mocr.mocreaturesGlass.hostilemobs.cogreStrength;
+        destroyForce = mod_mocreatures.mocGlass.hostilemobs.cogreStrength;
         fireImmune = false;
         frequencyA = 35;
     }
@@ -37,8 +37,8 @@ public class EntityCaveOgre extends EntityOgre
     public void tickMovement()
     {
         getTargetInRange();
-        destroyForce = mocr.mocreaturesGlass.hostilemobs.cogreStrength;
-        attackRange = mocr.mocreaturesGlass.hostilemobs.ogrerange;
+        destroyForce = mod_mocreatures.mocGlass.hostilemobs.cogreStrength;
+        attackRange = mod_mocreatures.mocGlass.hostilemobs.ogrerange;
         if(ogrehasenemy && random.nextInt(frequencyA) == 0 && !world.isRemote)
         {
             setOgreAttack(true);
@@ -91,7 +91,7 @@ public class EntityCaveOgre extends EntityOgre
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.hostilemobs.cogrefreq > 0 && world.difficulty >= mocr.mocreaturesGlass.hostilemobs.cogreSpawnDifficulty.ordinal() + 1 && !world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && y < 50D && super.d2();
+        return mod_mocreatures.mocGlass.hostilemobs.cogrefreq > 0 && world.difficulty >= mod_mocreatures.mocGlass.hostilemobs.cogreSpawnDifficulty.ordinal() + 1 && !world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && y < 50D && super.d2();
     }
 
     protected int getDroppedItemId()
@@ -101,7 +101,7 @@ public class EntityCaveOgre extends EntityOgre
 
     protected void dropItems()
     {
-        if(mod_mocreatures.mocreaturesGlass.hostilemobs.caveogrediamond){
+        if(mod_mocreatures.mocGlass.hostilemobs.caveogrediamond){
             int i = random.nextInt(3);
             for(int j = 0; j < i; j++)
             {
@@ -148,7 +148,6 @@ public class EntityCaveOgre extends EntityOgre
         }
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
 
     @Override
     public Identifier getHandlerIdentifier() {

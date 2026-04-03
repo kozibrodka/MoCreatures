@@ -13,7 +13,6 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderTurtle extends LivingEntityRenderer {
 	public ModelTurtle turtly;
-	mod_mocreatures mocr = new mod_mocreatures();
 
 	public RenderTurtle(ModelTurtle modelbase, float f) {
 		super(modelbase, f);
@@ -67,8 +66,8 @@ public class RenderTurtle extends LivingEntityRenderer {
 	public void doRenderLiving(LivingEntity entityliving, double d, double d1, double d2, float f, float f1) {
 		EntityTurtle entityturtle = (EntityTurtle)entityliving;
 		super.render(entityturtle, d, d1, d2, f, f1);
-		boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entityturtle.getName().isEmpty();
-		boolean flag1 = mocr.mocreaturesGlass.othersettings.displayhealth;
+		boolean flag = mod_mocreatures.mocGlass.othersettings.displayname && !entityturtle.getName().isEmpty();
+		boolean flag1 = mod_mocreatures.mocGlass.othersettings.displayhealth;
 		if(entityturtle.renderName()) {
 			float f2 = 1.6F;
 			float f3 = 0.01666667F * f2;

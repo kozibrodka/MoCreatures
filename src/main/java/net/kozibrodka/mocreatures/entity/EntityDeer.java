@@ -12,10 +12,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -330,10 +328,9 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.animals.deerfreq > 0 && super.canSpawn();
+        return mod_mocreatures.mocGlass.animals.deerfreq > 0 && super.canSpawn();
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
     public boolean typechosen;
     public int maxhealth;
 

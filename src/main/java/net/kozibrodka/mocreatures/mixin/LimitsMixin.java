@@ -12,19 +12,16 @@ public class LimitsMixin{
 
     @ModifyConstant(method = "<clinit>", constant = @Constant(intValue = 70))
     private static int setMonsterSpawnCap(int value) {
-        mod_mocreatures mocr = new mod_mocreatures();
-        return mocr.mocreaturesGlass.spawnlimits.maxMobsS;
+        return mod_mocreatures.mocGlass.spawnlimits.maxMobsS;
     }
 
     @ModifyConstant(method = "<clinit>", constant = @Constant(intValue = 15))
     private static int setCreatureSpawnCap(int value) {
-        mod_mocreatures mocr = new mod_mocreatures();
-        return mocr.mocreaturesGlass.spawnlimits.maxAnimalsS;
+        return mod_mocreatures.mocGlass.spawnlimits.maxAnimalsS;
     }
 
     @ModifyConstant(method = "<clinit>", constant = @Constant(intValue = 5))
     private static int setWaterCreatureSpawnCap(int value) {
-        mod_mocreatures mocr = new mod_mocreatures();
-        return mocr.mocreaturesGlass.spawnlimits.maxWaterMobsS;
+        return mod_mocreatures.mocGlass.spawnlimits.maxWaterMobsS;
     }
 }

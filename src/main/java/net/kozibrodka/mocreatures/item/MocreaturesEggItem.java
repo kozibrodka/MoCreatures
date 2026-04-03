@@ -31,12 +31,12 @@ public class MocreaturesEggItem extends TemplateItem {
         if(ide == 2){
             huj = new EntityBigCat(arg3);
             /// anty agro spawn for testing
-            huj.setPositionAndAnglesKeepPrevAngles(i, j, k, arg3.random.nextFloat() * 360F, 0.0F);
-            huj.setPosition(i + 12, j + 1, k);
-            arg3.spawnEntity(huj);
-            ((EntityBigCat)huj).setTypeSpawn();
-            --arg.count;
-            return false;
+//            huj.setPositionAndAnglesKeepPrevAngles(i, j, k, arg3.random.nextFloat() * 360F, 0.0F);
+//            huj.setPosition(i + 12, j + 1, k);
+//            arg3.spawnEntity(huj);
+//            ((EntityBigCat)huj).setTypeSpawn();
+//            --arg.count;
+//            return false;
         }
         if(ide == 3){
             huj = new EntityBird(arg3);
@@ -138,12 +138,12 @@ public class MocreaturesEggItem extends TemplateItem {
         if(ide == 64){
             huj = new EntityCrocodile(arg3);
             /// anty agro spawn for testing
-            huj.setPositionAndAnglesKeepPrevAngles(i, j, k, arg3.random.nextFloat() * 360F, 0.0F);
-            huj.setPosition(i + 12, j + 1, k);
-            arg3.spawnEntity(huj);
-            ((EntityCrocodile)huj).setTypeSpawn();
-            --arg.count;
-            return false;
+//            huj.setPositionAndAnglesKeepPrevAngles(i, j, k, arg3.random.nextFloat() * 360F, 0.0F);
+//            huj.setPosition(i + 12, j + 1, k);
+//            arg3.spawnEntity(huj);
+//            ((EntityCrocodile)huj).setTypeSpawn();
+//            --arg.count;
+//            return false;
         }
         if(ide == 65){
             huj = new EntityCamel(arg3);
@@ -160,15 +160,15 @@ public class MocreaturesEggItem extends TemplateItem {
         if(ide == 69){
             huj = new EntityRay(arg3);
         }
-//        if(ide == 70){
-//            huj = new EntityCollie(arg3);
-//        }
-//        if(ide == 71){
-//            huj = new EntitySheep(arg3);
-//        }
-//        if(ide == 72){
-//            huj = new EntityMonsterSquid(arg3);
-//        }
+        if(ide == 70){
+            huj = new EntityCollie(arg3);
+        }
+        if(ide == 71){
+            huj = new EntitySheep(arg3);
+        }
+        if(ide == 72){
+            huj = new EntityAirShipHorse(arg3);
+        }
 
 
         if(ide >= 30 && ide < 40){

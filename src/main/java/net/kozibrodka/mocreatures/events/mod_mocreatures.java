@@ -3,7 +3,6 @@ package net.kozibrodka.mocreatures.events;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.glasslauncher.mods.gcapi3.api.ConfigRoot;
-import net.kozibrodka.mocreatures.entity.EntityBunny;
 import net.kozibrodka.mocreatures.glasscfg.MocreaturesCFG;
 import net.kozibrodka.mocreatures.item.*;
 import net.kozibrodka.mocreatures.mixin.AchievementPageAccessor;
@@ -39,13 +38,14 @@ import java.util.Objects;
 public class mod_mocreatures {
 
     @ConfigRoot(value = "MocreaturesCFG", visibleName = "Mo' Creatures Config")
-    public static final MocreaturesCFG mocreaturesGlass = new MocreaturesCFG();
+    public static final MocreaturesCFG mocGlass = new MocreaturesCFG(); //TODO  //BroadCast EVENT!!!!
+    //TODO spawn shark on ice, Achievemet megalodon teeth
 
     @Entrypoint.Namespace
     public static Namespace MOD_ID = Null.get();
 
     @Environment(EnvType.SERVER)
-    public void particlePacket(World world, String name, double x, double y, double z, double i, double j, double k) {
+    public static void particlePacket(World world, String name, double x, double y, double z, double i, double j, double k) {
         List list2 = world.players;
         if (list2.size() != 0) {
             for (int k1 = 0; k1 < list2.size(); k1++) {
@@ -56,7 +56,7 @@ public class mod_mocreatures {
     }
 
     @Environment(EnvType.SERVER)
-    public void voicePacket(World world, String name, double x, double y, double z, float g, float h) {
+    public static void voicePacket(World world, String name, double x, double y, double z, float g, float h) {
         List list2 = world.players;
         if (list2.size() != 0) {
             for (int k = 0; k < list2.size(); k++) {
@@ -67,7 +67,7 @@ public class mod_mocreatures {
     }
 
     @Environment(EnvType.SERVER)
-    public void voicePacket(World world, String name, int id, float vol, float pit) {
+    public static void voicePacket(World world, String name, int id, float vol, float pit) {
         List list2 = world.players;
         if (list2.size() != 0) {
             for (int k = 0; k < list2.size(); k++) {
@@ -106,19 +106,18 @@ public class mod_mocreatures {
     public void registerAchievements(AchievementRegisterEvent event) {
         Indiana = new Achievement(77, MOD_ID+(".indiana").toString(), -4, -4, mod_mocreatures.whip, Achievements.OPEN_INVENTORY).addStat();
         BunnyKilla = new Achievement(78, MOD_ID+(".bunnykilla").toString(), -5, -5, mod_mocreatures.whip, Achievements.OPEN_INVENTORY).addStat();
-        //TODO: extra example achievement, make not retarded names - LANG names...
-//        WilfFlyingWest = new Achievement(79, MOD_ID.id("wildflyingwest").toString(), -6, -6, mod_mocreatures.horsesaddle, Achievements.OPEN_INVENTORY).method_1041();
-//        RobertMaklowicz = new Achievement(80, MOD_ID.id("robertmaklowicz").toString(), -7, -7, BlockBase.FLOWING_WATER, Achievements.OPEN_INVENTORY).method_1041();
-//
-//        BunnyKilla.challenge();
-//        Indiana.challenge();
+        WilfFlyingWest = new Achievement(79, MOD_ID+(".wildflyingwest").toString(), -6, -6, mod_mocreatures.horsesaddle, Achievements.OPEN_INVENTORY).addStat();
+        RobertMaklowicz = new Achievement(80, MOD_ID+(".robertmaklowicz").toString(), -7, -7, Block.FLOWING_WATER, Achievements.OPEN_INVENTORY).addStat();
 
-
+        WilfFlyingWest.challenge();
+        RobertMaklowicz.challenge();
 
         final ArrayList<Achievement> MOCRACHIEVEMENTS = new ArrayList<>();
 
         MOCRACHIEVEMENTS.add(BunnyKilla);
         MOCRACHIEVEMENTS.add(Indiana);
+        MOCRACHIEVEMENTS.add(WilfFlyingWest);
+        MOCRACHIEVEMENTS.add(RobertMaklowicz);
 
         AchievementPage vanillaPage = null;
         List list = AchievementPageAccessor.getPAGES();
@@ -133,7 +132,6 @@ public class mod_mocreatures {
         if(vanillaPage != null) {
             vanillaPage.addAchievements(MOCRACHIEVEMENTS.toArray(Achievement[]::new));
         }
-
 
     }
 
@@ -157,6 +155,7 @@ public class mod_mocreatures {
         elephanttusk = new TemplateItem(Identifier.of(MOD_ID, "elephanttusk")).setTranslationKey(MOD_ID, "elephanttusk").setMaxCount(8);
         megalodonteeth = new TemplateItem(Identifier.of(MOD_ID, "megalodonteeth")).setTranslationKey(MOD_ID, "megalodonteeth").setMaxCount(16);
         polarleather = new TemplateItem(Identifier.of(MOD_ID, "polarleather")).setTranslationKey(MOD_ID, "polarleather");
+        sheepbell = new TemplateItem(Identifier.of(MOD_ID, "sheepbell")).setTranslationKey(MOD_ID, "sheepbell");
 //        baobabfruit = new TemplateItem(Identifier.of(MOD_ID, "baobabfruit")).setTranslationKey(MOD_ID, "baobabfruit");
 
         crochide = new TemplateItem(Identifier.of(MOD_ID, "crochide")).setTranslationKey(MOD_ID, "crochide");
@@ -204,14 +203,15 @@ public class mod_mocreatures {
         CraftingRegistry.addShapedRecipe(new ItemStack(Item.CHAIN_BOOTS, 1), "X X", "X X", 'X', sharkteeth);
 
         CraftingRegistry.addShapedRecipe(new ItemStack(horsesaddle, 1), "X", "#", 'X', Item.SADDLE, '#', Item.IRON_INGOT);
-        if(mocreaturesGlass.othersettings.easy_saddle_recipe) {
+        if(mocGlass.othersettings.easy_saddle_recipe) {
             CraftingRegistry.addShapedRecipe(new ItemStack(horsesaddle, 1), "XXX", "X#X", "# #", '#', Item.IRON_INGOT, 'X', Item.LEATHER);
         }
         CraftingRegistry.addShapedRecipe(new ItemStack(medallion, 1), "# #", "XZX", " X ", '#', Item.LEATHER, 'Z', Item.DIAMOND, 'X', Item.GOLD_INGOT);
-        if(mocreaturesGlass.othersettings.easy_medallion_recipe) {
+        if(mocGlass.othersettings.easy_medallion_recipe) {
             CraftingRegistry.addShapedRecipe(new ItemStack(medallion, 1), "# #", " X ", '#', Item.LEATHER, 'X', Item.GOLD_INGOT);
         }
 
+        CraftingRegistry.addShapedRecipe(new ItemStack(sheepbell, 1), "# #", " X ", '#', Item.LEATHER, 'X', Item.IRON_INGOT);
         CraftingRegistry.addShapedRecipe(new ItemStack(helmetcroc, 1), "XXX", "X X", 'X', crochide);
         CraftingRegistry.addShapedRecipe(new ItemStack(platecroc, 1), "X X", "XXX", "XXX", 'X', crochide);
         CraftingRegistry.addShapedRecipe(new ItemStack(legscroc, 1), "XXX", "X X", "X X", 'X', crochide);
@@ -250,6 +250,7 @@ public class mod_mocreatures {
     public static Item greenapple;
     public static Item elephanttusk;
     public static Item megalodonteeth;
+    public static Item sheepbell;
 //    public static Item baobabfruit;
 
     public static Item crochide;

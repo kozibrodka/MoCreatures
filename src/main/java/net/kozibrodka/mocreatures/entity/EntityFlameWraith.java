@@ -4,7 +4,6 @@ package net.kozibrodka.mocreatures.entity;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.Monster;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
@@ -75,10 +74,9 @@ public class EntityFlameWraith extends EntityWraith
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.hostilemobs.fwraithfreq > 0 && world.difficulty >= mocr.mocreaturesGlass.hostilemobs.fwraithSpawnDifficulty.ordinal() + 1 && super.d2();
+        return mod_mocreatures.mocGlass.hostilemobs.fwraithfreq > 0 && world.difficulty >= mod_mocreatures.mocGlass.hostilemobs.fwraithSpawnDifficulty.ordinal() + 1 && super.d2();
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
     protected int burningTime;
 
     @Override

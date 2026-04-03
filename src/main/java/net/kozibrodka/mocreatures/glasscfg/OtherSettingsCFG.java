@@ -4,12 +4,6 @@ import net.glasslauncher.mods.gcapi3.api.ConfigEntry;
 
 public class OtherSettingsCFG {
 
-    @ConfigEntry(name="§5Extra mobs")
-    public Boolean extra_mobs = true;
-
-    @ConfigEntry(name="§aSheep Farming")
-    public Boolean sheep_farming = true;
-
     @ConfigEntry(name="SugarLump is food item")
     public Boolean sugar_lump = true;
 

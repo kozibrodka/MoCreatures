@@ -6,7 +6,6 @@ import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -134,7 +133,7 @@ public class EntityBoar extends PigEntity implements MobSpawnDataProvider
                 continue;
             }
             ItemEntity entityitem = (ItemEntity)entity1;
-            if(entityitem != null && entityitem.itemAge < 50 && mocr.mocreaturesGlass.huntercreatures.destroyitems)
+            if(entityitem != null && entityitem.itemAge < 50 && mod_mocreatures.mocGlass.huntercreatures.destroyitems)
             {
                 entityitem.markDead();
             }
@@ -154,10 +153,9 @@ public class EntityBoar extends PigEntity implements MobSpawnDataProvider
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.huntercreatures.boarfreq > 0 && super.canSpawn();
+        return mod_mocreatures.mocGlass.huntercreatures.boarfreq > 0 && super.canSpawn();
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
     protected int force;
     protected double attackRange;
 

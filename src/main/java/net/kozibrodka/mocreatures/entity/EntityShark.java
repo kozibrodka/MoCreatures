@@ -9,13 +9,11 @@ import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.kozibrodka.mocreatures.mocreatures.MoGuiOpener;
-import net.kozibrodka.mocreatures.network.AskPacket;
 import net.kozibrodka.mocreatures.network.NamePacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.SquidEntity;
-import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -123,7 +121,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
     }
 
     public boolean privateToIgnore(Entity hunter, Entity victim) {
-        return ((victim instanceof EntityShark) || (victim instanceof EntitySharkEgg) || (victim instanceof SquidEntity) || (hunter.y - victim.y > 6.0D) || (victim instanceof EntityDolphin) && !mocr.mocreaturesGlass.watermobs.attackdolphins || victim instanceof EntityElephant && ((EntityElephant) victim).getAdult() || victim instanceof EntityHippo || (victim instanceof EntityCrocodile) && ((EntityCrocodile) victim).getAge() > 1.2F);
+        return ((victim instanceof EntityShark) || (victim instanceof EntitySharkEgg) || (victim instanceof SquidEntity) || (hunter.y - victim.y > 6.0D) || (victim instanceof EntityDolphin) && !mod_mocreatures.mocGlass.watermobs.attackdolphins || victim instanceof EntityElephant && ((EntityElephant) victim).getAdult() || victim instanceof EntityHippo || (victim instanceof EntityCrocodile) && ((EntityCrocodile) victim).getAge() > 1.2F);
     } /// Dziki rekin jest zbalansowanie agresywny.
 
     public boolean damage(Entity entitybase, int i)
@@ -246,7 +244,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
                 continue;
             }
             ItemEntity entityitem = (ItemEntity)entity1;
-            if(entityitem != null && entityitem.itemAge < 50 && mocr.mocreaturesGlass.huntercreatures.destroyitems)
+            if(entityitem != null && entityitem.itemAge < 50 && mod_mocreatures.mocGlass.huntercreatures.destroyitems)
             {
                 entityitem.markDead();
             }
@@ -329,7 +327,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.watermobs.sharkfreq > 0 && !MoCTools.isNearTorch(this) && world.difficulty >= mocr.mocreaturesGlass.watermobs.sharkSpawnDifficulty.ordinal() + 1 && super.canSpawn();
+        return mod_mocreatures.mocGlass.watermobs.sharkfreq > 0 && !MoCTools.isNearTorch(this) && world.difficulty >= mod_mocreatures.mocGlass.watermobs.sharkSpawnDifficulty.ordinal() + 1 && super.canSpawn();
     }
 
     public void setNameWithGui(EntityShark entityShark, PlayerEntity entityPlayer)
@@ -346,13 +344,12 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
 
     public void sendParticle(World world, String name, double x, double y, double z, double i, double j, double k){
         if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.particlePacket(world,name,x,y,z,i,j,k);
+            mod_mocreatures.particlePacket(world,name,x,y,z,i,j,k);
         }
     }
 
 
 
-    mod_mocreatures mocr = new mod_mocreatures();
     public int maxhealth;
     public boolean typechosen;
 

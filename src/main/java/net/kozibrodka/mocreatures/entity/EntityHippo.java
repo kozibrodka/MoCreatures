@@ -3,10 +3,8 @@ package net.kozibrodka.mocreatures.entity;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -225,20 +223,17 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
         return "mocreatures:hippodeath";
     }
 
-    public boolean canSpawn()
-    {
-        return mocr.mocreaturesGlass.huntercreatures.hippofreq > 0 && !MoCTools.isNearTorch(this) && MoCTools.isNearWater(this) && canSpawnCroc();
-    }
-
-    public boolean canSpawnCroc() /// Spawni róznież na piasku.
-    {
+    public boolean canSpawnHippo(){ /// Spawni róznież na piasku.  getPathfindingFavor - .super!!!!
         int var1 = MathHelper.floor(x);
         int var2 = MathHelper.floor(boundingBox.minY);
         int var3 = MathHelper.floor(z);
-        return (world.getBlockId(var1, var2 - 1, var3) == Block.SAND.id || world.getBlockId(var1, var2 - 1, var3) == Block.GRASS.id) && world.getBrightness(var1, var2, var3) > 8 && getPathfindingFavor(var1, var2, var3) >= 0.0F && world.canSpawnEntity(boundingBox) && world.getEntityCollisions(this, boundingBox).isEmpty() && !world.isBoxSubmergedInFluid(boundingBox);
+        return (world.getBlockId(var1, var2 - 1, var3) == Block.SAND.id || world.getBlockId(var1, var2 - 1, var3) == Block.GRASS_BLOCK.id) && world.getBrightness(var1, var2, var3) > 8 && super.getPathfindingFavor(var1, var2, var3) >= 0.0F && world.canSpawnEntity(boundingBox) && world.getEntityCollisions(this, boundingBox).isEmpty() && !world.isBoxSubmergedInFluid(boundingBox);
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
+    public boolean canSpawn()
+    {
+        return mod_mocreatures.mocGlass.huntercreatures.hippofreq > 0 && !MoCTools.isNearTorch(this) && MoCTools.isNearWater(this) && canSpawnHippo();
+    }
 
     @Override
     public Identifier getHandlerIdentifier() {return Identifier.of(mod_mocreatures.MOD_ID, "Hippo");}

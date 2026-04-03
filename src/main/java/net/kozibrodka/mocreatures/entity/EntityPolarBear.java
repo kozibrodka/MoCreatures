@@ -3,15 +3,12 @@ package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCTools;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
@@ -100,10 +97,8 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
 
     public boolean canSpawn()
     {
-        return MoCTools.NearMaterialWithDistance(this, Double.valueOf(1.0D), Material.SNOW_LAYER) && mocr.mocreaturesGlass.huntercreatures.pbearfreq > 0 && !MoCTools.isNearTorch(this) && super.cS2();
+        return MoCTools.NearMaterialWithDistance(this, Double.valueOf(1.0D), Material.SNOW_LAYER) && mod_mocreatures.mocGlass.huntercreatures.pbearfreq > 0 && !MoCTools.isNearTorch(this) && super.cS2();
     }
-
-    mod_mocreatures mocr = new mod_mocreatures();
 
     @Override
     public Identifier getHandlerIdentifier() {

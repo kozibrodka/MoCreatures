@@ -4,7 +4,6 @@ import net.kozibrodka.mocreatures.entity.*;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.util.ScreenScaler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
@@ -18,11 +17,12 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MoCTools {
 
     public static void destroyDrops(Entity entity, double d) {
-        if(mocr.mocreaturesGlass.huntercreatures.destroyitems) {
+        if(mod_mocreatures.mocGlass.huntercreatures.destroyitems) { //todo Test and move from entityies
             List list = entity.world.getEntities(entity, entity.boundingBox.expand(d, d, d));
             for(int i = 0; i < list.size(); ++i) {
                 Entity entity1 = (Entity)list.get(i);
@@ -46,7 +46,7 @@ public class MoCTools {
 
     public static void MoveToWater(MobEntity entity) {
         int[] ai = ReturnNearestMaterialCoord(entity, Material.WATER, Double.valueOf(20.0D), Double.valueOf(2.0D));
-        if(ai[0] > -1000) {
+        if(ai[1] != -1) {
             MoveCreatureToXYZ(entity, ai[0], ai[1], ai[2], 24.0F);
         }
 
@@ -55,7 +55,7 @@ public class MoCTools {
     public static int[] ReturnNearestMaterialCoord(Entity entity, Material material, Double double1, Double yOff) {
         double shortestDistance = -1.0D;
         double distance = 0.0D;
-        int x = -9999;
+        int x = -1; /// ZMIANA LOGIKI było -9999 i sprawdzanie czy x > - 1000, z tym że wtedy na ogromnej czesci świata nie działa LOL
         int y = -1;
         int z = -1;
         Box axisalignedbb = entity.boundingBox.expand(double1.doubleValue(), yOff.doubleValue(), double1.doubleValue());
@@ -103,6 +103,59 @@ public class MoCTools {
         }
 
         return new int[]{x, y, z};
+    }
+
+    public static int[] ReturnNearestBlockCoord(Entity entity, String tileName, Double double1, Double yOff) {
+        double shortestDistance = -1.0D;
+        double distance = 0.0D;
+        int x = -1;
+        int y = -1;
+        int z = -1;
+        Box axisalignedbb = entity.boundingBox.expand(double1.doubleValue(), yOff.doubleValue(), double1.doubleValue());
+        int i = MathHelper.floor(axisalignedbb.minX);
+        int j = MathHelper.floor(axisalignedbb.maxX + 1.0D);
+        int k = MathHelper.floor(axisalignedbb.minY);
+        int l = MathHelper.floor(axisalignedbb.maxY + 1.0D);
+        int i1 = MathHelper.floor(axisalignedbb.minZ);
+        int j1 = MathHelper.floor(axisalignedbb.maxZ + 1.0D);
+
+        for(int k1 = i; k1 < j; ++k1) {
+            for(int l1 = k; l1 < l; ++l1) {
+                for(int i2 = i1; i2 < j1; ++i2) {
+                    int j2 = entity.world.getBlockId(k1, l1, i2);
+                    if(j2 != 0 && Objects.equals(Block.BLOCKS[j2].getTranslationKey(), tileName)) {
+                        distance = getSqDistanceTo(entity, k1, l1, i2);
+                        if(shortestDistance == -1.0D) {
+                            x = k1;
+                            y = l1;
+                            z = i2;
+                            shortestDistance = distance;
+                        }
+
+                        if(distance < shortestDistance) {
+                            x = k1;
+                            y = l1;
+                            z = i2;
+                            shortestDistance = distance;
+                        }
+                    }
+                }
+            }
+        }
+
+//        if((double)x < 0) {
+//            x += 1;
+//        }
+//
+//        if((double)z < 0) {
+//            z += 1;
+//        }
+
+//        y += 1;
+
+        return (new int[] {
+                x, y, z
+        });
     }
 
     public static double getSqDistanceTo(Entity entity, int i, int j, int k) {
@@ -163,11 +216,11 @@ public class MoCTools {
     }
 
     public static boolean isNearWater(Entity entity) { /// Może 8 kratek za dużo???
-        return isNearBlockName(entity, Double.valueOf(8.0D), "tile.water");
+        return isNearBlockName(entity, Double.valueOf(12.0D), "tile.water"); // 8.0D
     }
 
     public static boolean isNearTorch(Entity entity) {
-        if(mocr.mocreaturesGlass.huntercreatures.huntersSpawnOnTorch){
+        if(mod_mocreatures.mocGlass.huntercreatures.huntersSpawnOnTorch){
             return false;
         }else{
             return isNearBlockName(entity, Double.valueOf(8.0D), "tile.torch");
@@ -201,7 +254,6 @@ public class MoCTools {
                 }
             }
         }
-
         return false;
     }
 
@@ -260,7 +312,8 @@ public class MoCTools {
             if(list1.get(j2) instanceof LivingEntity twistedEntity)
             {
                 if(twistedEntity.deathTime > 0 && twistedEntity.vehicle == null && twistedEntity.health > 0) {
-                    twistedEntity.deathTime = 0;
+                    twistedEntity.markDead();
+//                    twistedEntity.deathTime = 0;
                 }
             }
         }
@@ -268,7 +321,7 @@ public class MoCTools {
     }
 
     public static boolean entitiesToIgnore(Entity hunter, Entity victim) {
-        return !(victim instanceof LivingEntity) || (victim instanceof MonsterEntity) && !(hunter instanceof EntityBigCat) && !(victim instanceof EntityWWolf) || victim == hunter || victim == hunter.passenger || victim == hunter.vehicle || (victim instanceof PlayerEntity) || (victim instanceof EntityKittyBed) || (victim instanceof EntityLitterBox) || (victim instanceof WolfEntity) && ((WolfEntity)victim).isTamed() && !mocr.mocreaturesGlass.huntercreatures.attackwolves || (victim instanceof EntityHorse) && ((EntityHorse)victim).getTamed() && !mocr.mocreaturesGlass.huntercreatures.attackhorses || (victim instanceof EntityDolphin) && ((EntityDolphin)victim).getTamed() && !mocr.mocreaturesGlass.huntercreatures.attackdolphins;
+        return !(victim instanceof LivingEntity) || (victim instanceof MonsterEntity) && !(hunter instanceof EntityBigCat) && !(victim instanceof EntityWWolf) || victim == hunter || victim == hunter.passenger || victim == hunter.vehicle || (victim instanceof PlayerEntity) || (victim instanceof EntityKittyBed) || (victim instanceof EntityLitterBox) || (victim instanceof WolfEntity) && ((WolfEntity)victim).isTamed() && !mod_mocreatures.mocGlass.huntercreatures.attackwolves || (victim instanceof EntityHorse) && ((EntityHorse)victim).getTamed() && !mod_mocreatures.mocGlass.huntercreatures.attackhorses || (victim instanceof EntityDolphin) && ((EntityDolphin)victim).getTamed() && !mod_mocreatures.mocGlass.huntercreatures.attackdolphins || (victim instanceof EntityCollie) && ((EntityCollie)victim).isTamed() && !mod_mocreatures.mocGlass.huntercreatures.attackwolves;
     }
     ///  opcje dla nie-atakowania bigcats tamed i cats na razie nie ma.
 
@@ -276,5 +329,5 @@ public class MoCTools {
         return (hunter instanceof MoCreatureNamed && victim instanceof MoCreatureNamed && ((MoCreatureNamed) hunter).getTamed() && ((MoCreatureNamed) victim).getTamed());
     }
 
-    static mod_mocreatures mocr = new mod_mocreatures();
+
 }

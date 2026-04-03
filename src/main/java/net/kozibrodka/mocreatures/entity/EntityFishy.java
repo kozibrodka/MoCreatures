@@ -246,7 +246,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
             return 9;
         } else
         {
-            if(mocr.mocreaturesGlass.watermobs.spawnpiranha){
+            if(mod_mocreatures.mocGlass.watermobs.spawnpiranha){
                 return 10;
             }else{
                 return 1;
@@ -335,7 +335,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.watermobs.fishfreq > 0 && super.canSpawn();
+        return mod_mocreatures.mocGlass.watermobs.fishfreq > 0 && super.canSpawn();
     }
 
     protected void initDataTracker() {
@@ -345,8 +345,6 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         dataTracker.startTracking(18, (byte) 0); //Adult
         dataTracker.startTracking(19, (byte) 0); //Tamed
     }
-
-    mod_mocreatures mocr = new mod_mocreatures();
 
     public int gestationtime;
     public boolean eaten;

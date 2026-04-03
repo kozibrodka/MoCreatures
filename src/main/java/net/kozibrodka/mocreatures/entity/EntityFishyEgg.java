@@ -116,7 +116,6 @@ public class EntityFishyEgg extends LivingEntity implements MobSpawnDataProvider
 
     private int tCounter;
     private int lCounter;
-    mod_mocreatures mocr = new mod_mocreatures();
 
     @Override
     public Identifier getHandlerIdentifier() {
@@ -125,7 +124,7 @@ public class EntityFishyEgg extends LivingEntity implements MobSpawnDataProvider
 
     public void sendSound(World world, String name, float vol, float pit){
         if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.voicePacket(world, name, this.id, vol, pit);
+            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
         }
     }
 }

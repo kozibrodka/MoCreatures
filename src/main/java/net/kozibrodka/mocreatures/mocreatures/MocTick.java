@@ -18,7 +18,7 @@ public class MocTick {
     public static int poisoncounter = 0;
     public static int freezedcounter = 0;
     private long gameClock = 0L;
-    static Minecraft mc = Minecraft.INSTANCE;
+    public static Minecraft mc = Minecraft.INSTANCE;
 
 
     public boolean MocreaturesTickInGame(Minecraft minecraft){

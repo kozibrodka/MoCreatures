@@ -3,7 +3,6 @@ package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
-import net.kozibrodka.mocreatures.network.AskPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MonsterEntity;
@@ -13,7 +12,6 @@ import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
-import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 
@@ -175,7 +173,7 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider, Mo
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.hostilemobs.ratfreq > 0 && super.canSpawn();
+        return mod_mocreatures.mocGlass.hostilemobs.ratfreq > 0 && super.canSpawn();
     }
 
     public boolean canSpawn2()
@@ -213,7 +211,6 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider, Mo
         return !onGround && isOnLadder();
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
     public boolean typechosen;
 
     @Override

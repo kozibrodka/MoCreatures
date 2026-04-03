@@ -13,5 +13,9 @@ accessible field net/minecraft/world/ServerWorld entitiesById Lnet/minecraft/uti
 accessible field net/minecraft/util/IntHashMap size I
 accessible method net/minecraft/world/World blockUpdate (IIII)V
 accessible field net/minecraft/entity/Entity fireImmune Z
-accessible field net/modificationstation/stationapi/api/client/gui/screen/achievement/AchievementPage PAGES Ljava/util/List;
-
+accessible field net/minecraft/entity/passive/WolfEntity begging Z
+accessible field net/minecraft/entity/passive/WolfEntity furWet Z
+accessible field net/minecraft/entity/passive/WolfEntity shakingWaterOff Z
+accessible field net/minecraft/entity/passive/WolfEntity shakeProgress F
+accessible field net/minecraft/entity/passive/WolfEntity lastShakeProgress F
+accessible method net/minecraft/entity/passive/WolfEntity showFeedParticles (Z)V

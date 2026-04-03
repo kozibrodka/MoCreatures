@@ -3,7 +3,6 @@ package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.entity.Monster;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
@@ -79,7 +78,7 @@ public class EntityWraith extends EntityFlyerMob
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.hostilemobs.wraithfreq > 0 && world.difficulty >= mocr.mocreaturesGlass.hostilemobs.wraithSpawnDifficulty.ordinal() + 1 && super.canSpawn();
+        return mod_mocreatures.mocGlass.hostilemobs.wraithfreq > 0 && world.difficulty >= mod_mocreatures.mocGlass.hostilemobs.wraithSpawnDifficulty.ordinal() + 1 && super.canSpawn();
     }
 
     public boolean d2()
@@ -87,7 +86,6 @@ public class EntityWraith extends EntityFlyerMob
         return super.canSpawn();
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
 
     @Override
     public Identifier getHandlerIdentifier() {

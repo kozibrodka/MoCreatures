@@ -190,16 +190,15 @@ label0:
 
     public static void sendParticle(World world, String name, double x, double y, double z, double i, double j, double k){
         if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.particlePacket(world,name,x,y,z,i,j,k);
+            mod_mocreatures.particlePacket(world,name,x,y,z,i,j,k);
         }
     }
 
     public static void sendSound(World world, String name, int entityID, float vol, float pit){
         if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.voicePacket(world, name, entityID, vol, pit);
+            mod_mocreatures.voicePacket(world, name, entityID, vol, pit);
         }
     }
 
-    static mod_mocreatures mocr = new mod_mocreatures();
 
 }

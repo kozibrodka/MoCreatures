@@ -7,7 +7,6 @@ import net.kozibrodka.mocreatures.mocreatures.AnimalChest;
 import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
 import net.kozibrodka.mocreatures.mocreatures.MoGuiOpener;
-import net.kozibrodka.mocreatures.network.JokeyPacket;
 import net.kozibrodka.mocreatures.network.NamePacket;
 import net.kozibrodka.mocreatures.network.RopePacket;
 import net.minecraft.block.Block;
@@ -296,7 +295,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
 
         if(!getUpsideDown() && getTamed() && random.nextInt(20) == 0) {
             PlayerEntity entityplayer1 = world.getClosestPlayer(this, 12.0D);
-            if(entityplayer1 != null && !getSitting()) {
+            if(entityplayer1 != null && !getSitting() && Objects.equals(entityplayer1.name, getOwner())) {
                 Path pathentity1 = world.findPath(this, entityplayer1, 16.0F);
                 setPath(pathentity1);
             }
@@ -554,7 +553,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
 
     public int getLimitPerChunk()
     {
-        return 6;
+        return 3;
     }
 
     protected int getDroppedItemId()
@@ -579,10 +578,9 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.animals.turtlefreq > 0 && super.canSpawn();
+        return mod_mocreatures.mocGlass.animals.turtlefreq > 0 && super.canSpawn();
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
     private boolean isSwinging;
     private boolean twistright;
     private int flopcounter;
@@ -870,13 +868,13 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
 
     public void sendParticle(World world, String name, double x, double y, double z, double i, double j, double k){
         if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.particlePacket(world,name,x,y,z,i,j,k);
+            mod_mocreatures.particlePacket(world,name,x,y,z,i,j,k);
         }
     }
 
     public void sendSound(World world, String name, float vol, float pit){
         if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.voicePacket(world, name, this.id, vol, pit);
+            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
         }
     }
 }

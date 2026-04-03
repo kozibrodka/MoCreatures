@@ -22,13 +22,13 @@ public class EntityOgre extends MonsterEntity
     {
         super(world);
         attackDamage = 3;
-        attackRange = mocr.mocreaturesGlass.hostilemobs.ogrerange;
+        attackRange = mod_mocreatures.mocGlass.hostilemobs.ogrerange;
         texture = "/assets/mocreatures/stationapi/textures/mob/ogre.png";
         setBoundingBoxSpacing(1.5F, 4F);
         health = 35;
         bogrefire = false;
         ogrehasenemy = false;
-        destroyForce = mocr.mocreaturesGlass.hostilemobs.ogreStrength;
+        destroyForce = mod_mocreatures.mocGlass.hostilemobs.ogreStrength;
         fireImmune = false;
         frequencyA = 30;
     }
@@ -109,8 +109,8 @@ public class EntityOgre extends MonsterEntity
 
     public void tickMovement()
     {
-        destroyForce = mocr.mocreaturesGlass.hostilemobs.ogreStrength; ///Czy musi to byc tu?
-        attackRange = mocr.mocreaturesGlass.hostilemobs.ogrerange;
+        destroyForce = mod_mocreatures.mocGlass.hostilemobs.ogreStrength; ///Czy musi to byc tu?
+        attackRange = mod_mocreatures.mocGlass.hostilemobs.ogrerange;
         if(ogrehasenemy && random.nextInt(frequencyA) == 0 && !world.isRemote)
         {
             setOgreAttack(true);
@@ -139,12 +139,12 @@ public class EntityOgre extends MonsterEntity
 
     public void DestroyingOgre()
     {
-        Destroyer.DestroyBlast(world, this, x, y + 1.0D, z, destroyForce, bogrefire, mocr.mocreaturesGlass.hostilemobs.igniteogre, mocr.mocreaturesGlass.hostilemobs.explodeogre, mocr.mocreaturesGlass.hostilemobs.explodecaveogre, mocr.mocreaturesGlass.hostilemobs.explodefireogre);
+        Destroyer.DestroyBlast(world, this, x, y + 1.0D, z, destroyForce, bogrefire, mod_mocreatures.mocGlass.hostilemobs.igniteogre, mod_mocreatures.mocGlass.hostilemobs.explodeogre, mod_mocreatures.mocGlass.hostilemobs.explodecaveogre, mod_mocreatures.mocGlass.hostilemobs.explodefireogre);
     }
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.hostilemobs.ogrefreq > 0 && world.difficulty >= mocr.mocreaturesGlass.hostilemobs.ogreSpawnDifficulty.ordinal() + 1 && super.canSpawn();
+        return mod_mocreatures.mocGlass.hostilemobs.ogrefreq > 0 && world.difficulty >= mod_mocreatures.mocGlass.hostilemobs.ogreSpawnDifficulty.ordinal() + 1 && super.canSpawn();
     }
 
     public boolean d2()
@@ -166,8 +166,7 @@ public class EntityOgre extends MonsterEntity
         }
 
     }
-
-    mod_mocreatures mocr = new mod_mocreatures();
+    
     public int frequencyA;
     public float destroyForce;
     public boolean ogrehasenemy;

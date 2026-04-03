@@ -24,7 +24,7 @@ public class HostileMobsCFG {
     public DifficultyEnum ogreSpawnDifficulty = DifficultyEnum.NORMAL;
 
     @ConfigEntry(name="Spawn FireOgre Difficulty")
-    public DifficultyEnum fogreSpawnDifficulty = DifficultyEnum.HARD;
+    public DifficultyEnum fogreSpawnDifficulty = DifficultyEnum.NORMAL;
 
     @ConfigEntry(name="Spawn CaveOgre Difficulty")
     public DifficultyEnum cogreSpawnDifficulty = DifficultyEnum.NORMAL;

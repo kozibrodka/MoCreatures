@@ -72,9 +72,9 @@ public class RenderKitty extends UndeadEntityRenderer
     {
         EntityKitty entitykitty = (EntityKitty)entityliving;
         super.render(entitykitty, d, d1, d2, f, f1);
-        boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entitykitty.getName().isEmpty();
-        boolean flag1 = mocr.mocreaturesGlass.othersettings.displayhealth;
-        boolean flag2 = mocr.mocreaturesGlass.othersettings.displayemo;
+        boolean flag = mod_mocreatures.mocGlass.othersettings.displayname && !entitykitty.getName().isEmpty();
+        boolean flag1 = mod_mocreatures.mocGlass.othersettings.displayhealth;
+        boolean flag2 = mod_mocreatures.mocGlass.othersettings.displayemo;
         if(entitykitty.renderName())
         {
             float f2 = 1.6F;
@@ -201,7 +201,6 @@ public class RenderKitty extends UndeadEntityRenderer
 
     @SuppressWarnings("deprecation")
     public static Minecraft mc = Minecraft.class.cast(FabricLoader.getInstance().getGameInstance());
-    mod_mocreatures mocr = new mod_mocreatures();
 
     public ModelKitty pussy1;
 }

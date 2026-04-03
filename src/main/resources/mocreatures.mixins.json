@@ -3,12 +3,10 @@
   "minVersion": "0.8",
   "package": "net.kozibrodka.mocreatures.mixin",
   "compatibilityLevel": "JAVA_17",
+  "plugin": "net.kozibrodka.mocreatures.mocreatures.MoCMixinPlugin",
   "mixins": [
     "AchievementPageAccessor",
     "LimitsMixin",
-    "MixinFixDepthBuffer",
-    "MixinFixThreadCheckHasPaid",
-    "MocreaturesHellMixin",
     "MocreaturesMixin",
     "PlayerBaseMixin",
     "SpawnerAnimalsMixin",

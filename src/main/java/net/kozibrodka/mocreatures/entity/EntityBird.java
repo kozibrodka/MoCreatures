@@ -238,7 +238,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         {
             world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
             if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-                mocr.voicePacket(world, "mob.chickenplop", this.id, 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+                mod_mocreatures.voicePacket(world, "mob.chickenplop", this.id, 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
             }
             setPicked(false);
         }
@@ -653,10 +653,8 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.animals.birdfreq > 0 && super.canSpawn();
+        return mod_mocreatures.mocGlass.animals.birdfreq > 0 && super.canSpawn();
     }
-
-    mod_mocreatures mocr = new mod_mocreatures();
 
     public float wingb;
     public float wingc;

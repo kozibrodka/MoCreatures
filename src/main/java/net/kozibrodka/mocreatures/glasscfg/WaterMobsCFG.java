@@ -7,10 +7,13 @@ public class WaterMobsCFG {
 
 
     @ConfigEntry(name="Aggresive Dolphins?", description = "dolphins attack sharks")
-    public Boolean attackdolphins = false;
+    public Boolean attackdolphins = true;
 
     @ConfigEntry(name="Spawn Piranhas?")
     public Boolean spawnpiranha = true;
+
+    @ConfigEntry(name="Dolphin Shallow Bogging", description = "less speed on shallow waters")
+    public Boolean shallowdolphin = true;
 
     @ConfigEntry(name="Spawn Sharks Difficulty")
     public DifficultyEnum sharkSpawnDifficulty = DifficultyEnum.EASY;

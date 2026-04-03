@@ -3,13 +3,10 @@ package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCTools;
-import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -170,7 +167,7 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
                 continue;
             }
             ItemEntity entityitem = (ItemEntity)entity1;
-            if(entityitem.itemAge < 50 && mocr.mocreaturesGlass.huntercreatures.destroyitems)
+            if(entityitem.itemAge < 50 && mod_mocreatures.mocGlass.huntercreatures.destroyitems)
             {
                 entityitem.markDead();
             }
@@ -185,10 +182,9 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.huntercreatures.bearfreq > 0 && !MoCTools.isNearTorch(this) && super.canSpawn();
+        return mod_mocreatures.mocGlass.huntercreatures.bearfreq > 0 && !MoCTools.isNearTorch(this) && super.canSpawn();
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
     protected double attackRange;
     protected int force;
 

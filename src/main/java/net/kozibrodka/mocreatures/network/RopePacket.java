@@ -89,6 +89,13 @@ public class RopePacket extends Packet implements ManagedPacket<RopePacket> {
             }
         }
 
+        if(Objects.equals(entityName, "sheep")){
+            EntitySheep sheep1 = (EntitySheep) ((ClientWorld)player.world).getEntity(this.entityId);
+            if(sheep1 != null){
+                sheep1.roper = sheep1.world.getPlayer(this.entityRoper);
+            }
+        }
+
         if(Objects.equals(entityName, "bird")){
             EntityBird bird1 = (EntityBird) ((ClientWorld)player.world).getEntity(this.entityId);
             if(bird1 != null){

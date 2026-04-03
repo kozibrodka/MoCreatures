@@ -59,9 +59,9 @@ public class RenderHorse extends LivingEntityRenderer
             float f, float f1)
     {
         super.render(entityhorse, d, d1, d2, f, f1);
-        boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entityhorse.getName().isEmpty();
-        boolean flag1 = mocr.mocreaturesGlass.othersettings.displayhealth;
-        boolean flag2 = mocr.mocreaturesGlass.othersettings.displayemo;
+        boolean flag = mod_mocreatures.mocGlass.othersettings.displayname && !entityhorse.getName().isEmpty();
+        boolean flag1 = mod_mocreatures.mocGlass.othersettings.displayhealth;
+        boolean flag2 = mod_mocreatures.mocGlass.othersettings.displayemo;
         boolean flagEat = entityhorse.getEaten();
         boolean flagRep = entityhorse.getReproduced();
         if(entityhorse.renderName())
@@ -295,7 +295,6 @@ public class RenderHorse extends LivingEntityRenderer
         return i == 0;
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
     public static Minecraft mc = Minecraft.class.cast(FabricLoader.getInstance().getGameInstance());
     public ModelHorse1 modelhorse1;
 }

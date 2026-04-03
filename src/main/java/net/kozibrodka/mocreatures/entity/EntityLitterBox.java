@@ -11,8 +11,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.PickaxeItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.network.packet.PacketHelper;
@@ -77,7 +77,7 @@ public class EntityLitterBox extends LivingEntity implements MobSpawnDataProvide
 
     public void move(double d, double d1, double d2)
     {
-        if(vehicle != null || !onGround || !mocr.mocreaturesGlass.othersettings.staticlitter)
+        if(vehicle != null || !onGround || !mod_mocreatures.mocGlass.othersettings.staticlitter)
         {
             super.move(d, d1, d2);
         }
@@ -158,7 +158,7 @@ public class EntityLitterBox extends LivingEntity implements MobSpawnDataProvide
         if(vehicle instanceof PlayerEntity && !Objects.equals(((PlayerEntity) vehicle).name, entityplayer.name)){
             return false;
         }
-        if(itemstack != null && (itemstack.itemId == Item.STONE_PICKAXE.id || itemstack.itemId == Item.WOODEN_PICKAXE.id || itemstack.itemId == Item.IRON_PICKAXE.id || itemstack.itemId == Item.GOLDEN_PICKAXE.id || itemstack.itemId == Item.DIAMOND_PICKAXE.id))
+        if(itemstack != null && itemstack.getItem() instanceof PickaxeItem)
         {
             entityplayer.inventory.addStack(new ItemStack(mod_mocreatures.litterbox));
             world.playSound(this, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
@@ -229,7 +229,6 @@ public class EntityLitterBox extends LivingEntity implements MobSpawnDataProvide
         return true;
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
     public boolean pickedUp; ///useless?
     public int littertime;
 
@@ -240,13 +239,13 @@ public class EntityLitterBox extends LivingEntity implements MobSpawnDataProvide
 
     public void sendParticle(World world, String name, double x, double y, double z, double i, double j, double k){
         if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.particlePacket(world,name,x,y,z,i,j,k);
+            mod_mocreatures.particlePacket(world,name,x,y,z,i,j,k);
         }
     }
 
     public void sendSound(World world, String name, float vol, float pit){
         if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.voicePacket(world, name, this.id, vol, pit);
+            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
         }
     }
 

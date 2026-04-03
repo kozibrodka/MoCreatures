@@ -166,7 +166,7 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         {
             world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
             if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-                mocr.voicePacket(world, "mob.chickenplop", this.id, 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+                mod_mocreatures.voicePacket(world, "mob.chickenplop", this.id, 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
             }
             setPicked(false);
         }
@@ -277,7 +277,7 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         int i = MathHelper.floor(x);
         int j = MathHelper.floor(boundingBox.minY);
         int k = MathHelper.floor(z);
-        return mocr.mocreaturesGlass.animals.micefreq > 0 && world.canSpawnEntity(boundingBox) && world.getEntityCollisions(this, boundingBox).isEmpty() && !world.isBoxSubmergedInFluid(boundingBox) && world.getBlockId(i, j - 1, k) == Block.COBBLESTONE.id && mocr.mocreaturesGlass.animals.mouseinhouse || world.getBlockId(i, j - 1, k) == Block.PLANKS.id && mocr.mocreaturesGlass.animals.mouseinhouse || world.getBlockId(i, j - 1, k) == Block.DIRT.id || world.getBlockId(i, j - 1, k) == Block.STONE.id  && mocr.mocreaturesGlass.animals.mouseinhouse || world.getBlockId(i, j - 1, k) == Block.GRASS_BLOCK.id;
+        return mod_mocreatures.mocGlass.animals.micefreq > 0 && world.canSpawnEntity(boundingBox) && world.getEntityCollisions(this, boundingBox).isEmpty() && !world.isBoxSubmergedInFluid(boundingBox) && world.getBlockId(i, j - 1, k) == Block.COBBLESTONE.id && mod_mocreatures.mocGlass.animals.mouseinhouse || world.getBlockId(i, j - 1, k) == Block.PLANKS.id && mod_mocreatures.mocGlass.animals.mouseinhouse || world.getBlockId(i, j - 1, k) == Block.DIRT.id || world.getBlockId(i, j - 1, k) == Block.STONE.id  && mod_mocreatures.mocGlass.animals.mouseinhouse || world.getBlockId(i, j - 1, k) == Block.GRASS_BLOCK.id;
     }
 
     protected String getRandomSound()
@@ -307,7 +307,6 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         dataTracker.startTracking(18, (byte) 0); //Climbing
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
     private boolean fertile;
     private int micetimer;
 

@@ -68,17 +68,17 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         killedByOtherEntity = true; /// CZEMU?
     }
 
-    public void markDead() /// Czy to ma jakikolwiek sens??? - bez checku remote, to powoduje duplikaty modelu na client
-    {
-        if((getTamed() || getBred()) && health > 0 && !world.isRemote)
-        {
-            return;
-        } else
-        {
-            super.markDead();
-            return;
-        }
-    }
+//    public void markDead() /// Czy to ma jakikolwiek sens??? - bez checku remote, to powoduje duplikaty modelu na client //todo test off
+//    {
+//        if((getTamed() || getBred()) && health > 0 && !world.isRemote)
+//        {
+//            return;
+//        } else
+//        {
+//            super.markDead();
+//            return;
+//        }
+//    }
 
     @Override
     public boolean shouldRender(double distance) {
@@ -92,7 +92,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     }
 
     public int getRandomRace(){
-        int i = mocr.mocreaturesGlass.animals.pegasusChanceS;
+        int i = mod_mocreatures.mocGlass.animals.pegasusChanceS;
         int j = random.nextInt(100);
         if(j <= 51 - i)
         {
@@ -181,7 +181,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     }
 
     public void onCollision(Entity otherEntity) {
-        if(passenger instanceof PlayerEntity && passenger.passenger == otherEntity && !mocr.mocreaturesGlass.animals.horse_speed_glitch){
+        if(passenger instanceof PlayerEntity && passenger.passenger == otherEntity && !mod_mocreatures.mocGlass.animals.horse_speed_glitch){
             return;
         }else {
             super.onCollision(otherEntity);
@@ -224,7 +224,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 passenger = null;
                 setJokey(false);
             }
-            if(getTamed() && animalFuel < -2 && mocr.mocreaturesGlass.animals.horse_fuel){
+            if(getTamed() && animalFuel < -2 && mod_mocreatures.mocGlass.animals.horse_fuel){
                 if(passenger != null) {
                     ((PlayerEntity) passenger).jumping = false;
                     passenger.velocityX = 0.0D;
@@ -256,7 +256,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         if(!world.isRemote){
             Riding();
         }
-        if(getType() == 5 || getType() == 8) //TODO: (PEGAZY) Gdy siedzi gracz na koniu dla niego zasze horse.onGround jest false(Machanie skrzydłami na ziemi). - zrobiłem na multi nie tylko jokey widzi machanie tylko wszyscy.
+        if(getType() == 5 || getType() == 8) /// (PEGAZY) Gdy siedzi gracz na koniu dla niego zasze horse.onGround jest false(Machanie skrzydłami na ziemi). - zrobiłem na multi nie tylko jokey widzi machanie tylko wszyscy.
         {
             fwinge = fwingb;
             fwingd = fwingc;
@@ -357,7 +357,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
             sendSound(world, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
             setEaten(false);
-            if(!(mocr.mocreaturesGlass.animals.easybreeding))
+            if(!(mod_mocreatures.mocGlass.animals.easybreeding))
             {
                 setReproduced(true);
             }
@@ -458,7 +458,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             return entityhorse.getType();
         }
         int i = entityhorse.getType() + entityhorse1.getType();
-        boolean flag = mocr.mocreaturesGlass.animals.easybreeding;
+        boolean flag = mod_mocreatures.mocGlass.animals.easybreeding;
         boolean flag1 = random.nextInt(3) == 0;
         if(i == 7 && (flag || flag1))
         {
@@ -499,14 +499,15 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     }
 
     public void travel(float f, float f1)
-    {
+    {    /// possible rewrite OF client/server sycnhro while riding, Best i can do for now. Airship system doesnt work for horses (yaw,pitch issues)
         if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER && passenger != null) {
             PlayerEntity entityplayer3 = (PlayerEntity)passenger;
             PacketHelper.sendTo(entityplayer3, new ClientHorsePacket(this.prevX, this.prevZ, this.prevY));
         }
         if(world.isRemote && passenger != null && getTamed()){
-                PlayerEntity entityplayer3 = (PlayerEntity)passenger;
-                PacketHelper.send(new ServerRidingPacket(entityplayer3.velocityX, entityplayer3.velocityY, entityplayer3.velocityZ,entityplayer3.yaw, entityplayer3.pitch, entityplayer3.jumping));
+//                PlayerEntity entityplayer3 = (PlayerEntity)passenger;
+//                PacketHelper.send(new ServerRidingPacket(entityplayer3.velocityX, entityplayer3.velocityY, entityplayer3.velocityZ,entityplayer3.yaw, entityplayer3.pitch, entityplayer3.jumping));
+                PacketHelper.send(new ServerRidingPacket(passenger.velocityX, passenger.velocityY, passenger.velocityZ,passenger.yaw, passenger.pitch, ((PlayerEntity)passenger).jumping));
         }
         if(checkWaterCollisions())
         {
@@ -722,7 +723,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     /// Optional Fuel system start
     public boolean isFuelled()
     {
-        if(mocr.mocreaturesGlass.animals.horse_fuel)
+        if(mod_mocreatures.mocGlass.animals.horse_fuel)
         {
             return animalFuel > 0;
         }else{
@@ -731,7 +732,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     }
 
     public void burnFuel(int a){
-        if(mocr.mocreaturesGlass.animals.horse_fuel)
+        if(mod_mocreatures.mocGlass.animals.horse_fuel)
         {
             if (animalFuel > -5) {
                 animalFuel = animalFuel - a;
@@ -740,7 +741,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     }
 
     public void addFuel(){
-        if(mocr.mocreaturesGlass.animals.horse_fuel)
+        if(mod_mocreatures.mocGlass.animals.horse_fuel)
         {
             if(animalFuel <= 0)
             {
@@ -969,7 +970,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             }
             return true;
         }
-        if(itemstack != null && ( (mocr.mocreaturesGlass.othersettings.apple_tame && (itemstack.itemId == Item.APPLE.id || itemstack.itemId == Item.GOLDEN_APPLE.id))  ||  itemstack.itemId == mod_mocreatures.greenapple.id) )
+        if(itemstack != null && ( (mod_mocreatures.mocGlass.othersettings.apple_tame && (itemstack.itemId == Item.APPLE.id || itemstack.itemId == Item.GOLDEN_APPLE.id))  ||  itemstack.itemId == mod_mocreatures.greenapple.id) )
         {
             if(--itemstack.count == 0)
             {
@@ -1020,7 +1021,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
         if(itemstack != null && (itemstack.itemId == Block.PUMPKIN.id || itemstack.itemId == Item.MUSHROOM_STEW.id || itemstack.itemId == Item.CAKE.id))
         {
-            if((getReproduced() && !mocr.mocreaturesGlass.animals.easybreeding) || !getAdult()) /// reproduced jedynie brane pod uwage wraz z easy_breadin = false
+            if((getReproduced() && !mod_mocreatures.mocGlass.animals.easybreeding) || !getAdult()) /// reproduced jedynie brane pod uwage wraz z easy_breadin = false
             {
                 return false;
             }
@@ -1155,7 +1156,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             int k = MathHelper.floor(z);
             HorseRemoval(world, i, j, k);
         }
-        if(mocr.mocreaturesGlass.animals.horse_fuel && !world.isRemote){
+        if(mod_mocreatures.mocGlass.animals.horse_fuel && !world.isRemote){
             int i = MathHelper.floor(x);
             int j = MathHelper.floor(boundingBox.minY);
             int k = MathHelper.floor(z);
@@ -1350,7 +1351,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             dropItem(new ItemStack(getDroppedItemId(), 1, 0), 0.0F);
         }
 
-        if(getSaddled() && mocr.mocreaturesGlass.animals.horse_saddle_drop) {
+        if(getSaddled() && mod_mocreatures.mocGlass.animals.horse_saddle_drop) {
             dropItem(new ItemStack(mod_mocreatures.horsesaddle.id, 1, 0), 0.0F);
         }
     }
@@ -1365,9 +1366,14 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         return 6;
     }
 
+    protected boolean canDespawn()
+    {
+        return !getTamed();
+    }
+
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.animals.horsefreq > 0 && super.canSpawn();
+        return mod_mocreatures.mocGlass.animals.horsefreq > 0 && super.canSpawn();
     }
 
     public boolean renderName()
@@ -1391,13 +1397,12 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
     private int nightmareInt;
     private int gestationtime;
     public int maxhealth;
-    private int temper;
-    private double HorseSpeed;
-    private double HorseJump;
+    public int temper; ///private later
+    public double HorseSpeed; ///private later
+    public double HorseJump; ///private later
     public boolean isjumping;
     public float fwingb;
     public float fwingc;
@@ -1441,13 +1446,13 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
 
     public void sendParticle(World world, String name, double x, double y, double z, double i, double j, double k){
         if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.particlePacket(world,name,x,y,z,i,j,k);
+            mod_mocreatures.particlePacket(world,name,x,y,z,i,j,k);
         }
     }
 
     public void sendSound(World world, String name, float vol, float pit){
         if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.voicePacket(world, name, this.id, vol, pit);
+            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
         }
     }
 

@@ -10,7 +10,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Monster;
 import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.passive.CowEntity;
-import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
@@ -153,7 +152,7 @@ public class EntityWWolf extends MonsterEntity
                 continue;
             }
             ItemEntity entityitem = (ItemEntity)entity1;
-            if(entityitem != null && entityitem.itemAge < 50 && mocr.mocreaturesGlass.huntercreatures.destroyitems)
+            if(entityitem != null && entityitem.itemAge < 50 && mod_mocreatures.mocGlass.huntercreatures.destroyitems)
             {
                 entityitem.markDead();
             }
@@ -163,10 +162,8 @@ public class EntityWWolf extends MonsterEntity
 
     public boolean canSpawn()
     {
-        return world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && mocr.mocreaturesGlass.hostilemobs.wwolffreq > 0 && super.canSpawn();
+        return world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && mod_mocreatures.mocGlass.hostilemobs.wwolffreq > 0 && super.canSpawn();
     }   /// Brak spawnu w jaskiniach.
-
-    mod_mocreatures mocr = new mod_mocreatures();
 
     @Override
     public Identifier getHandlerIdentifier() {

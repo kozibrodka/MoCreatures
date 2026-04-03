@@ -17,7 +17,7 @@ public class HunterCreaturesCFG {
     public Boolean attackdolphins = false;
 
     @ConfigEntry(name="Destroy drops?", description = "hunters destroy drops")
-    public Boolean destroyitems = false;
+    public Boolean destroyitems = true;
 
     @ConfigEntry(name="Aggressive Cats?", description = "cats attack bigCats")
     public Boolean attackbigcat = true;
@@ -29,7 +29,7 @@ public class HunterCreaturesCFG {
     public Integer bearfreq = 2;
 
     @ConfigEntry(name="PBear Freq", maxValue = 10)
-    public Integer pbearfreq = 2;
+    public Integer pbearfreq = 3;
 
     @ConfigEntry(name="Boar Freq", maxValue = 10)
     public Integer boarfreq = 3;
@@ -38,8 +38,8 @@ public class HunterCreaturesCFG {
     public Integer foxfreq = 4;
 
     @ConfigEntry(name="Crocodile Freq", maxValue = 10)
-    public Integer crocodilefreq = 2;
+    public Integer crocodilefreq = 8;
 
     @ConfigEntry(name="Hippo Freq", maxValue = 10)
-    public Integer hippofreq = 2;
+    public Integer hippofreq = 4;
 }

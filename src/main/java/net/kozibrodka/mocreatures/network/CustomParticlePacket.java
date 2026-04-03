@@ -5,7 +5,9 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.TextureListener;
 import net.kozibrodka.mocreatures.mocreatures.CREEPSFxSpit;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.BlockParticle;
 import net.minecraft.entity.player.ClientPlayerEntity;
 import net.minecraft.network.NetworkHandler;
 import net.minecraft.network.packet.Packet;
@@ -17,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Random;
 
 public class CustomParticlePacket extends Packet implements ManagedPacket<CustomParticlePacket> {
 
@@ -26,6 +29,7 @@ public class CustomParticlePacket extends Packet implements ManagedPacket<Custom
     private double x;
     private double y;
     private double z;
+    private Random random = new Random();
 
 
     public CustomParticlePacket() {

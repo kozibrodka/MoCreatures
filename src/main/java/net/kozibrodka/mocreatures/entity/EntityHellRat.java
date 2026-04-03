@@ -27,7 +27,7 @@ public class EntityHellRat extends EntityRat implements MobSpawnDataProvider, Mo
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.hostilemobs.hellratfreq > 0 && super.canSpawn2();
+        return mod_mocreatures.mocGlass.hostilemobs.hellratfreq > 0 && super.canSpawn2();
     }
 
     @Override
@@ -35,6 +35,5 @@ public class EntityHellRat extends EntityRat implements MobSpawnDataProvider, Mo
         return Identifier.of(mod_mocreatures.MOD_ID, "HellRat");
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
 
 }

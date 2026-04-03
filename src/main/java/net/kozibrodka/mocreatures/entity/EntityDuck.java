@@ -47,10 +47,8 @@ public class EntityDuck extends ChickenEntity implements MobSpawnDataProvider
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.animals.duckfreq > 0 && super.canSpawn();
+        return mod_mocreatures.mocGlass.animals.duckfreq > 0 && super.canSpawn();
     }
-
-    mod_mocreatures mocr = new mod_mocreatures();
 
     @Override
     public Identifier getHandlerIdentifier() {

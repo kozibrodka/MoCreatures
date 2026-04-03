@@ -354,7 +354,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.animals.bunnyfreq > 0 && super.canSpawn();
+        return mod_mocreatures.mocGlass.animals.bunnyfreq > 0 && super.canSpawn();
     }
 
     protected boolean canDespawn()
@@ -362,7 +362,6 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         return !getTamed();
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
     public boolean a;
     public float d1;
     public int j;
@@ -377,7 +376,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
 
     public void sendSound(World world, String name, float vol, float pit){
         if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.voicePacket(world, name, this.id, vol, pit);
+            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
         }
     }
 

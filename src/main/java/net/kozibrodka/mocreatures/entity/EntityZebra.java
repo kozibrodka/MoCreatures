@@ -139,10 +139,8 @@ public class EntityZebra extends AnimalEntity implements MobSpawnDataProvider {
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.animals.zebrafreq > 0 && super.canSpawn();
+        return mod_mocreatures.mocGlass.animals.zebrafreq > 0 && super.canSpawn();
     }
-
-    mod_mocreatures mocr = new mod_mocreatures();
 
     @Override
     public Identifier getHandlerIdentifier() {return Identifier.of(mod_mocreatures.MOD_ID, "Zebra");}

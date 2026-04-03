@@ -5,7 +5,6 @@ import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,8 +14,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 import net.modificationstation.stationapi.api.util.Identifier;
-
-import java.util.Random;
 
 public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial {
 
@@ -143,7 +140,7 @@ public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider
 
     public int getLimitPerChunk()
     {
-        return 6;
+        return 5;
     }
 
     protected int getDroppedItemId()
@@ -160,7 +157,7 @@ public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider
         }
         int k = random.nextInt(2);
         for (int j = 0; j < k; j++) {
-            if(world.difficulty > 0) {
+            if(world.difficulty > 0 && getAdult()) {
                 dropItem(new ItemStack(mod_mocreatures.elephanttusk.id, 1, 0), 0.0F);
             }
         }
@@ -183,10 +180,8 @@ public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.animals.elephantfreq > 0 && super.canSpawn();
+        return mod_mocreatures.mocGlass.animals.elephantfreq > 0 && super.canSpawn();
     }
-
-    mod_mocreatures mocr = new mod_mocreatures();
 
     @Override
     public Identifier getHandlerIdentifier() {return Identifier.of(mod_mocreatures.MOD_ID, "Elephant");}

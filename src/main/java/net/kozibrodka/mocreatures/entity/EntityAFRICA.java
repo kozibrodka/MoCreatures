@@ -57,10 +57,8 @@
 //
 //    public boolean canSpawn()
 //    {
-//        return mocr.mocreaturesGlass.huntercreatures.XXXXXXXX > 0 && super.canSpawn();
+//        return mod_mocreatures.mocreaturesGlass.huntercreatures.XXXXXXXX > 0 && super.canSpawn();
 //    }
-//
-//    mod_mocreatures mocr = new mod_mocreatures();
 //
 //    @Override
 //    public Identifier getHandlerIdentifier() {return Identifier.of(mod_mocreatures.MOD_ID, "XXXXXXXXX");}

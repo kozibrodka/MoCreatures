@@ -97,14 +97,13 @@ public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider
 
     public boolean canSpawn()
     {
-        return mocr.mocreaturesGlass.watermobs.rayfreq > 0 && super.canSpawn();
+        return mod_mocreatures.mocGlass.watermobs.rayfreq > 0 && super.canSpawn();
     }
 
     public boolean isSwimming() {
         return this.isInFluid(Material.WATER);
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
     public int maxhealth;
     public int poisoncounter;
     public boolean typechosen;

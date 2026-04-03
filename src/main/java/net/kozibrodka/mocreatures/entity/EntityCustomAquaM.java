@@ -25,7 +25,6 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
 /// Zawiesi sie na dnie gdyby jakimś cudem pojawił się głębiej niż 10 bloków pod wodą (nie zajdzie tyle naturalnie).
 /// Może utknąć pod lodem.
 
-    mod_mocreatures mocr = new mod_mocreatures();
     private Path pathEntity;
     private int outOfWater = 0;
     private int temper;
@@ -56,6 +55,10 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
         return l == 0;
     }
 
+    public void giveAchievement(PlayerEntity player){
+
+    }
+
     public void travel(float f, float f1) {
 
         if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER && passenger != null) {
@@ -63,8 +66,10 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
             PacketHelper.sendTo(entityplayer3, new ClientHorsePacket(this.prevX, this.prevZ, this.prevY));
         }
         if(world.isRemote && passenger != null && getTamed()){
-            PlayerEntity entityplayer3 = (PlayerEntity)passenger;
-            PacketHelper.send(new ServerRidingPacket(entityplayer3.velocityX, entityplayer3.velocityY, entityplayer3.velocityZ,entityplayer3.yaw, entityplayer3.pitch, entityplayer3.jumping));
+//            PlayerEntity entityplayer3 = (PlayerEntity)passenger;
+//            PacketHelper.send(new ServerRidingPacket(entityplayer3.velocityX, entityplayer3.velocityY, entityplayer3.velocityZ,entityplayer3.yaw, entityplayer3.pitch, entityplayer3.jumping));
+            PacketHelper.send(new ServerRidingPacket(passenger.velocityX, passenger.velocityY, passenger.velocityZ,passenger.yaw, passenger.pitch, ((PlayerEntity)passenger).jumping));
+
         }
 
         if(passenger != null && !getTamed() && !world.isRemote) {
@@ -101,6 +106,7 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
                 setTamed(true);
                 PlayerEntity milosc = (PlayerEntity)passenger;
                 setOwner(milosc.name);
+                giveAchievement(milosc);
             }
         } else if(passenger != null && getTamed()) {
             boundingBox.maxY = passenger.boundingBox.maxY;
@@ -217,14 +223,9 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
         if(passenger != null) {
             PlayerEntity ep = (PlayerEntity)passenger;
             if(ep.jumping) {
-                velocityY += 0.09D; //TODO nie moze skakać w zamknietym akwenie głębokim na 2 kratki??? wtf.  |   można spróbować poprostu dodać to do zwykłego CustomWaterMob...
+                velocityY += 0.09D; /// nie moze skakać w zamknietym akwenie głębokim na 2 kratki??? wtf. AI-AQUA porzucone.
             } else {
                 velocityY = -0.008D;
-            }
-
-
-            if(this instanceof EntityDolphin && getTamed()){
-                System.out.println(velocityY + " " + isSwimming() + " " + isSubmergedInWater() + " " + isInsideWall());
             }
 
         } else if(target != null && target.y < y - 0.5D && getDistance(target) < 10.0F) {
@@ -248,10 +249,7 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
             } else if(velocityY < -0.05D) {
                 velocityY = -0.05D;
             }
-
         }
-
-
     }
 
     protected void onLanding(float f) {
@@ -406,7 +404,7 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
 
     public void sendSound(World world, String name, float vol, float pit){
         if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.voicePacket(world, name, this.id, vol, pit);
+            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
         }
     }
     

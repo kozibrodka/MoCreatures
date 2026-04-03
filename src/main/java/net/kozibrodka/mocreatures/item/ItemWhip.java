@@ -11,6 +11,8 @@ import net.minecraft.achievement.Achievement;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IntHashMap;
@@ -127,6 +129,23 @@ public class ItemWhip extends TemplateItem
                             entitybunny.markDead();
                         }
                     }
+                    ///  DEBUG //todo
+                    for(int j2 = 0; j2 < list1.size(); j2++)
+                    {
+                        if(list1.get(j2) instanceof EntitySheep entityitem)
+                        {
+                            entityitem.setSheared(true);
+//                            entityitem.markDead();
+                        }
+                    }
+                    for(int j2 = 0; j2 < list1.size(); j2++)
+                    {
+                        if(list1.get(j2) instanceof ItemEntity entityitem)
+                        {
+                            entityitem.markDead();
+                        }
+                    }
+                    ///
                     String s = String.valueOf(i2);
                     tileentitysign.texts[0] = "";
                     tileentitysign.texts[1] = "R.I.P.";
@@ -167,26 +186,24 @@ public class ItemWhip extends TemplateItem
         world.addParticle("flame", d, d1, d2, 0.0D, 0.0D, 0.0D);
 
         if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.particlePacket(world,"smoke", d - d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
-            mocr.particlePacket(world,"flame", d - d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
-            mocr.particlePacket(world,"smoke", d + d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
-            mocr.particlePacket(world,"flame", d + d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
-            mocr.particlePacket(world,"smoke", d, d1 + d3, d2 - d4, 0.0D, 0.0D, 0.0D);
-            mocr.particlePacket(world,"flame", d, d1 + d3, d2 - d4, 0.0D, 0.0D, 0.0D);
-            mocr.particlePacket(world,"smoke", d, d1 + d3, d2 + d4, 0.0D, 0.0D, 0.0D);
-            mocr.particlePacket(world,"flame", d, d1 + d3, d2 + d4, 0.0D, 0.0D, 0.0D);
-            mocr.particlePacket(world,"smoke", d, d1, d2, 0.0D, 0.0D, 0.0D);
-            mocr.particlePacket(world,"flame", d, d1, d2, 0.0D, 0.0D, 0.0D);
+            mod_mocreatures.particlePacket(world,"smoke", d - d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
+            mod_mocreatures.particlePacket(world,"flame", d - d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
+            mod_mocreatures.particlePacket(world,"smoke", d + d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
+            mod_mocreatures.particlePacket(world,"flame", d + d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
+            mod_mocreatures.particlePacket(world,"smoke", d, d1 + d3, d2 - d4, 0.0D, 0.0D, 0.0D);
+            mod_mocreatures.particlePacket(world,"flame", d, d1 + d3, d2 - d4, 0.0D, 0.0D, 0.0D);
+            mod_mocreatures.particlePacket(world,"smoke", d, d1 + d3, d2 + d4, 0.0D, 0.0D, 0.0D);
+            mod_mocreatures.particlePacket(world,"flame", d, d1 + d3, d2 + d4, 0.0D, 0.0D, 0.0D);
+            mod_mocreatures.particlePacket(world,"smoke", d, d1, d2, 0.0D, 0.0D, 0.0D);
+            mod_mocreatures.particlePacket(world,"flame", d, d1, d2, 0.0D, 0.0D, 0.0D);
         }
     }
 
     public void sendSound(World world, String name, double x, double y, double z, float g, float h){
         if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mocr.voicePacket(world, name,x,y,z,g,h);
+            mod_mocreatures.voicePacket(world, name,x,y,z,g,h);
         }
     }
-
-    mod_mocreatures mocr = new mod_mocreatures();
 
     public boolean isFull3D()
     {

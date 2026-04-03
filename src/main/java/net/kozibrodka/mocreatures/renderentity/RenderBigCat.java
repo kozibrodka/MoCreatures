@@ -55,9 +55,9 @@ public class RenderBigCat extends LivingEntityRenderer
     {
         EntityBigCat entitybigcat = (EntityBigCat)entityliving;
         super.render(entitybigcat, d, d1, d2, f, f1);
-        boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entitybigcat.getName().isEmpty();
-        boolean flag1 = mocr.mocreaturesGlass.othersettings.displayhealth;
-        boolean flag2 = mocr.mocreaturesGlass.othersettings.displayemo;
+        boolean flag = mod_mocreatures.mocGlass.othersettings.displayname && !entitybigcat.getName().isEmpty();
+        boolean flag1 = mod_mocreatures.mocGlass.othersettings.displayhealth;
+        boolean flag2 = mod_mocreatures.mocGlass.othersettings.displayemo;
         if(entitybigcat.renderName())
         {
             float f2 = 1.6F;
@@ -193,7 +193,6 @@ public class RenderBigCat extends LivingEntityRenderer
         return (float)entityliving.age + f;
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
     public static Minecraft mc = Minecraft.class.cast(FabricLoader.getInstance().getGameInstance());
     public ModelBigCat2 bigcat1;
 }

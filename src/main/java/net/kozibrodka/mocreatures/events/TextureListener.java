@@ -6,12 +6,8 @@ import net.kozibrodka.mocreatures.modelentity.*;
 import net.kozibrodka.mocreatures.renderentity.*;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.render.entity.ChickenEntityRenderer;
-import net.minecraft.client.render.entity.PigEntityRenderer;
-import net.minecraft.client.render.entity.UndeadEntityRenderer;
-import net.minecraft.client.render.entity.model.ChickenEntityModel;
-import net.minecraft.client.render.entity.model.PigEntityModel;
-import net.minecraft.client.render.entity.model.ZombieEntityModel;
+import net.minecraft.client.render.entity.*;
+import net.minecraft.client.render.entity.model.*;
 import net.modificationstation.stationapi.api.client.event.render.entity.EntityRendererRegisterEvent;
 import net.modificationstation.stationapi.api.client.event.texture.TextureRegisterEvent;
 import net.modificationstation.stationapi.api.client.texture.atlas.Atlases;
@@ -32,6 +28,8 @@ public class TextureListener {
     public static Namespace MOD_ID = Null.get();
 
     public static int bubble_particle;
+    public static int grass_particle;
+    public static int bush_particle;
 
     @EventListener
     public void registerTextures(TextureRegisterEvent event) {
@@ -53,6 +51,7 @@ public class TextureListener {
         mod_mocreatures.elephanttusk.setTexture(Identifier.of(MOD_ID, "item/tusk"));
         mod_mocreatures.megalodonteeth.setTexture(Identifier.of(MOD_ID, "item/megateeth"));
         mod_mocreatures.polarleather.setTexture(Identifier.of(MOD_ID, "item/polarleather"));
+        mod_mocreatures.sheepbell.setTexture(Identifier.of(MOD_ID, "item/bell"));
 //        mod_mocreatures.baobabfruit.setTexture(Identifier.of(MOD_ID, "item/baobab"));
 
         mod_mocreatures.crochide.setTexture(Identifier.of(MOD_ID, "item/crochide"));
@@ -67,7 +66,7 @@ public class TextureListener {
 //            mod_mocreatures.wildleather.setTexture(Identifier.of(MOD_ID, "item/wildleather"));
 
 
-        if(mod_mocreatures.mocreaturesGlass.othersettings.spawn_eggs) {
+        if(mod_mocreatures.mocGlass.othersettings.spawn_eggs) {
             EggListener.egg1.setTexture(Identifier.of(MOD_ID, "item/egg/bear"));
             EggListener.egg2.setTexture(Identifier.of(MOD_ID, "item/egg/bigcat"));
             EggListener.egg3.setTexture(Identifier.of(MOD_ID, "item/egg/bird"));
@@ -137,6 +136,8 @@ public class TextureListener {
         // Particles
         if (FabricLoader.getInstance().getGameInstance() instanceof Minecraft minecraft) {
             bubble_particle = minecraft.textureManager.getTextureId("/assets/mocreatures/stationapi/textures/particle/bubble.png");
+            grass_particle = minecraft.textureManager.getTextureId("/assets/mocreatures/stationapi/textures/particle/grass.png");
+            bush_particle = minecraft.textureManager.getTextureId("/assets/mocreatures/stationapi/textures/particle/bush.png");
         }
 
     }
@@ -182,6 +183,11 @@ public class TextureListener {
         event.renderers.put(EntityScorpion.class, new RenderScorpion(new ModelScorpion(), 0.6F));
         event.renderers.put(EntityTurtle.class, new RenderTurtle(new ModelTurtle(), 0.4F));
         event.renderers.put(EntityRay.class, new RenderRay(new ModelRay(), 0.4F));
+        event.renderers.put(EntityCollie.class, new RenderCollie(new ModelCollie(), 0.5F));
+//        event.renderers.put(EntitySheep.class, new SheepEntityRenderer(new SheepEntityModel(), new SheepWoolEntityModel(), 0.7F));
+        event.renderers.put(EntitySheep.class, new RenderSheep(new ModelSheep(), new SheepWoolEntityModel(), 0.7F));
+
+        event.renderers.put(EntityAirShipHorse.class, new RenderHorse(new ModelHorse2(), new ModelHorse1()));
     }
 
     private int registerItemTexture(String s) {

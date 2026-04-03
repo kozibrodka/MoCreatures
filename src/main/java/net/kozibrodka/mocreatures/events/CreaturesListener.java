@@ -58,12 +58,15 @@ public class CreaturesListener {
         event.register(EntityScorpion.class, String.valueOf(Identifier.of(MOD_ID, "Scorpion")));
         event.register(EntityTurtle.class, String.valueOf(Identifier.of(MOD_ID, "Turtle")));
         event.register(EntityRay.class, String.valueOf(Identifier.of(MOD_ID, "Ray")));
-//        event.register(XXXXXXXXXX.class, String.valueOf(Identifier.of(MOD_ID, "XXXXXX")));
+        event.register(EntityCollie.class, String.valueOf(Identifier.of(MOD_ID, "Collie")));
+        event.register(EntitySheep.class, String.valueOf(Identifier.of(MOD_ID, "Sheep")));
 
         event.register(EntityBigCat.class, String.valueOf(Identifier.of(MOD_ID, "BigCat")));
         event.register(EntityDolphin.class, String.valueOf(Identifier.of(MOD_ID, "Dolphin")));
         event.register(EntityHorse.class, String.valueOf(Identifier.of(MOD_ID, "Horse")));
         event.register(EntityKitty.class, String.valueOf(Identifier.of(MOD_ID, "Kitty")));
+
+        event.register(EntityAirShipHorse.class, String.valueOf(Identifier.of(MOD_ID, "AirShipHorse")));
     }
 
     @EventListener
@@ -103,11 +106,15 @@ public class CreaturesListener {
         Registry.register(event.registry, MOD_ID.id("Scorpion"), EntityScorpion::new);
         Registry.register(event.registry, MOD_ID.id("Turtle"), EntityTurtle::new);
         Registry.register(event.registry, MOD_ID.id("Ray"), EntityRay::new);
+        Registry.register(event.registry, MOD_ID.id("Collie"), EntityCollie::new);
+        Registry.register(event.registry, MOD_ID.id("Sheep"), EntitySheep::new);
 
         Registry.register(event.registry, MOD_ID.id("BigCat"), EntityBigCat::new);
         Registry.register(event.registry, MOD_ID.id("Dolphin"), EntityDolphin::new);
         Registry.register(event.registry, MOD_ID.id("Horse"), EntityHorse::new);
         Registry.register(event.registry, MOD_ID.id("Kitty"), EntityKitty::new);
+
+        Registry.register(event.registry, MOD_ID.id("AirShipHorse"), EntityAirShipHorse::new);
     }
 
 }

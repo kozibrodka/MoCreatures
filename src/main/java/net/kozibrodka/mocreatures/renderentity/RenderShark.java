@@ -22,9 +22,9 @@ public class RenderShark extends LivingEntityRenderer
     {
         EntityShark entityshark = (EntityShark)entityliving;
         super.render(entityshark, d, d1, d2, f, f1);
-        boolean flag = mocr.mocreaturesGlass.othersettings.displayname && !entityshark.getName().isEmpty();
-        boolean flag1 = mocr.mocreaturesGlass.othersettings.displayhealth;
-        boolean flag2 = mocr.mocreaturesGlass.othersettings.displayemo;
+        boolean flag = mod_mocreatures.mocGlass.othersettings.displayname && !entityshark.getName().isEmpty();
+        boolean flag1 = mod_mocreatures.mocGlass.othersettings.displayhealth;
+        boolean flag2 = mod_mocreatures.mocGlass.othersettings.displayemo;
         if(entityshark.renderName())
         {
             float f2 = 1.6F;
@@ -133,7 +133,7 @@ public class RenderShark extends LivingEntityRenderer
                 tessellator.vertex(-i - 1, 8 + byte0, 0.0D);
                 tessellator.vertex(i + 1, 8 + byte0, 0.0D);
                 tessellator.vertex(i + 1, -1 + byte0, 0.0D);
-                if(mocr.mocreaturesGlass.othersettings.displayhealth)
+                if(mod_mocreatures.mocGlass.othersettings.displayhealth)
                 {
                     float f5 = entityshark.health;
                     float f6 = entityshark.maxhealth;
@@ -175,5 +175,4 @@ public class RenderShark extends LivingEntityRenderer
         return (float)entityliving.age + f;
     }
 
-    mod_mocreatures mocr = new mod_mocreatures();
 }

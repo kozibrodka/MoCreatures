@@ -21,7 +21,8 @@
     "stationapi:event_bus": [
       "net.kozibrodka.mocreatures.events.mod_mocreatures",
       "net.kozibrodka.mocreatures.events.CreaturesListener",
-      "net.kozibrodka.mocreatures.events.EggListener"
+      "net.kozibrodka.mocreatures.events.EggListener",
+      "net.kozibrodka.mocreatures.events.SpawnListener"
     ],
     "stationapi:event_bus_client": [
       "net.kozibrodka.mocreatures.events.KeybindListener",
