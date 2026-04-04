@@ -87,7 +87,7 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
             if(random.nextInt(50) == 0) {
                 PlayerEntity entityplayer = (PlayerEntity)passenger;
                 world.playSound(this, getUpsetSound(), 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-                sendSound(world, getUpsetSound(), 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F );
+                world.broadcastEntityEvent(this, (byte)10);
                 entityplayer.velocityY += 0.9D;
                 entityplayer.velocityZ -= 0.3D;
                 entityplayer.setVehicle(null);
@@ -400,12 +400,6 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
     }
 
     public void setDisplayName(boolean flag) {
-    }
-
-    public void sendSound(World world, String name, float vol, float pit){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
-        }
     }
     
 }

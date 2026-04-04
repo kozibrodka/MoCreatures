@@ -19,7 +19,7 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.util.TriState;
 
-//@HasTrackingParameters(trackingDistance = 160, updatePeriod = 1, sendVelocity = TriState.TRUE)
+@HasTrackingParameters(trackingDistance = 160, updatePeriod = 2)
 public class EntityAirShipHorse extends EntityHorse implements MobSpawnDataProvider {
     public EntityAirShipHorse(World world) {
         super(world);
@@ -190,7 +190,7 @@ public class EntityAirShipHorse extends EntityHorse implements MobSpawnDataProvi
                 {
                     PlayerEntity entityplayer = (PlayerEntity)passenger;
                     world.playSound(this, "mocreatures:horsemad", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-                    sendSound(world,"mocreatures:horsemad", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F );
+                    world.broadcastEntityEvent(this, (byte)10);
                     entityplayer.velocityY += 0.9D;
                     entityplayer.velocityZ -= 0.3D;
                     entityplayer.setVehicle(null);

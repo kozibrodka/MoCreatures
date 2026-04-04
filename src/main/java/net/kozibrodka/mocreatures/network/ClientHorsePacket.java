@@ -73,6 +73,7 @@ public class ClientHorsePacket extends Packet implements ManagedPacket<ClientHor
         if(player.vehicle != null) {
             //TODO: Raz mi Koń zniknął, jakby przyszły złe kordy. Nie udało mi się odwzorować na DUŻYCH prędkościach i poza granicą załadowanego świata.
 //            System.out.println(this.prePosX + " " + this.prePosY + " " + this.prePosZ);
+            System.out.println("OTRZYMANE: " + this.prePosY);
             player.vehicle.prevX = this.prePosX;
             player.vehicle.prevY = this.prePosY;
             player.vehicle.prevZ = this.prePosZ;

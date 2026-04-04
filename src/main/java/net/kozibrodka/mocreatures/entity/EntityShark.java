@@ -3,6 +3,7 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCTools;
@@ -159,7 +160,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
             entity.damage(this, 5);
             if(!(entity instanceof PlayerEntity))
             {
-                destroyDrops(this, 3D);
+                MoCTools.destroyDrops(this, 3D);
             }
         }
     }
@@ -233,24 +234,6 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         }
     }
 
-    public void destroyDrops(Entity entity, double d)
-    {
-        List list = world.getEntities(entity, entity.boundingBox.expand(d, d, d));
-        for(int i = 0; i < list.size(); i++)
-        {
-            Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof ItemEntity))
-            {
-                continue;
-            }
-            ItemEntity entityitem = (ItemEntity)entity1;
-            if(entityitem != null && entityitem.itemAge < 50 && mod_mocreatures.mocGlass.huntercreatures.destroyitems)
-            {
-                entityitem.markDead();
-            }
-        }
-
-    }
 
     public boolean interact(PlayerEntity entityplayer)
     {
@@ -263,22 +246,12 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         {
             if(getProtect()){
                 setProtect(false);
-                for(int var3 = 0; var3 < 7; ++var3) {
-                    double var4 = this.random.nextGaussian() * 0.02D;
-                    double var6 = this.random.nextGaussian() * 0.02D;
-                    double var8 = this.random.nextGaussian() * 0.02D;
-                    world.addParticle("heart", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
-                    sendParticle(world, "heart", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
-                }
+                MoCTools.addHeartParticles(world,this);
+                world.broadcastEntityEvent(this, (byte)6);
             }else{
                 setProtect(true);
-                for(int var3 = 0; var3 < 7; ++var3) {
-                    double var4 = this.random.nextGaussian() * 0.02D;
-                    double var6 = this.random.nextGaussian() * 0.02D;
-                    double var8 = this.random.nextGaussian() * 0.02D;
-                    world.addParticle("flame", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
-                    sendParticle(world, "flame", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
-                }
+                MoCTools.addFlameParticles(world,this);
+                world.broadcastEntityEvent(this, (byte)7);
             }
             return true;
         }
@@ -325,7 +298,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         return getDisplayName();
     }
 
-    public boolean canSpawn()
+    public boolean canSpawn() //TODO spawning on ICE??
     {
         return mod_mocreatures.mocGlass.watermobs.sharkfreq > 0 && !MoCTools.isNearTorch(this) && world.difficulty >= mod_mocreatures.mocGlass.watermobs.sharkSpawnDifficulty.ordinal() + 1 && super.canSpawn();
     }
@@ -342,13 +315,16 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         }
     }
 
-    public void sendParticle(World world, String name, double x, double y, double z, double i, double j, double k){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mod_mocreatures.particlePacket(world,name,x,y,z,i,j,k);
+    @Environment(EnvType.CLIENT)
+    public void processServerEntityStatus(byte status) {
+        if (status == 6) {
+            MoCTools.addHeartParticles(world, this);
+        } else if (status == 7) {
+            MoCTools.addFlameParticles(world, this);
+        } else {
+            super.processServerEntityStatus(status);
         }
     }
-
-
 
     public int maxhealth;
     public boolean typechosen;

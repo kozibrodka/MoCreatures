@@ -1,7 +1,10 @@
 
 package net.kozibrodka.mocreatures.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.mocreatures.ClientDestroyer;
 import net.kozibrodka.mocreatures.mocreatures.Destroyer;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -139,7 +142,21 @@ public class EntityOgre extends MonsterEntity
 
     public void DestroyingOgre()
     {
+        if(this.health <= 0){
+            return;
+        }
+        world.broadcastEntityEvent(this, (byte)6);
         Destroyer.DestroyBlast(world, this, x, y + 1.0D, z, destroyForce, bogrefire, mod_mocreatures.mocGlass.hostilemobs.igniteogre, mod_mocreatures.mocGlass.hostilemobs.explodeogre, mod_mocreatures.mocGlass.hostilemobs.explodecaveogre, mod_mocreatures.mocGlass.hostilemobs.explodefireogre);
+    }
+
+    @Environment(EnvType.CLIENT)
+    public void processServerEntityStatus(byte status) {
+        if (status == 6) {
+            world.playSound(x, y + 1.0D, z, "mocreatures:destroy", 4F, (1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
+            ClientDestroyer.DestroyBlast(world, this, x, y + 1.0D, z, destroyForce);
+        }  else {
+            super.processServerEntityStatus(status);
+        }
     }
 
     public boolean canSpawn()

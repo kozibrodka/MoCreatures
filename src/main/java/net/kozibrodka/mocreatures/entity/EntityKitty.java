@@ -2,6 +2,7 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.*;
 import net.kozibrodka.mocreatures.network.NamePacket;
@@ -18,6 +19,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -218,7 +220,7 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
                 entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
             world.playSound(this, "moreatures:kittyeatingf", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-            sendSound(world, "moreatures:kittyeatingf", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+            world.broadcastEntityEvent(this, (byte)8);
             changeKittyState(9);
             return true;
         }
@@ -245,8 +247,8 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
             {
                 entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
-            world.playSound(this, "kittyeatingf", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-            sendSound(world,"kittyeatingf", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+            world.playSound(this, "mocreatures:kittyeatingf", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+            world.broadcastEntityEvent(this, (byte)8);
             changeKittyState(7);
             return true;
         }
@@ -405,7 +407,7 @@ label0:
             {
                 entityitem.markDead();
                 world.playSound(this, "mocreatures:kittyeatingf", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-                sendSound(world, "mocreatures:kittyeatingf", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+                world.broadcastEntityEvent(this, (byte)8);
                 hungry = false;
                 setKittyState(2);
             }
@@ -512,7 +514,7 @@ label0:
                 break;
             }
             world.playSound(this, "mocreatures:kittypoo", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-            sendSound(world, "mocreatures:kittypoo", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+            world.broadcastEntityEvent(this, (byte)9);
             EntityLitterBox entitylitterbox1 = (EntityLitterBox)vehicle;
             if(entitylitterbox1 != null)
             {
@@ -972,7 +974,7 @@ label0:
                 entitykitty1.setPosition(x, y, z);
                 world.spawnEntity(entitykitty1);
                 world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-                sendSound(world, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+                world.broadcastEntityEvent(this, (byte)10);
                 entitykitty1.setTypeSpawn();
                 entitykitty1.setAdult(false);
                 entitykitty1.setOwner(this.getOwner());
@@ -1671,9 +1673,16 @@ label0:
         setOnTree(nbttagcompound.getBoolean("OnTree"));
     }
 
-    public void sendSound(World world, String name, float vol, float pit){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
+    @Environment(EnvType.CLIENT)
+    public void processServerEntityStatus(byte status) {
+         if (status == 8) {
+            world.playSound(this, "mocreatures:kittyeatingf", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else if (status == 9){
+            world.playSound(this, "mocreatures:kittypoo", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else if (status == 10){
+            world.playSound(this, "mob:chickenplop", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else {
+            super.processServerEntityStatus(status);
         }
     }
 

@@ -117,28 +117,9 @@ public class EntityBoar extends PigEntity implements MobSpawnDataProvider
             entity.damage(this, force);
             if(!(entity instanceof PlayerEntity))
             {
-                destroyDrops(this, 3D);
+                MoCTools.destroyDrops(this, 3D);
             }
         }
-    }
-
-    public void destroyDrops(Entity entity, double d)
-    {
-        List list = world.getEntities(entity, entity.boundingBox.expand(d, d, d));
-        for(int i = 0; i < list.size(); i++)
-        {
-            Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof ItemEntity))
-            {
-                continue;
-            }
-            ItemEntity entityitem = (ItemEntity)entity1;
-            if(entityitem != null && entityitem.itemAge < 50 && mod_mocreatures.mocGlass.huntercreatures.destroyitems)
-            {
-                entityitem.markDead();
-            }
-        }
-
     }
 
     public void writeNbt(NbtCompound nbttagcompound)

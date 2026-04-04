@@ -2,6 +2,7 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
@@ -165,15 +166,22 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         } else
         {
             world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-            if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-                mod_mocreatures.voicePacket(world, "mob.chickenplop", this.id, 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-            }
+            world.broadcastEntityEvent(this, (byte)6);
             setPicked(false);
         }
         velocityX = entityplayer.velocityX * 5D;
         velocityY = entityplayer.velocityY / 2D + 0.5D;
         velocityZ = entityplayer.velocityZ * 5D;
         return true;
+    }
+
+    @Environment(EnvType.CLIENT)
+    public void processServerEntityStatus(byte status) {
+        if (status == 6) {
+            world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+        }  else {
+            super.processServerEntityStatus(status);
+        }
     }
 
     public double getStandingEyeHeight()

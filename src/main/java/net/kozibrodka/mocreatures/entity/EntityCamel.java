@@ -94,19 +94,15 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
         if((double)f > 2D && (double)f < 7D && (entity instanceof PlayerEntity) && spittimer-- < 0)
         {
             world.playSound(this, "mocreatures:camelspits", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-            if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-                mod_mocreatures.voicePacket(world, "mocreatures:camelspits", this.id, 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-            }
+            world.broadcastEntityEvent(this, (byte)6);
             spittimer = 30;
             lookAt(entity, 360F, 0.0F);
+            world.broadcastEntityEvent(this, (byte)7);
             double d1 = -MathHelper.sin((yaw * 3.141593F) / 180F);
             double d3 = MathHelper.cos((yaw * 3.141593F) / 180F);
-            for(int i = 0; i < 40; i++)
-            {
-                if(FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-                    sendPartPacket(world, x + d1 * 3.5D, y + 2.4000000953674316D, z + d3 * 3.5D);
-                }else{
-                    addClientParticle(d1,d3);
+            if(FabricLoader.INSTANCE.getEnvironmentType() == EnvType.CLIENT) {
+                for (int i = 0; i < 40; i++) {
+                    addClientParticle(d1, d3);
                 }
             }
 
@@ -116,6 +112,23 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
         {
             attackCooldown = 20;
             entity.damage(this, attack);
+        }
+    }
+
+    @Environment(EnvType.CLIENT)
+    public void processServerEntityStatus(byte status) {
+        if (status == 6) {
+            world.playSound(this, "mocreatures:camelspits", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+        }  else if (status == 7){
+            double d1 = -MathHelper.sin((yaw * 3.141593F) / 180F);
+            double d3 = MathHelper.cos((yaw * 3.141593F) / 180F);
+            for(int i = 0; i < 40; i++)
+            {
+                addClientParticle(d1,d3);
+            }
+
+        }  else {
+            super.processServerEntityStatus(status);
         }
     }
 

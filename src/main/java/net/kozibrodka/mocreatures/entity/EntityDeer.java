@@ -12,8 +12,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -24,7 +26,6 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 
 import java.util.List;
 
-@HasTrackingParameters(trackingDistance = 160, updatePeriod = 1)
 public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial
 {
 
@@ -337,7 +338,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
     @Environment(EnvType.SERVER)
     public void adultPacket(String name, int id, int type) {
         List list2 = world.players;
-        if (list2.size() != 0) {
+        if (!list2.isEmpty()) {
             for (int k = 0; k < list2.size(); k++) {
                 ServerPlayerEntity player1 = (ServerPlayerEntity) list2.get(k);
                 PacketHelper.sendTo(player1, new AdultPacket(name, id, type));

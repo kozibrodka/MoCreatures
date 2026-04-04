@@ -3,33 +3,28 @@ package net.kozibrodka.mocreatures.mocreatures;
 
 
 import net.fabricmc.api.EnvType;
-import net.kozibrodka.mocreatures.entity.EntityCaveOgre;
-import net.kozibrodka.mocreatures.entity.EntityFireOgre;
-import net.kozibrodka.mocreatures.entity.EntityOgre;
+
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 
-public class Destroyer
+public class ClientDestroyer
 {
 
-    public Destroyer()
+    public ClientDestroyer()
     {
     }
 
     public static void DestroyBlast(World world, Entity entity, double d, double d1, double d2,
-                                    float f, boolean flag, boolean igniteogre, boolean explodeogre, boolean explodecaveogre, boolean explodefireogre)
+                                    float f)
     {
-        world.playSound(d, d1, d2, "mocreatures:destroy", 4F, (1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
         HashSet hashset = new HashSet();
         float f1 = f;
         int i = 16;
@@ -70,7 +65,6 @@ label0:
                         if(j6 > 0)
                         {
                             f4 = Block.BLOCKS[j6].getHardness();
-//                            f4 = BlockBase.BY_ID[j6].hardness;
                             f2 -= (Block.BLOCKS[j6].getBlastResistance(entity) + 0.3F) * (f3 / 10F);
                         }
                         if(f2 > 0.0F && d10 > entity.y && f4 < 3F)
@@ -87,43 +81,6 @@ label0:
             }
 
         }
-
-        f *= 2.0F;
-        int k = MathHelper.floor(d - (double)f - 1.0D);
-        int i1 = MathHelper.floor(d + (double)f + 1.0D);
-        int k1 = MathHelper.floor(d1 - (double)f - 1.0D);
-        int l1 = MathHelper.floor(d1 + (double)f + 1.0D);
-        int i2 = MathHelper.floor(d2 - (double)f - 1.0D);
-        int j2 = MathHelper.floor(d2 + (double)f + 1.0D);
-        List list = world.getEntities(entity, Box.createCached(k, k1, i2, i1, l1, j2));
-        Vec3d vec3d = Vec3d.createCached(d, d1, d2);
-        for(int k2 = 0; k2 < list.size(); k2++)
-        {
-            Entity entity1 = (Entity)list.get(k2);
-            double d7 = entity1.getDistance(d, d1, d2) / (double)f;
-            if(d7 > 1.0D)
-            {
-                continue;
-            }
-            double d9 = entity1.x - d;
-            double d11 = entity1.y - d1;
-            double d13 = entity1.z - d2;
-            double d15 = MathHelper.sqrt(d9 * d9 + d11 * d11 + d13 * d13);
-            d9 /= d15;
-            d11 /= d15;
-            d13 /= d15;
-            double d17 = world.getVisibilityRatio(vec3d, entity1.boundingBox);
-            double d19 = (1.0D - d7) * d17;
-            if(!(entity1 instanceof EntityOgre))
-            {
-                entity1.damage(entity, (int)(((d19 * d19 + d19) / 2D) * 3D * (double)f + 1.0D));
-                double d21 = d19;
-                entity1.velocityX += d9 * d21;
-                entity1.velocityY += d11 * d21;
-                entity1.velocityZ += d13 * d21;
-            }
-        }
-
         f = f1;
         ArrayList arraylist = new ArrayList();
         arraylist.addAll(hashset);
@@ -153,36 +110,7 @@ label0:
                 d22 *= d25 - 1.0D;
                 d23 *= d25;
                 world.addParticle("explode", (d14 + d) / 2D, (d16 + d1) / 2D, (d18 + d2) / 2D, d20, d22, d23);
-                entity.velocityX -= 0.0010000000474974511D;
-                entity.velocityY -= 0.0010000000474974511D;
             }
-
-            if(l4 > 0)
-            {
-                if(!(entity instanceof EntityCaveOgre) && !(entity instanceof EntityFireOgre) && explodeogre || entity instanceof EntityCaveOgre && explodecaveogre || entity instanceof EntityFireOgre && explodefireogre)
-                {
-                    Block.BLOCKS[l4].dropStacks(world, j3, l3, j4, world.getBlockMeta(j3, l3, j4), 0.3F);
-                    world.setBlock(j3, l3, j4, 0);
-                    Block.BLOCKS[l4].onDestroyedByExplosion(world, j3, l3, j4);
-                } /// Działa
-            }
-        }
-
-        if(flag && (igniteogre || world.dimension.isNether))
-        {
-            for(int i3 = arraylist.size() - 1; i3 >= 0; i3--)
-            {
-                BlockPos chunkposition1 = (BlockPos)arraylist.get(i3);
-                int k3 = chunkposition1.x;
-                int i4 = chunkposition1.y;
-                int k4 = chunkposition1.z;
-                int i5 = world.getBlockId(k3, i4, k4);
-                if(i5 == 0 && world.random.nextInt(8) == 0) /// Jedynie podpala miejsce które zniszczy.
-                {
-                    world.setBlock(k3, i4, k4, Block.FIRE.id);
-                }
-            }
-
         }
     }
 }

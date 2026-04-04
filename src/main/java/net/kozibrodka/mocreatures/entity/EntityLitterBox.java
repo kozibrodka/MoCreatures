@@ -2,8 +2,10 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.kozibrodka.mocreatures.network.RopePacket;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -47,7 +49,7 @@ public class EntityLitterBox extends LivingEntity implements MobSpawnDataProvide
         {
             littertime++;
             world.addParticle("smoke", x, y, z, 0.0D, 0.0D, 0.0D);
-            sendParticle(world, "smoke", x, y, z, 0.0D, 0.0D, 0.0D);
+            world.broadcastEntityEvent(this, (byte)6);
             List list = world.getEntities(this, boundingBox.expand(12D, 4D, 12D));
             for(int i = 0; i < list.size(); i++)
             {
@@ -124,9 +126,6 @@ public class EntityLitterBox extends LivingEntity implements MobSpawnDataProvide
         return false;
     }
 
-    public void processServerEntityStatus(byte byte0)
-    {
-    }
 
     protected void tickLiving()
     {
@@ -162,7 +161,7 @@ public class EntityLitterBox extends LivingEntity implements MobSpawnDataProvide
         {
             entityplayer.inventory.addStack(new ItemStack(mod_mocreatures.litterbox));
             world.playSound(this, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-            sendSound(world, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+            world.broadcastEntityEvent(this, (byte)7);
             markDead();
             return true;
         }
@@ -183,7 +182,7 @@ public class EntityLitterBox extends LivingEntity implements MobSpawnDataProvide
                 PacketHelper.sendTo(entityplayer, new RopePacket("box", this.id, entityplayer.name));
             }
             world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-            sendSound(world, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+            world.broadcastEntityEvent(this, (byte)8);
             return true;
         }
     }
@@ -237,15 +236,16 @@ public class EntityLitterBox extends LivingEntity implements MobSpawnDataProvide
         return Identifier.of(mod_mocreatures.MOD_ID, "LitterBox");
     }
 
-    public void sendParticle(World world, String name, double x, double y, double z, double i, double j, double k){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mod_mocreatures.particlePacket(world,name,x,y,z,i,j,k);
-        }
-    }
-
-    public void sendSound(World world, String name, float vol, float pit){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
+    @Environment(EnvType.CLIENT)
+    public void processServerEntityStatus(byte status) {
+        if (status == 6) {
+            world.addParticle("smoke", x, y, z, 0.0D, 0.0D, 0.0D);
+        } else if (status == 7) {
+            world.playSound(this, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+        } else if (status == 8) {
+            world.playSound(this, "mob.chickenplop", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else {
+            super.processServerEntityStatus(status);
         }
     }
 

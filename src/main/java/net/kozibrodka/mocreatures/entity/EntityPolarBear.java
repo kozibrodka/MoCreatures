@@ -60,7 +60,7 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
             entity.damage(this, force);
             if(!(entity instanceof PlayerEntity))
             {
-                destroyDrops(this, 3D);
+                MoCTools.destroyDrops(this, 3D);
             }
         }
     }

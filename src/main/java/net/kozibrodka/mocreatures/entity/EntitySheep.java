@@ -44,13 +44,11 @@ public class EntitySheep extends SheepEntity implements MobSpawnDataProvider, Mo
     public boolean runningFromCollie;
     public int[] grasscoords;
 
-    private int maxClockSheep = 12000; /// 10 minut  -12000
-    private int maxClockDebug = 400; /// 20 sekund
-    private int satietyBush = 34;
-    private int satietyFlower = 25;
-    private int satietyGrassB = 9;
-
-
+    final int maxClockSheep = 12000; /// 10 minut  -12000
+    final int maxClockDebug = 400; /// 20 sekund
+    final int satietyBush = 34;
+    final int satietyFlower = 25;
+    final int satietyGrassB = 9;
 
 
 

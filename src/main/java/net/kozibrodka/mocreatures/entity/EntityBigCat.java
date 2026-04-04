@@ -5,14 +5,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.kozibrodka.mocreatures.mocreatures.MoCTools;
-import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
-import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
-import net.kozibrodka.mocreatures.mocreatures.MoGuiOpener;
+import net.kozibrodka.mocreatures.mocreatures.*;
 import net.kozibrodka.mocreatures.network.AskPacket;
 import net.kozibrodka.mocreatures.network.JokeyPacket;
 import net.kozibrodka.mocreatures.network.NamePacket;
 import net.kozibrodka.mocreatures.network.RopePacket;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
@@ -251,7 +249,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                             setEaten(true);
                         }
                         world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-                        sendSound(world, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+                        world.broadcastEntityEvent(this, (byte)8);
                         setHungry(false);
                     }
                 }
@@ -497,7 +495,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                 continue;
             }
             MobEntity entitycreature1 = (MobEntity)entity;
-            if(entitycreature1 != null && entitycreature1.target == entityplayer)
+            if(entitycreature1.target == entityplayer)
             {
                 return entitycreature1;
             }
@@ -628,22 +626,12 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
             if (itemstack != null && getTamed() && itemstack.getItem() instanceof SwordItem) {
                 if (getProtect()) {
                     setProtect(false);
-                    for (int var3 = 0; var3 < 7; ++var3) {
-                        double var4 = this.random.nextGaussian() * 0.02D;
-                        double var6 = this.random.nextGaussian() * 0.02D;
-                        double var8 = this.random.nextGaussian() * 0.02D;
-                        world.addParticle("heart", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
-                        sendParticle(world, "heart", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
-                    }
+                    MoCTools.addHeartParticles(world,this);
+                    world.broadcastEntityEvent(this, (byte)6);
                 } else {
                     setProtect(true);
-                    for (int var3 = 0; var3 < 7; ++var3) {
-                        double var4 = this.random.nextGaussian() * 0.02D;
-                        double var6 = this.random.nextGaussian() * 0.02D;
-                        double var8 = this.random.nextGaussian() * 0.02D;
-                        world.addParticle("flame", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
-                        sendParticle(world, "flame", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
-                    }
+                    MoCTools.addFlameParticles(world,this);
+                    world.broadcastEntityEvent(this, (byte)7);
                 }
                 return true;
             }
@@ -678,7 +666,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                     entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
                 }
                 world.playSound(this, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-                sendSound(world, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+                world.broadcastEntityEvent(this, (byte)9);
                 roper = entityplayer;
                 hasRopeOnNeck = true;
                 if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
@@ -689,7 +677,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
             if (roper != null && getTamed()) {
                 entityplayer.inventory.addStack(new ItemStack(mod_mocreatures.rope));
                 world.playSound(this, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-                sendSound(world, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+                world.broadcastEntityEvent(this, (byte)9);
                 roper = null;
                 hasRopeOnNeck = false;
                 if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
@@ -746,16 +734,12 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
             return;
         }
         List list = world.getEntities(entity, entity.boundingBox.expand(d, d, d));
-        for(int i = 0; i < list.size(); i++)
-        {
-            Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof ItemEntity))
-            {
+        for (Object o : list) {
+            Entity entity1 = (Entity) o;
+            if (!(entity1 instanceof ItemEntity entityitem)) {
                 continue;
             }
-            ItemEntity entityitem = (ItemEntity)entity1;
-            if(entityitem != null && entityitem.itemAge < 50 && mod_mocreatures.mocGlass.huntercreatures.destroyitems)
-            {
+            if (entityitem.itemAge < 50 && mod_mocreatures.mocGlass.huntercreatures.destroyitems) {
                 entityitem.markDead();
             }
         }
@@ -844,15 +828,18 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         return Identifier.of(mod_mocreatures.MOD_ID, "BigCat");
     }
 
-    public void sendParticle(World world, String name, double x, double y, double z, double i, double j, double k){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mod_mocreatures.particlePacket(world,name,x,y,z,i,j,k);
-        }
-    }
-
-    public void sendSound(World world, String name, float vol, float pit){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
+    @Environment(EnvType.CLIENT)
+    public void processServerEntityStatus(byte status) {
+        if (status == 6) {
+            MoCTools.addHeartParticles(world, this);
+        } else if (status == 7) {
+            MoCTools.addFlameParticles(world, this);
+        } else if (status == 8) {
+            world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else if (status == 9){
+            world.playSound(this, "mocreatures:roping", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        } else {
+            super.processServerEntityStatus(status);
         }
     }
 

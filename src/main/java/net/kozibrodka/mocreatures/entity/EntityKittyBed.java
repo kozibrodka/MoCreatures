@@ -2,6 +2,7 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.network.RopePacket;
@@ -126,10 +127,6 @@ public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
         return false;
     }
 
-    public void processServerEntityStatus(byte byte0)
-    {
-    }
-
     protected void tickLiving()
     {
     }
@@ -163,7 +160,7 @@ public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
         if(itemstack != null && itemstack.itemId == Item.MILK_BUCKET.id)
         {
             world.playSound(this, "mocreatures:pouringmilk", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-            sendSound(world, "mocreatures:pouringmilk", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+            world.broadcastEntityEvent(this, (byte)8);
             setHasMilk(true);
             setHasFood(false);
             return true;
@@ -175,7 +172,7 @@ public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
                 entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
             world.playSound(this, "mocreatures:pouringfood", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-            sendSound(world, "mocreatures:pouringfood", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+            world.broadcastEntityEvent(this, (byte)9);
             setHasMilk(false);
             setHasFood(true);
             return true;
@@ -184,7 +181,7 @@ public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
         {
             entityplayer.inventory.addStack(new ItemStack(mod_mocreatures.kittybed, 1, getSheetColour()));
             world.playSound(this, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-            sendSound(world, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+            world.broadcastEntityEvent(this, (byte)6);
             markDead();
             return true;
         } else
@@ -195,7 +192,7 @@ public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
                 PacketHelper.sendTo(entityplayer, new RopePacket("bed", this.id, entityplayer.name));
             }
             world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-            sendSound(world, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+            world.broadcastEntityEvent(this, (byte)7);
             return true;
         }
     }
@@ -241,10 +238,18 @@ public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
         return true;
     }
 
-
-    public void sendSound(World world, String name, float vol, float pit){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
+    @Environment(EnvType.CLIENT)
+    public void processServerEntityStatus(byte status) {
+        if (status == 6) {
+            world.playSound(this, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+        }  else if (status == 7){
+            world.playSound(this, "mob:chickenplop", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else if (status == 8){
+            world.playSound(this, "mocreatures:pouringmilk", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else if (status == 9){
+            world.playSound(this, "mocreatures:pouringfood", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else {
+            super.processServerEntityStatus(status);
         }
     }
 

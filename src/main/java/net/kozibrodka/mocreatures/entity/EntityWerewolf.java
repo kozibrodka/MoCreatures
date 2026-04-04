@@ -2,6 +2,7 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.entity.Entity;
@@ -153,7 +154,7 @@ public class EntityWerewolf extends MonsterEntity
             if(tcounter == 10)
             {
                 world.playSound(this, "mocreatures:weretransform", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-                sendSound(world, "mocreatures:weretransform", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+                world.broadcastEntityEvent(this, (byte)8);
             }
             if(tcounter > 30)
             {
@@ -193,6 +194,7 @@ public class EntityWerewolf extends MonsterEntity
         {
             return;
         }
+        world.broadcastEntityEvent(this, (byte)9);
         int i = MathHelper.floor(x);
         int j = MathHelper.floor(boundingBox.minY) + 1;
         int k = MathHelper.floor(z);
@@ -215,7 +217,6 @@ public class EntityWerewolf extends MonsterEntity
             d4 *= d7;
             d5 *= d7;
             world.addParticle("explode", (d + (double)i * 1.0D) / 2D, (d1 + (double)j * 1.0D) / 2D, (d2 + (double)k * 1.0D) / 2D, d3, d4, d5);
-            sendParticle(world, "explode", (d + (double)i * 1.0D) / 2D, (d1 + (double)j * 1.0D) / 2D, (d2 + (double)k * 1.0D) / 2D, d3, d4, d5);
         }
 
         if(getHumanForm())
@@ -394,15 +395,36 @@ public class EntityWerewolf extends MonsterEntity
         return Identifier.of(mod_mocreatures.MOD_ID, "WereWolf");
     }
 
-    public void sendParticle(World world, String name, double x, double y, double z, double i, double j, double k){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mod_mocreatures.particlePacket(world,name,x,y,z,i,j,k);
-        }
-    }
-
-    public void sendSound(World world, String name, float vol, float pit){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
+    @Environment(EnvType.CLIENT)
+    public void processServerEntityStatus(byte status) {
+        if (status == 8) {
+            world.playSound(this, "mocreatures:weretransform", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else if (status == 9){
+            int i = MathHelper.floor(x);
+            int j = MathHelper.floor(boundingBox.minY) + 1;
+            int k = MathHelper.floor(z);
+            float f = 0.1F;
+            for(int l = 0; l < 30; l++)
+            {
+                double d = (float)i + world.random.nextFloat();
+                double d1 = (float)j + world.random.nextFloat();
+                double d2 = (float)k + world.random.nextFloat();
+                double d3 = d - (double)i;
+                double d4 = d1 - (double)j;
+                double d5 = d2 - (double)k;
+                double d6 = MathHelper.sqrt(d3 * d3 + d4 * d4 + d5 * d5);
+                d3 /= d6;
+                d4 /= d6;
+                d5 /= d6;
+                double d7 = 0.5D / (d6 / (double)f + 0.10000000000000001D);
+                d7 *= world.random.nextFloat() * world.random.nextFloat() + 0.3F;
+                d3 *= d7;
+                d4 *= d7;
+                d5 *= d7;
+                world.addParticle("explode", (d + (double) i) / 2D, (d1 + (double) j) / 2D, (d2 + (double) k) / 2D, d3, d4, d5);
+            }
+        }  else {
+            super.processServerEntityStatus(status);
         }
     }
 

@@ -1,6 +1,7 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
@@ -44,7 +45,7 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
             ++poisontimer;
             if(poisontimer == 1) {
                 world.playSound(this, "mocreatures:scorpionsting", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-                sendSound(world, "mocreatures:scorpionsting", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+                world.broadcastEntityEvent(this, (byte)6);
             }
 
             if(poisontimer > 50) {
@@ -182,7 +183,7 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
                     entityscorpy.setType(getType());
 
                     world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-                    sendSound(world, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+                    world.broadcastEntityEvent(this, (byte)7);
                 }
             }
         }
@@ -309,9 +310,15 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
         setAdult(nbttagcompound.getBoolean("Adult"));
     }
 
-    public void sendSound(World world, String name, float vol, float pit){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
+
+    @Environment(EnvType.CLIENT)
+    public void processServerEntityStatus(byte status) {
+        if (status == 6) {
+            world.playSound(this, "mocreatures:scorpionsting", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else if (status == 7){
+            world.playSound(this, "mob:chickenplop", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else {
+            super.processServerEntityStatus(status);
         }
     }
 

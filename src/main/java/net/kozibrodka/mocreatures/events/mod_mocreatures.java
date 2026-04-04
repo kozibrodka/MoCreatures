@@ -38,8 +38,7 @@ import java.util.Objects;
 public class mod_mocreatures {
 
     @ConfigRoot(value = "MocreaturesCFG", visibleName = "Mo' Creatures Config")
-    public static final MocreaturesCFG mocGlass = new MocreaturesCFG(); //TODO  //BroadCast EVENT!!!!
-    //TODO spawn shark on ice, Achievemet megalodon teeth
+    public static final MocreaturesCFG mocGlass = new MocreaturesCFG();
 
     @Entrypoint.Namespace
     public static Namespace MOD_ID = Null.get();
@@ -47,9 +46,9 @@ public class mod_mocreatures {
     @Environment(EnvType.SERVER)
     public static void particlePacket(World world, String name, double x, double y, double z, double i, double j, double k) {
         List list2 = world.players;
-        if (list2.size() != 0) {
-            for (int k1 = 0; k1 < list2.size(); k1++) {
-                ServerPlayerEntity player1 = (ServerPlayerEntity) list2.get(k1);
+        if (!list2.isEmpty()) {
+            for (Object o : list2) {
+                ServerPlayerEntity player1 = (ServerPlayerEntity) o;
                 PacketHelper.sendTo(player1, new ParticlePacket(name, x, y, z, i, j, k));
             }
         }
@@ -58,21 +57,31 @@ public class mod_mocreatures {
     @Environment(EnvType.SERVER)
     public static void voicePacket(World world, String name, double x, double y, double z, float g, float h) {
         List list2 = world.players;
-        if (list2.size() != 0) {
-            for (int k = 0; k < list2.size(); k++) {
-                ServerPlayerEntity player1 = (ServerPlayerEntity) list2.get(k);
+        if (!list2.isEmpty()) {
+            for (Object o : list2) {
+                ServerPlayerEntity player1 = (ServerPlayerEntity) o;
                 PacketHelper.sendTo(player1, new SoundPacket(name, x, y, z, g, h));
             }
         }
     }
 
     @Environment(EnvType.SERVER)
-    public static void voicePacket(World world, String name, int id, float vol, float pit) {
+    public static void voicePacket(World world, String name, int id, float vol, float pit) { /// Broadcasting entity event zastąpiło
         List list2 = world.players;
-        if (list2.size() != 0) {
-            for (int k = 0; k < list2.size(); k++) {
-                ServerPlayerEntity player1 = (ServerPlayerEntity) list2.get(k);
+        if (!list2.isEmpty()) {
+            for (Object o : list2) {
+                ServerPlayerEntity player1 = (ServerPlayerEntity) o;
                 PacketHelper.sendTo(player1, new SoundPacket(name, id, vol, pit));
+            }
+        }
+    }
+    @Environment(EnvType.SERVER)
+    public static void whipPacket(World world, int x, int y, int z) {
+        List list2 = world.players;
+        if (!list2.isEmpty()) {
+            for (Object o : list2) {
+                ServerPlayerEntity player1 = (ServerPlayerEntity) o;
+                PacketHelper.sendTo(player1, new WhipParticlePacket(x, y, z));
             }
         }
     }
@@ -93,6 +102,7 @@ public class mod_mocreatures {
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("server_riding"), ServerRidingPacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("client_riding"), ClientHorsePacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("horse_fuel"), HorseFuelOpenGUIPacket.TYPE);
+        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("whip"), WhipParticlePacket.TYPE);
 
     }
 

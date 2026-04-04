@@ -21,14 +21,31 @@ import java.util.Objects;
 
 public class MoCTools {
 
+    public static void addHeartParticles(World world, LivingEntity entity){
+        for (int var3 = 0; var3 < 7; ++var3) {
+            double var4 = world.random.nextGaussian() * 0.02D;
+            double var6 = world.random.nextGaussian() * 0.02D;
+            double var8 = world.random.nextGaussian() * 0.02D;
+            world.addParticle("heart", entity.x + (double) (world.random.nextFloat() * entity.width * 2.0F) - (double) entity.width, entity.y + 0.5D + (double) (world.random.nextFloat() * entity.height), entity.z + (double) (world.random.nextFloat() * entity.width * 2.0F) - (double) entity.width, var4, var6, var8);
+        }
+    }
+
+    public static void addFlameParticles(World world, LivingEntity entity){
+        for (int var3 = 0; var3 < 7; ++var3) {
+            double var4 = world.random.nextGaussian() * 0.02D;
+            double var6 = world.random.nextGaussian() * 0.02D;
+            double var8 = world.random.nextGaussian() * 0.02D;
+            world.addParticle("flame", entity.x + (double) (world.random.nextFloat() * entity.width * 2.0F) - (double) entity.width, entity.y + 0.5D + (double) (world.random.nextFloat() * entity.height), entity.z + (double) (world.random.nextFloat() * entity.width * 2.0F) - (double) entity.width, var4, var6, var8);
+        }
+    }
+
     public static void destroyDrops(Entity entity, double d) {
-        if(mod_mocreatures.mocGlass.huntercreatures.destroyitems) { //todo Test and move from entityies
+        if(mod_mocreatures.mocGlass.huntercreatures.destroyitems) {
             List list = entity.world.getEntities(entity, entity.boundingBox.expand(d, d, d));
-            for(int i = 0; i < list.size(); ++i) {
-                Entity entity1 = (Entity)list.get(i);
-                if(entity1 instanceof ItemEntity) {
-                    ItemEntity entityitem = (ItemEntity)entity1;
-                    if(entityitem.age < 50) {
+            for (Object o : list) {
+                Entity entity1 = (Entity) o;
+                if (entity1 instanceof ItemEntity entityitem) {
+                    if (entityitem.age < 50) {
                         entityitem.markDead();
                     }
                 }
@@ -142,17 +159,6 @@ public class MoCTools {
                 }
             }
         }
-
-//        if((double)x < 0) {
-//            x += 1;
-//        }
-//
-//        if((double)z < 0) {
-//            z += 1;
-//        }
-
-//        y += 1;
-
         return (new int[] {
                 x, y, z
         });
@@ -312,8 +318,7 @@ public class MoCTools {
             if(list1.get(j2) instanceof LivingEntity twistedEntity)
             {
                 if(twistedEntity.deathTime > 0 && twistedEntity.vehicle == null && twistedEntity.health > 0) {
-                    twistedEntity.markDead();
-//                    twistedEntity.deathTime = 0;
+                    twistedEntity.deathTime = 0;
                 }
             }
         }

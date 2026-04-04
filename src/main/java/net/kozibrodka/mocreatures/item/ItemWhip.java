@@ -45,7 +45,15 @@ public class ItemWhip extends TemplateItem
     {
 
         if(world.isRemote){
-            entityplayer.swingHand();
+            int i1 = 0;
+            int j1 = world.getBlockId(i, j, k);
+            int k1 = world.getBlockId(i, j + 1, k);
+            if(l != 0 && k1 == 0 && j1 != 0 && j1 != Block.SIGN.id){
+                entityplayer.swingHand();
+            }
+            if(l != 0 && (k1 == Block.SIGN.id || j1 == Block.SIGN.id) && j1 != 0){
+                entityplayer.swingHand();
+            }
             return false;
         }
         int i1 = 0;
@@ -130,21 +138,21 @@ public class ItemWhip extends TemplateItem
                         }
                     }
                     ///  DEBUG //todo
-                    for(int j2 = 0; j2 < list1.size(); j2++)
-                    {
-                        if(list1.get(j2) instanceof EntitySheep entityitem)
-                        {
-                            entityitem.setSheared(true);
+//                    for(int j2 = 0; j2 < list1.size(); j2++)
+//                    {
+//                        if(list1.get(j2) instanceof EntitySheep entityitem)
+//                        {
+//                            entityitem.setSheared(true);
+////                            entityitem.markDead();
+//                        }
+//                    }
+//                    for(int j2 = 0; j2 < list1.size(); j2++)
+//                    {
+//                        if(list1.get(j2) instanceof ItemEntity entityitem)
+//                        {
 //                            entityitem.markDead();
-                        }
-                    }
-                    for(int j2 = 0; j2 < list1.size(); j2++)
-                    {
-                        if(list1.get(j2) instanceof ItemEntity entityitem)
-                        {
-                            entityitem.markDead();
-                        }
-                    }
+//                        }
+//                    }
                     ///
                     String s = String.valueOf(i2);
                     tileentitysign.texts[0] = "";
@@ -169,6 +177,9 @@ public class ItemWhip extends TemplateItem
 
     public void whipFX(World world, int i, int j, int k)
     {
+        if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
+            mod_mocreatures.whipPacket(world,i,j,k);
+        }
         double d = (float)i + 0.5F;
         double d1 = (float)j + 1.0F;
         double d2 = (float)k + 0.5F;
@@ -184,19 +195,6 @@ public class ItemWhip extends TemplateItem
         world.addParticle("flame", d, d1 + d3, d2 + d4, 0.0D, 0.0D, 0.0D);
         world.addParticle("smoke", d, d1, d2, 0.0D, 0.0D, 0.0D);
         world.addParticle("flame", d, d1, d2, 0.0D, 0.0D, 0.0D);
-
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mod_mocreatures.particlePacket(world,"smoke", d - d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
-            mod_mocreatures.particlePacket(world,"flame", d - d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
-            mod_mocreatures.particlePacket(world,"smoke", d + d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
-            mod_mocreatures.particlePacket(world,"flame", d + d4, d1 + d3, d2, 0.0D, 0.0D, 0.0D);
-            mod_mocreatures.particlePacket(world,"smoke", d, d1 + d3, d2 - d4, 0.0D, 0.0D, 0.0D);
-            mod_mocreatures.particlePacket(world,"flame", d, d1 + d3, d2 - d4, 0.0D, 0.0D, 0.0D);
-            mod_mocreatures.particlePacket(world,"smoke", d, d1 + d3, d2 + d4, 0.0D, 0.0D, 0.0D);
-            mod_mocreatures.particlePacket(world,"flame", d, d1 + d3, d2 + d4, 0.0D, 0.0D, 0.0D);
-            mod_mocreatures.particlePacket(world,"smoke", d, d1, d2, 0.0D, 0.0D, 0.0D);
-            mod_mocreatures.particlePacket(world,"flame", d, d1, d2, 0.0D, 0.0D, 0.0D);
-        }
     }
 
     public void sendSound(World world, String name, double x, double y, double z, float g, float h){

@@ -213,7 +213,7 @@ public class MocreaturesEggItem extends TemplateItem {
                 ((EntityDolphin) huj).setAge(1.7F);
             }
             ((EntityDolphin)huj).setAdult(true);
-            ((EntityDolphin) huj).health = ((EntityDolphin) huj).maxhealth;
+//            ((EntityDolphin) huj).health = ((EntityDolphin) huj).maxhealth; /// delfin zaczyna nisko
             return false;
         }
 

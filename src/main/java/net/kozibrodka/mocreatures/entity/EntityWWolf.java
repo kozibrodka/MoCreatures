@@ -104,7 +104,7 @@ public class EntityWWolf extends MonsterEntity
             entity.damage(this, attackDamage);
             if(!(entity instanceof PlayerEntity))
             {
-                destroyDrops(this, 3D);
+                MoCTools.destroyDrops(this, 3D);
             }
         }
     }
@@ -139,25 +139,6 @@ public class EntityWWolf extends MonsterEntity
     protected int getDroppedItemId()
     {
         return Item.LEATHER.id;
-    }
-
-    public void destroyDrops(Entity entity, double d)
-    {
-        List list = world.getEntities(entity, entity.boundingBox.expand(d, d, d));
-        for(int i = 0; i < list.size(); i++)
-        {
-            Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof ItemEntity))
-            {
-                continue;
-            }
-            ItemEntity entityitem = (ItemEntity)entity1;
-            if(entityitem != null && entityitem.itemAge < 50 && mod_mocreatures.mocGlass.huntercreatures.destroyitems)
-            {
-                entityitem.markDead();
-            }
-        }
-
     }
 
     public boolean canSpawn()

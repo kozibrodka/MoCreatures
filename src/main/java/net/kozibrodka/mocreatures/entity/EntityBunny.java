@@ -186,7 +186,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
                 entitybunny1.setTypeSpawn(); ///
                 world.spawnEntity(entitybunny1);
                 world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-                sendSound(world, "mob:chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+                world.broadcastEntityEvent(this, (byte)8);
                 proceed();
                 entitybunny.proceed();
                 flag = true;
@@ -214,7 +214,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         {
             pickedSd = false;
             world.playSound(this, "mocreatures:rabbitland", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-            sendSound(world, "mocreatures:rabbitland", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+            world.broadcastEntityEvent(this, (byte)7);
             List list = world.getEntities(this, boundingBox.expand(12D, 12D, 12D));
             for(int k = 0; k < list.size(); k++)
             {
@@ -257,7 +257,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         {
             setVehicle(null);
             world.playSound(this, "mocreatures:rabbitlift", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-            sendSound(world, "mocreatures:rabbitlift", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+            world.broadcastEntityEvent(this, (byte)6);
             setPicked(false);
         }
         if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
@@ -374,9 +374,16 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         return Identifier.of(mod_mocreatures.MOD_ID, "Bunny");
     }
 
-    public void sendSound(World world, String name, float vol, float pit){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
+    @Environment(EnvType.CLIENT)
+    public void processServerEntityStatus(byte status) {
+        if (status == 6) {
+            world.playSound(this, "mocreatures:rabbitlift", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else if (status == 7){
+            world.playSound(this, "mocreatures:rabbitland", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else if (status == 8){
+            world.playSound(this, "mob:chickenplop", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else {
+            super.processServerEntityStatus(status);
         }
     }
 

@@ -1,6 +1,7 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.AnimalChest;
@@ -26,6 +27,7 @@ import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.network.packet.PacketHelper;
@@ -142,23 +144,12 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
             {
                 if(getProtect()){
                     setProtect(false);
-                    for(int var3 = 0; var3 < 7; ++var3) {
-                        double var4 = this.random.nextGaussian() * 0.02D;
-                        double var6 = this.random.nextGaussian() * 0.02D;
-                        double var8 = this.random.nextGaussian() * 0.02D;
-                        world.addParticle("heart", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.7D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
-                        sendParticle(world, "heart", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.7D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
-                    }
+                    MoCTools.addHeartParticles(world,this);
+                    world.broadcastEntityEvent(this, (byte)6);
                 }else{
                     setProtect(true);
-                    for(int var3 = 0; var3 < 7; ++var3) {
-                        double var4 = this.random.nextGaussian() * 0.02D;
-                        double var6 = this.random.nextGaussian() * 0.02D;
-                        double var8 = this.random.nextGaussian() * 0.02D;
-                        world.addParticle("flame", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 1.0D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
-                        sendParticle(world, "flame", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 1.0D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
-
-                    }
+                    MoCTools.addFlameParticles(world,this);
+                    world.broadcastEntityEvent(this, (byte)7);
                 }
                 return true;
             }
@@ -200,7 +191,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
                     health = maxhealth;
                 }
                 world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-                sendSound(world, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+                world.broadcastEntityEvent(this, (byte)8);
                 return true;
             }
             if(itemstack != null && itemstack.getItem() instanceof PickaxeItem)
@@ -225,7 +216,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
                 } else{
                 yaw = entityplayer.yaw;
                 world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-                sendSound(world, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+                world.broadcastEntityEvent(this, (byte)11);
                 setVehicle(entityplayer);
                 setPicked(true);
                 if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
@@ -262,7 +253,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
             if(entityplayer != null && canSee(entityplayer) && !MoCTools.entitiesTamedIgnore(this, entityplayer)) {
                 if(!getHiding()) {
                     world.playSound(this, "mocreatures:turtlehissing", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-                    sendSound(world, "mocreatures:turtlehissing", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+                    world.broadcastEntityEvent(this, (byte)9);
                     setHiding(true);
                 }
 
@@ -280,7 +271,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
                         if(f < 2.0F && pathentity != null && deathTime == 0) {
                             pathentity.markDead();
                             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-                            sendSound(world, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+                            world.broadcastEntityEvent(this, (byte)8);
                             setTamed(true);
                             PlayerEntity ownerP = world.getClosestPlayer(this, 8.0D);
                             if(ownerP != null){
@@ -457,7 +448,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
                 swingProgress = 0.0F;
                 if(!world.isRemote) {
                     world.playSound(this, "mocreatures:rabbitland", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-                    sendSound(world, "mocreatures:rabbitland", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+                    world.broadcastEntityEvent(this, (byte)10);
                     setUpsideDown(false);
                     flopcounter = 0;
                 }
@@ -866,15 +857,23 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         return this.dataTracker.getString(31);
     }
 
-    public void sendParticle(World world, String name, double x, double y, double z, double i, double j, double k){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mod_mocreatures.particlePacket(world,name,x,y,z,i,j,k);
+    @Environment(EnvType.CLIENT)
+    public void processServerEntityStatus(byte status) {
+        if (status == 6) {
+            MoCTools.addHeartParticles(world, this);
+        } else if (status == 7) {
+            MoCTools.addFlameParticles(world, this);
+        } else if (status == 8) {
+            world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else if (status == 9){
+            world.playSound(this, "mocreatures:turtlehissing", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else if (status == 10){
+            world.playSound(this, "mocreatures:rabbitland", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else if (status == 11){
+            world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+        }  else {
+            super.processServerEntityStatus(status);
         }
     }
 
-    public void sendSound(World world, String name, float vol, float pit){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
-        }
-    }
 }

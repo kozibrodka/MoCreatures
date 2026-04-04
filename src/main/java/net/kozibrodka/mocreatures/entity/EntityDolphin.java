@@ -2,8 +2,10 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.kozibrodka.mocreatures.mocreatures.MoGuiOpener;
@@ -189,7 +191,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
                 health = maxhealth;
             }
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-            sendSound(world, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+            world.broadcastEntityEvent(this, (byte)8);
             if(!getAdult())
             {
                 setAge(getAge()+0.01F);
@@ -208,29 +210,19 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             }
             setEaten(true);
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
-            sendSound(world, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+            world.broadcastEntityEvent(this, (byte)8);
             return true;
         }
         if(itemstack != null && getTamed() && entityplayer.name.equals(getOwner()) && itemstack.getItem() instanceof SwordItem && entityplayer.isSneaking())
         {
             if(getPublic()){
                 setPublic(false);
-                for(int var3 = 0; var3 < 7; ++var3) {
-                    double var4 = this.random.nextGaussian() * 0.02D;
-                    double var6 = this.random.nextGaussian() * 0.02D;
-                    double var8 = this.random.nextGaussian() * 0.02D;
-                    world.addParticle("heart", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
-                    sendParticle(world, "heart", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
-                }
+                MoCTools.addHeartParticles(world,this);
+                world.broadcastEntityEvent(this, (byte)6);
             }else{
                 setPublic(true);
-                for(int var3 = 0; var3 < 7; ++var3) {
-                    double var4 = this.random.nextGaussian() * 0.02D;
-                    double var6 = this.random.nextGaussian() * 0.02D;
-                    double var8 = this.random.nextGaussian() * 0.02D;
-                    world.addParticle("flame", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
-                    sendParticle(world, "flame", this.x + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.y + 0.5D + (double) (this.random.nextFloat() * this.height), this.z + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
-                }
+                MoCTools.addFlameParticles(world,this);
+                world.broadcastEntityEvent(this, (byte)7);
             }
             return true;
         }
@@ -396,7 +388,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             entitydolphin1.setPosition(x, y, z);
             world.spawnEntity(entitydolphin1);
             world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-            sendSound(world, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+            world.broadcastEntityEvent(this, (byte)9);
             setEaten(false);
             entitydolphin.setEaten(false);
             gestationtime = 0;
@@ -639,15 +631,20 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         return Identifier.of(mod_mocreatures.MOD_ID, "Dolphin");
     }
 
-    public void sendParticle(World world, String name, double x, double y, double z, double i, double j, double k){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mod_mocreatures.particlePacket(world,name,x,y,z,i,j,k);
-        }
-    }
-
-    public void sendSound(World world, String name, float vol, float pit){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
+    @Environment(EnvType.CLIENT)
+    public void processServerEntityStatus(byte status) {
+        if (status == 6) {
+            MoCTools.addHeartParticles(world, this);
+        } else if (status == 7) {
+            MoCTools.addFlameParticles(world, this);
+        } else if (status == 8) {
+            world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else if (status == 9){
+            world.playSound(this, "mob:chickenplop", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        } else if (status == 10){
+            world.playSound(this, getUpsetSound(), 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else {
+            super.processServerEntityStatus(status);
         }
     }
 

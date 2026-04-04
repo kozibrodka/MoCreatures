@@ -2,6 +2,7 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
@@ -50,7 +51,7 @@ public class EntityFishyEgg extends LivingEntity implements MobSpawnDataProvider
         if(lCounter > 10 && entityplayer.inventory.addStack(new ItemStack(mod_mocreatures.fishyegg, 1)))
         {
             world.playSound(this, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-            sendSound(world, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+            world.broadcastEntityEvent(this, (byte)6);
             entityplayer.sendPickup(this, 1);
             markDead();
         }
@@ -77,7 +78,7 @@ public class EntityFishyEgg extends LivingEntity implements MobSpawnDataProvider
                 entityfishy.setAge(0.3F);
                 world.spawnEntity(entityfishy);
                 world.playSound(this, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
-                sendSound(world, "mob.chickenplop", 1.0F, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+                world.broadcastEntityEvent(this, (byte)7);
                 entityfishy.setTamed(true);
                 markDead();
             }
@@ -122,9 +123,14 @@ public class EntityFishyEgg extends LivingEntity implements MobSpawnDataProvider
         return Identifier.of(mod_mocreatures.MOD_ID, "FishyEgg");
     }
 
-    public void sendSound(World world, String name, float vol, float pit){
-        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-            mod_mocreatures.voicePacket(world, name, this.id, vol, pit);
+    @Environment(EnvType.CLIENT)
+    public void processServerEntityStatus(byte status) {
+        if (status == 6) {
+            world.playSound(this, "random.pop", 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+        }  else if (status == 7){
+            world.playSound(this, "mob:chickenplop", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
+        }  else {
+            super.processServerEntityStatus(status);
         }
     }
 }
