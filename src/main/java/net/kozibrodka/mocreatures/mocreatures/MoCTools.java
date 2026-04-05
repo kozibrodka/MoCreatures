@@ -175,7 +175,7 @@ public class MoCTools {
         return origAngle % 360.0F;
     }
 
-    public static float distanceToSurface(Entity entity) { //TODO REKINY
+    public static float distanceToSurface(Entity entity) {
         int i = MathHelper.floor(entity.x);
         int j = MathHelper.floor(entity.y);
         int k = MathHelper.floor(entity.z);
@@ -190,6 +190,20 @@ public class MoCTools {
         }
 
         return 0.0F;
+    }
+
+    public static boolean isSharkUnderIce(Entity entity) {
+        int i = MathHelper.floor(entity.x);
+        int j = MathHelper.floor(entity.y);
+        int k = MathHelper.floor(entity.z);
+        int l;
+            for(int x = 0; x < 11; ++x) {
+                l = entity.world.getBlockId(i, j + x, k);
+                if(Block.BLOCKS[l].material == Material.ICE) {
+                    return true;
+                }
+            }
+        return false;
     }
 
     public static boolean NearMaterialWithDistance(Entity entity, Double double1, Material mat)

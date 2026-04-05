@@ -310,9 +310,9 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
     }
 
     @Override
-    public boolean canSpawn() //TODO spawning on ICE??
+    public boolean canSpawn()
     {
-        return mod_mocreatures.mocGlass.watermobs.sharkfreq > 0 && !MoCTools.isNearTorch(this) && world.difficulty >= mod_mocreatures.mocGlass.watermobs.sharkSpawnDifficulty.ordinal() + 1 && super.canSpawn();
+        return mod_mocreatures.mocGlass.watermobs.sharkfreq > 0 && !MoCTools.isNearTorch(this) && !MoCTools.isSharkUnderIce(this) && world.difficulty >= mod_mocreatures.mocGlass.watermobs.sharkSpawnDifficulty.ordinal() + 1 && super.canSpawn();
     }
 
     public void setNameWithGui(EntityShark entityShark, PlayerEntity entityPlayer)

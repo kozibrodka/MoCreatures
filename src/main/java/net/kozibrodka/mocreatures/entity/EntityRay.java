@@ -1,6 +1,7 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.kozibrodka.mocreatures.network.PoisonPacket;
 import net.minecraft.block.material.Material;
@@ -105,7 +106,7 @@ public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider
     @Override
     public boolean canSpawn()
     {
-        return mod_mocreatures.mocGlass.watermobs.rayfreq > 0 && super.canSpawn();
+        return mod_mocreatures.mocGlass.watermobs.rayfreq > 0 && !MoCTools.isSharkUnderIce(this) && super.canSpawn();
     }
 
     @Override

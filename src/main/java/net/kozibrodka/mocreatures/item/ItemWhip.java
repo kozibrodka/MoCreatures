@@ -141,7 +141,7 @@ public class ItemWhip extends TemplateItem
 //                    }
 //                    for(int j2 = 0; j2 < list1.size(); j2++)
 //                    {
-//                        if(list1.get(j2) instanceof EntityAirShipHorse entityitem) //ItemEntity
+//                        if(list1.get(j2) instanceof EntityCustomWM entityitem) //ItemEntity
 //                        {
 //                            entityitem.markDead();
 //                            i2++;

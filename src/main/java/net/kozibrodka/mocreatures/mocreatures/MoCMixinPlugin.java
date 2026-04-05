@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class MoCMixinPlugin  implements IMixinConfigPlugin {
 
-    @Override //TODO test +
+    @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (mixinClassName.equals("net.kozibrodka.mocreatures.mixin.SpongeMixin")) {
             return !FabricLoader.getInstance().isModLoaded("goldentweaks") || !FabricLoader.getInstance().isModLoaded("nowobtainablerecipes");

@@ -557,7 +557,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     @Override
     public boolean canSpawn()
     {
-        return mod_mocreatures.mocGlass.watermobs.dolphinfreq > 0 && super.canSpawn();
+        return mod_mocreatures.mocGlass.watermobs.dolphinfreq > 0 && !MoCTools.isSharkUnderIce(this) && super.canSpawn();
     }
 
     @Override

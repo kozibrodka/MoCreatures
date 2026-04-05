@@ -142,7 +142,7 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
     @Override
     protected String getDeathSound()
     {
-        return "mocreatures:beardying";
+        return "mocreatures:beardeath";
     }
 
     @Override

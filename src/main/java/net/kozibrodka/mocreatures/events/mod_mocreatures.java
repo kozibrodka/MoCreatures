@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class mod_mocreatures {
-   // TODO SOUND VOLUME deer??? //TODO PAKIETY!!!
+   // TODO SOUND VOLUME deer etc. Audacity broke sounds, idk how to do it correctly.
     @ConfigRoot(value = "MocreaturesCFG", visibleName = "Mo' Creatures Config")
     public static final MocreaturesCFG mocGlass = new MocreaturesCFG();
 
@@ -96,11 +96,7 @@ public class mod_mocreatures {
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("poison"), PoisonPacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("sound"), SoundPacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("particle"), ParticlePacket.TYPE);
-        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("custom_particle"), CustomParticlePacket.TYPE);
-        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("health"), HealthPacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("ask"), AskPacket.TYPE);
-        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("server_riding"), ServerRidingPacket.TYPE);
-        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("client_riding"), ClientHorsePacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("horse_fuel"), HorseFuelOpenGUIPacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("whip"), WhipParticlePacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("passenger"), PassengerPacket.TYPE);

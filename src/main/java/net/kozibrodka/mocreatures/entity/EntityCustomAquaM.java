@@ -64,12 +64,12 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
 
         if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER && passenger != null) {
             PlayerEntity entityplayer3 = (PlayerEntity)passenger;
-            PacketHelper.sendTo(entityplayer3, new ClientHorsePacket(this.prevX, this.prevZ, this.prevY));
+//            PacketHelper.sendTo(entityplayer3, new ClientHorsePacket(this.prevX, this.prevZ, this.prevY));
         }
         if(world.isRemote && passenger != null && getTamed()){
 //            PlayerEntity entityplayer3 = (PlayerEntity)passenger;
 //            PacketHelper.send(new ServerRidingPacket(entityplayer3.velocityX, entityplayer3.velocityY, entityplayer3.velocityZ,entityplayer3.yaw, entityplayer3.pitch, entityplayer3.jumping));
-            PacketHelper.send(new ServerRidingPacket(passenger.velocityX, passenger.velocityY, passenger.velocityZ,passenger.yaw, passenger.pitch, ((PlayerEntity)passenger).jumping));
+//            PacketHelper.send(new ServerRidingPacket(passenger.velocityX, passenger.velocityY, passenger.velocityZ,passenger.yaw, passenger.pitch, ((PlayerEntity)passenger).jumping));
 
         }
 

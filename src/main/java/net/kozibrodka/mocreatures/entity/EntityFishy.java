@@ -344,7 +344,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
     @Override
     public boolean canSpawn()
     {
-        return mod_mocreatures.mocGlass.watermobs.fishfreq > 0 && super.canSpawn();
+        return mod_mocreatures.mocGlass.watermobs.fishfreq > 0 && !MoCTools.isSharkUnderIce(this) && super.canSpawn();
     }
 
     @Override

@@ -7,7 +7,6 @@ import net.kozibrodka.mocreatures.events.TextureListener;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.CREEPSFxSpit;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
-import net.kozibrodka.mocreatures.network.CustomParticlePacket;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -142,28 +141,6 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
         CREEPSFxSpit creepsfxspit = new CREEPSFxSpit(world, x + d1 * 3.5D, y + 2.4000000953674316D, z + d3 * 3.5D, TextureListener.bubble_particle);
         creepsfxspit.renderDistanceMultiplier = 10D;
         Minecraft.INSTANCE.particleManager.addParticle(creepsfxspit);
-    }
-
-    @Environment(EnvType.SERVER)
-    public void sendPartPacket(World world, double x, double y, double z) {
-        List list2 = world.players;
-        if (list2.size() != 0) {
-            for (int k = 0; k < list2.size(); k++) {
-                ServerPlayerEntity player1 = (ServerPlayerEntity) list2.get(k);
-                PacketHelper.sendTo(player1, new CustomParticlePacket(1, x, y, z));
-            }
-        }
-    }
-
-    @Environment(EnvType.CLIENT)
-    public void sendPartClient(World world, double x, double y, double z) {
-        List list2 = world.players;
-        if (list2.size() != 0) {
-            for (int k = 0; k < list2.size(); k++) {
-                ClientPlayerEntity player1 = (ClientPlayerEntity) list2.get(k);
-                PacketHelper.sendTo(player1, new CustomParticlePacket(1, x, y, z));
-            }
-        }
     }
 
     @Override
