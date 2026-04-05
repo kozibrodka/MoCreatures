@@ -18,7 +18,7 @@ public class KeybindListener {
     @EventListener
     public void registerKeyBindings(KeyBindingRegisterEvent event) {
         List<KeyBinding> list = event.keyBindings;
-        list.add(keyBinding_horseFuel = new KeyBinding("Horse Fuel...", Keyboard.KEY_H));
+        list.add(keyBinding_horseFuel = new KeyBinding("Horse Fuel", Keyboard.KEY_H));
     }
     public static KeyBinding keyBinding_horseFuel;
 }

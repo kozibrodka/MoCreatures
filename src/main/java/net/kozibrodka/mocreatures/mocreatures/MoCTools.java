@@ -175,7 +175,7 @@ public class MoCTools {
         return origAngle % 360.0F;
     }
 
-    public static float distanceToSurface(Entity entity) {
+    public static float distanceToSurface(Entity entity) { //TODO REKINY
         int i = MathHelper.floor(entity.x);
         int j = MathHelper.floor(entity.y);
         int k = MathHelper.floor(entity.z);

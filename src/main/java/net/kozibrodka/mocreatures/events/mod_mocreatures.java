@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class mod_mocreatures {
-   // TODO SOUND VOLUME deer???
+   // TODO SOUND VOLUME deer??? //TODO PAKIETY!!!
     @ConfigRoot(value = "MocreaturesCFG", visibleName = "Mo' Creatures Config")
     public static final MocreaturesCFG mocGlass = new MocreaturesCFG();
 
