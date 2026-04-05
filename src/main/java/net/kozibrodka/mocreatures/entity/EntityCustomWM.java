@@ -21,6 +21,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.network.packet.PacketHelper;
+import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
+import net.modificationstation.stationapi.api.util.Identifier;
 
 import java.util.List;
 import java.util.Objects;
@@ -79,6 +81,7 @@ public class EntityCustomWM extends WaterCreatureEntity
         walkAnimationProgress += walkAnimationSpeed;
     }
 
+    @Override
     public void travel(float f, float f1)
     {
         if(world.isRemote && passenger != null && getTamed()){
@@ -319,6 +322,7 @@ public class EntityCustomWM extends WaterCreatureEntity
         return f + f3;
     }
 
+    @Override
     protected void tickLiving()
     {
         if(world.isRemote){
@@ -454,6 +458,7 @@ public class EntityCustomWM extends WaterCreatureEntity
         }
     }
 
+    @Override
     protected void onLanding(float f)
     {
         if(!submergedInWater)
@@ -489,6 +494,7 @@ public class EntityCustomWM extends WaterCreatureEntity
         return entityitem;
     }
 
+    @Override
     public void tickMovement()
     {
         if(world.isRemote){
@@ -541,6 +547,7 @@ public class EntityCustomWM extends WaterCreatureEntity
     }
 
 
+    @Override
     public boolean checkWaterCollisions()
     {
         return world.updateMovementInFluid(boundingBox, Material.WATER, this);
@@ -555,31 +562,37 @@ public class EntityCustomWM extends WaterCreatureEntity
         return this.isInFluid(Material.WATER);
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
     }
 
+    @Override
     protected String getRandomSound()
     {
         return null;
     }
 
+    @Override
     protected String getHurtSound()
     {
         return null;
     }
 
+    @Override
     protected String getDeathSound()
     {
         return null;
     }
 
+    @Override
     protected float getSoundVolume()
     {
         return 0.4F;
@@ -632,4 +645,5 @@ public class EntityCustomWM extends WaterCreatureEntity
             }
         }
     }
+
 }

@@ -32,6 +32,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
     }
 
 
+    @Override
     public void tickMovement()
     {
         super.tickMovement();
@@ -118,6 +119,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
     }
 
 
+    @Override
     protected Entity getTargetInRange()
     {
         if(world.difficulty > 0 && getAge() >= 1.0F && getType() == 10)
@@ -166,6 +168,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         return ((victim instanceof EntityCustomWM) || (victim instanceof EntityCustomAquaM) || (victim instanceof EntitySharkEgg) || (victim instanceof EntityFishyEgg) || victim.width > 0.7F);
     }
 
+    @Override
     public void markDead()
     {
         if(getTamed() && health > 0 && !world.isRemote)
@@ -178,6 +181,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         }
     }
 
+    @Override
     public boolean damage(Entity entityBase, int i)
     {
         if(super.damage(entityBase, i))
@@ -197,6 +201,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         }
     }
 
+    @Override
     protected void attack(Entity entity, float f)
     {
         if((double)f < 2D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
@@ -298,6 +303,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
             }
     }
 
+    @Override
     protected void dropItems()
     {
         int i = random.nextInt(100);
@@ -315,6 +321,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         }
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
@@ -324,6 +331,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         nbttagcompound.putBoolean("Adult", getAdult());
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
@@ -333,11 +341,13 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         setAdult(nbttagcompound.getBoolean("Adult"));
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.watermobs.fishfreq > 0 && super.canSpawn();
     }
 
+    @Override
     protected void initDataTracker() {
         super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //Type
@@ -355,7 +365,8 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         return Identifier.of(mod_mocreatures.MOD_ID, "Fishy");
     }
 
-    //TYPE
+
+    @Override
     public void setTypeSpawn()
     {
         if(!world.isRemote){
@@ -404,7 +415,8 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         }
     }
 
-    //TAMED
+
+    @Override
     public boolean getTamed()
     {
         return (dataTracker.getByte(19) & 1) != 0;
@@ -415,6 +427,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         return "";
     }
 
+    @Override
     public void setTamed(boolean flag)
     {
         if(flag)
