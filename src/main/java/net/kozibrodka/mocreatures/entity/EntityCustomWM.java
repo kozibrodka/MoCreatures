@@ -2,11 +2,11 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.kozibrodka.mocreatures.network.ClientHorsePacket;
-import net.kozibrodka.mocreatures.network.JokeyPacket;
-import net.kozibrodka.mocreatures.network.ServerRidingPacket;
+import net.kozibrodka.mocreatures.mocreatures.MocTick;
+import net.kozibrodka.mocreatures.network.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -14,6 +14,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.WaterCreatureEntity;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
@@ -22,6 +23,7 @@ import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class EntityCustomWM extends WaterCreatureEntity
@@ -53,17 +55,35 @@ public class EntityCustomWM extends WaterCreatureEntity
 
     }
 
+    public void travelClient(float f, float f1) {
+        if (Objects.equals(MocTick.mc.player.name, ((PlayerEntity) passenger).name)) {
+            PacketHelper.send(new RidingHorsePacket(passenger.yaw, passenger.pitch, ((PlayerEntity) passenger).jumping));
+        }
+
+        if(checkWaterCollisions())
+        {
+            pitch = passenger.pitch * 0.5F;
+            prevYaw = yaw = passenger.yaw;
+            setRotation(yaw, pitch);
+        }
+
+        lastWalkAnimationSpeed = walkAnimationSpeed;
+        double d1 = x - prevX;
+        double d2 = z - prevZ;
+        float f4 = MathHelper.sqrt(d1 * d1 + d2 * d2) * 4F;
+        if(f4 > 1.0F)
+        {
+            f4 = 1.0F;
+        }
+        walkAnimationSpeed += (f4 - walkAnimationSpeed) * 0.4F;
+        walkAnimationProgress += walkAnimationSpeed;
+    }
+
     public void travel(float f, float f1)
     {
-        if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER && passenger != null) {
-            PlayerEntity entityplayer3 = (PlayerEntity)passenger;
-            PacketHelper.sendTo(entityplayer3, new ClientHorsePacket(this.prevX, this.prevZ, this.prevY));
-        }
         if(world.isRemote && passenger != null && getTamed()){
-//            PlayerEntity entityplayer3 = (PlayerEntity)passenger;
-//            PacketHelper.send(new ServerRidingPacket(entityplayer3.velocityX, entityplayer3.velocityY, entityplayer3.velocityZ,entityplayer3.yaw, entityplayer3.pitch, entityplayer3.jumping));
-            PacketHelper.send(new ServerRidingPacket(passenger.velocityX, passenger.velocityY, passenger.velocityZ,passenger.yaw, passenger.pitch, ((PlayerEntity)passenger).jumping));
-
+            travelClient(f,f1);
+            return;
         }
         if(checkWaterCollisions())
         {
@@ -87,6 +107,7 @@ public class EntityCustomWM extends WaterCreatureEntity
                     world.broadcastEntityEvent(this, (byte)10);
                     entityplayer.velocityY += 0.90000000000000002D;
                     entityplayer.velocityZ -= 0.29999999999999999D;
+                    sendPassengerPacket(world, this.id, "");
                     entityplayer.setVehicle(null);
                     passenger = null;
                     setJokey(false);
@@ -111,25 +132,30 @@ public class EntityCustomWM extends WaterCreatureEntity
                 boundingBox.maxY = passenger.boundingBox.maxY;
                 velocityX += passenger.velocityX * speed();
                 velocityZ += passenger.velocityZ * speed();
-                PlayerEntity ep = (PlayerEntity)passenger;
-                if(ep.jumping) {
+                if(mod_mocreatures.mocGlass.watermobs.diving) {
+                    PlayerEntity ep = (PlayerEntity) passenger;
+                    if (ep.jumping) {
                         velocityY += 0.006D;
-                } else {
-                    velocityY = -0.008D;
-                }
-                if(!isSwimming()){
+                    } else {
+                        velocityY = -0.008D;
+                    }
+                    if (!isSwimming()) {
 
-                    if(random.nextInt(2) == 0){
-                        velocityY = -0.07D - (random.nextInt(10) * 0.01D / 8);;
-                    }else{
-                        velocityY = -0.07D + (random.nextInt(10) * 0.01D / 8);;
+                        if (random.nextInt(2) == 0) {
+                            velocityY = -0.07D - (random.nextInt(10) * 0.01D / 8);
+                            ;
+                        } else {
+                            velocityY = -0.07D + (random.nextInt(10) * 0.01D / 8);
+                            ;
+                        }
+                    }
+                }else{
+                    /// ORYG
+                    if(velocityY != 0.0D)
+                    {
+                        velocityY = 0.0D;
                     }
                 }
-                /// ORYG
-//                if(velocityY != 0.0D)
-//                {
-//                    velocityY = 0.0D;
-//                }
                 move(velocityX, velocityY, velocityZ);
                 pitch = passenger.pitch * 0.5F;
                 prevYaw = yaw = passenger.yaw;
@@ -588,4 +614,22 @@ public class EntityCustomWM extends WaterCreatureEntity
     public void setDisplayName(boolean flag) {
     }
 
+    public void sendPassengerPacket(World world, int entityID, String jokeyID){
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
+            sendPassPacket(world, entityID, jokeyID);
+        }
+    }
+
+    @Environment(EnvType.SERVER)
+    public void sendPassPacket(World world, int entityID, String jokeyID) {
+        List list2 = world.players;
+        if (list2.size() != 0) {
+            for (int k = 0; k < list2.size(); k++) {
+                ServerPlayerEntity player1 = (ServerPlayerEntity) list2.get(k);
+                if(!(passenger instanceof PlayerEntity && Objects.equals(((PlayerEntity) passenger).name, player1.name))){
+                    PacketHelper.sendTo(player1, new PassengerPacket(entityID, jokeyID));
+                }
+            }
+        }
+    }
 }

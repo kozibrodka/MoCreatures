@@ -341,8 +341,19 @@ public class EntitySheep extends SheepEntity implements MobSpawnDataProvider, Mo
             }
         }
         if(roper == null && hasRopeOnNeck){
+            if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
+                sendRopePacket(world, "sheep", this.id, "");
+            }
             ropeRemoval(world, this.x,this.y,this.z);
             hasRopeOnNeck = false;
+        }
+        if(roper!=null && !roper.isAlive() && hasRopeOnNeck){
+            if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
+                sendRopePacket(world, "sheep", this.id, "");
+            }
+            ropeRemoval(world, this.x,this.y,this.z);
+            hasRopeOnNeck = false;
+            roper = null;
         }
     }
 

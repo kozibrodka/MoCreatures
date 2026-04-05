@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class mod_mocreatures {
-
+   // TODO SOUND VOLUME deer???
     @ConfigRoot(value = "MocreaturesCFG", visibleName = "Mo' Creatures Config")
     public static final MocreaturesCFG mocGlass = new MocreaturesCFG();
 
@@ -103,6 +103,7 @@ public class mod_mocreatures {
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("client_riding"), ClientHorsePacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("horse_fuel"), HorseFuelOpenGUIPacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("whip"), WhipParticlePacket.TYPE);
+        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("passenger"), PassengerPacket.TYPE);
 
     }
 
@@ -270,5 +271,6 @@ public class mod_mocreatures {
     public static Item bootscroc;
 
     public static double fullRenderDist = 25000D; ///10000D airship 512/1024 troche malo  TRUE - może lepiej?
+    public static double ropeRenderDist = 12500D; /// bigcat on rope
 
 }

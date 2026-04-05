@@ -137,20 +137,21 @@ public class ItemWhip extends TemplateItem
                             entitybunny.markDead();
                         }
                     }
-                    ///  DEBUG //todo
+                    ///  DEBUG
 //                    for(int j2 = 0; j2 < list1.size(); j2++)
 //                    {
 //                        if(list1.get(j2) instanceof EntitySheep entityitem)
 //                        {
 //                            entityitem.setSheared(true);
-////                            entityitem.markDead();
+//                            entityitem.markDead();
 //                        }
 //                    }
 //                    for(int j2 = 0; j2 < list1.size(); j2++)
 //                    {
-//                        if(list1.get(j2) instanceof ItemEntity entityitem)
+//                        if(list1.get(j2) instanceof EntityAirShipHorse entityitem) //ItemEntity
 //                        {
 //                            entityitem.markDead();
+//                            i2++;
 //                        }
 //                    }
                     ///

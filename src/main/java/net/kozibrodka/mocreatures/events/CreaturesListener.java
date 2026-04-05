@@ -66,7 +66,6 @@ public class CreaturesListener {
         event.register(EntityHorse.class, String.valueOf(Identifier.of(MOD_ID, "Horse")));
         event.register(EntityKitty.class, String.valueOf(Identifier.of(MOD_ID, "Kitty")));
 
-        event.register(EntityAirShipHorse.class, String.valueOf(Identifier.of(MOD_ID, "AirShipHorse")));
     }
 
     @EventListener
@@ -114,7 +113,6 @@ public class CreaturesListener {
         Registry.register(event.registry, MOD_ID.id("Horse"), EntityHorse::new);
         Registry.register(event.registry, MOD_ID.id("Kitty"), EntityKitty::new);
 
-        Registry.register(event.registry, MOD_ID.id("AirShipHorse"), EntityAirShipHorse::new);
     }
 
 }

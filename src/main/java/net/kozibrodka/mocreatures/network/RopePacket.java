@@ -84,8 +84,7 @@ public class RopePacket extends Packet implements ManagedPacket<RopePacket> {
         if(Objects.equals(entityName, "tiger")){
             EntityBigCat tiger1 = (EntityBigCat) ((ClientWorld)player.world).getEntity(this.entityId);
             if(tiger1 != null){
-                LivingEntity roper1 = tiger1.world.getPlayer(this.entityRoper);
-                tiger1.roper = roper1;
+                tiger1.roper = tiger1.world.getPlayer(this.entityRoper);
             }
         }
 

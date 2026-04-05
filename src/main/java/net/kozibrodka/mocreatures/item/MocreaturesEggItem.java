@@ -167,7 +167,7 @@ public class MocreaturesEggItem extends TemplateItem {
             huj = new EntitySheep(arg3);
         }
         if(ide == 72){
-            huj = new EntityAirShipHorse(arg3);
+//            huj = new EntityAirShipHorse(arg3);
         }
 
 

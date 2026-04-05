@@ -8,6 +8,7 @@ import net.kozibrodka.mocreatures.mocreatures.AnimalChest;
 import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
 import net.kozibrodka.mocreatures.mocreatures.MoGuiOpener;
+import net.kozibrodka.mocreatures.network.JokeyPacket;
 import net.kozibrodka.mocreatures.network.NamePacket;
 import net.kozibrodka.mocreatures.network.RopePacket;
 import net.minecraft.block.Block;

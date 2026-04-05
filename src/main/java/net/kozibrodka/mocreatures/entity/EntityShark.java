@@ -60,9 +60,9 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
                 setAdult(true);
             }
         }
-        if(target != null && target.y < y - 0.5D && getDistance(target) < 5.0F) {
-            velocityY -= 0.1D; /// Lekkie ala nurkowanie, troche buggy
-        }
+//        if(target != null && target.y < y - 0.5D && getDistance(target) < 5.0F) {
+//            velocityY -= 0.1D; /// Lekkie ala nurkowanie, troche buggy
+//        }
         if(target != null && (this.y - target.y > 6.0D) ){
             target = null; /// Odpuszcza jak target jest na dnie, zeby nie stal zablokowany
         }

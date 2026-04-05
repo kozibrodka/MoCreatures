@@ -82,10 +82,14 @@ public class AskPacket extends Packet implements ManagedPacket<AskPacket> {
 
             EntityHorse horse1 = (EntityHorse) ((ServerWorld)player.world).getEntity(this.entityId);
             if(horse1 != null) {
-//                PacketHelper.sendTo(player, new HealthPacket(this.entityId, horse1.health));
                 PlayerEntity roper1 = (PlayerEntity) horse1.roper;
                 if(roper1 != null) {
                     PacketHelper.sendTo(player, new RopePacket("horse", this.entityId, roper1.name));
+                }
+
+                PlayerEntity jokey1 = (PlayerEntity) horse1.passenger;
+                if(jokey1 != null){
+                    PacketHelper.sendTo(player, new PassengerPacket(this.entityId, jokey1.name));
                 }
             }
         }
@@ -94,10 +98,20 @@ public class AskPacket extends Packet implements ManagedPacket<AskPacket> {
 
             EntityBigCat tiger1 = (EntityBigCat) ((ServerWorld)player.world).getEntity(this.entityId);
             if(tiger1 != null) {
-//                PacketHelper.sendTo(player, new HealthPacket(this.entityId, tiger1.health));
                 PlayerEntity roper2 = (PlayerEntity) tiger1.roper;
                 if(roper2 != null) {
                     PacketHelper.sendTo(player, new RopePacket("tiger", this.entityId, roper2.name));
+                }
+            }
+        }
+
+        if(Objects.equals(entityType, "dolphin")){
+
+            EntityDolphin dolphin1 = (EntityDolphin) ((ServerWorld)player.world).getEntity(this.entityId);
+            if(dolphin1 != null) {
+                PlayerEntity jokey1 = (PlayerEntity) dolphin1.passenger;
+                if(jokey1 != null){
+                    PacketHelper.sendTo(player, new PassengerPacket(this.entityId, jokey1.name));
                 }
             }
         }
@@ -110,14 +124,6 @@ public class AskPacket extends Packet implements ManagedPacket<AskPacket> {
 //                if(roper3 != null) {
 //                    PacketHelper.sendTo(player, new RopePacket("bird", this.entityId, roper3.name));
 //                }
-//            }
-//        }
-
-//        if(Objects.equals(entityType, "dolphin")){
-//
-//            EntityDolphin dolphin1 = (EntityDolphin) ((ServerWorld)player.world).getEntity(this.entityId);
-//            if(dolphin1 != null) {
-//                PacketHelper.sendTo(player, new HealthPacket(this.entityId, dolphin1.health));
 //            }
 //        }
 //

@@ -127,7 +127,6 @@ public class JokeyPacket extends Packet implements ManagedPacket<JokeyPacket> {
             EntityCrocodile croc = (EntityCrocodile) ((ClientWorld)player.world).getEntity(this.entityID);
             LivingEntity victim = (LivingEntity) ((ClientWorld)player.world).getEntity(this.victimID);
             if(croc != null){
-//                croc.passenger = victim;
                 victim.setVehicle(croc);
             }
         }

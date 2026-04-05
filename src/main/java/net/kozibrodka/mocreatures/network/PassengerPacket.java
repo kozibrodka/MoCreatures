@@ -3,13 +3,13 @@ package net.kozibrodka.mocreatures.network;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
-import net.kozibrodka.mocreatures.entity.EntityHorse;
+import net.kozibrodka.mocreatures.entity.*;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.NetworkHandler;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.world.ServerWorld;
+import net.minecraft.world.ClientWorld;
 import net.modificationstation.stationapi.api.entity.player.PlayerHelper;
 import net.modificationstation.stationapi.api.network.packet.ManagedPacket;
 import net.modificationstation.stationapi.api.network.packet.PacketType;
@@ -18,31 +18,28 @@ import org.jetbrains.annotations.NotNull;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
-public class ClientHorsePacket extends Packet implements ManagedPacket<ClientHorsePacket> {
+public class PassengerPacket extends Packet implements ManagedPacket<PassengerPacket> {
 
-    public static final PacketType<ClientHorsePacket> TYPE = PacketType.builder(true, true, ClientHorsePacket::new).build();
+    public static final PacketType<PassengerPacket> TYPE = PacketType.builder(true, true, PassengerPacket::new).build();
 
-    private double prePosX;
-    private double prePosZ;
-    private double prePosY;
+    private int entityId;
+    private String entityJokey;
 
-    public ClientHorsePacket() {
+    public PassengerPacket() {
     }
 
-    public ClientHorsePacket(double preX, double preY, double preZ) {
-        this.prePosX = preX;
-        this.prePosZ = preY;
-        this.prePosY = preZ;
+    public PassengerPacket(int id, String roper) {
+        this.entityId = id;
+        this.entityJokey = roper;
     }
 
     @Override
     public void read(DataInputStream stream) {
         try {
-            this.prePosX = stream.readDouble();
-            this.prePosZ = stream.readDouble();
-            this.prePosY = stream.readDouble();
-
+            this.entityId = stream.readInt();
+            this.entityJokey = stream.readUTF();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -51,9 +48,8 @@ public class ClientHorsePacket extends Packet implements ManagedPacket<ClientHor
     @Override
     public void write(DataOutputStream stream) {
         try {
-            stream.writeDouble(this.prePosX);
-            stream.writeDouble(this.prePosZ);
-            stream.writeDouble(this.prePosY);
+            stream.writeInt(this.entityId);
+            stream.writeUTF(this.entityJokey);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,28 +66,31 @@ public class ClientHorsePacket extends Packet implements ManagedPacket<ClientHor
     @Environment(EnvType.CLIENT)
     public void handleClient(NetworkHandler networkHandler) {
         ClientPlayerEntity player = (ClientPlayerEntity) PlayerHelper.getPlayerFromPacketHandler(networkHandler);
-        if(player.vehicle != null) {
-            ///Raz mi Koń zniknął, jakby przyszły złe kordy. Nie udało mi się odwzorować na DUŻYCH prędkościach i poza granicą załadowanego świata. - pakiet nie jest uzywany.
-//            System.out.println(this.prePosX + " " + this.prePosY + " " + this.prePosZ);
-//            System.out.println("OTRZYMANE: " + this.prePosY);
-            player.vehicle.prevX = this.prePosX;
-            player.vehicle.prevY = this.prePosY;
-            player.vehicle.prevZ = this.prePosZ;
-            }
+        if(player == null){
+            return;
+        }
+                LivingEntity horse1 = (LivingEntity) ((ClientWorld)player.world).getEntity(this.entityId);
+                PlayerEntity jokey1 = player.world.getPlayer(this.entityJokey);
+                if(horse1 != null){
+                    if(jokey1 != null){
+                        jokey1.setVehicle(horse1);
+                    }else{
+                        horse1.passenger = null;
+                    }
+                }
     }
 
     @Environment(EnvType.SERVER)
     public void handleServer(NetworkHandler networkHandler) {
-
     }
 
     @Override
     public int size() {
-        return 6;
+        return 3;
     }
 
     @Override
-    public @NotNull PacketType<ClientHorsePacket> getType() {
+    public @NotNull PacketType<PassengerPacket> getType() {
         return TYPE;
     }
 }

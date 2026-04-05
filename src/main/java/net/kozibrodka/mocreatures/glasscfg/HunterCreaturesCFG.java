@@ -41,5 +41,5 @@ public class HunterCreaturesCFG {
     public Integer crocodilefreq = 8;
 
     @ConfigEntry(name="Hippo Freq", maxValue = 10)
-    public Integer hippofreq = 4;
+    public Integer hippofreq = 3;
 }

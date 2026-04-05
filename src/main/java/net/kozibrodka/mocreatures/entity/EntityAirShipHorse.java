@@ -1,8 +1,10 @@
 package net.kozibrodka.mocreatures.entity;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
+import net.kozibrodka.mocreatures.mocreatures.MocTick;
 import net.kozibrodka.mocreatures.network.ClientHorsePacket;
 import net.kozibrodka.mocreatures.network.JokeyPacket;
 import net.kozibrodka.mocreatures.network.RidingHorsePacket;
@@ -19,45 +21,240 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.util.TriState;
 
-@HasTrackingParameters(trackingDistance = 160, updatePeriod = 2)
-public class EntityAirShipHorse extends EntityHorse implements MobSpawnDataProvider {
+import java.util.Objects;
+
+@HasTrackingParameters(trackingDistance = 160, updatePeriod = 2, sendVelocity = TriState.TRUE)
+public class EntityAirShipHorse extends EntityHorse implements MobSpawnDataProvider { //TODO REMOVE IT
     public EntityAirShipHorse(World world) {
         super(world);
         setTamed(true);
         setSaddled(true);
         setDisplayName(true);
         setChested(true);
+
+        clientInterpolationSteps = 0;
+        clientX = clientY = clientZ = clientYaw = 0;
+        clientVelocityX = clientVelocityY = clientVelocityZ = 0;
     }
 
-    //TYPE
-    public void setTypeSpawn() {
-        if(!world.isRemote) {
-            setAdult(true);
-            int racism;
-            if(random.nextInt(2) == 0){
-                racism = 8;
-            }else{
-                racism = 4;
-            }
-            setType(racism);
-            this.health = this.maxhealth;
+    // Client interpolation and pos/rot
+    @Environment(EnvType.CLIENT)
+    private int clientInterpolationSteps;
+    @Environment(EnvType.CLIENT)
+    private double clientX;
+    @Environment(EnvType.CLIENT)
+    private double clientY;
+    @Environment(EnvType.CLIENT)
+    private double clientZ;
+    @Environment(EnvType.CLIENT)
+    private double clientYaw;
+    @Environment(EnvType.CLIENT)
+    private double clientPitch;
+
+    @Environment(EnvType.CLIENT)
+    private double prevclientX;
+    @Environment(EnvType.CLIENT)
+    private double prevclientZ;
+
+    // Client velocity
+    @Environment(EnvType.CLIENT)
+    private double clientVelocityX;
+    @Environment(EnvType.CLIENT)
+    private double clientVelocityY;
+    @Environment(EnvType.CLIENT)
+    private double clientVelocityZ;
+
+    @Override
+    public void setVelocityClient(double x, double y, double z) {
+        clientVelocityX = velocityX = x;
+        clientVelocityY = velocityY = y;
+        clientVelocityZ = velocityZ = z;
+    }
+
+    @Environment(EnvType.CLIENT)
+    @Override
+    public void setPositionAndAnglesAvoidEntities(double x, double y, double z, float pitch, float yaw, int interpolationSteps) {
+        clientX = x;
+        clientY = y;
+        clientZ = z;
+
+        clientPitch = (double) pitch;
+        clientYaw = (double) yaw;
+        clientInterpolationSteps = interpolationSteps;
+
+        velocityX = clientVelocityX;
+        velocityY = clientVelocityY;
+        velocityZ = clientVelocityZ;
+    }
+
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (world.isRemote) {
+            tickClient();
+        } else {
+//            tickServer();
         }
     }
 
-    protected void dropItems()
-    {
-        dropItem(new ItemStack(Item.COOKIE.id, 1, 0), 0.0F);
+    @Environment(EnvType.CLIENT)
+    private void tickClient() {
+//        System.out.println(clientInterpolationSteps);
+        if (clientInterpolationSteps > 0) interpolatePosition();
+        else applyVelocity();
     }
+
+
+    @Environment(EnvType.CLIENT)
+    private void interpolatePosition() {
+        if(passenger != null){
+//            System.out.println("INTERPOLATE");
+//            System.out.println(clientInterpolationSteps);
+        }
+        if (world.isRemote) {
+//            double cx = x + (clientX - x);
+//            double cy = y + (clientY - y);
+//            double cz = z + (clientZ - z);
+
+            double cx = x + (clientX - x) / (double)clientInterpolationSteps;
+            double cy = y + (clientY - y) / (double)clientInterpolationSteps;
+            double cz = z + (clientZ - z) / (double)clientInterpolationSteps;
+
+            int plus = 4;
+
+//            double cYaw = clientPitch - yaw;
+//            while (cYaw < -180D) cYaw += 360.0D;
+//            while (cYaw > 180D) cYaw -= 360.0D;
+//
+//            if(true){
+//                yaw = (float) (yaw + cYaw / (clientInterpolationSteps + plus));
+//                pitch = (float) (pitch + (clientYaw - pitch) / (clientInterpolationSteps+ plus));
+//                setRotation(yaw, pitch);
+//            }
+
+            /// /////
+
+//            double var7;
+//            for(var7 = clientYaw - (double)yaw; var7 < (double)-180.0F; var7 += (double)360.0F) {
+//            }
+//
+//            while(var7 >= (double)180.0F) {
+//                var7 -= (double)360.0F;
+//            }
+//
+//            yaw = (float)((double)yaw + var7 / ((double)clientInterpolationSteps) + plus) ;
+//            pitch = (float)((double)pitch + (clientPitch - (double)pitch) / ((double)clientInterpolationSteps)+ plus);
+//
+//            setRotation(yaw, pitch);
+//            setRotation((float) clientYaw, (float) clientPitch);
+
+            --clientInterpolationSteps;
+            setPosition(cx, cy, cz);
+
+        }
+    }
+
+    @Environment(EnvType.CLIENT)
+    private void applyVelocity() {
+//        if(passenger != null){
+//            System.out.println("APPLY");
+//        }
+        double cx = x + velocityX;
+        double cy = y + velocityY;
+        double cz = z + velocityZ;
+        setPosition(cx, cy, cz);
+
+    }
+
+
+
+
+    public void travelClient(float f, float f1){
+
+//        System.out.println(clientX);
+//        System.out.println(prevX);
+//        System.out.println(x);
+//        System.out.println("OK");
+
+
+
+        /// STEPS
+        lastWalkAnimationSpeed = walkAnimationSpeed;
+//        double d2 = x - prevX;
+//        double d3 = z - prevZ;
+        double d2 = x - prevclientX;
+        double d3 = z - prevclientZ;
+        float f4 = MathHelper.sqrt(d2 * d2 + d3 * d3) * 4F;
+        if(f4 > 1.0F)
+        {
+            f4 = 1.0F;
+        }
+        walkAnimationSpeed += (f4 - walkAnimationSpeed) * 0.4F;
+        walkAnimationProgress += walkAnimationSpeed;
+
+        prevclientX = x;
+        prevclientZ = z;
+
+        /// ROTATION
+
+
+//        System.out.println(clientPitch);
+//        System.out.println(pitch);
+//        System.out.println("ROT");
+//        double var7;
+//        for(var7 = clientYaw - (double)yaw; var7 < (double)-180.0F; var7 += (double)360.0F) {
+//        }
+//
+//        while(var7 >= (double)180.0F) {
+//            var7 -= (double)360.0F;
+//        }
+//
+//        yaw = (float)((double)yaw + var7 / (double)clientInterpolationSteps);
+//        pitch = (float)((double)pitch + (clientPitch - (double)pitch) / (double)clientInterpolationSteps);
+//
+//        setRotation(yaw, pitch);
+
+
+
+
+        if(checkWaterCollisions())
+        {
+            pitch = passenger.pitch * 0.5F;
+            if(random.nextInt(20) == 0)
+            {
+                yaw = passenger.yaw;
+            }
+            setRotation(yaw, pitch);
+        }else if(isTouchingLava()){
+            pitch = passenger.pitch * 0.5F;
+            if(random.nextInt(20) == 0)
+            {
+                yaw = passenger.yaw;
+            }
+            setRotation(yaw, pitch);
+        }else{
+            if(passenger != null && getTamed())
+            {
+                prevYaw = yaw = passenger.yaw;
+                pitch = passenger.pitch * 0.5F;
+                setRotation(yaw, pitch);
+            }
+        }
+    }
+
 
     public void travel(float f, float f1)
-    {    /// possible rewrite OF client/server sycnhro while riding, Best i can do for now. Airship system doesnt work for horses (yaw,pitch issues)
-        if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER && passenger != null) { //todo upewnij sie, ze client nie dostaje.
-//            PlayerEntity entityplayer3 = (PlayerEntity)passenger;
-//            PacketHelper.sendTo(entityplayer3, new ClientHorsePacket(this.prevX, this.prevZ, this.prevY));
-        }
-        if(world.isRemote && passenger != null && getTamed()){
+    {
+        if(world.isRemote){
 //            PacketHelper.send(new RidingHorsePacket(passenger.velocityX, passenger.velocityY, passenger.velocityZ,passenger.yaw, passenger.pitch, ((PlayerEntity)passenger).jumping));
+            if(passenger != null && Objects.equals(MocTick.mc.player.name, ((PlayerEntity) passenger).name)) {
+                PacketHelper.send(new RidingHorsePacket(passenger.yaw, passenger.pitch, ((PlayerEntity) passenger).jumping));
+            }
+            travelClient(f,f1);
+            return;
         }
+        this.markDead(); ///
         if(checkWaterCollisions())
         {
             if(passenger != null)
@@ -272,5 +469,25 @@ public class EntityAirShipHorse extends EntityHorse implements MobSpawnDataProvi
     @Override
     public Identifier getHandlerIdentifier() {
         return Identifier.of(mod_mocreatures.MOD_ID, "AirShipHorse");
+    }
+
+    //TYPE
+    public void setTypeSpawn() {
+        if(!world.isRemote) {
+            setAdult(true);
+            int racism;
+            if(random.nextInt(2) == 0){
+                racism = 8;
+            }else{
+                racism = 4;
+            }
+            setType(racism);
+            this.health = this.maxhealth;
+        }
+    }
+
+    protected void dropItems()
+    {
+        dropItem(new ItemStack(Item.COOKIE.id, 1, 0), 0.0F);
     }
 }

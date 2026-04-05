@@ -157,7 +157,7 @@ public class RenderBigCat extends LivingEntityRenderer
             double d15 = (float)(d9 - d12);
             GL11.glDisable(3553 /*GL_TEXTURE_2D*/);
             GL11.glDisable(2896 /*GL_LIGHTING*/);
-            for(double d16 = 0.0D; d16 < 0.029999999999999999D; d16 += 0.01D)
+            for(double d16 = 0.0D; d16 < 0.03D; d16 += 0.01D)
             {
                 tessellator.start(3);
                 tessellator.color(0.5F, 0.4F, 0.3F, 1.0F);

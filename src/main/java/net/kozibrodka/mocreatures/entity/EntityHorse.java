@@ -37,7 +37,7 @@ import net.modificationstation.stationapi.api.util.TriState;
 import java.util.List;
 import java.util.Objects;
 
-//@HasTrackingParameters(trackingDistance = 160, updatePeriod = 1, sendVelocity = TriState.TRUE)
+@HasTrackingParameters(trackingDistance = 160, updatePeriod = 1, sendVelocity = TriState.TRUE)
 public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnDataProvider, MoCreatureRacial, MoCreatureNamed
 {
 
@@ -63,19 +63,20 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         setAge(0.35F);
         roper = null;
         killedByOtherEntity = true; /// CZEMU?
+
     }
 
-//    public void markDead() /// Czy to ma jakikolwiek sens??? - bez checku remote, to powoduje duplikaty modelu na client //todo test off
-//    {
-//        if((getTamed() || getBred()) && health > 0 && !world.isRemote)
-//        {
-//            return;
-//        } else
-//        {
-//            super.markDead();
-//            return;
-//        }
-//    }
+    public void markDead() /// Czy to ma jakikolwiek sens??? - bez checku remote, to powoduje duplikaty modelu na client
+    {
+        if((getTamed() || getBred()) && health > 0 && !world.isRemote)
+        {
+            return;
+        } else
+        {
+            super.markDead();
+            return;
+        }
+    }
 
     @Override
     public boolean shouldRender(double distance) {
@@ -217,6 +218,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             burnFuel(1);
             if(entityplayer.isSneaking())
             {
+                sendPassengerPacket(world, this.id, "");
                 entityplayer.setVehicle(null);
                 passenger = null;
                 setJokey(false);
@@ -235,12 +237,9 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             }
         }
         if(passenger == null && getJokey()){
+            sendPassengerPacket(world, this.id, "");
             setJokey(false);
         }
-    }
-
-    public void clientStepSound(){
-        //TODO: multiplayer regular step sounds of entity - maybe another mod. Entity.class line 516
     }
 
     public void tickMovement()
@@ -279,11 +278,8 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
         super.tickMovement();
         if(world.isRemote){ /// Granica dla clienta
-            if(getJokey() && passenger == null){
+            if(getJokey()){ // && passenger == null
                 onGround = false; /// Koń macha skrzydłami z perspektywy drugiego gracza (będąc na ziemi - ala rozszerzyłem błąd aby było synchro między graczami)
-            }
-            if(passenger != null){
-                clientStepSound();
             }
             return;
         }
@@ -291,9 +287,21 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         {
             health++;
         }
-        if(roper == null && hasRopeOnNeck){
+        if(roper!=null && !roper.isAlive() && hasRopeOnNeck){
+            if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
+                sendRopePacket(world, "horse", this.id, "");
+            }
             ropeRemoval(world, this.x,this.y,this.z);
             hasRopeOnNeck = false;
+            roper = null;
+        }
+        if(roper == null && hasRopeOnNeck){
+            if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
+                sendRopePacket(world, "horse", this.id, "");
+            }
+            ropeRemoval(world, this.x,this.y,this.z);
+            hasRopeOnNeck = false;
+            roper = null;
         }
         if(getType() == 7 && passenger != null && nightmareInt > 0 && random.nextInt(2) == 0)
         {
@@ -495,14 +503,53 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
     }
 
-    public void travel(float f, float f1)
-    {    /// possible rewrite OF client/server sycnhro while riding, Best i can do for now. Airship system doesnt work for horses (yaw,pitch issues)
-        if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER && passenger != null) {
-            PlayerEntity entityplayer3 = (PlayerEntity)passenger;
-            PacketHelper.sendTo(entityplayer3, new ClientHorsePacket(this.prevX, this.prevZ, this.prevY));
+    public void travelClient(float f, float f1){
+        if(Objects.equals(MocTick.mc.player.name, ((PlayerEntity) passenger).name)){
+            PacketHelper.send(new RidingHorsePacket(passenger.yaw, passenger.pitch, ((PlayerEntity) passenger).jumping));
         }
+
+        if(checkWaterCollisions())
+        {
+            pitch = passenger.pitch * 0.5F;
+            if(random.nextInt(20) == 0)
+            {
+                yaw = passenger.yaw;
+            }
+            setRotation(yaw, pitch);
+        }else if(isTouchingLava()){
+            pitch = passenger.pitch * 0.5F;
+            if(random.nextInt(20) == 0)
+            {
+                yaw = passenger.yaw;
+            }
+            setRotation(yaw, pitch);
+        }else{
+            if(passenger != null && getTamed())
+            {
+                prevYaw = yaw = passenger.yaw;
+                pitch = passenger.pitch * 0.5F;
+                setRotation(yaw, pitch);
+            }
+        }
+
+        lastWalkAnimationSpeed = walkAnimationSpeed;
+        double d2 = x - prevX;
+        double d3 = z - prevZ;
+        float f4 = MathHelper.sqrt(d2 * d2 + d3 * d3) * 4F;
+        if(f4 > 1.0F)
+        {
+            f4 = 1.0F;
+        }
+        walkAnimationSpeed += (f4 - walkAnimationSpeed) * 0.4F;
+        walkAnimationProgress += walkAnimationSpeed;
+    }
+
+
+    public void travel(float f, float f1)
+    {
         if(world.isRemote && passenger != null && getTamed()){
-            PacketHelper.send(new ServerRidingPacket(passenger.velocityX, passenger.velocityY, passenger.velocityZ,passenger.yaw, passenger.pitch, ((PlayerEntity)passenger).jumping));
+            travelClient(f,f1);
+            return;
         }
         if(checkWaterCollisions())
         {
@@ -529,6 +576,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 setRotation(yaw, pitch);
                 if(!getTamed())
                 {
+                    sendPassengerPacket(world, this.id, "");
                     entityplayer.setVehicle(null);
                     passenger = null;
                     setJokey(false);
@@ -571,6 +619,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 setRotation(yaw, pitch);
                 if(!getTamed())
                 {
+                    sendPassengerPacket(world, this.id, "");
                     entityplayer1.setVehicle(null);
                     passenger = null;
                     setJokey(false);
@@ -639,6 +688,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                     world.broadcastEntityEvent(this, (byte)10);
                     entityplayer.velocityY += 0.9D;
                     entityplayer.velocityZ -= 0.3D;
+                    sendPassengerPacket(world, this.id, "");
                     entityplayer.setVehicle(null);
                     passenger = null;
                     setJokey(false);
@@ -1107,6 +1157,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             setSitting(false);
             entityplayer.setVehicle(this);
             setJokey(true);
+            sendPassengerPacket(world, this.id, entityplayer.name);
             gestationtime = 0;
             return true;
         } else
@@ -1461,6 +1512,25 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             for (int k = 0; k < list2.size(); k++) {
                 ServerPlayerEntity player1 = (ServerPlayerEntity) list2.get(k);
                 PacketHelper.sendTo(player1, new RopePacket(typeName, entityID, roperID));
+            }
+        }
+    }
+
+    public void sendPassengerPacket(World world, int entityID, String jokeyID){
+        if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
+            sendPassPacket(world, entityID, jokeyID);
+        }
+    }
+
+    @Environment(EnvType.SERVER)
+    public void sendPassPacket(World world, int entityID, String jokeyID) {
+        List list2 = world.players;
+        if (list2.size() != 0) {
+            for (int k = 0; k < list2.size(); k++) {
+                ServerPlayerEntity player1 = (ServerPlayerEntity) list2.get(k);
+                if(!(passenger instanceof PlayerEntity && Objects.equals(((PlayerEntity) passenger).name, player1.name))){
+                    PacketHelper.sendTo(player1, new PassengerPacket(entityID, jokeyID));
+                }
             }
         }
     }

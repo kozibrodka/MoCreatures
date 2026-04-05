@@ -9,6 +9,7 @@ import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.kozibrodka.mocreatures.mocreatures.MoGuiOpener;
+import net.kozibrodka.mocreatures.network.AskPacket;
 import net.kozibrodka.mocreatures.network.NamePacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
@@ -172,7 +173,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         if(world.isRemote){
             return false;
         }
-        if(getTamed() && !getPublic() && !entityplayer.name.equals(getOwner()))
+        if(getTamed() && getPublic() && !entityplayer.name.equals(getOwner()))
         {
             return false;
         }
@@ -251,6 +252,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             entityplayer.y = y;
             entityplayer.setVehicle(this);
             setJokey(true);
+            sendPassengerPacket(world, this.id, entityplayer.name);
             return true;
         } else
         {
@@ -288,12 +290,14 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             }
             if(entityplayer.isSneaking())
             {
+                sendPassengerPacket(world, this.id, "");
                 entityplayer.setVehicle(null);
                 passenger = null;
                 setJokey(false);
             }
         }
         if(passenger == null && getJokey()){
+            sendPassengerPacket(world, this.id, "");
             setJokey(false);
         }
     }
@@ -309,6 +313,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
             chooseType(getType());
+            PacketHelper.send(new AskPacket(this.id, "dolphin"));
         }
         if(world.isRemote){
             return;

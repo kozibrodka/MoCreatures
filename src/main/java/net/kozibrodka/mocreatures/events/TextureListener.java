@@ -187,7 +187,7 @@ public class TextureListener {
 //        event.renderers.put(EntitySheep.class, new SheepEntityRenderer(new SheepEntityModel(), new SheepWoolEntityModel(), 0.7F));
         event.renderers.put(EntitySheep.class, new RenderSheep(new ModelSheep(), new SheepWoolEntityModel(), 0.7F));
 
-        event.renderers.put(EntityAirShipHorse.class, new RenderHorse(new ModelHorse2(), new ModelHorse1()));
+//        event.renderers.put(EntityAirShipHorse.class, new RenderHorse(new ModelHorse2(), new ModelHorse1()));
     }
 
     private int registerItemTexture(String s) {

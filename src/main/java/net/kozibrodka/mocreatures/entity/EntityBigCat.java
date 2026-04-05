@@ -181,6 +181,17 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
+    @Override
+    public boolean shouldRender(double distance) {
+        if(roper != null){
+            return distance < mod_mocreatures.ropeRenderDist;
+//            return true;
+
+        }else{
+            return super.shouldRender(distance);
+        }
+    }
+
     protected void tickLiving() {
         super.tickLiving();
         this.dataTracker.set(29, (byte) health);
@@ -219,17 +230,30 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                 if (f > 8F && !getSitting()) {
                     getPathOrWalkableBlock(roper, f);
                 }
-                if ((f > 18F) & getSitting()) {
+                if ((f > 18F) & getSitting() && hasRopeOnNeck) {
                     roper = null;
                     if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
                         sendRopePacket(world, "tiger", this.id, "");
                     }
                     ropeRemoval(world, this.x,this.y,this.z);
+                    hasRopeOnNeck = false;
                 }
             }
-            if(roper == null && hasRopeOnNeck){
+            if(roper!=null && !roper.isAlive() && hasRopeOnNeck){
+                if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
+                    sendRopePacket(world, "tiger", this.id, "");
+                }
                 ropeRemoval(world, this.x,this.y,this.z);
                 hasRopeOnNeck = false;
+                roper = null;
+            }
+            if(roper == null && hasRopeOnNeck){
+                if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
+                    sendRopePacket(world, "tiger", this.id, "");
+                }
+                ropeRemoval(world, this.x,this.y,this.z);
+                hasRopeOnNeck = false;
+                roper = null;
             }
             if (deathTime == 0 && getHungry()) {
                 ItemEntity entityitem = getClosestItem(this, 12D, Item.RAW_PORKCHOP.id, Item.RAW_FISH.id);
