@@ -15,8 +15,8 @@
 
   "license": "CC0-1.0",
   "icon": "assets/mocreatures/stationapi/icon.png",
-
   "environment": "*",
+  "accessWidener": "mocreatures.accesswidener",
   "entrypoints": {
     "stationapi:event_bus": [
       "net.kozibrodka.mocreatures.events.mod_mocreatures",

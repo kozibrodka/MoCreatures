@@ -14,6 +14,7 @@ public class RenderDeer extends LivingEntityRenderer
         super(modelbase, f);
     }
 
+    @Override
     public void render(LivingEntity entityliving, double d, double d1, double d2,
                                float f, float f1)
     {
@@ -43,6 +44,7 @@ public class RenderDeer extends LivingEntityRenderer
         GL11.glScalef(f1, f1, f1);
     }
 
+    @Override
     protected float getHeadBob(LivingEntity entityliving, float f)
     {
         EntityDeer entitydeer = (EntityDeer)entityliving;

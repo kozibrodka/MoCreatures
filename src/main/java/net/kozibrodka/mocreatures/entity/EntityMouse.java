@@ -77,6 +77,7 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         }
     }
 
+    @Override
     public void tickMovement()
     {
         super.tickMovement();
@@ -99,16 +100,12 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         if(world.isRemote){
             return;
         }
-        if(climbing()){
-            setClimbing(true);
-        }else{
-            setClimbing(false);
-        }
+        setClimbing(climbing());
     }
 
+    @Override
     public void onCollision(Entity otherEntity) {
         if(vehicle instanceof PlayerEntity && otherEntity == vehicle.vehicle){
-            return;
         }else {
             super.onCollision(otherEntity);
         }
@@ -144,6 +141,7 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         return true;
     }
 
+    @Override
     public boolean interact(PlayerEntity entityplayer)
     {
         if(world.isRemote){
@@ -175,6 +173,7 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         return true;
     }
 
+    @Override
     @Environment(EnvType.CLIENT)
     public void processServerEntityStatus(byte status) {
         if (status == 6) {
@@ -184,33 +183,37 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         }
     }
 
+    @Override
     public double getStandingEyeHeight()
     {
         if(vehicle instanceof PlayerEntity)
         {
             if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-                return (double)(standingEyeHeight - 0.06F);
+                return standingEyeHeight - 0.06F;
             }else{
-                return (double)(standingEyeHeight - 1.7F);
+                return standingEyeHeight - 1.7F;
             }
 
         } else
         {
-            return (double)standingEyeHeight;
+            return standingEyeHeight;
         }
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 6;
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
         nbttagcompound.putInt("TypeInt", getType());
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
@@ -270,6 +273,7 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         return !onGround && isOnLadder();
     }
 
+    @Override
     public boolean isOnLadder()
     {
         return horizontalCollision;
@@ -280,6 +284,7 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         return getPicked();
     }
 
+    @Override
     public boolean canSpawn()
     {
         int i = MathHelper.floor(x);
@@ -288,26 +293,31 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         return mod_mocreatures.mocGlass.animals.micefreq > 0 && world.canSpawnEntity(boundingBox) && world.getEntityCollisions(this, boundingBox).isEmpty() && !world.isBoxSubmergedInFluid(boundingBox) && world.getBlockId(i, j - 1, k) == Block.COBBLESTONE.id && mod_mocreatures.mocGlass.animals.mouseinhouse || world.getBlockId(i, j - 1, k) == Block.PLANKS.id && mod_mocreatures.mocGlass.animals.mouseinhouse || world.getBlockId(i, j - 1, k) == Block.DIRT.id || world.getBlockId(i, j - 1, k) == Block.STONE.id  && mod_mocreatures.mocGlass.animals.mouseinhouse || world.getBlockId(i, j - 1, k) == Block.GRASS_BLOCK.id;
     }
 
+    @Override
     protected String getRandomSound()
     {
         return "mocreatures:micegrunt";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:micehurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:micedying";
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Item.SEEDS.id;
     }
 
+    @Override
     protected void initDataTracker() {
         super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //Type
@@ -326,6 +336,7 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
     }
 
     //TYPE
+    @Override
     public void setTypeSpawn()
     {
         if(!world.isRemote){

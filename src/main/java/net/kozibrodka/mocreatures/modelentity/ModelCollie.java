@@ -60,6 +60,7 @@ public class ModelCollie extends EntityModel {
         this.field_2097.setPivot(-0.5F, var2, -7.0F);
     }
 
+    @Override
     public void render(float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch, float scale) {
         super.render(limbAngle, limbDistance, animationProgress, headYaw, headPitch, scale);
         this.setAngles(limbAngle, limbDistance, animationProgress, headYaw, headPitch, scale);
@@ -76,6 +77,7 @@ public class ModelCollie extends EntityModel {
         this.neck.render(scale);
     }
 
+    @Override
     public void animateModel(LivingEntity entity, float limbAngle, float limbDistance, float tickDelta) {
         EntityCollie var5 = (EntityCollie)entity;
         if (var5.isAngry()) {
@@ -130,6 +132,7 @@ public class ModelCollie extends EntityModel {
 
     }
 
+    @Override
     public void setAngles(float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch, float scale) {
         super.setAngles(limbAngle, limbDistance, animationProgress, headYaw, headPitch, scale);
         this.head.pitch = headPitch / (180F / (float)Math.PI);

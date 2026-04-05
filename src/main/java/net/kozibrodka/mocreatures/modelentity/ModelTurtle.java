@@ -51,6 +51,7 @@ public class ModelTurtle extends EntityModel {
 		this.Tail.setPivot(0.0F, 21.0F, 4.0F);
 	}
 
+	@Override
 	public void render(float f, float f1, float f2, float f3, float f4, float f5) {
 		super.render(f, f1, f2, f3, f4, f5);
 		this.setAngles(f, f1, f2, f3, f4, f5);
@@ -66,6 +67,7 @@ public class ModelTurtle extends EntityModel {
 		this.Tail.render(f5);
 	}
 
+	@Override
 	public void setAngles(float f, float f1, float f2, float f3, float f4, float f5) {
 		super.setAngles(f, f1, f2, f3, f4, f5);
 		this.Leg1.pitch = MathHelper.cos(f * 0.6662F) * 1.4F * f1;

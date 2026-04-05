@@ -14,6 +14,7 @@ public class RenderMouse extends LivingEntityRenderer
         super(modelbase, f);
     }
 
+    @Override
     public void render(LivingEntity entityliving, double d, double d1, double d2,
                                float f, float f1)
     {
@@ -21,6 +22,7 @@ public class RenderMouse extends LivingEntityRenderer
         super.render(entitymouse, d, d1, d2, f, f1);
     }
 
+    @Override
     protected void applyScale(LivingEntity entityliving, float f)
     {
         EntityMouse entitymouse = (EntityMouse)entityliving;
@@ -51,6 +53,7 @@ public class RenderMouse extends LivingEntityRenderer
         GL11.glRotatef(90F, -1F, 0.0F, 0.0F);
     }
 
+    @Override
     protected float getHeadBob(LivingEntity entityliving, float f)
     {
         stretch(entityliving);

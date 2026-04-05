@@ -34,6 +34,7 @@ public class EntityCaveOgre extends EntityOgre
         frequencyA = 35;
     }
 
+    @Override
     public void tickMovement()
     {
         getTargetInRange();
@@ -79,26 +80,31 @@ public class EntityCaveOgre extends EntityOgre
         return false;
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.hostilemobs.cogrefreq > 0 && world.difficulty >= mod_mocreatures.mocGlass.hostilemobs.cogreSpawnDifficulty.ordinal() + 1 && !world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && y < 50D && super.d2();
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Item.DIAMOND.id;
     }
 
+    @Override
     protected void dropItems()
     {
         if(mod_mocreatures.mocGlass.hostilemobs.caveogrediamond){

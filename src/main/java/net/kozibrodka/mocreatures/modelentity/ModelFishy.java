@@ -24,6 +24,7 @@ public class ModelFishy extends EntityModel
         Tail.pitch = 0.7853981F;
     }
 
+    @Override
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
         setAngles(f, f1, f2, f3, f4, f5);
@@ -31,6 +32,7 @@ public class ModelFishy extends EntityModel
         Tail.render(f5);
     }
 
+    @Override
     public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
     {
         Tail.yaw = MathHelper.cos(f * 0.6662F) * 1.4F * f1;

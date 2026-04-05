@@ -30,6 +30,7 @@ public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
         attackRange = 4D;
     }
 
+    @Override
     protected Entity getTargetInRange()
     {
         if(random.nextInt(80) == 0 && world.difficulty > 0)
@@ -69,6 +70,7 @@ public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
         return (height <= victim.height || width <= victim.width || victim instanceof EntityFox);
     }
 
+    @Override
     public boolean damage(Entity entitybase, int i)
     {
         if(super.damage(entitybase, i))
@@ -88,6 +90,7 @@ public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
         }
     }
 
+    @Override
     protected void attack(Entity entity, float f)
     {
         if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
@@ -101,36 +104,43 @@ public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
         }
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
     }
 
+    @Override
     protected float getSoundVolume()
     {
         return 0.3F;
     }
 
+    @Override
     protected String getRandomSound()
     {
         return "mocreatures:foxcall";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:foxhurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:foxdying";
     }
 
+    @Override
     protected void dropItems()
     {
         int i = random.nextInt(3);
@@ -140,16 +150,19 @@ public class EntityFox extends AnimalEntity implements MobSpawnDataProvider
         }
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Item.LEATHER.id;
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 1;
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.huntercreatures.foxfreq > 0 && !MoCTools.isNearTorch(this) && super.canSpawn();

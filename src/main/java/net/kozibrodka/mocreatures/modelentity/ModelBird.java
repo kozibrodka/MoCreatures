@@ -42,6 +42,7 @@ public class ModelBird extends EntityModel
         tail.pitch = 0.261799F;
     }
 
+    @Override
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
         setAngles(f, f1, f2, f3, f4, f5);
@@ -55,6 +56,7 @@ public class ModelBird extends EntityModel
         tail.render(f5);
     }
 
+    @Override
     public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
     {
         head.pitch = -(f4 / 2.0F / 57.29578F);

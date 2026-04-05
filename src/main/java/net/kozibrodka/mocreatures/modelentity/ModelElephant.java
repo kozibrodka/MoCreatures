@@ -60,6 +60,7 @@ public class ModelElephant extends QuadrupedEntityModel
         trunk1.mirror = true;
     }
 
+    @Override
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
 //        super.render(f, f1, f2, f3, f4, f5);
@@ -74,6 +75,7 @@ public class ModelElephant extends QuadrupedEntityModel
         this.leftFrontLeg.render(f5);
     }
 
+    @Override
     public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
     {
         super.setAngles(f, f1, f2, f3, f4, f5);

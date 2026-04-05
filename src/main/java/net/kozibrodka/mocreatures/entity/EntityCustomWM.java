@@ -33,7 +33,7 @@ public class EntityCustomWM extends WaterCreatureEntity
     private Path pathEntity;
     private int outOfWater;
     private boolean tamed;
-    private int temper;
+    private final int temper;
 
     public EntityCustomWM(World world)
     {
@@ -146,10 +146,8 @@ public class EntityCustomWM extends WaterCreatureEntity
 
                         if (random.nextInt(2) == 0) {
                             velocityY = -0.07D - (random.nextInt(10) * 0.01D / 8);
-                            ;
                         } else {
                             velocityY = -0.07D + (random.nextInt(10) * 0.01D / 8);
-                            ;
                         }
                     }
                 }else{
@@ -475,11 +473,10 @@ public class EntityCustomWM extends WaterCreatureEntity
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof ItemEntity))
+            if(!(entity1 instanceof ItemEntity entityitem1))
             {
                 continue;
             }
-            ItemEntity entityitem1 = (ItemEntity)entity1;
             if(entityitem1.stack.itemId != Item.RAW_FISH.id || !entityitem1.submergedInWater)
             {
                 continue;

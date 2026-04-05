@@ -15,6 +15,7 @@ public class RenderRat extends LivingEntityRenderer
         super(modelbase, f);
     }
 
+    @Override
     public void render(LivingEntity entityliving, double d, double d1, double d2,
                                float f, float f1)
     {
@@ -22,6 +23,7 @@ public class RenderRat extends LivingEntityRenderer
         super.render(entityrat, d, d1, d2, f, f1);
     }
 
+    @Override
     protected void applyScale(LivingEntity entityliving, float f)
     {
         EntityRat entityrat = (EntityRat)entityliving;
@@ -42,6 +44,7 @@ public class RenderRat extends LivingEntityRenderer
         GL11.glScalef(f, f, f);
     }
 
+    @Override
     protected float getHeadBob(LivingEntity entityliving, float f)
     {
         stretch(entityliving);

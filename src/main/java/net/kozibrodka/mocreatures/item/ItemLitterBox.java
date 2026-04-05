@@ -18,6 +18,7 @@ public class ItemLitterBox extends TemplateItem
         maxCount = 16;
     }
 
+    @Override
     public ItemStack use(ItemStack itemstack, World world, PlayerEntity entityplayer)
     {
         if(world.isRemote){

@@ -27,10 +27,12 @@ public class EntityFishyEgg extends LivingEntity implements MobSpawnDataProvider
         texture = "/assets/mocreatures/stationapi/textures/mob/fishyeggt.png";
     }
 
+    @Override
     protected void initDataTracker()
     {
     }
 
+    @Override
     public void tickMovement()
     {
         if(world.isRemote){
@@ -42,6 +44,7 @@ public class EntityFishyEgg extends LivingEntity implements MobSpawnDataProvider
         travel(sidewaysSpeed, forwardSpeed);
     }
 
+    @Override
     public void onPlayerInteraction(PlayerEntity entityplayer)
     {
         if(world.isRemote)
@@ -57,6 +60,7 @@ public class EntityFishyEgg extends LivingEntity implements MobSpawnDataProvider
         }
     }
 
+    @Override
     public void tick()
     {
         super.tick();
@@ -85,31 +89,37 @@ public class EntityFishyEgg extends LivingEntity implements MobSpawnDataProvider
         }
     }
 
+    @Override
     public boolean canBreatheInWater()
     {
         return true;
     }
 
+    @Override
     public boolean checkWaterCollisions()
     {
         return world.updateMovementInFluid(boundingBox, Material.WATER, this);
     }
 
+    @Override
     protected String getRandomSound()
     {
         return null;
     }
 
+    @Override
     protected String getHurtSound()
     {
         return null;
     }
 
+    @Override
     protected String getDeathSound()
     {
         return null;
     }
 
+    @Override
     protected float getSoundVolume()
     {
         return 0.4F;
@@ -123,6 +133,7 @@ public class EntityFishyEgg extends LivingEntity implements MobSpawnDataProvider
         return Identifier.of(mod_mocreatures.MOD_ID, "FishyEgg");
     }
 
+    @Override
     @Environment(EnvType.CLIENT)
     public void processServerEntityStatus(byte status) {
         if (status == 6) {

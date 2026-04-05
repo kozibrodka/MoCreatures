@@ -17,6 +17,7 @@ public class GreenApple extends TemplateItem
         a = 42;
     }
 
+    @Override
     public ItemStack use(ItemStack itemstack, World world, PlayerEntity entityplayer)
     {
         itemstack.count--;

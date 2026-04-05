@@ -29,6 +29,7 @@ public class EntityBoar extends PigEntity implements MobSpawnDataProvider
         attackRange = 1.0D;
     }
 
+    @Override
     public void tickMovement()
     {
         if(world.difficulty == 1)
@@ -44,6 +45,7 @@ public class EntityBoar extends PigEntity implements MobSpawnDataProvider
         super.tickMovement();
     }
 
+    @Override
     protected Entity getTargetInRange()
     {
         if(world.difficulty > 0)
@@ -90,6 +92,7 @@ public class EntityBoar extends PigEntity implements MobSpawnDataProvider
         return (height <= victim.height || width <= victim.width || victim instanceof EntityBoar);
     }
 
+    @Override
     public boolean damage(Entity entityBase, int i)
     {
         if(super.damage(entityBase, i))
@@ -109,6 +112,7 @@ public class EntityBoar extends PigEntity implements MobSpawnDataProvider
         }
     }
 
+    @Override
     protected void attack(Entity entity, float f)
     {
         if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
@@ -122,16 +126,19 @@ public class EntityBoar extends PigEntity implements MobSpawnDataProvider
         }
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.huntercreatures.boarfreq > 0 && super.canSpawn();

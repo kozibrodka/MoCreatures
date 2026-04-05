@@ -280,6 +280,7 @@ public class ModelCrocodile extends EntityModel {
 	public void model2() {
 	}
 
+	@Override
 	public void render(float f, float f1, float f2, float f3, float f4, float f5) {
 		super.render(f, f1, f2, f3, f4, f5);
 		this.setAngles(f, f1, f2, f3, f4, f5);
@@ -332,6 +333,7 @@ public class ModelCrocodile extends EntityModel {
 		this.TeethD1.render(f5);
 	}
 
+	@Override
 	public void setAngles(float f, float f1, float f2, float f3, float f4, float f5) {
 		super.setAngles(f, f1, f2, f3, f4, f5);
 		this.Head.pitch = f4 / 57.29578F;

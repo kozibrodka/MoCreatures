@@ -36,6 +36,7 @@ public class RenderSheep extends LivingEntityRenderer {
         sheepmodel1 = model;
     }
 
+    @Override
     protected void applyScale(LivingEntity entityliving, float f)
     {
         EntitySheep sheep1 = (EntitySheep)entityliving;
@@ -43,6 +44,7 @@ public class RenderSheep extends LivingEntityRenderer {
         sheepmodel1.eating = sheep1.getIsEating();
     }
 
+    @Override
     protected boolean bindTexture(LivingEntity entityliving, int i, float f) {
         EntitySheep sheepEntity = (EntitySheep)entityliving;
         if (i == 0 && !sheepEntity.isSheared()) {
@@ -56,6 +58,7 @@ public class RenderSheep extends LivingEntityRenderer {
         }
     }
 
+    @Override
     public void render(Entity entity, double d, double d1, double d2,
                        float f, float f1)
     {

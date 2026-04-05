@@ -17,6 +17,7 @@ public class RenderFishy extends LivingEntityRenderer
         super(modelbase, f);
     }
 
+    @Override
     public void render(LivingEntity entityliving, double d, double d1, double d2,
                                float f, float f1)
     {
@@ -29,6 +30,7 @@ public class RenderFishy extends LivingEntityRenderer
         GL11.glScalef(entityfishy.getAge(), entityfishy.getAge(), entityfishy.getAge());
     }
 
+    @Override
     protected float getHeadBob(LivingEntity entityliving, float f)
     {
         EntityFishy entityfishy = (EntityFishy)entityliving;

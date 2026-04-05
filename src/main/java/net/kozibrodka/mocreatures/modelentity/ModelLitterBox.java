@@ -39,6 +39,7 @@ public class ModelLitterBox extends EntityModel
         Bottom.setPivot(2.0F, 23F, 0.0F);
     }
 
+    @Override
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
         Table1.render(f5);

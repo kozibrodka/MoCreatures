@@ -14,6 +14,7 @@ public class RenderCaveOgre extends RenderOgre
         tempOgre = modelogre2;
     }
 
+    @Override
     protected boolean a(EntityOgre entityogre, int i)
     {
         bindTexture("/assets/mocreatures/stationapi/textures/mob/caveogreb.png");

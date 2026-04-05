@@ -24,6 +24,7 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
         health = 30;
     }
 
+    @Override
     protected Entity getTargetInRange()
     {
         if(world.difficulty > 0)
@@ -47,6 +48,7 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
         return null;
     }
 
+    @Override
     protected void attack(Entity entity, float f)
     {
         if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
@@ -65,6 +67,7 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
         }
     }
 
+    @Override
     protected void dropItems()
     {
         int i = random.nextInt(3);
@@ -80,21 +83,25 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
         }
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 2;
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
     }
 
+    @Override
     public boolean canSpawn()
     {
         return MoCTools.NearMaterialWithDistance(this, Double.valueOf(1.0D), Material.SNOW_LAYER) && mod_mocreatures.mocGlass.huntercreatures.pbearfreq > 0 && !MoCTools.isNearTorch(this) && super.cS2();

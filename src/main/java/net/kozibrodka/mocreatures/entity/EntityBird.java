@@ -43,6 +43,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         killedByOtherEntity = true;
     }
 
+    @Override
     protected void onLanding(float f)
     {
     }
@@ -58,14 +59,15 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
+    @Override
     public void onCollision(Entity otherEntity) {
         if(vehicle instanceof PlayerEntity && otherEntity == vehicle.vehicle){
-            return;
         }else {
             super.onCollision(otherEntity);
         }
     }
 
+    @Override
     protected void initDataTracker()
     {
         super.initDataTracker();
@@ -75,11 +77,13 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         dataTracker.startTracking(20, (byte) 0); //Fleeing
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 6;
     }
 
+    @Override
     public void tickMovement()
     {
         super.tickMovement();
@@ -129,7 +133,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
             {
                 setFleeing(false);
             }
-            int ai[] = ReturnNearestMaterialCoord(this, Material.LEAVES, Double.valueOf(16D));
+            int[] ai = ReturnNearestMaterialCoord(this, Material.LEAVES, Double.valueOf(16D));
             if(ai[0] == -1)
             {
                 for(int i = 0; i < 2; i++)
@@ -162,9 +166,8 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
 
     public void tickLivingClient()
     {
-        if(vehicle != null && (vehicle instanceof PlayerEntity))
+        if(vehicle != null && (vehicle instanceof PlayerEntity entityplayer))
         {
-            PlayerEntity entityplayer = (PlayerEntity)vehicle;
             yaw = entityplayer.yaw;
             entityplayer.fallDistance = 0.0F;
             if(entityplayer.velocityY < -0.10000000000000001D)
@@ -174,15 +177,15 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
+    @Override
     protected void tickLiving()
     {
         if(onGround && random.nextInt(10) == 0 && (velocityX > 0.050000000000000003D || velocityZ > 0.050000000000000003D || velocityX < -0.050000000000000003D || velocityZ < -0.050000000000000003D))
         {
             velocityY = 0.25D;
         }
-        if(vehicle != null && (vehicle instanceof PlayerEntity))
+        if(vehicle != null && (vehicle instanceof PlayerEntity entityplayer))
         {
-            PlayerEntity entityplayer = (PlayerEntity)vehicle;
             yaw = entityplayer.yaw;
             entityplayer.fallDistance = 0.0F;
             if(entityplayer.velocityY < -0.10000000000000001D)
@@ -200,18 +203,18 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
+    @Override
     public void markDead()
     {
         if(getTamed() && health > 0  && !world.isRemote)
         {
-            return;
         } else
         {
             super.markDead();
-            return;
         }
     }
 
+    @Override
     public boolean interact(PlayerEntity entityplayer)
     {
         if(world.isRemote){
@@ -247,6 +250,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         return true;
     }
 
+    @Override
     @Environment(EnvType.CLIENT)
     public void processServerEntityStatus(byte status) {
         if (status == 6) {
@@ -256,18 +260,19 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
+    @Override
     public double getStandingEyeHeight()
     {
         if(vehicle instanceof PlayerEntity)
         {
             if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-                return (double)(standingEyeHeight + 0.49F);
+                return standingEyeHeight + 0.49F;
             }else{
-                return (double)(standingEyeHeight - 1.15F);
+                return standingEyeHeight - 1.15F;
             }
         } else
         {
-            return (double)standingEyeHeight;
+            return standingEyeHeight;
         }
     }
 
@@ -279,11 +284,10 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         for(int i = 0; i < list.size(); i++)
         {
             Entity entity1 = (Entity)list.get(i);
-            if(!(entity1 instanceof ItemEntity))
+            if(!(entity1 instanceof ItemEntity entityitem1))
             {
                 continue;
             }
-            ItemEntity entityitem1 = (ItemEntity)entity1;
             if(entityitem1.stack.itemId != Item.SEEDS.id)
             {
                 continue;
@@ -394,8 +398,8 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
 
     private boolean FlyToNextTree()
     {
-        int ai[] = ReturnNearestMaterialCoord(this, Material.LEAVES, Double.valueOf(20D));
-        int ai1[] = FindTreeTop(ai[0], ai[1], ai[2]);
+        int[] ai = ReturnNearestMaterialCoord(this, Material.LEAVES, Double.valueOf(20D));
+        int[] ai1 = FindTreeTop(ai[0], ai[1], ai[2]);
         if(ai1[1] != 0)
         {
             int i = ai1[0];
@@ -427,10 +431,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
                 velocityZ -= 0.050000000000000003D;
             }
             double d = l + i1;
-            if(d < 3D)
-            {
-                return true;
-            }
+            return d < 3D;
         }
         return false;
     }
@@ -597,6 +598,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         });
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         if(random.nextInt(2) == 0)
@@ -608,6 +610,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
@@ -615,6 +618,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         nbttagcompound.putBoolean("Tamed", getTamed());
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
@@ -622,6 +626,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         setType(nbttagcompound.getInt("TypeInt"));
     }
 
+    @Override
     protected String getRandomSound()
     {
         if(getType() == 1)
@@ -649,16 +654,19 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:birdhurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:birddying";
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.animals.birdfreq > 0 && super.canSpawn();
@@ -677,6 +685,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
     }
 
     //TYPE
+    @Override
     public void setTypeSpawn()
     {
         if(!world.isRemote){
@@ -699,6 +708,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
     }
 
     //Tamed
+    @Override
     public boolean getTamed()
     {
         return (dataTracker.getByte(17) & 1) != 0;

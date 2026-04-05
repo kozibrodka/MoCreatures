@@ -28,6 +28,7 @@ public class EntityGiraffe extends AnimalEntity implements MobSpawnDataProvider 
         knockCooldown = 0;
     }
 
+    @Override
     protected void tickLiving(){
         if(this.target instanceof PlayerEntity){
             PlayerEntity uciekinier = world.getClosestPlayer(this, 16D);
@@ -44,6 +45,7 @@ public class EntityGiraffe extends AnimalEntity implements MobSpawnDataProvider 
         super.tickLiving();
     }
 
+    @Override
     protected void attack(Entity entity, float f)
     {
         if(onGround)
@@ -75,6 +77,7 @@ public class EntityGiraffe extends AnimalEntity implements MobSpawnDataProvider 
     }
 
 
+    @Override
     public boolean damage(Entity entitybase, int i)
     {
         if(super.damage(entitybase, i))
@@ -94,26 +97,31 @@ public class EntityGiraffe extends AnimalEntity implements MobSpawnDataProvider 
         }
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 3;
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Item.RAW_PORKCHOP.id;
     }
 
+    @Override
     protected void dropItems()
     {
         int i = random.nextInt(3);
@@ -127,21 +135,25 @@ public class EntityGiraffe extends AnimalEntity implements MobSpawnDataProvider 
         }
     }
 
+    @Override
     protected String getRandomSound()
     {
         return "mocreatures:giraffe";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:giraffe";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:giraffedead";
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.animals.giraffefreq > 0 && super.canSpawn();

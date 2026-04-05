@@ -17,6 +17,7 @@ public class HorseSaddle extends TemplateItem
         maxCount = 32;
     }
 
+    @Override
     public void useOnEntity(ItemStack itemstack, LivingEntity entityliving)
     {
         if(entityliving instanceof EntityHorse)
@@ -30,6 +31,7 @@ public class HorseSaddle extends TemplateItem
         }
     }
 
+    @Override
     public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker)
     {
         useOnEntity(stack, target);

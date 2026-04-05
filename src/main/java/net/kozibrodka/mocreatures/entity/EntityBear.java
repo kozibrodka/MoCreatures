@@ -31,6 +31,7 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
         attackRange = 16D;
     }
 
+    @Override
     protected Entity getTargetInRange()
     {
         if(world.difficulty > 0)
@@ -80,6 +81,7 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
         return ((victim instanceof EntityBear) || (victim instanceof EntityBigCat) || (victim instanceof EntityShark) || (victim instanceof EntityWWolf) || (victim instanceof EntityDolphin) || (victim instanceof EntityCrocodile) || (victim instanceof EntityHippo) || (victim instanceof EntityElephant));
     }
 
+    @Override
     public boolean damage(Entity entitybase, int i)
     {
         if(super.damage(entitybase, i))
@@ -99,6 +101,7 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
         }
     }
 
+    @Override
     protected void attack(Entity entity, float f)
     {
         if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
@@ -112,31 +115,37 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
         }
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
     }
 
+    @Override
     protected String getRandomSound()
     {
         return "mocreatures:beargrunt";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:bearhurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:beardying";
     }
 
+    @Override
     protected void dropItems()
     {
         int i = random.nextInt(3);
@@ -146,11 +155,13 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
         }
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Item.RAW_FISH.id;
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 2;
@@ -161,6 +172,7 @@ public class EntityBear extends AnimalEntity implements MobSpawnDataProvider
         return super.canSpawn();
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.huntercreatures.bearfreq > 0 && !MoCTools.isNearTorch(this) && super.canSpawn();

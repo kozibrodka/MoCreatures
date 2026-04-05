@@ -57,6 +57,7 @@ public class ModelDeer extends EntityModel
         Tail.pitch = 0.7854F;
     }
 
+    @Override
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
         setAngles(f, f1, f2, f3, f4, f5);
@@ -74,6 +75,7 @@ public class ModelDeer extends EntityModel
         RightAntler.render(f5);
     }
 
+    @Override
     public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
     {
         Leg1.pitch = MathHelper.cos(f * 0.6662F) * 1.4F * f1;

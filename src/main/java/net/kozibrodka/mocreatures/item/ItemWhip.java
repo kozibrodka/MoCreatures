@@ -6,25 +6,16 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.entity.*;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
-import net.kozibrodka.mocreatures.mixin.AchievementPageAccessor;
-import net.minecraft.achievement.Achievement;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IntHashMap;
-import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
-import net.modificationstation.stationapi.api.client.gui.screen.achievement.AchievementPage;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.template.item.TemplateItem;
 
 import java.util.List;
-
-import static net.kozibrodka.mocreatures.events.mod_mocreatures.MOD_ID;
 
 public class ItemWhip extends TemplateItem
 {
@@ -36,11 +27,13 @@ public class ItemWhip extends TemplateItem
         setMaxDamage(24);
     }
 
+    @Override
     public ItemStack use(ItemStack itemstack, World world, PlayerEntity entityplayer)
     {
         return itemstack;
     }
 
+    @Override
     public boolean useOnBlock(ItemStack itemstack, PlayerEntity entityplayer, World world, int i, int j, int k, int l)
     {
 
@@ -204,7 +197,8 @@ public class ItemWhip extends TemplateItem
         }
     }
 
-    public boolean isFull3D()
+    @Override
+    public boolean isHandheld()
     {
         return true;
     }

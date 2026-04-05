@@ -19,6 +19,7 @@ public class RenderTurtle extends LivingEntityRenderer {
 		this.turtly = modelbase;
 	}
 
+	@Override
 	protected void applyScale(LivingEntity entityliving, float f) {
 		EntityTurtle entityturtle = (EntityTurtle)entityliving;
 		this.turtly.upsidedown = entityturtle.getUpsideDown();
@@ -57,6 +58,7 @@ public class RenderTurtle extends LivingEntityRenderer {
 		GL11.glScalef(f, f, f);
 	}
 
+	@Override
 	public void render(Entity entity, double d, double d1, double d2,
 					   float f, float f1)
 	{

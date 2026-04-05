@@ -25,10 +25,12 @@ public class EntityFlyerMob extends MonsterEntity
         health = 10;
     }
 
+    @Override
     protected void onLanding(float f)
     {
     }
 
+    @Override
     public void travel(float f, float f1)
     {
         if(checkWaterCollisions())
@@ -97,11 +99,13 @@ public class EntityFlyerMob extends MonsterEntity
         walkAnimationProgress += walkAnimationSpeed;
     }
 
+    @Override
     public boolean isOnLadder()
     {
         return false;
     }
 
+    @Override
     protected Entity getTargetInRange()
     {
         PlayerEntity entityplayer = world.getClosestPlayer(this, 20D);
@@ -114,6 +118,7 @@ public class EntityFlyerMob extends MonsterEntity
         }
     }
 
+    @Override
     protected void tickLiving()
     {
         movementBlocked = false;
@@ -242,6 +247,7 @@ public class EntityFlyerMob extends MonsterEntity
         }
     }
 
+    @Override
     protected void attack(Entity entity, float f)
     {
         if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
@@ -251,6 +257,7 @@ public class EntityFlyerMob extends MonsterEntity
         }
     }
 
+    @Override
     public boolean canSpawn()
     {
         return super.canSpawn();

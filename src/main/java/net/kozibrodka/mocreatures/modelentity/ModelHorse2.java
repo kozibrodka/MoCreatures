@@ -35,6 +35,7 @@ public class ModelHorse2 extends EntityModel
         Leg4.setPivot(-3F, 12F, -8F);
     }
 
+    @Override
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
         setAngles(f, f1, f2, f3, f4, f5);
@@ -46,6 +47,7 @@ public class ModelHorse2 extends EntityModel
         Leg4.render(f5);
     }
 
+    @Override
     public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
     {
         Leg1.pitch = MathHelper.cos(f * 0.6662F) * 1.4F * f1;

@@ -18,6 +18,7 @@ public class RenderKittyBed extends LivingEntityRenderer
         setDecorationModel(modelkittybed2);
     }
 
+    @Override
     protected void applyScale(LivingEntity entityliving, float f)
     {
         EntityKittyBed entitykittybed = (EntityKittyBed)entityliving;
@@ -28,6 +29,7 @@ public class RenderKittyBed extends LivingEntityRenderer
         kittybed.milklevel = entitykittybed.getMilkLevel();
     }
 
+    @Override
     protected boolean bindTexture(LivingEntity entityliving, int i, float f)
     {
         return setWoolColorAndRender(entityliving, i, f);

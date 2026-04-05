@@ -33,6 +33,7 @@ public class EntityWerewolf extends MonsterEntity
         isUndead = true;
     }
 
+    @Override
     protected Entity getTargetInRange()
     {
         if(getHumanForm())
@@ -49,6 +50,7 @@ public class EntityWerewolf extends MonsterEntity
         }
     }
 
+    @Override
     protected void tickLiving()
     {
         if(!transforming)
@@ -57,6 +59,7 @@ public class EntityWerewolf extends MonsterEntity
         }
     }
 
+    @Override
     protected void attack(Entity entity, float f)
     {
         if(getHumanForm())
@@ -82,11 +85,11 @@ public class EntityWerewolf extends MonsterEntity
         }
     }
 
+    @Override
     public boolean damage(Entity entity, int i)
     {
-        if(!getHumanForm() && entity != null && (entity instanceof PlayerEntity))
+        if(!getHumanForm() && entity != null && (entity instanceof PlayerEntity entityplayer))
         {
-            PlayerEntity entityplayer = (PlayerEntity)entity;
             ItemStack itemstack = entityplayer.getHand();
             if(itemstack != null)
             {
@@ -116,6 +119,7 @@ public class EntityWerewolf extends MonsterEntity
         return super.damage(entity, i);
     }
 
+    @Override
     public void tickMovement()
     {
         super.tickMovement();
@@ -178,6 +182,7 @@ public class EntityWerewolf extends MonsterEntity
         return !world.canMonsterSpawn();
     }
 
+    @Override
     public void travel(float f, float f1)
     {
         if(!getHumanForm() && onGround)
@@ -216,7 +221,7 @@ public class EntityWerewolf extends MonsterEntity
             d3 *= d7;
             d4 *= d7;
             d5 *= d7;
-            world.addParticle("explode", (d + (double)i * 1.0D) / 2D, (d1 + (double)j * 1.0D) / 2D, (d2 + (double)k * 1.0D) / 2D, d3, d4, d5);
+            world.addParticle("explode", (d + (double) i) / 2D, (d1 + (double) j) / 2D, (d2 + (double) k) / 2D, d3, d4, d5);
         }
 
         if(getHumanForm())
@@ -232,6 +237,7 @@ public class EntityWerewolf extends MonsterEntity
         }
     }
 
+    @Override
     protected void initDataTracker()
     {
         super.initDataTracker();
@@ -239,18 +245,21 @@ public class EntityWerewolf extends MonsterEntity
         dataTracker.startTracking(17, (byte) 0); //Hunched
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
         nbttagcompound.putBoolean("HumanForm", getHumanForm());
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
         setHumanForm(nbttagcompound.getBoolean("HumanForm"));
     }
 
+    @Override
     protected String getRandomSound()
     {
         if(getHumanForm())
@@ -262,6 +271,7 @@ public class EntityWerewolf extends MonsterEntity
         }
     }
 
+    @Override
     protected String getHurtSound()
     {
         if(getHumanForm())
@@ -273,6 +283,7 @@ public class EntityWerewolf extends MonsterEntity
         }
     }
 
+    @Override
     protected String getDeathSound()
     {
         if(getHumanForm())
@@ -284,6 +295,7 @@ public class EntityWerewolf extends MonsterEntity
         }
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         int i = random.nextInt(12);
@@ -343,6 +355,7 @@ public class EntityWerewolf extends MonsterEntity
         return mod_mocreatures.greenapple.id;
     }
 
+    @Override
     public void onKilledBy(Entity entity)
     {
         if(scoreAmount > 0 && entity != null)
@@ -372,11 +385,13 @@ public class EntityWerewolf extends MonsterEntity
         world.broadcastEntityEvent(this, (byte)3);
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 1;
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.hostilemobs.werewolffreq > 0 && world.difficulty >= mod_mocreatures.mocGlass.hostilemobs.wereSpawnDifficulty.ordinal() + 1 && super.canSpawn();
@@ -395,6 +410,7 @@ public class EntityWerewolf extends MonsterEntity
         return Identifier.of(mod_mocreatures.MOD_ID, "WereWolf");
     }
 
+    @Override
     @Environment(EnvType.CLIENT)
     public void processServerEntityStatus(byte status) {
         if (status == 8) {

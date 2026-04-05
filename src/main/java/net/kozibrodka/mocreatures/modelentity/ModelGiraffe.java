@@ -89,6 +89,7 @@ public class ModelGiraffe extends EntityModel
         leg4.setPivot(-3F, 0.0F, -8F);
     }
 
+    @Override
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
         setAngles(f, f1, f2, f3, f4, f5);
@@ -110,6 +111,7 @@ public class ModelGiraffe extends EntityModel
         tail2.render(f5);
     }
 
+    @Override
     public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
     {
         leg1.pitch = MathHelper.cos(f * 0.6662F) * 1.4F * f1;

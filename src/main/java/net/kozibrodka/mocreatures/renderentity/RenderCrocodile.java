@@ -16,6 +16,7 @@ public class RenderCrocodile extends LivingEntityRenderer {
 		this.croc = modelbase;
 	}
 
+	@Override
 	protected void applyScale(LivingEntity entityliving, float f) {
 		EntityCrocodile entitycrocodile = (EntityCrocodile)entityliving;
 		if(entitycrocodile.world.isRemote){

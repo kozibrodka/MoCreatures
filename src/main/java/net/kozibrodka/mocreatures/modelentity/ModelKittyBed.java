@@ -52,6 +52,7 @@ public class ModelKittyBed extends EntityModel
         Bottom.setPivot(2.0F, 23F, 0.0F);
     }
 
+    @Override
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
         TableL.render(f5);

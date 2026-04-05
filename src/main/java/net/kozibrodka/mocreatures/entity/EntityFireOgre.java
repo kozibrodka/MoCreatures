@@ -28,11 +28,13 @@ public class EntityFireOgre extends EntityOgre implements MobSpawnDataProvider
         frequencyA = 35;
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Block.FIRE.id;
     }
 
+    @Override
     public void tickMovement()
     {
         getTargetInRange();
@@ -63,21 +65,25 @@ public class EntityFireOgre extends EntityOgre implements MobSpawnDataProvider
         super.onLivingUpdate2();
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.hostilemobs.fogrefreq > 0 && world.difficulty >= mod_mocreatures.mocGlass.hostilemobs.fogreSpawnDifficulty.ordinal() + 1 && super.d2();
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 2;

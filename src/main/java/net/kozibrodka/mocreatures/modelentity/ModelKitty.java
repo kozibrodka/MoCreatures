@@ -86,6 +86,7 @@ public class ModelKitty extends BipedEntityModel
         bipedTail.setPivot(0.0F, -0.5F + f1, 7.5F);
     }
 
+    @Override
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
         GL11.glPushMatrix();
@@ -130,6 +131,7 @@ public class ModelKitty extends BipedEntityModel
         GL11.glPopMatrix();
     }
 
+    @Override
     public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
     {
         head.yaw = f3 / 57.29578F;

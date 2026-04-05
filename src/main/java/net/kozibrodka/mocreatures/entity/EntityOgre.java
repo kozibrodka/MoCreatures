@@ -36,44 +36,52 @@ public class EntityOgre extends MonsterEntity
         frequencyA = 30;
     }
 
+    @Override
     protected void initDataTracker()
     {
         super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //Attack
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
         nbttagcompound.putBoolean("OgreAttack", getOgreAttack());
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
         setOgreAttack(nbttagcompound.getBoolean("OgreAttack"));
     }
 
+    @Override
     protected String getRandomSound()
     {
         return "mocreatures:ogre";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:ogrehurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:ogredying";
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Block.OBSIDIAN.id;
     }
 
+    @Override
     protected Entity getTargetInRange()
     {
         float f = getBrightnessAtEyes(1.0F);
@@ -90,6 +98,7 @@ public class EntityOgre extends MonsterEntity
         return null;
     }
 
+    @Override
     public boolean damage(Entity entityBase, int i)
     {
         if(super.damage(entityBase, i))
@@ -110,6 +119,7 @@ public class EntityOgre extends MonsterEntity
         }
     }
 
+    @Override
     public void tickMovement()
     {
         destroyForce = mod_mocreatures.mocGlass.hostilemobs.ogreStrength; ///Czy musi to byc tu?
@@ -132,6 +142,7 @@ public class EntityOgre extends MonsterEntity
         super.tickMovement();
     }
 
+    @Override
     protected void attack(Entity entity, float f)
     {
         if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY && world.difficulty > 0)
@@ -149,6 +160,7 @@ public class EntityOgre extends MonsterEntity
         Destroyer.DestroyBlast(world, this, x, y + 1.0D, z, destroyForce, bogrefire, mod_mocreatures.mocGlass.hostilemobs.igniteogre, mod_mocreatures.mocGlass.hostilemobs.explodeogre, mod_mocreatures.mocGlass.hostilemobs.explodecaveogre, mod_mocreatures.mocGlass.hostilemobs.explodefireogre);
     }
 
+    @Override
     @Environment(EnvType.CLIENT)
     public void processServerEntityStatus(byte status) {
         if (status == 6) {
@@ -159,6 +171,7 @@ public class EntityOgre extends MonsterEntity
         }
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.hostilemobs.ogrefreq > 0 && world.difficulty >= mod_mocreatures.mocGlass.hostilemobs.ogreSpawnDifficulty.ordinal() + 1 && super.canSpawn();
@@ -169,11 +182,13 @@ public class EntityOgre extends MonsterEntity
         return super.canSpawn();
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 3;
     }
 
+    @Override
     protected void dropItems()
     {
         int i = random.nextInt(3) + 1;

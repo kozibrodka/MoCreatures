@@ -33,6 +33,7 @@ public class ContainerHorseFuel extends ScreenHandler
 
     }
 
+    @Override
     public boolean canUse(PlayerEntity entityplayer)
     {
         return horse.canPlayerUse(entityplayer);

@@ -25,6 +25,7 @@ public class ItemKittyBed extends TemplateItem
         itemcolor = j;
     }
 
+    @Override
     public ItemStack use(ItemStack itemstack, World world, PlayerEntity entityplayer)
     {
         itemstack.count--;
@@ -43,6 +44,7 @@ public class ItemKittyBed extends TemplateItem
         return itemstack;
     }
 
+    @Override
     public String getTranslationKey(ItemStack itemstack)
     {
         return (new StringBuilder()).append(super.getTranslationKey()).append(".").append(itemstack.getDamage()).toString();

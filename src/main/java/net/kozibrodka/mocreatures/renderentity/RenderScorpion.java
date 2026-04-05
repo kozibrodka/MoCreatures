@@ -14,6 +14,7 @@ public class RenderScorpion extends LivingEntityRenderer {
 		this.scorpy = modelbase;
 	}
 
+	@Override
 	protected void applyScale(LivingEntity entityliving, float f) {
         EntityScorpion entityscorpion = (EntityScorpion)entityliving;
 		this.scorpy.attacking = entityscorpion.swingingTail();

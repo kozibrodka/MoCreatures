@@ -30,6 +30,7 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
         typechosen = false;
     }
 
+    @Override
     public void tickMovement() {
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
@@ -65,15 +66,12 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
             }
         }
 
-        if(climbing()){
-            setClimbing(true);
-        }else{
-            setClimbing(false);
-        }
+        setClimbing(climbing());
 
         super.tickMovement();
     }
 
+    @Override
     public boolean damage(Entity damagesource, int i) {
         if(super.damage(damagesource, i)) {
             if(damagesource != null && damagesource instanceof PlayerEntity) {
@@ -90,17 +88,17 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
         }
     }
 
+    @Override
     protected Entity getTargetInRange() {
         if(world.difficulty > 0 && !world.canMonsterSpawn() && getAdult()) {
             PlayerEntity entityliving = world.getClosestPlayer(this, 12.0D); /// ovveride podobny do pająka? przez sciany aggro?
-                if(entityliving != null) {
-                    return entityliving;
-                }
+            return entityliving;
         }
 
         return null;
     }
 
+    @Override
     protected void attack(Entity entity, float f) {
         if(f > 2.0F && f < 6.0F && random.nextInt(50) == 0) {
             if(onGround) {
@@ -146,6 +144,7 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
 
     }
 
+    @Override
     public void tick() {
         if(getIsSwinging()) {
             swingProgress += 0.2F;
@@ -168,6 +167,7 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
         super.tick();
     }
 
+    @Override
     public void onKilledBy(Entity damagesource) {
         if(!world.isRemote) {
             if (getAdult() && random.nextInt(5) == 0) {
@@ -194,6 +194,7 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
         return getIsPoisoning() && poisontimer < 15;
     }
 
+    @Override
     public boolean isOnLadder() {
         return horizontalCollision;
     }
@@ -202,31 +203,37 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
         return !onGround && isOnLadder();
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 4;
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Item.STRING.id;
     }
 
+    @Override
     protected String getRandomSound()
     {
         return "mocreatures:scorpiongrunt";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:scorpionhurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:scorpiondying";
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.hostilemobs.scorpionfreq > 0 && super.canSpawn();
@@ -281,19 +288,21 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
         }
     }
 
+    @Override
     protected void initDataTracker()
     {
         super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //TypeInt
-        dataTracker.startTracking(17, (int) 0); //Age
+        dataTracker.startTracking(17, 0); //Age
         dataTracker.startTracking(18, (byte) 0); //ADULT
 
-        dataTracker.startTracking(19, (int) 0); //SwingProgress
+        dataTracker.startTracking(19, 0); //SwingProgress
         dataTracker.startTracking(20, (byte) 0); //isPoisoning
         dataTracker.startTracking(21, (byte) 0); //isSwinging
         dataTracker.startTracking(22, (byte) 0); //isClimbing
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
@@ -302,6 +311,7 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
         nbttagcompound.putBoolean("Adult", getAdult());
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
@@ -311,6 +321,7 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
     }
 
 
+    @Override
     @Environment(EnvType.CLIENT)
     public void processServerEntityStatus(byte status) {
         if (status == 6) {

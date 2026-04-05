@@ -26,11 +26,13 @@ public class EntityFlameWraith extends EntityWraith
         movementSpeed = 1.1F;
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Item.REDSTONE.id;
     }
 
+    @Override
     public void tickMovement()
     {
         if(random.nextInt(40) == 0) //&& !world.isRemote
@@ -52,6 +54,7 @@ public class EntityFlameWraith extends EntityWraith
         super.tickMovement();
     }
 
+    @Override
     protected void attack(Entity entity, float f)
     {
         if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
@@ -62,16 +65,19 @@ public class EntityFlameWraith extends EntityWraith
         }
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.hostilemobs.fwraithfreq > 0 && world.difficulty >= mod_mocreatures.mocGlass.hostilemobs.fwraithSpawnDifficulty.ordinal() + 1 && super.d2();

@@ -25,24 +25,28 @@ public class EntityMummy extends MonsterEntity implements MobSpawnDataProvider, 
         health = random.nextInt(6) + 25;
     }
 
+    @Override
     protected void initDataTracker()
     {
         super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //Type
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
         nbttagcompound.putInt("TypeInt", getType());
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
         setType(nbttagcompound.getInt("TypeInt"));
     }
 
+    @Override
     protected void attack(Entity entity, float f)
     {
         double d = entity.x - x;
@@ -58,6 +62,7 @@ public class EntityMummy extends MonsterEntity implements MobSpawnDataProvider, 
         super.attack(entity, f);
     }
 
+    @Override
     public boolean canSpawn()
     {
         int i = MathHelper.floor(x);
@@ -69,6 +74,7 @@ public class EntityMummy extends MonsterEntity implements MobSpawnDataProvider, 
         return world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && mod_mocreatures.mocGlass.hostilemobs.mummyfreq > 0 && super.canSpawn();
     }
 
+    @Override
     public void tickMovement()
     {
         if(!typechosen && world.isRemote && getType() != 0){
@@ -86,21 +92,25 @@ public class EntityMummy extends MonsterEntity implements MobSpawnDataProvider, 
         super.tickMovement();
     }
 
+    @Override
     protected String getRandomSound()
     {
         return "mocreatures:mummy";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:mummyhurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:mummydeath";
     }
 
+    @Override
     protected void dropItems()
     {
         int i = random.nextInt(3);
@@ -117,6 +127,7 @@ public class EntityMummy extends MonsterEntity implements MobSpawnDataProvider, 
 
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Block.SANDSTONE.id;
@@ -128,6 +139,7 @@ public class EntityMummy extends MonsterEntity implements MobSpawnDataProvider, 
     public Identifier getHandlerIdentifier() {return Identifier.of(mod_mocreatures.MOD_ID, "Mummy");}
 
     //TYPE
+    @Override
     public void setTypeSpawn()
     {
         if(!world.isRemote){

@@ -170,6 +170,7 @@ public class EntityAirShipHorse extends EntityHorse implements MobSpawnDataProvi
 
 
 
+    @Override
     public void travelClient(float f, float f1){
 
 //        System.out.println(clientX);
@@ -244,6 +245,7 @@ public class EntityAirShipHorse extends EntityHorse implements MobSpawnDataProvi
     }
 
 
+    @Override
     public void travel(float f, float f1)
     {
         if(world.isRemote){
@@ -472,6 +474,7 @@ public class EntityAirShipHorse extends EntityHorse implements MobSpawnDataProvi
     }
 
     //TYPE
+    @Override
     public void setTypeSpawn() {
         if(!world.isRemote) {
             setAdult(true);
@@ -486,6 +489,7 @@ public class EntityAirShipHorse extends EntityHorse implements MobSpawnDataProvi
         }
     }
 
+    @Override
     protected void dropItems()
     {
         dropItem(new ItemStack(Item.COOKIE.id, 1, 0), 0.0F);

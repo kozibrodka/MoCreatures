@@ -40,6 +40,7 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
         spittimer = 30;
     }
 
+    @Override
     protected float getPathfindingFavor(int i, int j, int k)
     {
         if(world.getBlockId(i, j - 1, k) == Block.SAND.id || world.getBlockId(i, j - 1, k) == Block.GRAVEL.id)
@@ -51,6 +52,7 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
         }
     }
 
+    @Override
     public void tickMovement() {
         if(!typechosen && world.isRemote && getType() != 0){
             typechosen = true;
@@ -59,6 +61,7 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
         super.tickMovement();
     }
 
+    @Override
     public boolean damage(Entity entitybase, int i)
     {
         if(super.damage(entitybase, i))
@@ -79,6 +82,7 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
         }
     }
 
+    @Override
     protected void attack(Entity entity, float f)
     {
         if(onGround)
@@ -115,6 +119,7 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
         }
     }
 
+    @Override
     @Environment(EnvType.CLIENT)
     public void processServerEntityStatus(byte status) {
         if (status == 6) {
@@ -161,6 +166,7 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
         }
     }
 
+    @Override
     protected void dropItems()
     {
         int i = random.nextInt(3);
@@ -177,49 +183,58 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
 
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Item.LEATHER.id;
     }
 
+    @Override
     protected void initDataTracker()
     {
         super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //Type
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
         nbttagcompound.putInt("TypeInt", getType());
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
         setType(nbttagcompound.getInt("TypeInt"));
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 4;
     }
 
+    @Override
     protected String getRandomSound()
     {
         return "mocreatures:camel";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:camelhurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:cameldeath";
     }
 
+    @Override
     public boolean canSpawn()
     {
         int var1 = MathHelper.floor(x);
@@ -238,6 +253,7 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
     public Identifier getHandlerIdentifier() {return Identifier.of(mod_mocreatures.MOD_ID, "Camel");}
 
     //TYPE
+    @Override
     public void setTypeSpawn()
     {
         if(!world.isRemote){

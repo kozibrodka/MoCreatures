@@ -27,6 +27,7 @@ public class RenderHorse extends LivingEntityRenderer
         modelhorse1 = (ModelHorse1)modelbase1;
     }
 
+    @Override
     protected boolean bindTexture(LivingEntity entityliving, int i, float f)
     {
         return setWoolColorAndRender((EntityHorse)entityliving, i);
@@ -43,12 +44,14 @@ public class RenderHorse extends LivingEntityRenderer
         return (MathHelper.sin(f1) + 1.0F) * f2;
     }
 
+    @Override
     protected void applyScale(LivingEntity entityliving, float f)
     {
         EntityHorse entityhorse = (EntityHorse)entityliving;
         modelhorse1.chested = entityhorse.getChested();
     }
 
+    @Override
     public void render(Entity entity, double d, double d1, double d2,
                          float f, float f1)
     {
@@ -205,6 +208,7 @@ public class RenderHorse extends LivingEntityRenderer
         GL11.glScalef(entityhorse.getAge(), entityhorse.getAge(), entityhorse.getAge());
     }
 
+    @Override
     protected float getHeadBob(LivingEntity entityliving, float f)
     {
         return getWingRotation((EntityHorse)entityliving, f);

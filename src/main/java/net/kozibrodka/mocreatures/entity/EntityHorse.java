@@ -66,15 +66,14 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
 
     }
 
+    @Override
     public void markDead() /// Czy to ma jakikolwiek sens??? - bez checku remote, to powoduje duplikaty modelu na client
     {
         if((getTamed() || getBred()) && health > 0 && !world.isRemote)
         {
-            return;
         } else
         {
             super.markDead();
-            return;
         }
     }
 
@@ -178,9 +177,9 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             }
     }
 
+    @Override
     public void onCollision(Entity otherEntity) {
         if(passenger instanceof PlayerEntity && passenger.passenger == otherEntity && !mod_mocreatures.mocGlass.animals.horse_speed_glitch){
-            return;
         }else {
             super.onCollision(otherEntity);
         }
@@ -188,9 +187,8 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
 
     public void Riding()
     {
-        if(passenger != null && (passenger instanceof PlayerEntity))
+        if(passenger != null && (passenger instanceof PlayerEntity entityplayer))
         {
-            PlayerEntity entityplayer = (PlayerEntity)passenger;
             List list = world.getEntities(this, boundingBox.expand(1.0D, 0.0D, 1.0D));
             if(list != null)
             {
@@ -242,6 +240,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
     }
 
+    @Override
     public void tickMovement()
     {
         if(!typechosen && world.isRemote && getType() != 0){
@@ -339,11 +338,10 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         for(int k = 0; k < list.size(); k++)
         {
             Entity entity1 = (Entity)list1.get(k);
-            if(!(entity1 instanceof EntityHorse) || entity1 == this)
+            if(!(entity1 instanceof EntityHorse entityhorse) || entity1 == this)
             {
                 continue;
             }
-            EntityHorse entityhorse = (EntityHorse)entity1;
             if(!ReadyforParenting(this) || !ReadyforParenting(entityhorse))
             {
                 continue;
@@ -379,6 +377,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
 
     }
 
+    @Override
     protected void tickLiving()
     {
         if(!interpolateOnly && passenger == null)
@@ -482,25 +481,20 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
     }
 
+    @Override
     public boolean damage(Entity entity, int i)
     {
         if(passenger != null && entity == passenger)
         {
             return false;
         }
-        if(entity instanceof WolfEntity)
+        if(entity instanceof WolfEntity entitycreature)
         {
-            MobEntity entitycreature = (MobEntity)entity;
             entitycreature.target = (null);
 
             return false;
         }
-        if(super.damage(entity, i))
-        {
-            return true;
-        }else{
-            return false;
-        }
+        return super.damage(entity, i);
     }
 
     public void travelClient(float f, float f1){
@@ -545,6 +539,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     }
 
 
+    @Override
     public void travel(float f, float f1)
     {
         if(world.isRemote && passenger != null && getTamed()){
@@ -804,6 +799,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
     }
 
+    @Override
     public ItemStack removeStack(int i, int j)
     {
         if(cargoItems[i] != null)
@@ -831,26 +827,31 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         return (animalFuel * i) / fuelDuration;
     }
 
+    @Override
     public int size()
     {
         return 1;
     }
 
+    @Override
     public ItemStack getStack(int i)
     {
         return cargoItems[i];
     }
     /// Optional Fuel system end
 
+    @Override
     public int getMaxCountPerStack()
     {
         return 64;
     }
 
+    @Override
     public void markDirty()
     {
     }
 
+    @Override
     public void setStack(int i, ItemStack itemstack)
     {
         cargoItems[i] = itemstack;
@@ -860,6 +861,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
     }
 
+    @Override
     public boolean canPlayerUse(PlayerEntity entityplayer)
     {
         if(dead)
@@ -871,6 +873,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
     }
 
+    @Override
     protected void onLanding(float f)
     {
         int i = (int)Math.ceil(f - 3F);
@@ -902,16 +905,19 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
     }
 
+    @Override
     protected float getSoundVolume()
     {
         return 0.4F;
     }
 
+    @Override
     public boolean isCollidable()
     {
         return passenger == null;
     }
 
+    @Override
     public boolean interact(PlayerEntity entityplayer)
     {
         ItemStack itemstack = entityplayer.inventory.getSelectedItem();
@@ -1166,6 +1172,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
     }
 
+    @Override
     public void onKilledBy(Entity entity)
     {
         if(scoreAmount >= 0 && entity != null)
@@ -1259,6 +1266,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
@@ -1309,6 +1317,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             nbttagcompound.put("Fuels", fuelList);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
@@ -1358,26 +1367,31 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             }
     }
 
+    @Override
     protected boolean isMovementBlocked()
     {
         return getSitting() || passenger != null;
     }
 
+    @Override
     protected String getRandomSound()
     {
         return "mocreatures:horsegrunt";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:horsehurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:horsedying";
     }
 
+    @Override
     protected void dropItems()
     {
         int i = random.nextInt(3);
@@ -1391,21 +1405,25 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Item.LEATHER.id;
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 6;
     }
 
+    @Override
     protected boolean canDespawn()
     {
         return !getTamed();
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.animals.horsefreq > 0 && super.canSpawn();
@@ -1445,19 +1463,20 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     public float fwinge;
     public float fwingh;
     private Inventory localhorsechestx54;
-    public ItemStack localstackx54[];
+    public ItemStack[] localstackx54;
     public LivingEntity roper;
-    public ItemStack cargoItems[];
+    public ItemStack[] cargoItems;
     public int animalFuel;
     public int fuelDuration;
     public boolean typechosen;
     public boolean hasRopeOnNeck;
 
+    @Override
     protected void initDataTracker()
     {
         super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //Type
-        dataTracker.startTracking(17, (int) 0); //Age
+        dataTracker.startTracking(17, 0); //Age
         dataTracker.startTracking(18, (byte) 0); //Adult
         dataTracker.startTracking(19, (byte) 0); //EatenHayStack
         dataTracker.startTracking(20, (byte) 0); //Tamed
@@ -1479,6 +1498,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         return Identifier.of(mod_mocreatures.MOD_ID, "Horse");
     }
 
+    @Override
     @Environment(EnvType.CLIENT)
     public void processServerEntityStatus(byte status) {
         if (status == 6) {
@@ -1536,13 +1556,10 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     }
 
     //TYPE
+    @Override
     public void setTypeSpawn() {
         if(!world.isRemote) {
-            if (random.nextInt(5) == 0) {
-                setAdult(false);
-            }else{
-                setAdult(true);
-            }
+            setAdult(random.nextInt(5) != 0);
             setType(getRandomRace());
             this.health = this.maxhealth;
         }
@@ -1607,6 +1624,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     }
 
     //TAMED
+    @Override
     public boolean getTamed()
     {
         return (dataTracker.getByte(20) & 1) != 0;
@@ -1714,17 +1732,20 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         this.dataTracker.set(30, owner);
     }
 
+    @Override
     public String getOwner()
     {
         return this.dataTracker.getString(30);
     }
 
     //NAME
+    @Override
     public void setName(String name)
     {
         this.dataTracker.set(31, name);
     }
 
+    @Override
     public String getName()
     {
         return this.dataTracker.getString(31);

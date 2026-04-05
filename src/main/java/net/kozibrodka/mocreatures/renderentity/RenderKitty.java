@@ -20,6 +20,7 @@ public class RenderKitty extends UndeadEntityRenderer
         pussy1 = modelkitty;
     }
 
+    @Override
     protected void applyScale(LivingEntity entityliving, float f)
     {
         EntityKitty entitykitty = (EntityKitty)entityliving;
@@ -57,6 +58,7 @@ public class RenderKitty extends UndeadEntityRenderer
         GL11.glScalef(entitykitty.getAge(), entitykitty.getAge(), entitykitty.getAge());
     }
 
+    @Override
     protected float getHeadBob(LivingEntity entityliving, float f)
     {
         EntityKitty entitykitty = (EntityKitty)entityliving;
@@ -67,6 +69,7 @@ public class RenderKitty extends UndeadEntityRenderer
         return (float)entityliving.age + f;
     }
 
+    @Override
     public void render(LivingEntity entityliving, double d, double d1, double d2,
             float f, float f1)
     {

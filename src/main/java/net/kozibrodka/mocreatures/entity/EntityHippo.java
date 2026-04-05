@@ -28,6 +28,7 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
         movementSpeed = 0.45F;
     }
 
+    @Override
     public void tickMovement() {
         super.tickMovement();
         if(world.isRemote){
@@ -48,6 +49,7 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
 //        return !this.isInFluid(Material.WATER);
 //    }
 
+    @Override
     protected void tickLiving(){
         if(checkWaterCollisions())
         {
@@ -71,6 +73,7 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
         super.tickLiving();
     }
 
+    @Override
     protected float getPathfindingFavor(int i, int j, int k)
     {
         if(world.getBlockId(i, j - 1, k) == Block.WATER.id || world.getBlockId(i, j - 1, k) == Block.FLOWING_WATER.id)
@@ -82,6 +85,7 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
         }
     }
 
+    @Override
     protected Entity getTargetInRange()
     {
         if(world.difficulty > 0 && hungry)
@@ -133,6 +137,7 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
         return ((victim instanceof EntityHippo) || (victim instanceof EntityElephant) && ((EntityElephant)victim).getAdult() || (victim instanceof EntityShark) || victim.width < 0.6F && victim.height < 0.6F);
     }
 
+    @Override
     protected void attack(Entity entity, float f)
     {
         if(onGround)
@@ -152,6 +157,7 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
         }
     }
 
+    @Override
     public boolean damage(Entity entitybase, int i)
     {
         if(super.damage(entitybase, i))
@@ -171,28 +177,33 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
         }
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
         nbttagcompound.putBoolean("Hungry", hungry);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
         hungry = (nbttagcompound.getBoolean("Hungry"));
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 2;
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Item.LEATHER.id;
     }
 
+    @Override
     protected void dropItems()
     {
         int i = random.nextInt(5);
@@ -208,16 +219,19 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
         }
     }
 
+    @Override
     protected String getRandomSound()
     {
         return "mocreatures:hippo";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:hippohurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:hippodeath";
@@ -230,6 +244,7 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
         return (world.getBlockId(var1, var2 - 1, var3) == Block.SAND.id || world.getBlockId(var1, var2 - 1, var3) == Block.GRASS_BLOCK.id) && world.getBrightness(var1, var2, var3) > 8 && super.getPathfindingFavor(var1, var2, var3) >= 0.0F && world.canSpawnEntity(boundingBox) && world.getEntityCollisions(this, boundingBox).isEmpty() && !world.isBoxSubmergedInFluid(boundingBox);
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.huntercreatures.hippofreq > 0 && !MoCTools.isNearTorch(this) && MoCTools.isNearWater(this) && canSpawnHippo();

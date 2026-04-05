@@ -40,6 +40,7 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
         health = 8;
     }
 
+    @Override
     protected void initDataTracker() {
         super.initDataTracker();
         dataTracker.startTracking(16, (byte)0);
@@ -48,10 +49,12 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
         dataTracker.startTracking(19, (byte)0); //COLOR
     }
 
+    @Override
     protected boolean bypassesSteppingEffects() {
         return false;
     }
 
+    @Override
     @Environment(EnvType.CLIENT)
     public String getTexture() {
         if (isTamed()) {
@@ -61,6 +64,7 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
+    @Override
     public void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
         nbt.putBoolean("Angry", isAngry());
@@ -73,6 +77,7 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
         nbt.putInt("Color", getColor());
     }
 
+    @Override
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
         setAngry(nbt.getBoolean("Angry"));
@@ -85,10 +90,12 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
         setColor(nbt.getInt("Color"));
     }
 
+    @Override
     protected boolean canDespawn() {
         return !isTamed();
     }
 
+    @Override
     protected String getRandomSound() {
         if (isAngry()) {
             return "mob.wolf.growl";
@@ -99,22 +106,27 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
+    @Override
     protected String getHurtSound() {
         return "mob.wolf.hurt";
     }
 
+    @Override
     protected String getDeathSound() {
         return "mob.wolf.death";
     }
 
+    @Override
     protected float getSoundVolume() {
         return 0.4F;
     }
 
+    @Override
     protected int getDroppedItemId() {
         return -1;
     }
 
+    @Override
     protected void tickLiving() {
         super.tickLiving();
         if (!movementBlocked &&  isTamed() && vehicle == null) { //&& !hasPath()
@@ -138,13 +150,13 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
 
     }
 
+    @Override
     public void tickMovement() {
         super.tickMovement();
         begging = false;
         if (hasLookTarget() && !hasPath() && !isAngry()) {
             Entity var1 = getLookTarget();
-            if (var1 instanceof PlayerEntity) {
-                PlayerEntity var2 = (PlayerEntity)var1;
+            if (var1 instanceof PlayerEntity var2) {
                 ItemStack var3 = var2.inventory.getSelectedItem();
                 if (var3 != null) {
                     if (!isTamed() && var3.itemId == mod_mocreatures.elephanttusk.id) {
@@ -165,6 +177,7 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
 
     }
 
+    @Override
     public void tick() {
         super.tick();
         lastBegAnimationProcess = begAnimationProgress;
@@ -204,7 +217,7 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
                 for(int var3 = 0; var3 < var2; ++var3) {
                     float var4 = (random.nextFloat() * 2.0F - 1.0F) * width * 0.5F;
                     float var5 = (random.nextFloat() * 2.0F - 1.0F) * width * 0.5F;
-                    world.addParticle("splash", x + (double)var4, (double)(var1 + 0.8F), z + (double)var5, velocityX, velocityY, velocityZ);
+                    world.addParticle("splash", x + (double)var4, var1 + 0.8F, z + (double)var5, velocityX, velocityY, velocityZ);
                 }
             }
         }
@@ -238,18 +251,22 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
         return (lastBegAnimationProcess + (begAnimationProgress - lastBegAnimationProcess) * tickDelta) * 0.15F * (float)Math.PI;
     }
 
+    @Override
     public float getEyeHeight() {
         return height * 0.8F;
     }
 
+    @Override
     protected int getMaxLookPitchChange() {
         return isInSittingPose() ? 20 : super.getMaxLookPitchChange();
     }
 
+    @Override
     protected boolean isMovementBlocked() {
         return isInSittingPose() || shakingWaterOff;
     }
 
+    @Override
     public boolean damage(Entity damageSource, int amount) {
         setSitting(false);
         if (damageSource != null && !(damageSource instanceof PlayerEntity) && !(damageSource instanceof ArrowEntity)) {
@@ -270,7 +287,7 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
                 }
 
                 if (damageSource instanceof LivingEntity) {
-                    for(Object var5 : world.collectEntitiesByClass(EntityCollie.class, Box.createCached(x, y, z, x + (double)1.0F, y + (double)1.0F, z + (double)1.0F).expand((double)16.0F, (double)4.0F, (double)16.0F))) {
+                    for(Object var5 : world.collectEntitiesByClass(EntityCollie.class, Box.createCached(x, y, z, x + (double)1.0F, y + (double)1.0F, z + (double)1.0F).expand(16.0F, 4.0F, 16.0F))) {
                         EntityCollie var6 = (EntityCollie)var5;
                         if (!var6.isTamed() && var6.target == null) {
                             var6.target = damageSource;
@@ -292,10 +309,12 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
+    @Override
     protected Entity getTargetInRange() {
-        return isAngry() ? world.getClosestPlayer(this, (double)16.0F) : null;
+        return isAngry() ? world.getClosestPlayer(this, 16.0F) : null;
     }
 
+    @Override
     protected void attack(Entity other, float distance) {
         if (distance > 2.0F && distance < 6.0F && random.nextInt(10) == 0) {
             if (onGround) {
@@ -304,7 +323,7 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
                 float var7 = MathHelper.sqrt(var8 * var8 + var5 * var5);
                 velocityX = var8 / (double)var7 * (double)0.5F * (double)0.8F + velocityX * (double)0.2F;
                 velocityZ = var5 / (double)var7 * (double)0.5F * (double)0.8F + velocityZ * (double)0.2F;
-                velocityY = (double)0.4F;
+                velocityY = 0.4F;
             }
         } else if ((double)distance < (double)1.5F && other.boundingBox.maxY > boundingBox.minY && other.boundingBox.minY < boundingBox.maxY) {
             attackCooldown = 20;
@@ -318,18 +337,19 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
 
     }
 
+    @Override
     public boolean interact(PlayerEntity player) {
         ItemStack itemstack = player.inventory.getSelectedItem();
         if (!isTamed()) {
             if (itemstack != null && itemstack.itemId == mod_mocreatures.elephanttusk.id && !isAngry()) {
                 --itemstack.count;
                 if (itemstack.count <= 0) {
-                    player.inventory.setStack(player.inventory.selectedSlot, (ItemStack)null);
+                    player.inventory.setStack(player.inventory.selectedSlot, null);
                 }
 
                 if (!world.isRemote) {
                     setTamed(true);
-                    setPath((Path)null);
+                    setPath(null);
                     setSitting(true);
                     health = 20;
                     setOwnerName(player.name);
@@ -340,12 +360,11 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
                 return true;
             }
         } else {
-            if (itemstack != null && Item.ITEMS[itemstack.itemId] instanceof FoodItem) {
-                FoodItem var3 = (FoodItem)Item.ITEMS[itemstack.itemId];
+            if (itemstack != null && Item.ITEMS[itemstack.itemId] instanceof FoodItem var3) {
                 if (var3.isMeat() && dataTracker.getInt(18) < 20) {
                     --itemstack.count;
                     if (itemstack.count <= 0) {
-                        player.inventory.setStack(player.inventory.selectedSlot, (ItemStack)null);
+                        player.inventory.setStack(player.inventory.selectedSlot, null);
                     }
 
                     heal(((FoodItem)Item.RAW_PORKCHOP).getHealthRestored());
@@ -357,7 +376,7 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
                 int color = WoolBlock.getBlockMeta(itemstack.getDamage());
                 --itemstack.count;
                 if (itemstack.count <= 0) {
-                    player.inventory.setStack(player.inventory.selectedSlot, (ItemStack)null);
+                    player.inventory.setStack(player.inventory.selectedSlot, null);
                 }
                 setColor(color);
                 return true;
@@ -369,7 +388,7 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
                 if (!world.isRemote) {
                     setSitting(!isInSittingPose());
                     jumping = false;
-                    setPath((Path)null);
+                    setPath(null);
                 }
 
                 return true;
@@ -394,6 +413,7 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
 
     }
 
+    @Override
     @Environment(EnvType.CLIENT)
     public void processServerEntityStatus(byte status) {
         if (status == 7) {
@@ -419,10 +439,12 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
+    @Override
     public int getLimitPerChunk() {
         return 1;
     }
 
+    @Override
     public boolean canSpawn()
     {
         return world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && y > 100D && mod_mocreatures.mocGlass.animals.colliefreq > 0 && super.canSpawn();

@@ -32,6 +32,7 @@ public class RenderElephant extends LivingEntityRenderer
         return i == 0;
     }
 
+    @Override
     protected boolean bindTexture(LivingEntity entityliving, int i, float f)
     {
         return setWoolColorAndRender((EntityElephant)entityliving, i);
@@ -43,6 +44,7 @@ public class RenderElephant extends LivingEntityRenderer
         GL11.glScalef(fAge, fAge, fAge);
     }
 
+    @Override
     protected void applyScale(LivingEntity entityliving, float f)
     {
         preRenderScale((EntityElephant)entityliving, f);

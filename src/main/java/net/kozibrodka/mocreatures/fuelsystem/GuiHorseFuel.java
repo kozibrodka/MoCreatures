@@ -14,6 +14,7 @@ public class GuiHorseFuel extends HandledScreen
         this.backgroundHeight = 133;
     }
 
+    @Override
     protected void drawForeground()
     {
 //        textRenderer.draw(horse.getName(), 8, 6, 0x404040);
@@ -21,6 +22,7 @@ public class GuiHorseFuel extends HandledScreen
         textRenderer.draw("Inventory", 8, (backgroundHeight - 96) + 2, 0x404040);
     }
 
+    @Override
     protected void drawBackground(float f)
     {
         int i = minecraft.textureManager.getTextureId("/assets/mocreatures/stationapi/textures/mob/stomach.png");

@@ -26,6 +26,7 @@ public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider
         movementSpeed = 1.1F;
     }
 
+    @Override
     public void tickMovement() {
         super.tickMovement();
         if(world.isRemote){
@@ -47,6 +48,7 @@ public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider
         }
     }
 
+    @Override
     public boolean damage(Entity entitybase, int i)
     {
         if(super.damage(entitybase, i))
@@ -73,7 +75,7 @@ public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider
 
     public void notifyAdultElephants(Entity target1){
         if (target1 instanceof LivingEntity) {
-            for(Object var5 : this.world.collectEntitiesByClass(EntityElephant.class, Box.createCached(this.x, this.y, this.z, this.x + (double)1.0F, this.y + (double)1.0F, this.z + (double)1.0F).expand((double)16.0F, (double)4.0F, (double)16.0F))) {
+            for(Object var5 : this.world.collectEntitiesByClass(EntityElephant.class, Box.createCached(this.x, this.y, this.z, this.x + (double)1.0F, this.y + (double)1.0F, this.z + (double)1.0F).expand(16.0F, 4.0F, 16.0F))) {
                 EntityElephant var6 = (EntityElephant)var5;
                 if(var6.getAdult()) {
                     var6.target = target1;
@@ -85,6 +87,7 @@ public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider
         }
     }
 
+    @Override
     protected void attack(Entity entity, float f)
     {
         if(f > 2.0F && f < 6F && random.nextInt(25) == 0) //10
@@ -115,13 +118,15 @@ public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider
         this.texture = tex;
     }
 
+    @Override
     protected void initDataTracker() {
         super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //MAD
-        dataTracker.startTracking(17, (int) 0); //Age
+        dataTracker.startTracking(17, 0); //Age
         dataTracker.startTracking(18, (byte) 0); //Adult
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
@@ -130,6 +135,7 @@ public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider
         nbttagcompound.putFloat("Edad", getAge());
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
@@ -138,16 +144,19 @@ public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider
         setAge(nbttagcompound.getFloat("Edad"));
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 5;
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Item.BONE.id;
     }
 
+    @Override
     protected void dropItems()
     {
         int i = random.nextInt(5);
@@ -163,21 +172,25 @@ public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider
         }
     }
 
+    @Override
     protected String getRandomSound()
     {
         return "mocreatures:elephant";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:elephanthurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:elephantdeath";
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.animals.elephantfreq > 0 && super.canSpawn();

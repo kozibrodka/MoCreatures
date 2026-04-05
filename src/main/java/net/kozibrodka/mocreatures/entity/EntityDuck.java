@@ -20,31 +20,37 @@ public class EntityDuck extends ChickenEntity implements MobSpawnDataProvider
         eggLayTime = random.nextInt(6000) + 6000;
     }
 
+    @Override
     protected String getRandomSound()
     {
         return "mocreatures:duck";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:duckhurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:duckhurt";
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.animals.duckfreq > 0 && super.canSpawn();

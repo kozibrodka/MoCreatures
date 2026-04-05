@@ -33,6 +33,7 @@ public class EntityWWolf extends MonsterEntity
         attackDamage = 1;
     }
 
+    @Override
     public void tickMovement()
     {
         if(world.difficulty == 1)
@@ -46,11 +47,13 @@ public class EntityWWolf extends MonsterEntity
         super.tickMovement();
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 6;
     }
 
+    @Override
     protected Entity getTargetInRange()
     {
         float f = getBrightnessAtEyes(1.0F);
@@ -96,6 +99,7 @@ public class EntityWWolf extends MonsterEntity
         return ((victim instanceof EntityBigCat) || (victim instanceof EntityBear) || (victim instanceof EntityWWolf) || (victim instanceof CowEntity) || (victim instanceof EntityShark) || (victim instanceof EntityDolphin) || (victim instanceof EntityCrocodile) || (victim instanceof EntityHippo) || (victim instanceof EntityElephant));
     } /// Wilki będą atakowane normalnie jako Animal, mimo, ze są monster (od BigCat w gore)
 
+    @Override
     protected void attack(Entity entity, float f)
     {
         if((double)f < 2.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
@@ -111,36 +115,43 @@ public class EntityWWolf extends MonsterEntity
 
     /// damage - wilk za słaby na obrone przed krokodylem
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
     }
 
+    @Override
     protected String getRandomSound()
     {
         return "mocreatures:wolfgrunt";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:wolfhurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:wolfdeath";
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Item.LEATHER.id;
     }
 
+    @Override
     public boolean canSpawn()
     {
         return world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && mod_mocreatures.mocGlass.hostilemobs.wwolffreq > 0 && super.canSpawn();

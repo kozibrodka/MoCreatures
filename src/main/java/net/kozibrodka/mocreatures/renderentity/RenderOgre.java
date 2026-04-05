@@ -22,11 +22,13 @@ public class RenderOgre extends LivingEntityRenderer
         return i == 0;
     }
 
+    @Override
     protected boolean bindTexture(LivingEntity entityliving, int i, float f)
     {
         return a((EntityOgre)entityliving, i);
     }
 
+    @Override
     public void render(LivingEntity entityliving, double d, double d1, double d2,
             float f, float f1)
     {

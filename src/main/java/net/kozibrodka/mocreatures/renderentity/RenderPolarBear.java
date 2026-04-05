@@ -20,6 +20,7 @@ public class RenderPolarBear extends LivingEntityRenderer
         return i == 0;  //return i == 0 && !entitybear.bearboolean;
     }
 
+    @Override
     protected boolean bindTexture(LivingEntity entityliving, int i, float f)
     {
         return a((EntityBear)entityliving, i);

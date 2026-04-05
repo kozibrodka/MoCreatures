@@ -52,18 +52,19 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         localstack = new ItemStack[54];
     }
 
+    @Override
     public double getStandingEyeHeight() {
 
         if(vehicle instanceof PlayerEntity)
         {
             if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-                return (double)(standingEyeHeight - (-0.64F + getAge() / 6.0F));
+                return standingEyeHeight - (-0.64F + getAge() / 6.0F);
             }else{
-                return (double)(standingEyeHeight - (1.0F + getAge() / 6.0F));
+                return standingEyeHeight - (1.0F + getAge() / 6.0F);
             }
         } else
         {
-            return (double)standingEyeHeight;
+            return standingEyeHeight;
         }
     }
 
@@ -78,9 +79,9 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
+    @Override
     public void onCollision(Entity otherEntity) {
         if(vehicle instanceof PlayerEntity && otherEntity == vehicle.vehicle){
-            return;
         }else {
             super.onCollision(otherEntity);
         }
@@ -125,6 +126,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
+    @Override
     public boolean interact(PlayerEntity entityplayer) {
         if(world.isRemote){
             return false;
@@ -206,7 +208,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
                 return true;
             }
             if(vehicle != null){
-                setVehicle((Entity)null);
+                setVehicle(null);
                 velocityX = entityplayer.velocityX * 5D;
                 velocityY = entityplayer.velocityY / 2D + 0.2D;
                 velocityZ = entityplayer.velocityZ * 5D;
@@ -232,12 +234,14 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
+    @Override
     protected void jump() {
         if(isInFluid(Material.WATER)) {
             velocityY = 0.3D;
         }
     }
 
+    @Override
     public void tickMovement() {
         if(world.isRemote){
             super.tickMovement();
@@ -258,7 +262,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
                     setHiding(true);
                 }
 
-                setPath((Path)null);
+                setPath(null);
             } else {
                 setHiding(false);
                 if(!hasPath() && random.nextInt(50) == 0 && !getTamed()) {
@@ -372,10 +376,12 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
 
     }
 
+    @Override
     public boolean canBreatheInWater() {
         return true;
     }
 
+    @Override
     public boolean damage(Entity damagesource, int i) {
         if (world.isRemote) {
             return false;
@@ -407,12 +413,12 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
     public void flipflop(boolean flip) {
         setUpsideDown(flip);
         setHiding(false);
-        setPath((Path)null);
+        setPath(null);
     }
 
+    @Override
     protected void tickLiving() {
-        if(vehicle != null && vehicle instanceof PlayerEntity) {
-            PlayerEntity entityplayer = (PlayerEntity)vehicle;
+        if(vehicle != null && vehicle instanceof PlayerEntity entityplayer) {
             yaw = entityplayer.yaw;
         } else {
             super.tickLiving();
@@ -424,6 +430,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         this.dataTracker.set(29, (byte) health);
     }
 
+    @Override
     public void tick() {
         if(getTamed() && getAge() < maxAge && random.nextInt(800) == 0 && !world.isRemote) { /// Oryginalny rozmiar max = 3.0F
             setAge(getAge()+0.01F);
@@ -464,6 +471,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         super.tick();
     }
 
+    @Override
     public void onKilledBy(Entity entity)
     {
         if(getTamed() && !world.isRemote){
@@ -514,23 +522,24 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
+    @Override
     public void markDead() /// Czy to ma jakikolwiek sens??? - bez checku remote, to powoduje duplikaty modelu na client
     {
         if(getTamed() && health > 0  && !world.isRemote)
         {
-            return;
         } else
         {
             super.markDead();
-            return;
         }
     }
 
+    @Override
     protected boolean canDespawn()
     {
         return !getTamed();
     }
 
+    @Override
     protected boolean isMovementBlocked() {
         return getUpsideDown() || getHiding() || getSitting();
     }
@@ -543,11 +552,13 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         return getTwistright() ? 1 : -1;
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 3;
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Block.CHEST.id;
@@ -558,16 +569,19 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         return "mocreatures:turtlegrunt";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:turtlehurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:turtledying";
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.animals.turtlefreq > 0 && super.canSpawn();
@@ -580,23 +594,24 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
     public int maxhealth;
     public float swingProgress;
     private Inventory localturtlechest;
-    public ItemStack localstack[];
+    public ItemStack[] localstack;
 
     @Override
     public Identifier getHandlerIdentifier() {return Identifier.of(mod_mocreatures.MOD_ID, "Turtle");}
 
+    @Override
     protected void initDataTracker()
     {
         super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //Tamed
-        dataTracker.startTracking(17, (int) 0); //Age
+        dataTracker.startTracking(17, 0); //Age
         dataTracker.startTracking(18, (byte) 0); //UpsideDown
         dataTracker.startTracking(19, (byte) 0); //Hiding
         dataTracker.startTracking(20, (byte) 0); //isSwinging
         dataTracker.startTracking(21, (byte) 0); //Protect From Players/Public
         dataTracker.startTracking(22, (byte) 0); //Display Name
         dataTracker.startTracking(23, (byte) 0); //Picked
-        dataTracker.startTracking(24, (int) 0); //Swinging
+        dataTracker.startTracking(24, 0); //Swinging
         dataTracker.startTracking(25, (byte) 0); //TwistRight
         dataTracker.startTracking(26, (byte) 0); //Sitting
 
@@ -605,6 +620,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         dataTracker.startTracking(31, ""); //Name
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
@@ -632,6 +648,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         nbttagcompound.put("Items", nbttaglist);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
@@ -658,6 +675,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
     }
 
     //TAMED
+    @Override
     public boolean getTamed()
     {
         return (dataTracker.getByte(16) & 1) != 0;
@@ -842,22 +860,26 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         this.dataTracker.set(30, owner);
     }
 
+    @Override
     public String getOwner()
     {
         return this.dataTracker.getString(30);
     }
 
     //NAME
+    @Override
     public void setName(String name)
     {
         this.dataTracker.set(31, name);
     }
 
+    @Override
     public String getName()
     {
         return this.dataTracker.getString(31);
     }
 
+    @Override
     @Environment(EnvType.CLIENT)
     public void processServerEntityStatus(byte status) {
         if (status == 6) {

@@ -38,20 +38,24 @@ public class EntitySharkEgg extends LivingEntity implements MobSpawnDataProvider
         ktoKto = graczol;
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         nbttagcompound.putString("Opiekun", ktoKto);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         ktoKto = nbttagcompound.getString("Opiekun");
     }
 
+    @Override
     protected void initDataTracker()
     {
     }
 
+    @Override
     public void tickMovement()
     {
         if(world.isRemote){
@@ -63,6 +67,7 @@ public class EntitySharkEgg extends LivingEntity implements MobSpawnDataProvider
         travel(sidewaysSpeed, forwardSpeed);
     }
 
+    @Override
     public void onPlayerInteraction(PlayerEntity entityplayer)
     {
         if(world.isRemote)
@@ -78,6 +83,7 @@ public class EntitySharkEgg extends LivingEntity implements MobSpawnDataProvider
         }
     }
 
+    @Override
     public void tick()
     {
         super.tick();
@@ -108,31 +114,37 @@ public class EntitySharkEgg extends LivingEntity implements MobSpawnDataProvider
         }
     }
 
+    @Override
     public boolean canBreatheInWater()
     {
         return true;
     }
 
+    @Override
     public boolean checkWaterCollisions()
     {
         return world.updateMovementInFluid(boundingBox, Material.WATER, this);
     }
 
+    @Override
     protected String getRandomSound()
     {
         return null;
     }
 
+    @Override
     protected String getHurtSound()
     {
         return null;
     }
 
+    @Override
     protected String getDeathSound()
     {
         return null;
     }
 
+    @Override
     protected float getSoundVolume()
     {
         return 0.4F;
@@ -147,6 +159,7 @@ public class EntitySharkEgg extends LivingEntity implements MobSpawnDataProvider
         return Identifier.of(mod_mocreatures.MOD_ID, "SharkEgg");
     }
 
+    @Override
     @Environment(EnvType.CLIENT)
     public void processServerEntityStatus(byte status) {
         if (status == 6) {

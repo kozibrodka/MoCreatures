@@ -36,10 +36,11 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         typechosen = false;
     }
 
+    @Override
     protected void initDataTracker() {
         super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //Type
-        dataTracker.startTracking(17, (int) 0); //Age
+        dataTracker.startTracking(17, 0); //Age
         dataTracker.startTracking(18, (byte) 0); //Adult
     }
 
@@ -101,10 +102,12 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         movementSpeed = f;
     }
 
+    @Override
     protected void onLanding(float f)
     {
     }
 
+    @Override
     public void tickMovement()
     {
         super.tickMovement();
@@ -187,6 +190,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         } while(true);
     }
 
+    @Override
     protected void tickLiving()
     {
         if(movementSpeed > 2.0F && onGround && random.nextInt(30) == 0 && (velocityX > 0.10000000000000001D || velocityZ > 0.10000000000000001D || velocityX < -0.10000000000000001D || velocityZ < -0.10000000000000001D))
@@ -196,6 +200,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         super.tickLiving();
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
@@ -204,6 +209,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         nbttagcompound.putFloat("Edad", getAge());
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
@@ -212,6 +218,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         setAge(nbttagcompound.getFloat("Edad"));
     }
 
+    @Override
     protected String getRandomSound()
     {
         if(!getAdult())
@@ -223,16 +230,19 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:deerhurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:deerdying";
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Item.RAW_PORKCHOP.id;
@@ -280,6 +290,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
+    @Override
     public void setTypeSpawn()
     {
         if(!world.isRemote){
@@ -327,6 +338,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         return Identifier.of(mod_mocreatures.MOD_ID, "Deer");
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.animals.deerfreq > 0 && super.canSpawn();

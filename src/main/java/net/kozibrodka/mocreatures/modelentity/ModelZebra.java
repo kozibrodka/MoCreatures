@@ -134,6 +134,7 @@ public class ModelZebra extends EntityModel
         tail2.mirror = false;
     }
 
+    @Override
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
         setAngles(f, f1, f2, f3, f4, f5);
@@ -155,6 +156,7 @@ public class ModelZebra extends EntityModel
         tail2.render(f5);
     }
 
+    @Override
     public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
     {
         if(taildirection > 0)

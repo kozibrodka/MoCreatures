@@ -52,6 +52,7 @@ public class ModelOgre1 extends BipedEntityModel
         ears.render(f5);
     }
 
+    @Override
     public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
     {
         head.yaw = f3 / 57.29578F;

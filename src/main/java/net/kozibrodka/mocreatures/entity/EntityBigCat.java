@@ -54,6 +54,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         typechosen = false;
     }
 
+    @Override
     protected void initDataTracker()
     {
         super.initDataTracker();
@@ -192,11 +193,13 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
+    @Override
     protected void tickLiving() {
         super.tickLiving();
         this.dataTracker.set(29, (byte) health);
     }
 
+    @Override
     public void tickMovement()
     {
         super.tickMovement();
@@ -294,6 +297,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
             world.spawnEntity(entityitem);
     }
 
+    @Override
     protected boolean isMovementBlocked()
     {
         return getSitting();
@@ -427,6 +431,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         return entityitem;
     }
 
+    @Override
     protected Entity getTargetInRange()
     {
         if(roper != null) /// Na lince nie poluje. Procect=off - w ogole nie broni.
@@ -563,6 +568,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
+    @Override
     protected void attack(Entity entity, float f)
     {
         if(f > 2.0F && f < 6F && random.nextInt(50) == 0)
@@ -602,6 +608,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
@@ -619,6 +626,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         nbttagcompound.putBoolean("Roper", hasRopeOnNeck);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
@@ -637,6 +645,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         hasRopeOnNeck = (nbttagcompound.getBoolean("Roper"));
     }
 
+    @Override
     public boolean interact(PlayerEntity entityplayer)
     {
         if(world.isRemote)
@@ -713,6 +722,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
             }
     }
 
+    @Override
     protected String getRandomSound()
     {
         if(getAdult())
@@ -724,6 +734,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
+    @Override
     protected String getHurtSound()
     {
         if(getAdult())
@@ -735,6 +746,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
+    @Override
     protected String getDeathSound()
     {
         if(getAdult())
@@ -746,6 +758,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return mod_mocreatures.bigcatclaw.id;
@@ -770,16 +783,19 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
 
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 4;
     }
 
+    @Override
     protected boolean canDespawn()
     {
         return !getTamed();
     }
 
+    @Override
     public void markDead() /// Czy to ma jakikolwiek sens??? - bez checku remote, to powoduje duplikaty modelu na client
     {
         if(getTamed() && health > 0  && !world.isRemote)
@@ -814,6 +830,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         return 0;
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.huntercreatures.lionfreq > 0 && !MoCTools.isNearTorch(this) && super.canSpawn();
@@ -853,6 +870,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
     }
 
     @Environment(EnvType.CLIENT)
+    @Override
     public void processServerEntityStatus(byte status) {
         if (status == 6) {
             MoCTools.addHeartParticles(world, this);
@@ -878,7 +896,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
-    //TYPE
+    @Override
     public void setTypeSpawn() {
         if (!world.isRemote) {
             int i = 0;
@@ -952,7 +970,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
-    //TAMED
+    @Override
     public boolean getTamed()
     {
         return (dataTracker.getByte(20) & 1) != 0;
@@ -1066,17 +1084,20 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         this.dataTracker.set(30, owner);
     }
 
+    @Override
     public String getOwner()
     {
         return this.dataTracker.getString(30);
     }
 
     //NAME
+    @Override
     public void setName(String name)
     {
         this.dataTracker.set(31, name);
     }
 
+    @Override
     public String getName()
     {
         return this.dataTracker.getString(31);

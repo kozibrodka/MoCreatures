@@ -69,6 +69,7 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider, Mo
         }
     }
 
+    @Override
     public boolean damage(Entity entityBase, int i)
     {
         if(super.damage(entityBase, i))
@@ -106,20 +107,20 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider, Mo
         }
     }
 
+    @Override
     protected void attack(Entity entityBase, float f)
     {
         float f1 = getBrightnessAtEyes(1.0F);
         if(f1 > 0.5F && random.nextInt(100) == 0)
         {
             target = null;
-            return;
         } else
         {
             super.attack(entityBase, f);
-            return;
         }
     }
 
+    @Override
     public void tickMovement() {
         super.tickMovement();
         if(!typechosen && world.isRemote && getType() != 0){
@@ -129,13 +130,10 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider, Mo
         if(world.isRemote){
             return;
         }
-        if(climbing()){
-            setClimbing(true);
-        }else{
-            setClimbing(false);
-        }
+        setClimbing(climbing());
     }
 
+    @Override
     protected Entity getTargetInRange()
     {
         float f = getBrightnessAtEyes(1.0F);
@@ -148,29 +146,34 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider, Mo
         }
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 5;
     }
 
+    @Override
     protected void initDataTracker() {
         super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //Type
         dataTracker.startTracking(17, (byte) 0); //Climbing
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
         nbttagcompound.putInt("TypeInt", getType());
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
         setType(nbttagcompound.getInt("TypeInt"));
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.hostilemobs.ratfreq > 0 && super.canSpawn();
@@ -181,26 +184,31 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider, Mo
         return super.canSpawn();
     }
 
+    @Override
     protected String getRandomSound()
     {
         return "mocreatures:ratgrunt";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:rathurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:ratdying";
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Item.COAL.id;
     }
 
+    @Override
     public boolean isOnLadder()
     {
         return horizontalCollision;
@@ -219,6 +227,7 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider, Mo
     }
 
     //TYPE
+    @Override
     public void setTypeSpawn()
     {
         if(!world.isRemote){

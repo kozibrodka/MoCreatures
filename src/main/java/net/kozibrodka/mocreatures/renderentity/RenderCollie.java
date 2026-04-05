@@ -21,18 +21,15 @@ public class RenderCollie extends LivingEntityRenderer {
         setDecorationModel(entityModel);
     }
 
-//    public void render(EntityCollie wolfEntity, double d, double e, double f, float g, float h) {
-//        super.render(wolfEntity, d, e, f, g, h);
-//    }
 
+    @Override
     protected float getHeadBob(LivingEntity entityliving, float f) {
         EntityCollie dog = (EntityCollie)entityliving;
         return dog.getTailAngle();
     }
 
-//    protected void applyScale(EntityCollie entityliving, float f) {
-//    }
 
+    @Override
     protected boolean bindTexture(LivingEntity entityliving, int i, float f) {
         EntityCollie dog = (EntityCollie)entityliving;
         if (dog.isTamed()) {

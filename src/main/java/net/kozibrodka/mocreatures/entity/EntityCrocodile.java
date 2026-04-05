@@ -38,6 +38,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
         movementSpeed = 0.5F;
     }
 
+    @Override
     protected void jump() {
         if(isInFluid(Material.WATER)) {
             if(getCaughtPrey() || target == null && random.nextInt(20) != 0) {
@@ -55,10 +56,12 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
 //        return !this.isInFluid(Material.WATER);
 //    }
 
+    @Override
     protected boolean isMovementBlocked() {
         return getIsResting();
     }
 
+    @Override
     protected void tickLiving() {
         if(!getIsResting()) {
             super.tickLiving();
@@ -80,10 +83,12 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
         return true;
     }
 
+    @Override
     public boolean isSubmergedInWater() {
-        return swimmerEntity() ? false : super.isSubmergedInWater();
+        return !swimmerEntity() && super.isSubmergedInWater();
     }
 
+    @Override
     public boolean canBreatheInWater() {
         return swimmerEntity();
     }
@@ -96,6 +101,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
 
     }
 
+    @Override
     public void tickMovement() {
 
         if(world.isRemote){
@@ -123,7 +129,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
             }
         } else if(random.nextInt(500) == 0 && target == null && !getCaughtPrey()) {
             setIsResting(true);
-            setPath((Path)null);
+            setPath(null);
         }
 
         if(isInFluid(Material.WATER)) {
@@ -256,6 +262,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
 
     }
 
+    @Override
     public void tick() {
         if(world.isRemote){
             if(getIsBitting() && !getCaughtPrey()){
@@ -285,6 +292,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
         super.tick();
     }
 
+    @Override
     protected void attack(Entity entity, float f) {
         if(!getCaughtPrey()) {
             if(attackCooldown <= 0 && f < 3.0F && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY) {
@@ -308,6 +316,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
         }
     }
 
+    @Override
     public boolean damage(Entity entity, int i) {
         if(world.isRemote){
             return false;
@@ -343,6 +352,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
         }
     }
 
+    @Override
     protected Entity getTargetInRange() {
         if(getCaughtPrey()) {
             return null;
@@ -402,12 +412,13 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
         return MoCTools.entitiesToIgnore(this, entity) || entity instanceof EntityCrocodile || entity.height < this.height && entity.width < this.width;
     }
 
+    @Override
     public void updatePassengerPosition() {
         if(passenger != null) {
             boolean direction = true;
             double dist = (double)(getAge() + passenger.width) - 0.4D;
-            double newPosX = x - dist * Math.cos((double)(MoCTools.realAngle(yaw - 90.0F) / 57.29578F));
-            double newPosZ = z - dist * Math.sin((double)(MoCTools.realAngle(yaw - 90.0F) / 57.29578F));
+            double newPosX = x - dist * Math.cos(MoCTools.realAngle(yaw - 90.0F) / 57.29578F);
+            double newPosZ = z - dist * Math.sin(MoCTools.realAngle(yaw - 90.0F) / 57.29578F);
             passenger.setPosition(newPosX, y + getPassengerRidingHeight() + passenger.getStandingEyeHeight(), newPosZ);
             byte direction1;
             if(spinInt > 40) {
@@ -421,6 +432,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
         }
     }
 
+    @Override
     public double getPassengerRidingHeight() {
         return (double)height * 0.35D;
     }
@@ -448,6 +460,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
 
     }
 
+    @Override
     public void onKilledBy(Entity damagesource) {
         unMount();
         MoCTools.checkForTwistedEntities(world);
@@ -466,7 +479,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
                 }
 
             }
-            passenger.setVehicle((Entity)null);
+            passenger.setVehicle(null);
             setCaughtPrey(false);
             setBiteProgress(0.0F);
         }
@@ -479,35 +492,42 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
     }
 
 
+    @Override
     public int getLimitPerChunk()
     {
         return 6;
     }
 
+    @Override
     public int getMinAmbientSoundDelay() {
         return 120;
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return mod_mocreatures.crochide.id;
     }
 
+    @Override
     protected String getRandomSound()
     {
         return getIsResting() ? "mocreatures:crocresting" : "mocreatures:crocgrunt";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:crochurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:crocdying";
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.huntercreatures.crocodilefreq > 0 && !MoCTools.isNearTorch(this) && MoCTools.isNearWater(this) && canSpawnCroc();
@@ -566,16 +586,18 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
     @Override
     public Identifier getHandlerIdentifier() {return Identifier.of(mod_mocreatures.MOD_ID, "Crocodile");}
 
+    @Override
     protected void initDataTracker()
     {
         super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //Resting
-        dataTracker.startTracking(17, (int) 0); //Age
-        dataTracker.startTracking(18, (int) 0); //BiteProgress
+        dataTracker.startTracking(17, 0); //Age
+        dataTracker.startTracking(18, 0); //BiteProgress
         dataTracker.startTracking(19, (byte) 0); //CaughtPrey
         dataTracker.startTracking(20, (byte) 0); //isBITTING
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
@@ -583,6 +605,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
         nbttagcompound.putBoolean("Resting", getIsResting());
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);

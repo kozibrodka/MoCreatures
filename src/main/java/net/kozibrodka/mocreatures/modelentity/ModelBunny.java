@@ -50,6 +50,7 @@ public class ModelBunny extends EntityModel
         n2.setPivot(-3F, 3 + byte0, 4F);
     }
 
+    @Override
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
         setAngles(f, f1, f2, f3, f4, f5);
@@ -66,6 +67,7 @@ public class ModelBunny extends EntityModel
         n2.render(f5);
     }
 
+    @Override
     public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
     {
         a.pitch = -(f4 / 57.29578F);

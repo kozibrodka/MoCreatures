@@ -43,6 +43,7 @@ public class ModelWraith extends BipedEntityModel
         leftLeg.setPivot(2.0F, 12F, 0.0F);
     }
 
+    @Override
     public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
     {
         super.setAngles(f, f1, f2, f3, f4, f5);

@@ -27,6 +27,7 @@ public class EntityZebra extends AnimalEntity implements MobSpawnDataProvider {
 
     }
 
+    @Override
     public void tickMovement()
     {
         super.tickMovement();
@@ -102,41 +103,49 @@ public class EntityZebra extends AnimalEntity implements MobSpawnDataProvider {
         } while(true);
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 6;
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Item.RAW_PORKCHOP.id;
     }
 
+    @Override
     protected String getRandomSound()
     {
         return "mocreatures:zebra";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:zebrahurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:zebradeath";
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.animals.zebrafreq > 0 && super.canSpawn();

@@ -58,16 +58,18 @@ public class EntitySheep extends SheepEntity implements MobSpawnDataProvider, Mo
         grasscoords = new int[]{-1, -1, -1};
     }
 
+    @Override
     protected void initDataTracker() {
         super.initDataTracker();
         dataTracker.startTracking(17, (byte) 0); //Tamed
         dataTracker.startTracking(18, (byte) 0); //isEating
 
-        dataTracker.startTracking(19, (int) -1); //Found X
-        dataTracker.startTracking(20, (int) -1); //Found Y
-        dataTracker.startTracking(21, (int) -1); //Found Z
+        dataTracker.startTracking(19, -1); //Found X
+        dataTracker.startTracking(20, -1); //Found Y
+        dataTracker.startTracking(21, -1); //Found Z
     }
 
+    @Override
     public void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
         nbt.putBoolean("Tamed", getTamed());
@@ -77,6 +79,7 @@ public class EntitySheep extends SheepEntity implements MobSpawnDataProvider, Mo
         nbt.putInt("Food", sheepFood);
     }
 
+    @Override
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
         setTamed(nbt.getBoolean("Tamed"));
@@ -86,6 +89,7 @@ public class EntitySheep extends SheepEntity implements MobSpawnDataProvider, Mo
         sheepFood = (nbt.getInt("Food"));
     }
 
+    @Override
     public void tickMovement() {
         if(world.isRemote){
             super.tickMovement();
@@ -156,9 +160,9 @@ public class EntitySheep extends SheepEntity implements MobSpawnDataProvider, Mo
             grassClock++;
 
             if(grassClock == 80){ ///  Upewnić się czy 1 sekunda starcza zawsze
-                dataTracker.set(19, (int)grasscoords[0]);
-                dataTracker.set(20, (int)grasscoords[1]);
-                dataTracker.set(21, (int)grasscoords[2]);
+                dataTracker.set(19, grasscoords[0]);
+                dataTracker.set(20, grasscoords[1]);
+                dataTracker.set(21, grasscoords[2]);
             }
 
             if((grassClock % 20 == 0)) { /// DEBUG żeby nie marnowała czasu.
@@ -322,10 +326,12 @@ public class EntitySheep extends SheepEntity implements MobSpawnDataProvider, Mo
         return this.world.raycast(Vec3d.createCached(this.x, this.y + (double)this.getEyeHeight(), this.z), Vec3d.createCached((double) x + 0.5D, (double) y + customHeight, (double) z + 0.5D)) == null;
     }
 
+    @Override
     protected boolean isMovementBlocked() {
         return getIsEating();
     }
 
+    @Override
     protected void tickLiving()
     {
         super.tickLiving();
@@ -357,6 +363,7 @@ public class EntitySheep extends SheepEntity implements MobSpawnDataProvider, Mo
         }
     }
 
+    @Override
     public boolean interact(PlayerEntity player) {
         ItemStack itemstack = player.inventory.getSelectedItem();
         if(world.isRemote){
@@ -373,9 +380,9 @@ public class EntitySheep extends SheepEntity implements MobSpawnDataProvider, Mo
 
                 for(int var4 = 0; var4 < var3; ++var4) {
                     ItemEntity var5 = dropItem(new ItemStack(Block.WOOL.id, 1, getColor()), 1.0F);
-                    var5.velocityY += (double)(random.nextFloat() * 0.05F);
-                    var5.velocityX += (double)((random.nextFloat() - random.nextFloat()) * 0.1F);
-                    var5.velocityZ += (double)((random.nextFloat() - random.nextFloat()) * 0.1F);
+                    var5.velocityY += random.nextFloat() * 0.05F;
+                    var5.velocityX += (random.nextFloat() - random.nextFloat()) * 0.1F;
+                    var5.velocityZ += (random.nextFloat() - random.nextFloat()) * 0.1F;
                 }
 
             itemstack.damage(1, player);
@@ -384,14 +391,14 @@ public class EntitySheep extends SheepEntity implements MobSpawnDataProvider, Mo
         if (itemstack != null && itemstack.itemId == Item.WHEAT.id && !getTamed() && !eatenWheat) {
             --itemstack.count;
             if (itemstack.count <= 0) {
-                player.inventory.setStack(player.inventory.selectedSlot, (ItemStack)null);
+                player.inventory.setStack(player.inventory.selectedSlot, null);
             }
 
                 if (random.nextInt(1) == 0) { /// ile zbóż śrenio potrzeba?? (pies 3) - 9 raczej / 1 - DEBUG
                     eatenWheat = true;
                     world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
                     world.broadcastEntityEvent(this, (byte)8);
-                    setPath((Path)null);
+                    setPath(null);
                     health = 10;
                 } else {
                     showFeedParticles(false);
@@ -403,7 +410,7 @@ public class EntitySheep extends SheepEntity implements MobSpawnDataProvider, Mo
         if (itemstack != null && itemstack.itemId == mod_mocreatures.sheepbell.id && !getTamed() && eatenWheat) {
             --itemstack.count;
             if (itemstack.count <= 0) {
-                player.inventory.setStack(player.inventory.selectedSlot, (ItemStack) null);
+                player.inventory.setStack(player.inventory.selectedSlot, null);
             }
             setTamed(true);
             showFeedParticles(true);
@@ -483,9 +490,9 @@ public class EntitySheep extends SheepEntity implements MobSpawnDataProvider, Mo
 
     public void faceItem(double i, double j, double k, float f)
     {
-        double d = (double)i - x;
-        double d1 = (double)k - z;
-        double d2 = (double)j - y;
+        double d = i - x;
+        double d1 = k - z;
+        double d2 = j - y;
         double d3 = MathHelper.sqrt(d * d + d1 * d1);
         float f1 = (float)((Math.atan2(d1, d) * 180D) / 3.1415927410125728D) - 90F;
         float f2 = (float)((Math.atan2(d2, d3) * 180D) / 3.1415927410125728D);
@@ -509,6 +516,7 @@ public class EntitySheep extends SheepEntity implements MobSpawnDataProvider, Mo
         return f + f3;
     }
 
+    @Override
     @Environment(EnvType.CLIENT)
     public void processServerEntityStatus(byte status) {
         if (status == 7) {
@@ -553,18 +561,18 @@ public class EntitySheep extends SheepEntity implements MobSpawnDataProvider, Mo
 
     }
 
+    @Override
     public void markDead() /// Czy to ma jakikolwiek sens???
     {
         if(getTamed() && health > 0  && !world.isRemote)
         {
-            return;
         } else
         {
             super.markDead();
-            return;
         }
     }
 
+    @Override
     protected boolean canDespawn() {
         return !this.getTamed();
     }
@@ -575,6 +583,7 @@ public class EntitySheep extends SheepEntity implements MobSpawnDataProvider, Mo
     }
 
     //TAMED
+    @Override
     public boolean getTamed()
     {
         return (dataTracker.getByte(17) & 1) != 0;

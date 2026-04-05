@@ -27,12 +27,12 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
 
     private Path pathEntity;
     private int outOfWater = 0;
-    private int temper;
+    private final int temper;
     private float edad;
     private boolean displayName;
     private boolean isAdult;
     private int type;
-    private String myName = "";
+    private final String myName = "";
     private boolean chosenType;
     private int maxHealth;
     private boolean diving;
@@ -59,6 +59,7 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
 
     }
 
+    @Override
     public void travel(float f, float f1) {
 
         if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER && passenger != null) {
@@ -252,6 +253,7 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
         }
     }
 
+    @Override
     protected void onLanding(float f) {
         if(!isSubmergedInWater()) {
             super.onLanding(f);
@@ -265,8 +267,7 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
 
         for(int i = 0; i < list.size(); ++i) {
             Entity entity1 = (Entity)list.get(i);
-            if(entity1 instanceof ItemEntity) {
-                ItemEntity entityitem1 = (ItemEntity)entity1;
+            if(entity1 instanceof ItemEntity entityitem1) {
                 if(entityitem1.id == Item.RAW_FISH.id && entityitem1.isSubmergedInWater()) {
                     double d2 = entityitem1.getSquaredDistance(entity.x, entity.y, entity.z);
                     if((d < 0.0D || d2 < d * d) && (d1 == -1.0D || d2 < d1)) {
@@ -281,6 +282,7 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
     }
 
 
+    @Override
     public void tickMovement() {
         if(world.isRemote){
             super.tickMovement();
@@ -293,8 +295,8 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
             ++outOfWater;
             if(outOfWater > 200 && outOfWater % 30 == 0) {
                 velocityY += 0.3D;
-                velocityX = (double)((float)(Math.random() * 0.2D - 0.1D));
-                velocityZ = (double)((float)(Math.random() * 0.2D - 0.1D));
+                velocityX = (float)(Math.random() * 0.2D - 0.1D);
+                velocityZ = (float)(Math.random() * 0.2D - 0.1D);
                 damage(null, 1);
             }
         }
@@ -324,10 +326,12 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
     }
 
 
+    @Override
     protected boolean isMovementBlocked() {
         return !isSwimming() && passenger == null;
     }
 
+    @Override
     public boolean checkWaterCollisions() {
         return world.updateMovementInFluid(boundingBox, Material.WATER, this);
     }
@@ -336,6 +340,7 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
         return 1.5D;
     }
 
+    @Override
     public boolean isSubmergedInWater() {
         return false;
     }
@@ -344,6 +349,7 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
         return diving;
     }
 
+    @Override
     protected void jump() {
     }
 
@@ -351,6 +357,7 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
         return isInFluid(Material.WATER);
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
@@ -358,6 +365,7 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
 //        nbttagcompound.putInt("DiveCount", divingCount);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound) {
         super.readNbt(nbttagcompound);
 //        diving = (nbttagcompound.getBoolean("Diving"));
@@ -365,12 +373,16 @@ public class EntityCustomAquaM extends WaterCreatureEntity {
 
     }
 
+    @Override
     protected String getDeathSound() {return null;}
 
+    @Override
     protected String getHurtSound() {return null;}
 
+    @Override
     protected String getRandomSound() {return null;}
 
+    @Override
     protected float getSoundVolume() {return 0.4F;}
 
     protected String getUpsetSound()

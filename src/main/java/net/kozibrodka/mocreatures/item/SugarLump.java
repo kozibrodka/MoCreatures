@@ -19,6 +19,7 @@ public class SugarLump extends TemplateItem
         a = 1;
     }
 
+    @Override
     public ItemStack use(ItemStack itemstack, World world, PlayerEntity entityplayer)
     {
         if(mod_mocreatures.mocGlass.othersettings.sugar_lump) {

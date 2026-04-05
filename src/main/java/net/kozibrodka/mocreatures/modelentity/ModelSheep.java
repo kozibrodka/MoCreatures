@@ -21,6 +21,7 @@ public class ModelSheep extends QuadrupedEntityModel {
         body.setPivot(0.0F, 5.0F, 2.0F);
     }
 
+    @Override
     public void render(float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch, float scale) {
         setAngles(limbAngle, limbDistance, animationProgress, headYaw, headPitch, scale);
         head.render(scale);
@@ -35,6 +36,7 @@ public class ModelSheep extends QuadrupedEntityModel {
         }
     }
 
+    @Override
     public void setAngles(float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch, float scale) {
 
         if(eating) {

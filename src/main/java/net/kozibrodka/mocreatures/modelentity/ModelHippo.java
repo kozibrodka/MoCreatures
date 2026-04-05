@@ -75,6 +75,7 @@ public class ModelHippo extends EntityModel
         mouth.yaw = 0.0F;
     }
 
+    @Override
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
         setAngles(f, f1, f2, f3, f4, f5);
@@ -96,6 +97,7 @@ public class ModelHippo extends EntityModel
         mouth.render(f5);
     }
 
+    @Override
     public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
     {
         headHippo.yaw = f3 / 57.29578F;

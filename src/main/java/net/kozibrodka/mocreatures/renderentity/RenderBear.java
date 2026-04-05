@@ -20,6 +20,7 @@ public class RenderBear extends LivingEntityRenderer
         return i == 0;
     }
 
+    @Override
     protected boolean bindTexture(LivingEntity entityliving, int i, float f)
     {
         return c((EntityBear)entityliving, i);

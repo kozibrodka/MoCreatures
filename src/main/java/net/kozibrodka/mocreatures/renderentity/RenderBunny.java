@@ -14,6 +14,7 @@ public class RenderBunny extends LivingEntityRenderer
         super(modelbase, f);
     }
 
+    @Override
     public void render(LivingEntity entityliving, double d, double d1, double d2,
                                float f, float f1)
     {
@@ -39,6 +40,7 @@ public class RenderBunny extends LivingEntityRenderer
         }
     }
 
+    @Override
     protected float getHeadBob(LivingEntity entityliving, float f)
     {
         EntityBunny entitybunny = (EntityBunny)entityliving;
@@ -49,6 +51,7 @@ public class RenderBunny extends LivingEntityRenderer
         return (float)entityliving.age + f;
     }
 
+    @Override
     protected void applyScale(LivingEntity entityliving, float f)
     {
         rotBunny((EntityBunny)entityliving);

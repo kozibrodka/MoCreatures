@@ -22,6 +22,7 @@ public class RenderHippo extends LivingEntityRenderer
         GL11.glScalef(2.0F, 2.0F, 2.0F);
     }
 
+    @Override
     protected void applyScale(LivingEntity entityliving, float f)
     {
         fattenup((EntityHippo)entityliving, f);

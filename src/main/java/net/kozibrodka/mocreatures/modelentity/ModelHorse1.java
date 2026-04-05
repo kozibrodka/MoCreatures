@@ -52,6 +52,7 @@ public class ModelHorse1 extends EntityModel
         Bag2.yaw = 1.570796F;
     }
 
+    @Override
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
         setAngles(f, f1, f2, f3, f4, f5);
@@ -69,6 +70,7 @@ public class ModelHorse1 extends EntityModel
         }
     }
 
+    @Override
     public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
     {
         RightWing.roll = f2;

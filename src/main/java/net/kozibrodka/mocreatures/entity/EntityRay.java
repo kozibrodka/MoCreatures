@@ -24,6 +24,7 @@ public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider
         movementSpeed = 0.3F;
     }
 
+    @Override
     public void tickMovement() {
         super.tickMovement();
         if(!typechosen && world.isRemote && getType() != 0){
@@ -46,7 +47,7 @@ public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider
             if(getType() > 1 && poisoncounter > 250 && world.difficulty > 0) {
                 PlayerEntity entityplayertarget = world.getClosestPlayer(x, y, z, 2.0D);
                 if(entityplayertarget != null) {
-                    PacketHelper.sendTo((PlayerEntity) entityplayertarget, new PoisonPacket(1));
+                    PacketHelper.sendTo(entityplayertarget, new PoisonPacket(1));
                     poisoncounter = 0;
                     setAttacking(true);
                 }
@@ -55,6 +56,7 @@ public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider
 
     }
 
+    @Override
     public boolean damage(Entity damagesource, int i) {
         if(super.damage(damagesource, i)) {
             if(getType() != 1 && world.difficulty != 0) {
@@ -70,36 +72,43 @@ public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider
         }
     }
 
+    @Override
     public int getLimitPerChunk()
     {
         return 1;
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Item.RAW_FISH.id;
     }
 
+    @Override
     protected String getRandomSound()
     {
         return "mocreatures:XXX";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:XXX";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:XXX";
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.watermobs.rayfreq > 0 && super.canSpawn();
     }
 
+    @Override
     public boolean isSwimming() {
         return this.isInFluid(Material.WATER);
     }
@@ -113,14 +122,16 @@ public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider
     public Identifier getHandlerIdentifier() {return Identifier.of(mod_mocreatures.MOD_ID, "Ray");}
 
 
+    @Override
     protected void initDataTracker()
     {
         super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //Type
-        dataTracker.startTracking(17, (int) 0); //Age
+        dataTracker.startTracking(17, 0); //Age
         dataTracker.startTracking(18, (byte) 0); //Attacking
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
@@ -129,6 +140,7 @@ public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider
         nbttagcompound.putBoolean("Adult", adult);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);

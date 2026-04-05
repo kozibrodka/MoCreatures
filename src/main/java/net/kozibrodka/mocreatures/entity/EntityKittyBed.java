@@ -42,6 +42,7 @@ public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
         setSheetColour(i);
     }
 
+    @Override
     public void move(double d, double d1, double d2)
     {
         if(vehicle != null || !onGround || !mod_mocreatures.mocGlass.othersettings.staticbed)
@@ -50,14 +51,15 @@ public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
         }
     }
 
+    @Override
     public void onCollision(Entity otherEntity) {
         if(vehicle instanceof PlayerEntity && otherEntity == vehicle.vehicle){
-            return;
         }else {
             super.onCollision(otherEntity);
         }
     }
 
+    @Override
     public void tick()
     {
         super.tick();
@@ -80,16 +82,18 @@ public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
         }
     }
 
+    @Override
     protected void initDataTracker()
     {
         super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //SheetColour
-        dataTracker.startTracking(17, (int) 0); //MilkLevel
+        dataTracker.startTracking(17, 0); //MilkLevel
         dataTracker.startTracking(18, (byte) 0); //HasFood
         dataTracker.startTracking(19, (byte) 0); //HasMilk
         dataTracker.startTracking(20, (byte) 0); //Picked
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         nbttagcompound.putBoolean("HasMilk", getHasMilk());
@@ -98,6 +102,7 @@ public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
         nbttagcompound.putFloat("MilkLevel", getMilkLevel());
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         setHasMilk(nbttagcompound.getBoolean("HasMilk"));
@@ -106,45 +111,54 @@ public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
         setMilkLevel(nbttagcompound.getFloat("MilkLevel"));
     }
 
+    @Override
     public boolean canSee(Entity entity)
     {
 //        return world.raycast(Vec3d.createCached(x, y + (double)getShadowRadius(), z), Vec3d.createCached(entity.x, entity.y + (double)entity.getShadowRadius(), entity.z)) == null;
         return world.raycast(Vec3d.createCached(x, y + (double)(this.height / 2.0F), z), Vec3d.createCached(entity.x, entity.y + (double)(entity.height / 2.0F), entity.z)) == null;
     }
 
+    @Override
     public boolean isCollidable()
     {
         return !dead;
     }
 
+    @Override
     public boolean isPushable()
     {
         return !dead;
     }
 
+    @Override
     protected boolean canDespawn()
     {
         return false;
     }
 
+    @Override
     protected void tickLiving()
     {
     }
 
+    @Override
     protected void onLanding(float f)
     {
     }
 
+    @Override
     public boolean damage(Entity entity, int i)
     {
         return false;
     }
 
+    @Override
     public String getTexture()
     {
         return "/assets/mocreatures/stationapi/textures/mob/kittybed.png";
     }
 
+    @Override
     public boolean interact(PlayerEntity entityplayer)
     {
         ItemStack itemstack = entityplayer.inventory.getSelectedItem();
@@ -197,47 +211,54 @@ public class EntityKittyBed extends LivingEntity implements MobSpawnDataProvider
         }
     }
 
+    @Override
     public double getStandingEyeHeight()
     {
         if(vehicle instanceof PlayerEntity)
         {
             setPicked(true);
             if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-                return (double)(standingEyeHeight + 0.49F); //+0
+                return standingEyeHeight + 0.49F; //+0
             }else{
-                return (double)(standingEyeHeight - 1.15F);
+                return standingEyeHeight - 1.15F;
             }
         } else
         {
-            return (double)standingEyeHeight;
+            return standingEyeHeight;
         }
     }
 
+    @Override
     protected float getSoundVolume()
     {
         return 0.0F;
     }
 
+    @Override
     protected String getRandomSound()
     {
         return null;
     }
 
+    @Override
     protected String getHurtSound()
     {
         return null;
     }
 
+    @Override
     protected String getDeathSound()
     {
         return null;
     }
 
+    @Override
     public boolean canBreatheInWater()
     {
         return true;
     }
 
+    @Override
     @Environment(EnvType.CLIENT)
     public void processServerEntityStatus(byte status) {
         if (status == 6) {

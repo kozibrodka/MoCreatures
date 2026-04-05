@@ -16,6 +16,7 @@ public class RenderRay extends LivingEntityRenderer {
 		this.tempRay = (ModelRay)modelbase;
 	}
 
+	@Override
 	protected void applyScale(LivingEntity entityliving, float f) {
 
         EntityRay entityray = (EntityRay)entityliving;

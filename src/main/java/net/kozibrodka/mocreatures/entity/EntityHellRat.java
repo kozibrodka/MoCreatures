@@ -20,11 +20,13 @@ public class EntityHellRat extends EntityRat implements MobSpawnDataProvider, Mo
         fireImmune = true;
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Item.REDSTONE.id;
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.hostilemobs.hellratfreq > 0 && super.canSpawn2();

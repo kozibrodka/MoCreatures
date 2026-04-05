@@ -45,6 +45,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         typechosen = false;
     }
 
+    @Override
     public void tickMovement()
     {
         super.tickMovement();
@@ -68,6 +69,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         }
     }
 
+    @Override
     protected void tickLiving() {
         super.tickLiving();
         if(random.nextInt(300) == 0 && health < maxhealth && deathTime == 0 && getTamed())
@@ -77,6 +79,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         this.dataTracker.set(29, (byte) health);
     }
 
+    @Override
     protected Entity getTargetInRange()
     {
         if(world.difficulty > 0 && getAge() >= 1.0F)
@@ -125,6 +128,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         return ((victim instanceof EntityShark) || (victim instanceof EntitySharkEgg) || (victim instanceof SquidEntity) || (hunter.y - victim.y > 6.0D) || (victim instanceof EntityDolphin) && !mod_mocreatures.mocGlass.watermobs.attackdolphins || victim instanceof EntityElephant && ((EntityElephant) victim).getAdult() || victim instanceof EntityHippo || (victim instanceof EntityCrocodile) && ((EntityCrocodile) victim).getAge() > 1.2F);
     } /// Dziki rekin jest zbalansowanie agresywny.
 
+    @Override
     public boolean damage(Entity entitybase, int i)
     {
         if(super.damage(entitybase, i) && world.difficulty > 0)
@@ -133,9 +137,8 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
             {
                 return true;
             }
-            if(getTamed() && entitybase instanceof PlayerEntity)
+            if(getTamed() && entitybase instanceof PlayerEntity gracz)
             {
-                PlayerEntity gracz = (PlayerEntity)entitybase;
                 if(!gracz.name.equals(getOwner()) && getProtect())
                 {
                     target = entitybase;
@@ -152,6 +155,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         }
     }
 
+    @Override
     protected void attack(Entity entity, float f)
     {
         if((double)f < 3.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY && getAge() >= 1.0F)
@@ -165,10 +169,11 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         }
     }
 
+    @Override
     protected void initDataTracker() {
         super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //Type
-        dataTracker.startTracking(17, (int) 0); //Age
+        dataTracker.startTracking(17, 0); //Age
         dataTracker.startTracking(18, (byte) 0); //Adult
         dataTracker.startTracking(19, (byte) 0); //Tamed
         dataTracker.startTracking(20, (byte) 0); //Protect From Players
@@ -178,6 +183,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         dataTracker.startTracking(31, ""); //Name
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
@@ -191,6 +197,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         nbttagcompound.putBoolean("ProtectFromPlayers", getProtect());
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
@@ -204,11 +211,13 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         setProtect(nbttagcompound.getBoolean("ProtectFromPlayers"));
     }
 
+    @Override
     protected boolean canDespawn()
     {
         return !getTamed();
     }
 
+    @Override
     protected void dropItems()
     {
         int i = random.nextInt(100);
@@ -235,6 +244,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
     }
 
 
+    @Override
     public boolean interact(PlayerEntity entityplayer)
     {
         ItemStack itemstack = entityplayer.inventory.getSelectedItem();
@@ -270,23 +280,24 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         }
     }
 
+    @Override
     public void markDead()
     {
         if(getTamed() && health > 0  && !world.isRemote)
         {
-            return;
         } else
         {
             super.markDead();
-            return;
         }
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:sharkhurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:sharkhurt";
@@ -298,6 +309,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         return getDisplayName();
     }
 
+    @Override
     public boolean canSpawn() //TODO spawning on ICE??
     {
         return mod_mocreatures.mocGlass.watermobs.sharkfreq > 0 && !MoCTools.isNearTorch(this) && world.difficulty >= mod_mocreatures.mocGlass.watermobs.sharkSpawnDifficulty.ordinal() + 1 && super.canSpawn();
@@ -315,6 +327,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         }
     }
 
+    @Override
     @Environment(EnvType.CLIENT)
     public void processServerEntityStatus(byte status) {
         if (status == 6) {
@@ -359,6 +372,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
     }
 
     //TYPE
+    @Override
     public void setTypeSpawn()
     {
         if(!world.isRemote){
@@ -408,11 +422,13 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         }
     }
     //TAMED
+    @Override
     public boolean getTamed()
     {
         return (dataTracker.getByte(19) & 1) != 0;
     }
 
+    @Override
     public void setTamed(boolean flag)
     {
         if(flag)
@@ -447,6 +463,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         return (dataTracker.getByte(21) & 1) != 0;
     }
 
+    @Override
     public void setDisplayName(boolean flag)
     {
         if(flag)
@@ -465,22 +482,26 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
     }
 
     //OWNER
+    @Override
     public void setOwner(String owner)
     {
         this.dataTracker.set(30, owner);
     }
 
+    @Override
     public String getOwner()
     {
         return this.dataTracker.getString(30);
     }
 
     //NAME
+    @Override
     public void setName(String name)
     {
         this.dataTracker.set(31, name);
     }
 
+    @Override
     public String getName()
     {
         return this.dataTracker.getString(31);

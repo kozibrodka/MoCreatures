@@ -46,11 +46,13 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         killedByOtherEntity = true;
     }
 
+    @Override
     public double speed()
     {
         return dolphinspeed;
     }
 
+    @Override
     public int tametemper()
     {
         return temper;
@@ -67,12 +69,14 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         }
     }
 
+    @Override
     public void giveAchievement(PlayerEntity player){
         if(getType() == 6){
             player.incrementStat(mod_mocreatures.RobertMaklowicz);
         }
     }
 
+    @Override
     protected void tickLiving() {
         super.tickLiving();
         this.dataTracker.set(29, (byte) health);
@@ -159,14 +163,15 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             }
     }
 
+    @Override
     public void onCollision(Entity otherEntity) {
         if(passenger instanceof PlayerEntity && passenger.passenger == otherEntity && !mod_mocreatures.mocGlass.animals.horse_speed_glitch){
-            return;
         }else {
             super.onCollision(otherEntity);
         }
     }
 
+    @Override
     public boolean interact(PlayerEntity entityplayer)
     {
         ItemStack itemstack = entityplayer.inventory.getSelectedItem();
@@ -262,9 +267,8 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
 
     public void Riding()
     {
-        if(passenger != null && (passenger instanceof PlayerEntity))
+        if(passenger != null && (passenger instanceof PlayerEntity entityplayer))
         {
-            PlayerEntity entityplayer = (PlayerEntity)passenger;
             List list = world.getEntities(this, boundingBox.expand(1.0D, 0.0D, 1.0D));
             if(list != null)
             {
@@ -302,11 +306,13 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         }
     }
 
+    @Override
     public boolean isCollidable()
     {
         return passenger == null;
     }
 
+    @Override
     public void tickMovement()
     {
         super.tickMovement();
@@ -372,11 +378,10 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         for(int k = 0; k < list.size(); k++)
         {
             Entity entity1 = (Entity)list1.get(k);
-            if(!(entity1 instanceof EntityDolphin) || entity1 == this)
+            if(!(entity1 instanceof EntityDolphin entitydolphin) || entity1 == this)
             {
                 continue;
             }
-            EntityDolphin entitydolphin = (EntityDolphin)entity1;
             if(!ReadyforParenting(this) || !ReadyforParenting(entitydolphin))
             {
                 continue;
@@ -436,6 +441,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         }
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
@@ -452,6 +458,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         nbttagcompound.putInt("GestationTime", gestationtime);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
@@ -468,6 +475,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         gestationtime = nbttagcompound.getInt("GestationTime");
     }
 
+    @Override
     protected Entity getTargetInRange()
     {
         if(world.difficulty > 0 && getAge() >= 1.0F && mod_mocreatures.mocGlass.watermobs.attackdolphins && random.nextInt(50) == 0)
@@ -510,6 +518,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         return entityliving;
     }
 
+    @Override
     public boolean damage(Entity entitybase, int i)
     {
         if(super.damage(entitybase, i) && world.difficulty > 0)
@@ -529,6 +538,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         }
     }
 
+    @Override
     protected void attack(Entity entity, float f)
     {
         if((double)f < 3.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY && getAge() >= 1.0F)
@@ -538,53 +548,60 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         }
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Item.RAW_FISH.id;
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.watermobs.dolphinfreq > 0 && super.canSpawn();
     }
 
+    @Override
     public void markDead() /// Czy to ma jakikolwiek sens??? - bez checku remote, to powoduje duplikaty modelu na client
     {
         if((getTamed() || getBred()) && health > 0 && !world.isRemote)
         {
-            return;
         } else
         {
             super.markDead();
-            return;
         }
     }
 
+    @Override
     protected boolean canDespawn()
     {
         return !getTamed();
     }
 
+    @Override
     protected String getRandomSound()
     {
         return "mocreatures:dolphin";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:dolphinhurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:dolphindying";
     }
 
+    @Override
     protected float getSoundVolume()
     {
         return 0.4F;
     }
 
+    @Override
     protected String getUpsetSound()
     {
         return "mocreatures:dolphinupset";
@@ -614,11 +631,12 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     public boolean hungry;
     public boolean typechosen;
 
+    @Override
     protected void initDataTracker()
     {
         super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //Type
-        dataTracker.startTracking(17, (int) 0); //Age
+        dataTracker.startTracking(17, 0); //Age
         dataTracker.startTracking(18, (byte) 0); //Adult
         dataTracker.startTracking(19, (byte) 0); //Eaten
         dataTracker.startTracking(20, (byte) 0); //Tamed
@@ -636,6 +654,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         return Identifier.of(mod_mocreatures.MOD_ID, "Dolphin");
     }
 
+    @Override
     @Environment(EnvType.CLIENT)
     public void processServerEntityStatus(byte status) {
         if (status == 6) {
@@ -654,6 +673,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     }
 
     //TYPE
+    @Override
     public void setTypeSpawn() {
         if(!world.isRemote) {
             setType(getRandomRace());
@@ -729,11 +749,13 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     }
 
     //TAMED
+    @Override
     public boolean getTamed()
     {
         return (dataTracker.getByte(20) & 1) != 0;
     }
 
+    @Override
     public void setTamed(boolean flag)
     {
         if(flag)
@@ -785,6 +807,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         return (dataTracker.getByte(23) & 1) != 0;
     }
 
+    @Override
     public void setDisplayName(boolean flag)
     {
         if(flag)
@@ -802,6 +825,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         return (dataTracker.getByte(24) & 1) != 0;
     }
 
+    @Override
     public void setJokey(boolean flag)
     {
         if(flag)
@@ -820,22 +844,26 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     }
 
     //OWNER
+    @Override
     public void setOwner(String owner)
     {
         this.dataTracker.set(30, owner);
     }
 
+    @Override
     public String getOwner()
     {
         return this.dataTracker.getString(30);
     }
 
     //NAME
+    @Override
     public void setName(String name)
     {
         this.dataTracker.set(31, name);
     }
 
+    @Override
     public String getName()
     {
         return this.dataTracker.getString(31);

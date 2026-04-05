@@ -25,26 +25,31 @@ public class EntityWraith extends EntityFlyerMob
         movementSpeed = 1.3F;
     }
 
+    @Override
     protected String getRandomSound()
     {
         return "mocreatures:wraith";
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:wraithhurt";
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:wraithdying";
     }
 
+    @Override
     protected int getDroppedItemId()
     {
         return Item.GUNPOWDER.id;
     }
 
+    @Override
     public void tickMovement()
     {
         if(world.difficulty == 1)
@@ -66,16 +71,19 @@ public class EntityWraith extends EntityFlyerMob
         super.tickMovement();
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.hostilemobs.wraithfreq > 0 && world.difficulty >= mod_mocreatures.mocGlass.hostilemobs.wraithSpawnDifficulty.ordinal() + 1 && super.canSpawn();

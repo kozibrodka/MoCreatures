@@ -50,22 +50,23 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         }
     }
 
+    @Override
     public void onCollision(Entity otherEntity) {
         if(vehicle instanceof PlayerEntity && otherEntity == vehicle.vehicle){
-            return;
         }else {
             super.onCollision(otherEntity);
         }
     }
 
+    @Override
     @Environment(EnvType.CLIENT)
     public void setPositionAndAnglesAvoidEntities(double x, double y, double z, float pitch, float yaw, int interpolationSteps) {
         this.standingEyeHeight = -0.16F;
         this.lerpX = x;
         this.lerpY = y;
         this.lerpZ = z;
-        this.lerpYaw = (double)pitch;
-        this.lerpPitch = (double)yaw;
+        this.lerpYaw = pitch;
+        this.lerpPitch = yaw;
         this.bodyTrackingIncrements = interpolationSteps;
     }
 
@@ -108,6 +109,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         }
     }
 
+    @Override
     public void tickMovement()
     {
         if(!typechosen && world.isRemote && getType() != 0){
@@ -131,6 +133,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         }
     }
 
+    @Override
     public void tick()
     {
         super.tick();
@@ -171,11 +174,10 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
             for(int i1 = 0; i1 < list.size(); i1++)
             {
                 Entity entity1 = (Entity)list1.get(i1);
-                if(!(entity1 instanceof EntityBunny) || entity1 == this)
+                if(!(entity1 instanceof EntityBunny entitybunny) || entity1 == this)
                 {
                     continue;
                 }
-                EntityBunny entitybunny = (EntityBunny)entity1;
                 if(entitybunny.vehicle != null || entitybunny.j < 1023 || !entitybunny.getAdult())
                 {
                     continue;
@@ -200,10 +202,12 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         }
     }
 
+    @Override
     protected void onLanding(float f)
     {
     }
 
+    @Override
     protected void tickLiving()
     {
         if(onGround && (velocityX > 0.050000000000000003D || velocityZ > 0.050000000000000003D || velocityX < -0.050000000000000003D || velocityZ < -0.050000000000000003D))
@@ -219,9 +223,8 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
             for(int k = 0; k < list.size(); k++)
             {
                 Entity entity = (Entity)list.get(k);
-                if(entity instanceof MonsterEntity)
+                if(entity instanceof MonsterEntity entitymob)
                 {
-                    MonsterEntity entitymob = (MonsterEntity)entity;
                     entitymob.target = (this);
                 }
             }
@@ -234,6 +237,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         super.tickLiving();
     }
 
+    @Override
     public boolean interact(PlayerEntity entityplayer)
     {
         if(world.isRemote){
@@ -269,21 +273,23 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         return true;
     }
 
+    @Override
     public double getStandingEyeHeight()
     {
         if(vehicle instanceof PlayerEntity)
         {
             if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
-                return (double)(standingEyeHeight + 0.49F);
+                return standingEyeHeight + 0.49F;
             }else{
-                return (double)(standingEyeHeight - 1.15F);
+                return standingEyeHeight - 1.15F;
             }
         } else
         {
-            return (double)standingEyeHeight;
+            return standingEyeHeight;
         }
     }
 
+    @Override
     protected String getRandomSound()
     {
         return null;
@@ -295,16 +301,19 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         j = random.nextInt(64);
     }
 
+    @Override
     protected String getHurtSound()
     {
         return "mocreatures:rabbithurt";
     }
 
+    @Override
     public void applyKnockback(Entity entity, int k, double d, double d2)
     {
         super.applyKnockback(entity, k, d, d2);
     }
 
+    @Override
     protected String getDeathSound()
     {
         return "mocreatures:rabbitdeath";
@@ -325,6 +334,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         return false;
     }
 
+    @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
         super.writeNbt(nbttagcompound);
@@ -334,6 +344,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         nbttagcompound.putBoolean("Adult", getAdult());
     }
 
+    @Override
     public void readNbt(NbtCompound nbttagcompound)
     {
         super.readNbt(nbttagcompound);
@@ -343,20 +354,23 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         setAdult(nbttagcompound.getBoolean("Adult"));
     }
 
+    @Override
     protected void initDataTracker() {
         super.initDataTracker();
         dataTracker.startTracking(16, (byte) 0); //Type
-        dataTracker.startTracking(17, (int) 0); //Age
+        dataTracker.startTracking(17, 0); //Age
         dataTracker.startTracking(18, (byte) 0); //Adult
         dataTracker.startTracking(19, (byte) 0); //Tamed
         dataTracker.startTracking(20, (byte) 0); //Picked
     }
 
+    @Override
     public boolean canSpawn()
     {
         return mod_mocreatures.mocGlass.animals.bunnyfreq > 0 && super.canSpawn();
     }
 
+    @Override
     protected boolean canDespawn()
     {
         return !getTamed();
@@ -374,6 +388,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         return Identifier.of(mod_mocreatures.MOD_ID, "Bunny");
     }
 
+    @Override
     @Environment(EnvType.CLIENT)
     public void processServerEntityStatus(byte status) {
         if (status == 6) {
@@ -388,6 +403,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
     }
 
     //TYPE
+    @Override
     public void setTypeSpawn()
     {
         if(!world.isRemote){
@@ -437,6 +453,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
     }
 
     //TAMED
+    @Override
     public boolean getTamed()
     {
         return (dataTracker.getByte(19) & 1) != 0;

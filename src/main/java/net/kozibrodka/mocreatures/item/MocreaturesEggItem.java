@@ -19,6 +19,7 @@ public class MocreaturesEggItem extends TemplateItem {
         ide = i;
     }
 
+    @Override
     public boolean useOnBlock(ItemStack arg, PlayerEntity arg2, World arg3, int i, int j, int k, int l) {
 
         if(arg3.isRemote){

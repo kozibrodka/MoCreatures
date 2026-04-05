@@ -26,6 +26,7 @@ public class RenderBigCat extends LivingEntityRenderer
         bigcat1 = modelbigcat2;
     }
 
+    @Override
     protected void applyScale(LivingEntity entityliving, float f)
     {
         EntityBigCat entitybigcat = (EntityBigCat)entityliving;
@@ -45,11 +46,13 @@ public class RenderBigCat extends LivingEntityRenderer
         return i == 0;
     }
 
+    @Override
     protected boolean bindTexture(LivingEntity entityliving, int i, float f)
     {
         return a((EntityBigCat)entityliving, i);
     }
 
+    @Override
     public void render(LivingEntity entityliving, double d, double d1, double d2,
             float f, float f1)
     {
@@ -186,6 +189,7 @@ public class RenderBigCat extends LivingEntityRenderer
         GL11.glScalef(f * entitybigcat.widthF, f * entitybigcat.heightF, f * entitybigcat.lengthF);
     }
 
+    @Override
     protected float getHeadBob(LivingEntity entityliving, float f)
     {
         EntityBigCat entitybigcat = (EntityBigCat)entityliving;
