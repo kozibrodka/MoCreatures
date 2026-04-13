@@ -15,15 +15,17 @@ import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 import net.modificationstation.stationapi.api.util.Identifier;
 
-public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial {
+public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider {
 
     public EntityElephant(World world)
     {
         super(world);
         texture = "/assets/mocreatures/stationapi/textures/mob/elephant.png";
         setBoundingBoxSpacing(2.5F, 2.8F);
-        health = 70; ///
         movementSpeed = 1.1F;
+        if(!world.isRemote){
+            setTypeSpawn();
+        }
     }
 
     @Override
@@ -199,7 +201,6 @@ public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider
     @Override
     public Identifier getHandlerIdentifier() {return Identifier.of(mod_mocreatures.MOD_ID, "Elephant");}
 
-    @Override
     public void setTypeSpawn() {
         if (!world.isRemote) {
             if (random.nextInt(5) == 0) {
@@ -208,6 +209,7 @@ public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider
                 setAge(1.0F);
             }else{
                 setAdult(true);
+                health = 70;
                 setAge(2.8F);
             }
         }

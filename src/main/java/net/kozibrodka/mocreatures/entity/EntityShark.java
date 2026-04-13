@@ -29,7 +29,7 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 import java.util.List;
 
 
-public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider, MoCreatureRacial, MoCreatureNamed
+public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,  MoCreatureNamed
         ///extends EntityCustomWM or EntityCustomAquaM
 
         ///Nie rozumiem czemu Shark nie działa w systemie AquaM a Pirania działa??? wtf
@@ -42,17 +42,15 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         setBoundingBoxSpacing(1.8F, 1.3F);
         health = 25;
         maxhealth = 25;
-        typechosen = false;
+        if(!world.isRemote){
+            setTypeSpawn();
+        }
     }
 
     @Override
     public void tickMovement()
     {
         super.tickMovement();
-        if(!typechosen && world.isRemote && getType() != 0){
-            typechosen = true;
-            chooseType(getType());
-        }
         if(!getAdult() && random.nextInt(50) == 0)
         {
             setAge(getAge()+0.01F);
@@ -340,7 +338,6 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
     }
 
     public int maxhealth;
-    public boolean typechosen;
 
     @Override
     public Identifier getHandlerIdentifier() {
@@ -371,8 +368,17 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         }
     }
 
-    //TYPE
     @Override
+    @Environment(EnvType.CLIENT)
+    public String getTexture() {
+        return switch (getType()) {
+            case 1 -> "/assets/mocreatures/stationapi/textures/mob/shark.png";
+            case 2 -> "/assets/mocreatures/stationapi/textures/mob/sharkmega.png";
+            default -> "";
+        };
+    }
+
+    //TYPE
     public void setTypeSpawn()
     {
         if(!world.isRemote){

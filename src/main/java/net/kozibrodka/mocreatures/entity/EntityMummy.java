@@ -2,6 +2,8 @@
 package net.kozibrodka.mocreatures.entity;
 
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.block.Block;
@@ -14,7 +16,7 @@ import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 import net.modificationstation.stationapi.api.util.Identifier;
 
-public class EntityMummy extends MonsterEntity implements MobSpawnDataProvider, MoCreatureRacial
+public class EntityMummy extends MonsterEntity implements MobSpawnDataProvider
 {
 
     public EntityMummy(World world)
@@ -23,6 +25,9 @@ public class EntityMummy extends MonsterEntity implements MobSpawnDataProvider, 
         movementSpeed = 0.4F;
         attackDamage = 3;
         health = random.nextInt(6) + 25;
+        if(!world.isRemote){
+            setTypeSpawn();
+        }
     }
 
     @Override
@@ -65,22 +70,19 @@ public class EntityMummy extends MonsterEntity implements MobSpawnDataProvider, 
     @Override
     public boolean canSpawn()
     {
-        int i = MathHelper.floor(x);
-        int j = MathHelper.floor(boundingBox.minY);
-        int k = MathHelper.floor(z);
-        int i1 = world.getBlockId(i, j - 1, k);
+//        int i = MathHelper.floor(x);
+//        int j = MathHelper.floor(boundingBox.minY);
+//        int k = MathHelper.floor(z);
+//        int i1 = world.getBlockId(i, j - 1, k);
         /// Moge dac biome pustynia jedynie, albo zostawić to i dac ją tylko na piasku i w podziemiach, mogę ją również dac jak WIlka bez jaskiń.
 //        return (i1 == Block.STONE.id || i1 == Block.SAND.id || i1 == Block.GRAVEL.id || i1 == Block.BEDROCK.id || i1 == Block.SANDSTONE.id) && mocr.mocreaturesGlass.hostilemobs.mummyfreq > 0 && super.canSpawn();
-        return world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && mod_mocreatures.mocGlass.hostilemobs.mummyfreq > 0 && super.canSpawn();
+//        return world.hasSkyLight(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)) && mod_mocreatures.mocGlass.hostilemobs.mummyfreq > 0 && super.canSpawn();
+        return y > 60 && mod_mocreatures.mocGlass.hostilemobs.mummyfreq > 0 && super.canSpawn();
     }
 
     @Override
     public void tickMovement()
     {
-        if(!typechosen && world.isRemote && getType() != 0){
-            typechosen = true;
-            chooseType(getType());
-        }
         if(world.canMonsterSpawn() && !world.isRemote)
         {
             float f = getBrightnessAtEyes(1.0F);
@@ -133,13 +135,10 @@ public class EntityMummy extends MonsterEntity implements MobSpawnDataProvider, 
         return Block.SANDSTONE.id;
     }
 
-    public boolean typechosen;
-
     @Override
     public Identifier getHandlerIdentifier() {return Identifier.of(mod_mocreatures.MOD_ID, "Mummy");}
 
     //TYPE
-    @Override
     public void setTypeSpawn()
     {
         if(!world.isRemote){
@@ -152,7 +151,6 @@ public class EntityMummy extends MonsterEntity implements MobSpawnDataProvider, 
     {
         if(!world.isRemote) {
             dataTracker.set(16, (byte) type);
-            chooseType(type);
         }
     }
 
@@ -161,24 +159,16 @@ public class EntityMummy extends MonsterEntity implements MobSpawnDataProvider, 
         return dataTracker.getByte(16);
     }
 
-    public void chooseType(int typeint)
-    {
-        if(typeint == 1)
-        {
-            texture = "/assets/mocreatures/stationapi/textures/mob/mummy.png";
-        } else
-        if(typeint == 2)
-        {
-            texture = "/assets/mocreatures/stationapi/textures/mob/mummy1.png";
-        } else
-        if(typeint == 3)
-        {
-            texture = "/assets/mocreatures/stationapi/textures/mob/mummy2.png";
-        } else
-        if(typeint == 4)
-        {
-            texture = "/assets/mocreatures/stationapi/textures/mob/mummy3.png";
-        }
+    @Override
+    @Environment(EnvType.CLIENT)
+    public String getTexture() {
+        return switch (getType()) {
+            case 1 -> "/assets/mocreatures/stationapi/textures/mob/mummy.png";
+            case 2 -> "/assets/mocreatures/stationapi/textures/mob/mummy1.png";
+            case 3 -> "/assets/mocreatures/stationapi/textures/mob/mummy2.png";
+            case 4 -> "/assets/mocreatures/stationapi/textures/mob/mummy3.png";
+            default -> "";
+        };
     }
 
     public int getRandomRace(){

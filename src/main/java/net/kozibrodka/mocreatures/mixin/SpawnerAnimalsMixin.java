@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(NaturalSpawner.class)
-public class SpawnerAnimalsMixin {
+public class SpawnerAnimalsMixin { /// USUNIĘTA LOGIKA
 
     @Inject(method = "postSpawnEntity", at = @At(value = "TAIL"), cancellable = true)
     private static void Injected(LivingEntity arg, World arg2, float f, float g, float h, CallbackInfo ci){

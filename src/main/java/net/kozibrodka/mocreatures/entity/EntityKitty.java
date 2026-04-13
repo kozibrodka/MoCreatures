@@ -30,7 +30,7 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 import java.util.List;
 import java.util.Objects;
 
-public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial,  MoCreatureNamed
+public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider,  MoCreatureNamed
 {
 
     public EntityKitty(World world)
@@ -39,7 +39,6 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
         setBoundingBoxSpacing(0.7F, 0.5F);
         texture = "/assets/mocreatures/stationapi/textures/mob/pussycata.png";
         killedByOtherEntity = true;
-        setAdult(true);
         inBed = false;
         sleepy = false;
         hungry = false;
@@ -48,6 +47,9 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
         madtimer = random.nextInt(5);
         maxhealth = 15;
         foundTree = false;
+        if(!world.isRemote){
+            setTypeSpawn();
+        }
     }
 
     @Override
@@ -161,40 +163,20 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
         }
     }
 
-    public void chooseType(int typeint)
-    {
-            if(typeint == 1)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/pussycata.png";
-            } else
-            if(typeint == 2)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/pussycatb.png";
-            } else
-            if(typeint == 3)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/pussycatc.png";
-            } else
-            if(typeint == 4)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/pussycatd.png";
-            } else
-            if(typeint == 5)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/pussycate.png";
-            } else
-            if(typeint == 6)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/pussycatf.png";
-            } else
-            if(typeint == 7)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/pussycatg.png";
-            }
-            if(typeint == 8)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/pussycath.png";
-            }
+    @Override
+    @Environment(EnvType.CLIENT)
+    public String getTexture() {
+        return switch (getType()) {
+            case 1 -> "/assets/mocreatures/stationapi/textures/mob/pussycata.png";
+            case 2 -> "/assets/mocreatures/stationapi/textures/mob/pussycatb.png";
+            case 3 -> "/assets/mocreatures/stationapi/textures/mob/pussycatc.png";
+            case 4 -> "/assets/mocreatures/stationapi/textures/mob/pussycatd.png";
+            case 5 -> "/assets/mocreatures/stationapi/textures/mob/pussycate.png";
+            case 6 -> "/assets/mocreatures/stationapi/textures/mob/pussycatf.png";
+            case 7 -> "/assets/mocreatures/stationapi/textures/mob/pussycatg.png";
+            case 8 -> "/assets/mocreatures/stationapi/textures/mob/pussycath.png";
+            default -> "";
+        };
     }
 
     @Override
@@ -326,10 +308,6 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider, M
     @Override
     public void tickMovement()
     {
-        if(!typechosen && world.isRemote && getType() != 0){
-            typechosen = true;
-            chooseType(getType());
-        }
         if(world.isRemote){
             super.tickMovement();
             if(getPicked()){
@@ -1621,7 +1599,6 @@ label0:
         }
     }
 
-    public boolean typechosen;
     public boolean inBed;
     public boolean sleepy;
     public boolean hungry;
@@ -1710,10 +1687,10 @@ label0:
         return Identifier.of(mod_mocreatures.MOD_ID, "Kitty");
     }
 
-    @Override
     public void setTypeSpawn() {
         if(!world.isRemote) {
             setType(getRandomRace());
+            setAdult(true);
             setAge(0.4F);
             setKittyState(1);
         }
@@ -1723,7 +1700,6 @@ label0:
     {
         if(!world.isRemote) {
             dataTracker.set(16, (byte) type);
-            chooseType(type);
         }
     }
 

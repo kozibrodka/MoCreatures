@@ -88,7 +88,6 @@ public class mod_mocreatures {
 
     @EventListener
     public void registerPacket(PacketRegisterEvent event) {
-        Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("adult"), AdultPacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("name"), NamePacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("rope"), RopePacket.TYPE);
         Registry.register(PacketTypeRegistry.INSTANCE, MOD_ID.id("horse_riding"), RidingHorsePacket.TYPE);

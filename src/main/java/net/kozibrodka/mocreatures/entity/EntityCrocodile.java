@@ -27,15 +27,18 @@ import net.modificationstation.stationapi.api.util.Identifier;
 import java.util.List;
 import java.util.Objects;
 
-public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial {
+public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvider {
 
     public EntityCrocodile(World world)
     {
         super(world);
         texture = "/assets/mocreatures/stationapi/textures/mob/crocodile.png";
         setBoundingBoxSpacing(2.0F, 0.6F);
-        health = 35; ///oryg: 25, dodałem mechanice wyzwalania sie z paszczy dla zwierząt, wiec health+
+        health = 25;
         movementSpeed = 0.5F;
+        if(!world.isRemote){
+            setTypeSpawn();
+        }
     }
 
     @Override
@@ -573,13 +576,13 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
         }
     }
 
-    @Override
     public void setTypeSpawn() {
         if(random.nextInt(4) == 0){
             setAge(0.7F + (random.nextFloat() / 5F));
+            health = 25;
         }else{
             setAge(1.3F);
-            health = 30;
+            health = 35; ///oryg: 25, dodałem mechanice wyzwalania sie z paszczy dla zwierząt, wiec health+
         }
     }
 

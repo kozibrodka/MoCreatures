@@ -78,7 +78,7 @@ public abstract class PlayerBaseMixin extends LivingEntity {
             Entity entity = (Entity)iterator.next();
             EntityBigCat entitybigcat = (EntityBigCat)entity;
             if (entitybigcat.getTamed() && entitybigcat.getAdult() && entitybigcat.getTarget() == null && name.equals(entitybigcat.getOwner()) && (!flag || !entitybigcat.getSitting())) {
-                if (entitybigcat.getProtect()) {
+                if (entitybigcat.protectMyOwner) {
                     entitybigcat.setSitting(false);
                     entitybigcat.target = entityliving;
                 }

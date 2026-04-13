@@ -54,7 +54,6 @@ public class EntityCollie extends AnimalEntity implements MobSpawnDataProvider, 
         return false;
     }
 
-    // TODO: Czy nie powinienm poprostu uzyc getTexture() w mobach??? wszystkich
     @Override
     @Environment(EnvType.CLIENT)
     public String getTexture() {

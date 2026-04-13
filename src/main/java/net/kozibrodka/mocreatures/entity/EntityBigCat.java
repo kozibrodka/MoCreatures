@@ -1,6 +1,5 @@
 package net.kozibrodka.mocreatures.entity;
 
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
@@ -10,7 +9,6 @@ import net.kozibrodka.mocreatures.network.AskPacket;
 import net.kozibrodka.mocreatures.network.JokeyPacket;
 import net.kozibrodka.mocreatures.network.NamePacket;
 import net.kozibrodka.mocreatures.network.RopePacket;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
@@ -38,20 +36,21 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 import java.util.List;
 import java.util.Objects;
 
-
-public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial, MoCreatureNamed
+public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, MoCreatureNamed
 {
     public EntityBigCat(World world)
     {
         super(world);
-        setAge(0.35F);
-        setHungry(true);
+        hungry = true;
         setBoundingBoxSpacing(0.9F, 1.3F);
         health = 25;
         force = 1;
         attackRange = 1.0D;
         maxhealth = 25;
-        typechosen = false;
+        askedServer = false;
+        if(!world.isRemote){
+            setTypeSpawn(); /// Addon for SpawnEggs + Summon command working
+        }
     }
 
     @Override
@@ -61,17 +60,67 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         dataTracker.startTracking(16, (byte) 0); //Type
         dataTracker.startTracking(17, (int) 0); //Age
         dataTracker.startTracking(18, (byte) 0); //Adult
-        dataTracker.startTracking(19, (byte) 0); //Eaten
+//        dataTracker.startTracking(19, (byte) 0); //Eaten //TODO
+        dataTracker.startTracking(19, (byte) 0); //Display Name
         dataTracker.startTracking(20, (byte) 0); //Tamed
         dataTracker.startTracking(21, (byte) 0); //Sitting
-        dataTracker.startTracking(22, (byte) 0); //Hungry
-        dataTracker.startTracking(23, (byte) 0); //Protect From Players
-        dataTracker.startTracking(24, (byte) 0); //Display Name
+//        dataTracker.startTracking(22, (byte) 0); //Hungry //TODO
+//        dataTracker.startTracking(23, (byte) 0); //Protect From Players //TODO
+        dataTracker.startTracking(27, ""); //Owner
+        dataTracker.startTracking(28, ""); //Name
         dataTracker.startTracking(29, (byte) 0); //HEALTH
-        dataTracker.startTracking(30, ""); //Owner
-        dataTracker.startTracking(31, ""); //Name
     }
 
+    @Override
+    @Environment(EnvType.CLIENT)
+    public String getTexture() {
+        switch (getType()) {
+            case 1:
+                widthF = 1.0F;
+                heightF = 1.0F;
+                lengthF = 1.0F;
+                maxhealth = 25;
+                return "/assets/mocreatures/stationapi/textures/mob/lionf.png";
+            case 2:
+                widthF = 1.1F;
+                heightF = 1.1F;
+                lengthF = 1.0F;
+                maxhealth = 30;
+                return "/assets/mocreatures/stationapi/textures/mob/lionf.png";
+            case 3:
+                widthF = 0.9F;
+                heightF = 0.9F;
+                lengthF = 0.9F;
+                maxhealth = 20;
+                return "/assets/mocreatures/stationapi/textures/mob/panther.png";
+            case 4:
+                widthF = 0.8F;
+                heightF = 0.8F;
+                lengthF = 1.0F;
+                maxhealth = 20;
+                return "/assets/mocreatures/stationapi/textures/mob/cheetah.png";
+            case 5:
+                widthF = 1.1F;
+                heightF = 1.1F;
+                lengthF = 1.1F;
+                maxhealth = 35;
+                return "/assets/mocreatures/stationapi/textures/mob/tiger.png";
+            case 6:
+                widthF = 0.8F;
+                heightF = 0.8F;
+                lengthF = 0.9F;
+                maxhealth = 25;
+                return "/assets/mocreatures/stationapi/textures/mob/leopard.png";
+            case 7:
+                widthF = 1.2F;
+                heightF = 1.2F;
+                lengthF = 1.2F;
+                maxhealth = 40;
+                return "/assets/mocreatures/stationapi/textures/mob/tigerw.png";
+            default:
+                return "";
+        }
+    }
 
     public void chooseType(int type)
     {
@@ -187,7 +236,6 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         if(roper != null){
             return distance < mod_mocreatures.ropeRenderDist;
 //            return true;
-
         }else{
             return super.shouldRender(distance);
         }
@@ -203,9 +251,8 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
     public void tickMovement()
     {
         super.tickMovement();
-        if(!typechosen && world.isRemote && getType() != 0){
-            typechosen = true;
-            chooseType(getType());
+        if(!askedServer && world.isRemote){
+            askedServer = true;
             PacketHelper.send(new AskPacket(this.id, "tiger"));
         }
         if(!world.isRemote) {
@@ -217,14 +264,14 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                     killedByOtherEntity = false;
                 }
             }
-            if(!getHungry()){
+            if(!hungry){
                 if((this.health < this.maxhealth) && getTamed()){
                     if(random.nextInt(50) == 0){
-                        setHungry(true);
+                        hungry = true;
                     }
                 }else{
                     if(random.nextInt(200) == 0){
-                        setHungry(true);
+                        hungry = true;
                     }
                 }
             }
@@ -258,7 +305,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                 hasRopeOnNeck = false;
                 roper = null;
             }
-            if (deathTime == 0 && getHungry()) {
+            if (deathTime == 0 && hungry) {
                 ItemEntity entityitem = getClosestItem(this, 12D, Item.RAW_PORKCHOP.id, Item.RAW_FISH.id);
                 if (entityitem != null) {
                     if(!getSitting()){
@@ -273,11 +320,11 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                             health += 10;
                         }
                         if (!getAdult() && getAge() < 0.8F) {
-                            setEaten(true);
+                            eaten = true;
                         }
                         world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
                         world.broadcastEntityEvent(this, (byte)8);
-                        setHungry(false);
+                        hungry = false;
                     }
                 }
             }
@@ -436,7 +483,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
     {
         if(roper != null) /// Na lince nie poluje. Procect=off - w ogole nie broni.
         {
-            if(getProtect()) {
+            if(protectMyOwner) {
                 return getMastersEnemy((PlayerEntity) roper, 12D);
             }else{
                 return null;
@@ -445,23 +492,23 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         if(world.difficulty > 0)
         {
             PlayerEntity entityplayer = world.getClosestPlayer(this, 12D);
-            if(!getTamed() && entityplayer != null && getAdult() && getHungry())
+            if(!getTamed() && entityplayer != null && getAdult() && hungry)
             {
                 if(getType() == 1 || getType() == 5 || getType() == 7)
                 {
-                    setHungry(false);
+                    hungry = false;
                     return entityplayer;
                 }
                 if(random.nextInt(30) == 0)
                 {
-                    setHungry(false);
+                    hungry = false;
                     return entityplayer;
                 }
             }
-            if(random.nextInt(80) == 0 && getHungry() && !getSitting())
+            if(random.nextInt(80) == 0 && hungry && !getSitting())
             {
                 LivingEntity entityliving = getClosestTarget(this, 10D);
-                setHungry(false);
+                hungry = false;
                 return entityliving;
             }
         }
@@ -533,6 +580,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         return entitycreature;
     }
 
+    @Override
     public boolean damage(Entity entitybase, int i)
     {
         if(super.damage(entitybase, i))
@@ -620,9 +668,9 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         nbttagcompound.putString("Name", getName());
         nbttagcompound.putBoolean("DisplayName", getDisplayName());
         nbttagcompound.putString("TigerOwner", getOwner());
-        nbttagcompound.putBoolean("ProtectFromPlayers", getProtect());
-        nbttagcompound.putBoolean("Hungry", getHungry());
-        nbttagcompound.putBoolean("Eaten", getEaten());
+        nbttagcompound.putBoolean("ProtectFromPlayers", protectMyOwner);
+        nbttagcompound.putBoolean("Hungry", hungry);
+        nbttagcompound.putBoolean("Eaten", eaten);
         nbttagcompound.putBoolean("Roper", hasRopeOnNeck);
     }
 
@@ -639,10 +687,10 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         setName(nbttagcompound.getString("Name"));
         setDisplayName(nbttagcompound.getBoolean("DisplayName"));
         setOwner(nbttagcompound.getString("TigerOwner"));
-        setProtect(nbttagcompound.getBoolean("ProtectFromPlayers"));
-        setHungry(nbttagcompound.getBoolean("Hungry"));
-        setEaten(nbttagcompound.getBoolean("Eaten"));
-        hasRopeOnNeck = (nbttagcompound.getBoolean("Roper"));
+        protectMyOwner = nbttagcompound.getBoolean("ProtectFromPlayers");
+        hungry = nbttagcompound.getBoolean("Hungry");
+        eaten = nbttagcompound.getBoolean("Eaten");
+        hasRopeOnNeck = nbttagcompound.getBoolean("Roper");
     }
 
     @Override
@@ -657,23 +705,23 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                 return false;
             }
             if (itemstack != null && getTamed() && itemstack.getItem() instanceof SwordItem) {
-                if (getProtect()) {
-                    setProtect(false);
+                if (protectMyOwner) {
+                    protectMyOwner = false;
                     MoCTools.addHeartParticles(world,this);
                     world.broadcastEntityEvent(this, (byte)6);
                 } else {
-                    setProtect(true);
+                    protectMyOwner = true;
                     MoCTools.addFlameParticles(world,this);
                     world.broadcastEntityEvent(this, (byte)7);
                 }
                 return true;
             }
-            if (itemstack != null && !getTamed() && getEaten() && itemstack.itemId == mod_mocreatures.medallion.id) {
+            if (itemstack != null && !getTamed() && eaten && itemstack.itemId == mod_mocreatures.medallion.id) {
                 if (--itemstack.count == 0) {
                     entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
                 }
                 setTamed(true);
-                setProtect(true);
+                protectMyOwner = true;
                 setOwner(entityplayer.name);
                 setNameWithGui(this, entityplayer);
                 return true;
@@ -856,13 +904,16 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
 
     protected int force;
     protected double attackRange;
-    public boolean typechosen;
+    public boolean askedServer;
     public float heightF;
     public float widthF;
     public float lengthF;
     public int maxhealth;
     public LivingEntity roper;
     public boolean hasRopeOnNeck;
+    public boolean eaten;
+    public boolean hungry;
+    public boolean protectMyOwner;
 
     @Override
     public Identifier getHandlerIdentifier() {
@@ -896,7 +947,6 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
-    @Override
     public void setTypeSpawn() {
         if (!world.isRemote) {
             int i = 0;
@@ -919,12 +969,13 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
             if (random.nextInt(4) == 0) {
                 setAdult(false);
                 killedByOtherEntity = true;
+                setAge(0.35F);
             }else{
                 setAdult(true);
                 setAge(1.0F);
             }
             setType(i);
-            setProtect(true); ///Broni Domyślnie
+            protectMyOwner = true; ///Broni Domyślnie
             this.health = this.maxhealth;
         }
     }
@@ -1004,30 +1055,13 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
-    //HUNGRY
-    public boolean getHungry()
-    {
-        return (dataTracker.getByte(22) & 1) != 0;
-    }
-
-    public void setHungry(boolean flag)
-    {
-        if(flag)
-        {
-            dataTracker.set(22, Byte.valueOf((byte)1));
-        } else
-        {
-            dataTracker.set(22, Byte.valueOf((byte)0));
-        }
-    }
-
-    //EATEN
-    public boolean getEaten()
+    //DISPLAY NAME
+    public boolean getDisplayName()
     {
         return (dataTracker.getByte(19) & 1) != 0;
     }
 
-    public void setEaten(boolean flag)
+    public void setDisplayName(boolean flag)
     {
         if(flag)
         {
@@ -1035,40 +1069,6 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         } else
         {
             dataTracker.set(19, Byte.valueOf((byte)0));
-        }
-    }
-
-    //PROTECT FROM PLAYERES
-    public boolean getProtect()
-    {
-        return (dataTracker.getByte(23) & 1) != 0;
-    }
-
-    public void setProtect(boolean flag)
-    {
-        if(flag)
-        {
-            dataTracker.set(23, Byte.valueOf((byte)1));
-        } else
-        {
-            dataTracker.set(23, Byte.valueOf((byte)0));
-        }
-    }
-
-    //DISPLAY NAME
-    public boolean getDisplayName()
-    {
-        return (dataTracker.getByte(24) & 1) != 0;
-    }
-
-    public void setDisplayName(boolean flag)
-    {
-        if(flag)
-        {
-            dataTracker.set(24, Byte.valueOf((byte)1));
-        } else
-        {
-            dataTracker.set(24, Byte.valueOf((byte)0));
         }
     }
 
@@ -1081,26 +1081,26 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
     //OWNER
     public void setOwner(String owner)
     {
-        this.dataTracker.set(30, owner);
+        this.dataTracker.set(27, owner);
     }
 
     @Override
     public String getOwner()
     {
-        return this.dataTracker.getString(30);
+        return this.dataTracker.getString(27);
     }
 
     //NAME
     @Override
     public void setName(String name)
     {
-        this.dataTracker.set(31, name);
+        this.dataTracker.set(28, name);
     }
 
     @Override
     public String getName()
     {
-        return this.dataTracker.getString(31);
+        return this.dataTracker.getString(28);
     }
 }
 

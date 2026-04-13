@@ -1,5 +1,7 @@
 package net.kozibrodka.mocreatures.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
@@ -14,7 +16,7 @@ import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 import net.modificationstation.stationapi.api.util.Identifier;
 
-public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider, MoCreatureRacial {
+public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider {
     ///extends EntityCustomWM or EntityCustomAquaM
 
     public EntityRay(World world)
@@ -23,15 +25,14 @@ public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider
         setBoundingBoxSpacing(0.6F, 0.5F);
         health = 10; ///
         movementSpeed = 0.3F;
+        if(!world.isRemote){
+            setTypeSpawn();
+        }
     }
 
     @Override
     public void tickMovement() {
         super.tickMovement();
-        if(!typechosen && world.isRemote && getType() != 0){
-            typechosen = true;
-            chooseType(getType());
-        }
         if(!world.isRemote) {
             if(!adult && random.nextInt(50) == 0) {
                 setAge(getAge() + 0.01F);
@@ -116,7 +117,6 @@ public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider
 
     public int maxhealth;
     public int poisoncounter;
-    public boolean typechosen;
     public boolean adult;
 
     @Override
@@ -150,7 +150,6 @@ public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider
         adult = (nbttagcompound.getBoolean("Adult"));
     }
 
-    @Override
     public void setTypeSpawn() {
         if(!world.isRemote){
             int type = getRandomRace();
@@ -228,5 +227,15 @@ public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider
             texture = "/assets/mocreatures/stationapi/textures/mob/stingray.png";
             maxhealth = 15;
         }
+    }
+
+    @Override
+    @Environment(EnvType.CLIENT)
+    public String getTexture() {
+        return switch (getType()) {
+            case 1 -> "/assets/mocreatures/stationapi/textures/mob/mantray.png";
+            case 2 -> "/assets/mocreatures/stationapi/textures/mob/stingray.png";
+            default -> "";
+        };
     }
 }

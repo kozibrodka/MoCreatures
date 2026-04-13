@@ -1,6 +1,8 @@
 
 package net.kozibrodka.mocreatures.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
@@ -17,7 +19,7 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 
 import java.util.List;
 
-public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider, MoCreatureRacial, MoCreatureNamed
+public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider, MoCreatureNamed
         ///extends EntityCustomWM or EntityCustomAquaM
         /// Piranha nie goni idealnie prawidłowo gdy nurkujesz w systemie Aqua.
 {
@@ -27,8 +29,10 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         super(world);
         setBoundingBoxSpacing(0.3F, 0.3F);
         health = 4;
-        typechosen = false;
         killedByOtherEntity = true;
+        if(!world.isRemote){
+            setTypeSpawn();
+        }
     }
 
 
@@ -36,10 +40,6 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
     public void tickMovement()
     {
         super.tickMovement();
-        if(!typechosen && world.isRemote && getType() != 0){
-            typechosen = true;
-            chooseType(getType());
-        }
         if(world.isRemote){
             return;
         }
@@ -259,48 +259,22 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         }
     }
 
-    public void chooseType(int typeint)
-    {
-            if(typeint == 1)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/fishy1.png";
-            } else
-            if(typeint == 2)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/fishy2.png";
-            } else
-            if(typeint == 3)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/fishy3.png";
-            } else
-            if(typeint == 4)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/fishy4.png";
-            } else
-            if(typeint == 5)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/fishy5.png";
-            } else
-            if(typeint == 6)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/fishy6.png";
-            } else
-            if(typeint == 7)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/fishy7.png";
-            } else
-            if(typeint == 8)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/fishy8.png";
-            } else
-            if(typeint == 9)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/fishy9.png";
-            } else
-            if(typeint == 10)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/fishy10.png";
-            }
+    @Override
+    @Environment(EnvType.CLIENT)
+    public String getTexture() {
+        return switch (getType()) {
+            case 1 -> "/assets/mocreatures/stationapi/textures/mob/fishy1.png";
+            case 2 -> "/assets/mocreatures/stationapi/textures/mob/fishy2.png";
+            case 3 -> "/assets/mocreatures/stationapi/textures/mob/fishy3.png";
+            case 4 -> "/assets/mocreatures/stationapi/textures/mob/fishy4.png";
+            case 5 -> "/assets/mocreatures/stationapi/textures/mob/fishy5.png";
+            case 6 -> "/assets/mocreatures/stationapi/textures/mob/fishy6.png";
+            case 7 -> "/assets/mocreatures/stationapi/textures/mob/fishy7.png";
+            case 8 -> "/assets/mocreatures/stationapi/textures/mob/fishy8.png";
+            case 9 -> "/assets/mocreatures/stationapi/textures/mob/fishy9.png";
+            case 10 -> "/assets/mocreatures/stationapi/textures/mob/fishy10.png";
+            default -> "";
+        };
     }
 
     @Override
@@ -358,7 +332,6 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
 
     public int gestationtime;
     public boolean eaten;
-    public boolean typechosen;
 
     @Override
     public Identifier getHandlerIdentifier() {
@@ -366,7 +339,6 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
     }
 
 
-    @Override
     public void setTypeSpawn()
     {
         if(!world.isRemote){
@@ -380,7 +352,6 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
     {
         if(!world.isRemote) {
             dataTracker.set(16, (byte) type);
-            chooseType(type);
         }
     }
 

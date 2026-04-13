@@ -25,7 +25,7 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 import java.util.List;
 import java.util.Objects;
 
-public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial
+public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider
 {
 
     public EntityMouse(World world)
@@ -33,6 +33,9 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         super(world);
         setBoundingBoxSpacing(0.3F, 0.3F);
         health = 4;
+        if(!world.isRemote){
+            setTypeSpawn();
+        }
     }
 
     public int getRandomRace(){
@@ -50,20 +53,15 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
         }
     }
 
-    public void chooseType(int typeint)
-    {
-            if(typeint == 1)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/miceg.png";
-            } else
-            if(typeint == 2)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/miceb.png";
-            } else
-            if(typeint == 3)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/micew.png";
-            }
+    @Override
+    @Environment(EnvType.CLIENT)
+    public String getTexture() {
+        return switch (getType()) {
+            case 1 -> "/assets/mocreatures/stationapi/textures/mob/miceg.png";
+            case 2 -> "/assets/mocreatures/stationapi/textures/mob/miceb.png";
+            case 3 -> "/assets/mocreatures/stationapi/textures/mob/micew.png";
+            default -> "";
+        };
     }
 
     @Override
@@ -81,10 +79,6 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
     public void tickMovement()
     {
         super.tickMovement();
-        if(!typechosen && world.isRemote && getType() != 0){
-            typechosen = true;
-            chooseType(getType());
-        }
         if(random.nextInt(15) == 0 && !world.isRemote)
         {
             LivingEntity entityliving = getBoogey(6D);
@@ -328,7 +322,6 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
     private boolean fertile;
     private int micetimer;
 
-    public boolean typechosen;
 
     @Override
     public Identifier getHandlerIdentifier() {
@@ -336,7 +329,6 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
     }
 
     //TYPE
-    @Override
     public void setTypeSpawn()
     {
         if(!world.isRemote){
@@ -349,7 +341,6 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider, M
     {
         if(!world.isRemote) {
             dataTracker.set(16, (byte) type);
-            chooseType(type);
         }
     }
 

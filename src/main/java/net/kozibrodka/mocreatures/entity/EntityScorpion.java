@@ -18,7 +18,7 @@ import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 import net.modificationstation.stationapi.api.util.Identifier;
 
-public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvider, MoCreatureRacial {
+public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvider {
 
     public EntityScorpion(World world)
     {
@@ -27,16 +27,13 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
         movementSpeed = 0.8F;
         health = 15;
         poisontimer = 0;
-        typechosen = false;
+        if(!world.isRemote){
+            setTypeSpawn();
+        }
     }
 
     @Override
     public void tickMovement() {
-        if(!typechosen && world.isRemote && getType() != 0){
-            typechosen = true;
-            chooseType(getType());
-        }
-
         if(world.isRemote){
             super.tickMovement();
             return;
@@ -241,14 +238,12 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
 
 
     private int poisontimer;
-    public boolean typechosen;
     public float swingProgress;
 
 
     @Override
     public Identifier getHandlerIdentifier() {return Identifier.of(mod_mocreatures.MOD_ID, "Scorpion");}
 
-    @Override
     public void setTypeSpawn() {
         if(world.isRemote) {
             return;
@@ -268,24 +263,16 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
         setType(i);
     }
 
-    public void chooseType(int typeint)
-    {
-        if(typeint == 1)
-        {
-            texture = "/assets/mocreatures/stationapi/textures/mob/scorpiona.png";
-        } else
-        if(typeint == 2)
-        {
-            texture = "/assets/mocreatures/stationapi/textures/mob/scorpionb.png";
-        } else
-        if(typeint == 3)
-        {
-            texture = "/assets/mocreatures/stationapi/textures/mob/scorpionc.png";
-        } else
-        if(typeint == 4)
-        {
-            texture = "/assets/mocreatures/stationapi/textures/mob/scorpiond.png";
-        }
+    @Override
+    @Environment(EnvType.CLIENT)
+    public String getTexture() {
+        return switch (getType()) {
+            case 1 -> "/assets/mocreatures/stationapi/textures/mob/scorpiona.png";
+            case 2 -> "/assets/mocreatures/stationapi/textures/mob/scorpionb.png";
+            case 3 -> "/assets/mocreatures/stationapi/textures/mob/scorpionc.png";
+            case 4 -> "/assets/mocreatures/stationapi/textures/mob/scorpiond.png";
+            default -> "";
+        };
     }
 
     @Override
@@ -337,7 +324,6 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
     {
         if(!world.isRemote) {
             dataTracker.set(16, (byte) type);
-            chooseType(type);
         }
     }
 

@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(DungeonFeature.class)
 public class DungeonSaddleMixin {
 
-    /// Mixin usunięty z Configu. //TODO: Chciałbym opcje w Aether, żeby SIODŁO było innym itemem.
+    /// Mixin usunięty z Configu. //TODO: Chciałbym opcje w Aether, żeby SIODŁO było innym itemem. TRY MIXIN INTO EATJHER
 
     @Inject(method = "getRandomChestItem", at = @At(value = "RETURN", ordinal = 0), cancellable = true)
     private void injected(CallbackInfoReturnable<ItemStack> cir) {

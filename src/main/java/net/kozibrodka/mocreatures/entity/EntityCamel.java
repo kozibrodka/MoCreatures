@@ -25,7 +25,7 @@ import net.modificationstation.stationapi.api.util.Identifier;
 
 import java.util.List;
 
-public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial {
+public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider {
 
     public EntityCamel(World world)
     {
@@ -37,6 +37,9 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
         attackrange = 16D;
         movementSpeed = 0.45F;
         spittimer = 30;
+        if(!world.isRemote){
+            setTypeSpawn();
+        }
     }
 
     @Override
@@ -49,15 +52,6 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
         {
             return -(float)j;
         }
-    }
-
-    @Override
-    public void tickMovement() {
-        if(!typechosen && world.isRemote && getType() != 0){
-            typechosen = true;
-            chooseType(getType());
-        }
-        super.tickMovement();
     }
 
     @Override
@@ -224,13 +218,11 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
     public int spittimer;
     protected int attack;
     protected double attackrange;
-    public boolean typechosen;
 
     @Override
     public Identifier getHandlerIdentifier() {return Identifier.of(mod_mocreatures.MOD_ID, "Camel");}
 
     //TYPE
-    @Override
     public void setTypeSpawn()
     {
         if(!world.isRemote){
@@ -243,7 +235,6 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
     {
         if(!world.isRemote) {
             dataTracker.set(16, (byte) type);
-            chooseType(type);
         }
     }
 
@@ -252,31 +243,24 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider, M
         return dataTracker.getByte(16);
     }
 
-    public void chooseType(int typeint)
-    {
-        if(typeint == 1)
-        {
-            texture = "/assets/mocreatures/stationapi/textures/mob/camel.png";
-        } else
-        if(typeint == 2)
-        {
-            texture = "/assets/mocreatures/stationapi/textures/mob/camelbrown.png";
-        } else
-        if(typeint == 3)
-        {
-            texture = "/assets/mocreatures/stationapi/textures/mob/camelgrey.png";
-        } else
-        if(typeint == 4)
-        {
-            texture = "/assets/mocreatures/stationapi/textures/mob/camelblack.png";
-        } else
-        if(typeint == 5)
-        {
-            texture = "/assets/mocreatures/stationapi/textures/mob/camelwhite.png";
-        } else
-        if(typeint == 6)
-        {
-            texture = "/assets/mocreatures/stationapi/textures/mob/camel256.png";
+    @Override
+    @Environment(EnvType.CLIENT)
+    public String getTexture() {
+        switch (getType()) {
+            case 1:
+                return "/assets/mocreatures/stationapi/textures/mob/camel.png";
+            case 2:
+                return "/assets/mocreatures/stationapi/textures/mob/camelbrown.png";
+            case 3:
+                return "/assets/mocreatures/stationapi/textures/mob/camelgrey.png";
+            case 4:
+                return "/assets/mocreatures/stationapi/textures/mob/camelblack.png";
+            case 5:
+                return "/assets/mocreatures/stationapi/textures/mob/camelwhite.png";
+            case 6:
+                return "/assets/mocreatures/stationapi/textures/mob/camel256.png";
+            default:
+                return "";
         }
     }
 

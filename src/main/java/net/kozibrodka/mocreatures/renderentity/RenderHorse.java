@@ -216,88 +216,154 @@ public class RenderHorse extends LivingEntityRenderer
 
     protected boolean setWoolColorAndRender(EntityHorse entityhorse, int i)
     {
-        if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horseb.png")
-        {
-            if(!entityhorse.getSaddled())
-            {
-                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsea.png");
-            } else
-            {
-                bindTexture("/assets/mocreatures/stationapi/textures/mob/horseasaddle.png");
-            }
-        } else
-        if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horsebrownb.png")
-        {
-            if(!entityhorse.getSaddled())
-            {
-                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsebrowna.png");
-            } else
-            {
-                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsebrownsaddle.png");
-            }
-        } else
-        if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horseblackb.png")
-        {
-            if(!entityhorse.getSaddled())
-            {
-                bindTexture("/assets/mocreatures/stationapi/textures/mob/horseblacka.png");
-            } else
-            {
-                bindTexture("/assets/mocreatures/stationapi/textures/mob/horseblacksaddle.png");
-            }
-        } else
-        if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horsegoldb.png")
-        {
-            if(!entityhorse.getSaddled())
-            {
-                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsegolda.png");
-            } else
-            {
-                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsegoldsaddle.png");
-            }
-        } else
-        if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horsewhiteb.png")
-        {
-            if(!entityhorse.getSaddled())
-            {
-                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsewhitea.png");
-            } else
-            {
-                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsewhitesaddle.png");
-            }
-        } else
-        if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horsepackb.png")
-        {
-            if(!entityhorse.getSaddled())
-            {
-                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsepacka.png");
-            } else
-            {
-                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsepacksaddle.png");
-            }
-        } else
-        if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horsenightb.png")
-        {
-            if(!entityhorse.getSaddled())
-            {
-                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsenighta.png");
-            } else
-            {
-                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsenightsaddle.png");
-            }
-        } else
-        if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horsebpb.png")
-        {
-            if(!entityhorse.getSaddled())
-            {
-                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsebpa.png");
-            } else
-            {
-                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsebpsaddle.png");
-            }
+        switch (entityhorse.getType()) {
+            case 1:
+                if (!entityhorse.getSaddled()) {
+                    bindTexture("/assets/mocreatures/stationapi/textures/mob/horsea.png");
+                } else {
+                    bindTexture("/assets/mocreatures/stationapi/textures/mob/horseasaddle.png");
+                }
+                break;
+            case 2:
+                if (!entityhorse.getSaddled()) {
+                    bindTexture("/assets/mocreatures/stationapi/textures/mob/horsebrowna.png");
+                } else {
+                    bindTexture("/assets/mocreatures/stationapi/textures/mob/horsebrownsaddle.png");
+                }
+                break;
+            case 3:
+                if (!entityhorse.getSaddled()) {
+                    bindTexture("/assets/mocreatures/stationapi/textures/mob/horseblacka.png");
+                } else {
+                    bindTexture("/assets/mocreatures/stationapi/textures/mob/horseblacksaddle.png");
+                }
+                break;
+            case 4:
+                if (!entityhorse.getSaddled()) {
+                    bindTexture("/assets/mocreatures/stationapi/textures/mob/horsegolda.png");
+                } else {
+                    bindTexture("/assets/mocreatures/stationapi/textures/mob/horsegoldsaddle.png");
+                }
+                break;
+            case 5:
+                if (!entityhorse.getSaddled()) {
+                    bindTexture("/assets/mocreatures/stationapi/textures/mob/horsewhitea.png");
+                } else {
+                    bindTexture("/assets/mocreatures/stationapi/textures/mob/horsewhitesaddle.png");
+                }
+                break;
+            case 6:
+                if (!entityhorse.getSaddled()) {
+                    bindTexture("/assets/mocreatures/stationapi/textures/mob/horsepacka.png");
+                } else {
+                    bindTexture("/assets/mocreatures/stationapi/textures/mob/horsepacksaddle.png");
+                }
+                break;
+            case 7:
+                if (!entityhorse.getSaddled()) {
+                    bindTexture("/assets/mocreatures/stationapi/textures/mob/horsenighta.png");
+                } else {
+                    bindTexture("/assets/mocreatures/stationapi/textures/mob/horsenightsaddle.png");
+                }
+                break;
+            case 8:
+                if (!entityhorse.getSaddled()) {
+                    bindTexture("/assets/mocreatures/stationapi/textures/mob/horsebpa.png");
+                } else {
+                    bindTexture("/assets/mocreatures/stationapi/textures/mob/horsebpsaddle.png");
+                }
+                break;
         }
+
         return i == 0;
     }
+
+    //todo delete
+//    protected boolean setWoolColorAndRender(EntityHorse entityhorse, int i)
+//    {
+//        System.out.println(entityhorse.getType());
+//        if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horseb.png")
+//        {
+//            if(!entityhorse.getSaddled())
+//            {
+//                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsea.png");
+//            } else
+//            {
+//                bindTexture("/assets/mocreatures/stationapi/textures/mob/horseasaddle.png");
+//            }
+//        } else
+//        if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horsebrownb.png")
+//        {
+//            if(!entityhorse.getSaddled())
+//            {
+//                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsebrowna.png");
+//            } else
+//            {
+//                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsebrownsaddle.png");
+//            }
+//        } else
+//        if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horseblackb.png")
+//        {
+//            if(!entityhorse.getSaddled())
+//            {
+//                bindTexture("/assets/mocreatures/stationapi/textures/mob/horseblacka.png");
+//            } else
+//            {
+//                bindTexture("/assets/mocreatures/stationapi/textures/mob/horseblacksaddle.png");
+//            }
+//        } else
+//        if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horsegoldb.png")
+//        {
+//            if(!entityhorse.getSaddled())
+//            {
+//                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsegolda.png");
+//            } else
+//            {
+//                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsegoldsaddle.png");
+//            }
+//        } else
+//        if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horsewhiteb.png")
+//        {
+//            if(!entityhorse.getSaddled())
+//            {
+//                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsewhitea.png");
+//            } else
+//            {
+//                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsewhitesaddle.png");
+//            }
+//        } else
+//        if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horsepackb.png")
+//        {
+//            if(!entityhorse.getSaddled())
+//            {
+//                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsepacka.png");
+//            } else
+//            {
+//                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsepacksaddle.png");
+//            }
+//        } else
+//        if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horsenightb.png")
+//        {
+//            if(!entityhorse.getSaddled())
+//            {
+//                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsenighta.png");
+//            } else
+//            {
+//                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsenightsaddle.png");
+//            }
+//        } else
+//        if(entityhorse.dajTexture() == "/assets/mocreatures/stationapi/textures/mob/horsebpb.png")
+//        {
+//            if(!entityhorse.getSaddled())
+//            {
+//                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsebpa.png");
+//            } else
+//            {
+//                bindTexture("/assets/mocreatures/stationapi/textures/mob/horsebpsaddle.png");
+//            }
+//        }
+//        return i == 0;
+//    }
 
     public static Minecraft mc = Minecraft.class.cast(FabricLoader.getInstance().getGameInstance());
     public ModelHorse1 modelhorse1;

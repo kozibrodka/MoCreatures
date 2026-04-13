@@ -9,8 +9,8 @@
     "kozibrodka"
   ],
   "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/mo-creatures",
-    "sources": "https://github.com/calmilamsy/BIN-fabric-example-mod"
+    "homepage": "https://modrinth.com/mod/mo-creatures-stationapi",
+    "sources": "https://github.com/kozibrodka/MoCreatures"
   },
 
   "license": "CC0-1.0",

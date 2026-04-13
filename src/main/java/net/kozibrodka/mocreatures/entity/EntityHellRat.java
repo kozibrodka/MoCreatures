@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
 import net.modificationstation.stationapi.api.util.Identifier;
 
-public class EntityHellRat extends EntityRat implements MobSpawnDataProvider, MoCreatureRacial
+public class EntityHellRat extends EntityRat implements MobSpawnDataProvider
 {
 
     public EntityHellRat(World world)
@@ -18,6 +18,14 @@ public class EntityHellRat extends EntityRat implements MobSpawnDataProvider, Mo
         health = 20;
         attackDamage = 2;
         fireImmune = true;
+    }
+
+    @Override
+    public void setTypeSpawn()
+    {
+        if(!world.isRemote){
+            setType(4);
+        }
     }
 
     @Override

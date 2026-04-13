@@ -1,6 +1,8 @@
 
 package net.kozibrodka.mocreatures.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.entity.Entity;
@@ -18,7 +20,7 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 import java.util.Iterator;
 import java.util.List;
 
-public class EntityRat extends MonsterEntity implements MobSpawnDataProvider, MoCreatureRacial
+public class EntityRat extends MonsterEntity implements MobSpawnDataProvider
 {
 
     public EntityRat(World world)
@@ -27,27 +29,21 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider, Mo
         setBoundingBoxSpacing(0.5F, 0.5F);
         health = 10;
         attackDamage = 1;
-        typechosen = false;
+        if(!world.isRemote){
+            setTypeSpawn();
+        }
     }
 
-    public void chooseType(int type)
-    {
-            if(type == 1)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/blackrat.png";
-            } else
-            if(type == 2)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/lightrat.png";
-            } else
-            if(type == 3)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/whiterat.png";
-            }
-            if(type == 4)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/hellrat.png";
-            }
+    @Override
+    @Environment(EnvType.CLIENT)
+    public String getTexture() {
+        return switch (getType()) {
+            case 1 -> "/assets/mocreatures/stationapi/textures/mob/blackrat.png";
+            case 2 -> "/assets/mocreatures/stationapi/textures/mob/lightrat.png";
+            case 3 -> "/assets/mocreatures/stationapi/textures/mob/whiterat.png";
+            case 4 -> "/assets/mocreatures/stationapi/textures/mob/hellrat.png";
+            default -> "";
+        };
     }
 
     public int getRandomRace()
@@ -123,10 +119,6 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider, Mo
     @Override
     public void tickMovement() {
         super.tickMovement();
-        if(!typechosen && world.isRemote && getType() != 0){
-            typechosen = true;
-            chooseType(getType());
-        }
         if(world.isRemote){
             return;
         }
@@ -219,15 +211,12 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider, Mo
         return !onGround && isOnLadder();
     }
 
-    public boolean typechosen;
-
     @Override
     public Identifier getHandlerIdentifier() {
         return Identifier.of(mod_mocreatures.MOD_ID, "Rat");
     }
 
     //TYPE
-    @Override
     public void setTypeSpawn()
     {
         if(!world.isRemote){
@@ -240,7 +229,6 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider, Mo
     {
         if(!world.isRemote) {
             dataTracker.set(16, (byte) type);
-            chooseType(type);
         }
     }
 

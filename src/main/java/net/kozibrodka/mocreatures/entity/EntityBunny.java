@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial, MoCreatureNamed
+public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider,  MoCreatureNamed
 {
 
     public EntityBunny(World world)
@@ -35,8 +35,10 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         health = 4;
         j = random.nextInt(64);
         i = 0;
-        typechosen = false;
         killedByOtherEntity = true;
+        if(!world.isRemote){
+            setTypeSpawn();
+        }
     }
 
     @Override
@@ -70,24 +72,16 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
         this.bodyTrackingIncrements = interpolationSteps;
     }
 
-    public void chooseType(int typeint)
-    {
-            if(typeint == 1)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/bunny.png";
-            } else
-            if(typeint == 2)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/bunnyb.png";
-            } else
-            if(typeint == 3)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/bunnyc.png";
-            } else
-            if(typeint == 4)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/bunnyd.png";
-            }
+    @Override
+    @Environment(EnvType.CLIENT)
+    public String getTexture() {
+        return switch (getType()) {
+            case 1 -> "/assets/mocreatures/stationapi/textures/mob/bunny.png";
+            case 2 -> "/assets/mocreatures/stationapi/textures/mob/bunnyb.png";
+            case 3 -> "/assets/mocreatures/stationapi/textures/mob/bunnyc.png";
+            case 4 -> "/assets/mocreatures/stationapi/textures/mob/bunnyd.png";
+            default -> "";
+        };
     }
 
     public int getRandomRace(){
@@ -112,10 +106,6 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
     @Override
     public void tickMovement()
     {
-        if(!typechosen && world.isRemote && getType() != 0){
-            typechosen = true;
-            chooseType(getType());
-        }
         if(!getAdult() && random.nextInt(200) == 0 && !world.isRemote)
         {
             setAge(getAge()+0.01F);
@@ -381,7 +371,6 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
     public int j;
     public int i;
     public boolean pickedSd;
-    public boolean typechosen;
 
     @Override
     public Identifier getHandlerIdentifier() {
@@ -403,7 +392,6 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
     }
 
     //TYPE
-    @Override
     public void setTypeSpawn()
     {
         if(!world.isRemote){
@@ -417,7 +405,6 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider, M
     {
         if(!world.isRemote) {
             dataTracker.set(16, (byte) type);
-            chooseType(type);
         }
     }
 

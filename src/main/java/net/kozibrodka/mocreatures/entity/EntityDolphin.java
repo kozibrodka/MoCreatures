@@ -7,7 +7,6 @@ import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCTools;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
-import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.kozibrodka.mocreatures.mocreatures.MoGuiOpener;
 import net.kozibrodka.mocreatures.network.AskPacket;
 import net.kozibrodka.mocreatures.network.NamePacket;
@@ -31,7 +30,7 @@ import net.modificationstation.stationapi.api.util.TriState;
 import java.util.List;
 
 @HasTrackingParameters(trackingDistance = 160, updatePeriod = 1, sendVelocity = TriState.TRUE)
-public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvider, MoCreatureRacial, MoCreatureNamed
+public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvider, MoCreatureNamed
         ///extends EntityCustomWM or EntityCustomAquaM
 {
 
@@ -44,6 +43,9 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         maxhealth = 20; /// Delfin zaczyna z 10 i mozna dokarmić. (max health oryg. 30)
         temper = 50;
         killedByOtherEntity = true;
+        if(!world.isRemote){
+            setTypeSpawn();
+        }
     }
 
     @Override
@@ -161,6 +163,33 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
                 temper = 300;
                 maxhealth = 45;
             }
+    }
+
+    @Override
+    @Environment(EnvType.CLIENT)
+    public String getTexture() {
+        switch (getType()) {
+            case 1:
+                maxhealth = 20;
+                return "/assets/mocreatures/stationapi/textures/mob/dolphin1.png";
+            case 2:
+                maxhealth = 25;
+                return "/assets/mocreatures/stationapi/textures/mob/dolphin2.png";
+            case 3:
+                maxhealth = 30;
+                return "/assets/mocreatures/stationapi/textures/mob/dolphin3.png";
+            case 4:
+                maxhealth = 35;
+                return "/assets/mocreatures/stationapi/textures/mob/dolphin4.png";
+            case 5:
+                maxhealth = 40;
+                return "/assets/mocreatures/stationapi/textures/mob/dolphin5.png";
+            case 6:
+                maxhealth = 45;
+                return "/assets/mocreatures/stationapi/textures/mob/dolphin6.png";
+            default:
+                return "";
+        }
     }
 
     @Override
@@ -316,9 +345,8 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     public void tickMovement()
     {
         super.tickMovement();
-        if(!typechosen && world.isRemote && getType() != 0){
-            typechosen = true;
-            chooseType(getType());
+        if(!askedServer && world.isRemote){
+            askedServer = true;
             PacketHelper.send(new AskPacket(this.id, "dolphin"));
         }
         if(world.isRemote){
@@ -629,7 +657,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     public int maxhealth;
     private int temper;
     public boolean hungry;
-    public boolean typechosen;
+    public boolean askedServer;
 
     @Override
     protected void initDataTracker()
@@ -673,7 +701,6 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     }
 
     //TYPE
-    @Override
     public void setTypeSpawn() {
         if(!world.isRemote) {
             setType(getRandomRace());
@@ -683,14 +710,6 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     }
 
     public void setType(int type)
-    {
-        if(!world.isRemote) {
-            dataTracker.set(16, (byte) type);
-            chooseType(type);
-        }
-    }
-
-    public void setTypeBred(int type) /// czy dobrze sie zgadza? bo usunalem
     {
         if(!world.isRemote) {
             dataTracker.set(16, (byte) type);

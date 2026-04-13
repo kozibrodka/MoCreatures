@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial, MoCreatureNamed
+public class EntityBird extends AnimalEntity implements MobSpawnDataProvider,  MoCreatureNamed
 {
 
     public EntityBird(World world)
@@ -41,6 +41,9 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         wingc = 0.0F;
         wingh = 1.0F;
         killedByOtherEntity = true;
+        if(!world.isRemote){
+            setTypeSpawn();
+        }
     }
 
     @Override
@@ -87,10 +90,6 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
     public void tickMovement()
     {
         super.tickMovement();
-        if(!typechosen && world.isRemote && getType() != 0){
-            typechosen = true;
-            chooseType(getType());
-        }
         winge = wingb;
         wingd = wingc;
         wingc = (float)((double)wingc + (double)(onGround ? -1 : 4) * 0.29999999999999999D);
@@ -436,32 +435,18 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
         return false;
     }
 
-    public void chooseType(int typeint)
-    {
-            if(typeint == 1)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/birdwhite.png";
-            } else
-            if(typeint == 2)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/birdblack.png";
-            } else
-            if(typeint == 3)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/birdgreen.png";
-            } else
-            if(typeint == 4)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/birdblue.png";
-            } else
-            if(typeint == 5)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/birdyellow.png";
-            } else
-            if(typeint == 6)
-            {
-                texture = "/assets/mocreatures/stationapi/textures/mob/birdred.png";
-            }
+    @Override
+    @Environment(EnvType.CLIENT)
+    public String getTexture() {
+        return switch (getType()) {
+            case 1 -> "/assets/mocreatures/stationapi/textures/mob/birdwhite.png";
+            case 2 -> "/assets/mocreatures/stationapi/textures/mob/birdblack.png";
+            case 3 -> "/assets/mocreatures/stationapi/textures/mob/birdgreen.png";
+            case 4 -> "/assets/mocreatures/stationapi/textures/mob/birdblue.png";
+            case 5 -> "/assets/mocreatures/stationapi/textures/mob/birdyellow.png";
+            case 6 -> "/assets/mocreatures/stationapi/textures/mob/birdred.png";
+            default -> "";
+        };
     }
 
     public int getRandomRace(){
@@ -677,7 +662,6 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
     public float wingd;
     public float winge;
     public float wingh;
-    public boolean typechosen;
 
     @Override
     public Identifier getHandlerIdentifier() {
@@ -685,7 +669,6 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
     }
 
     //TYPE
-    @Override
     public void setTypeSpawn()
     {
         if(!world.isRemote){
@@ -698,7 +681,6 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider, Mo
     {
         if(!world.isRemote) {
             dataTracker.set(16, (byte) type);
-            chooseType(type);
         }
     }
 

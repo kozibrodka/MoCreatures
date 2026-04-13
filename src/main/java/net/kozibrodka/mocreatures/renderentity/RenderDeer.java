@@ -70,6 +70,7 @@ public class RenderDeer extends LivingEntityRenderer
         }
     }
 
+    @Override
     protected void applyScale(LivingEntity entityliving, float f)
     {
         rotateDeer((EntityDeer)entityliving);

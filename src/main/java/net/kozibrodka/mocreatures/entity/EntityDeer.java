@@ -6,7 +6,6 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.FabricLoader;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
-import net.kozibrodka.mocreatures.network.AdultPacket;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -26,14 +25,16 @@ import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider
 
 import java.util.List;
 
-public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, MoCreatureRacial
+public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider
 {
 
     public EntityDeer(World world)
     {
         super(world);
         setBoundingBoxSpacing(0.9F, 1.3F);
-        typechosen = false;
+        if(!world.isRemote){
+            setTypeSpawn();
+        }
     }
 
     @Override
@@ -70,15 +71,15 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
 
     }
 
-    public void setMyTexture(int i){
-        if(i == 1){
-            texture = "/assets/mocreatures/stationapi/textures/mob/deer.png";
-        }else if(i == 2){
-            texture = "/assets/mocreatures/stationapi/textures/mob/deerf.png";
-        }else if(i == 3){
-            texture = "/assets/mocreatures/stationapi/textures/mob/deerb.png";
-            /// Czy można ustawić różny Rozmiar entity??? (przyda sie do ww2)
-        }
+    @Override
+    @Environment(EnvType.CLIENT)
+    public String getTexture() {
+        return switch (getType()) {
+            case 1 -> "/assets/mocreatures/stationapi/textures/mob/deer.png";
+            case 2 -> "/assets/mocreatures/stationapi/textures/mob/deerf.png";
+            case 3 -> "/assets/mocreatures/stationapi/textures/mob/deerb.png";
+            default -> "";
+        };
     }
 
     public void setMySpeed(boolean flag, int type)
@@ -111,10 +112,6 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
     public void tickMovement()
     {
         super.tickMovement();
-        if(!typechosen && world.isRemote && getType() != 0){
-            typechosen = true;
-            setMyTexture(getType());
-        }
         if(getType() == 3 && !getAdult() && random.nextInt(250) == 0 && !world.isRemote)
         {
             setAge(getAge()+0.01F);
@@ -123,9 +120,6 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
                 int newType = getRandomAdultRace();
                 setType(newType);
                 health = 15;
-                if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {
-                    adultPacket("deer", this.id, newType);
-                }
             }
         }
         if(random.nextInt(5) == 0 && !world.isRemote)
@@ -290,7 +284,6 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         }
     }
 
-    @Override
     public void setTypeSpawn()
     {
         if(!world.isRemote){
@@ -344,17 +337,6 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider, Mo
         return mod_mocreatures.mocGlass.animals.deerfreq > 0 && super.canSpawn();
     }
 
-    public boolean typechosen;
     public int maxhealth;
 
-    @Environment(EnvType.SERVER)
-    public void adultPacket(String name, int id, int type) {
-        List list2 = world.players;
-        if (!list2.isEmpty()) {
-            for (int k = 0; k < list2.size(); k++) {
-                ServerPlayerEntity player1 = (ServerPlayerEntity) list2.get(k);
-                PacketHelper.sendTo(player1, new AdultPacket(name, id, type));
-            }
-        }
-    }
 }

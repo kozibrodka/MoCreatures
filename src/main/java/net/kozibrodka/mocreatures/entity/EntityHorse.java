@@ -11,7 +11,6 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -38,7 +37,7 @@ import java.util.List;
 import java.util.Objects;
 
 @HasTrackingParameters(trackingDistance = 160, updatePeriod = 1, sendVelocity = TriState.TRUE)
-public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnDataProvider, MoCreatureRacial, MoCreatureNamed
+public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnDataProvider, MoCreatureNamed
 {
 
     public EntityHorse(World world)
@@ -50,7 +49,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         HorseSpeed = 0.80000000000000004D;
         HorseJump = 0.40000000000000002D;
         temper = 100;
-        typechosen = false;
+        askedServer = false;
         fwingb = 0.0F;
         fwingc = 0.0F;
         fwingh = 1.0F;
@@ -60,10 +59,11 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         gestationtime = 0;
         nightmareInt = 0;
         fireImmune = false;
-        setAge(0.35F);
         roper = null;
         killedByOtherEntity = true; /// CZEMU?
-
+        if(!world.isRemote){
+            setTypeSpawn();
+        }
     }
 
     @Override
@@ -109,6 +109,39 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         } else
         {
             return 5;
+        }
+    }
+
+    @Override
+    @Environment(EnvType.CLIENT)
+    public String getTexture() {
+        switch (getType()) {
+            case 1:
+                maxhealth = 25;
+                return "/assets/mocreatures/stationapi/textures/mob/horseb.png";
+            case 2:
+                maxhealth = 30;
+                return "/assets/mocreatures/stationapi/textures/mob/horsebrownb.png";
+            case 3:
+                maxhealth = 35;
+                return "/assets/mocreatures/stationapi/textures/mob/horseblackb.png";
+            case 4:
+                maxhealth = 40;
+                return "/assets/mocreatures/stationapi/textures/mob/horsegoldb.png";
+            case 5:
+                maxhealth = 40;
+                return "/assets/mocreatures/stationapi/textures/mob/horsewhiteb.png";
+            case 6:
+                maxhealth = 40;
+                return "/assets/mocreatures/stationapi/textures/mob/horsepackb.png";
+            case 7:
+                maxhealth = 50;
+                return "/assets/mocreatures/stationapi/textures/mob/horsenightb.png";
+            case 8:
+                maxhealth = 50;
+                return "/assets/mocreatures/stationapi/textures/mob/horsebpb.png";
+            default:
+                return "";
         }
     }
 
@@ -243,9 +276,8 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     @Override
     public void tickMovement()
     {
-        if(!typechosen && world.isRemote && getType() != 0){
-            typechosen = true;
-            chooseType(getType());
+        if(!askedServer && world.isRemote){
+            askedServer = true;
             PacketHelper.send(new AskPacket(this.id, "horse"));
         }
         if(!world.isRemote){
@@ -1468,7 +1500,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     public ItemStack[] cargoItems;
     public int animalFuel;
     public int fuelDuration;
-    public boolean typechosen;
+    public boolean askedServer;
     public boolean hasRopeOnNeck;
 
     @Override
@@ -1478,12 +1510,12 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         dataTracker.startTracking(16, (byte) 0); //Type
         dataTracker.startTracking(17, 0); //Age
         dataTracker.startTracking(18, (byte) 0); //Adult
-        dataTracker.startTracking(19, (byte) 0); //EatenHayStack
+        dataTracker.startTracking(19, (byte) 0); //EatenHayStack //TODO
         dataTracker.startTracking(20, (byte) 0); //Tamed
-        dataTracker.startTracking(21, (byte) 0); //Sitting
+        dataTracker.startTracking(21, (byte) 0); //Sitting //TODO
         dataTracker.startTracking(22, (byte) 0); //Saddle
-        dataTracker.startTracking(23, (byte) 0); //Protect From Players/Public
-        dataTracker.startTracking(24, (byte) 0); //Bred
+        dataTracker.startTracking(23, (byte) 0); //Protect From Players/Public //TODO
+        dataTracker.startTracking(24, (byte) 0); //Bred //TODO
         dataTracker.startTracking(25, (byte) 0); //Chested
         dataTracker.startTracking(26, (byte) 0); //RenderName
         dataTracker.startTracking(27, (byte) 0); //Reproduced
@@ -1556,10 +1588,10 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     }
 
     //TYPE
-    @Override
     public void setTypeSpawn() {
         if(!world.isRemote) {
             setAdult(random.nextInt(5) != 0);
+            setAge(0.35F);
             setType(getRandomRace());
             this.health = this.maxhealth;
         }

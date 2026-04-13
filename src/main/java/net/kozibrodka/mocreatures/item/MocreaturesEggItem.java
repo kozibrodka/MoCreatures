@@ -194,6 +194,7 @@ public class MocreaturesEggItem extends TemplateItem {
             if (random.nextInt(4) == 0) {
                 ((EntityBigCat)huj).setAdult(false);
                 ((EntityBigCat)huj).killedByOtherEntity = true;
+                ((EntityBigCat)huj).setAge(0.35F);
             }else{
                 ((EntityBigCat)huj).setAdult(true);
                 ((EntityBigCat)huj).setAge(1.0F);
