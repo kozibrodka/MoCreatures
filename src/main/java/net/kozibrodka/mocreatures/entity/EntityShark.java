@@ -137,7 +137,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
             }
             if(getTamed() && entitybase instanceof PlayerEntity gracz)
             {
-                if(!gracz.name.equals(getOwner()) && getProtect())
+                if(!gracz.name.equals(getOwner()) && protectMyOwner)
                 {
                     target = entitybase;
                 }
@@ -174,11 +174,10 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         dataTracker.startTracking(17, 0); //Age
         dataTracker.startTracking(18, (byte) 0); //Adult
         dataTracker.startTracking(19, (byte) 0); //Tamed
-        dataTracker.startTracking(20, (byte) 0); //Protect From Players
-        dataTracker.startTracking(21, (byte) 0); //Display Name
+        dataTracker.startTracking(20, (byte) 0); //Display Name
+        dataTracker.startTracking(27, ""); //Owner
+        dataTracker.startTracking(28, ""); //Name
         dataTracker.startTracking(29, (byte) 0); //HEALTH
-        dataTracker.startTracking(30, ""); //Owner
-        dataTracker.startTracking(31, ""); //Name
     }
 
     @Override
@@ -192,7 +191,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         nbttagcompound.putString("Name", getName());
         nbttagcompound.putBoolean("DisplayName", getDisplayName());
         nbttagcompound.putString("SharkOwner", getOwner());
-        nbttagcompound.putBoolean("ProtectFromPlayers", getProtect());
+        nbttagcompound.putBoolean("ProtectFromPlayers", protectMyOwner);
     }
 
     @Override
@@ -206,7 +205,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         setName(nbttagcompound.getString("Name"));
         setDisplayName(nbttagcompound.getBoolean("DisplayName"));
         setOwner(nbttagcompound.getString("SharkOwner"));
-        setProtect(nbttagcompound.getBoolean("ProtectFromPlayers"));
+        protectMyOwner = nbttagcompound.getBoolean("ProtectFromPlayers");
     }
 
     @Override
@@ -252,12 +251,12 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         }
         if(itemstack != null && getTamed() && entityplayer.name.equals(getOwner()) && itemstack.getItem() instanceof SwordItem)
         {
-            if(getProtect()){
-                setProtect(false);
+            if(protectMyOwner){
+                protectMyOwner = false;
                 MoCTools.addHeartParticles(world,this);
                 world.broadcastEntityEvent(this, (byte)6);
             }else{
-                setProtect(true);
+                protectMyOwner = true;
                 MoCTools.addFlameParticles(world,this);
                 world.broadcastEntityEvent(this, (byte)7);
             }
@@ -338,6 +337,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
     }
 
     public int maxhealth;
+    public boolean protectMyOwner;
 
     @Override
     public Identifier getHandlerIdentifier() {
@@ -446,27 +446,10 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         }
     }
 
-    //PROTECT FROM PLAYERES
-    public boolean getProtect()
-    {
-        return (dataTracker.getByte(20) & 1) != 0;
-    }
-
-    public void setProtect(boolean flag)
-    {
-        if(flag)
-        {
-            dataTracker.set(20, Byte.valueOf((byte)1));
-        } else
-        {
-            dataTracker.set(20, Byte.valueOf((byte)0));
-        }
-    }
-
     //DISPLAY NAME
     public boolean getDisplayName()
     {
-        return (dataTracker.getByte(21) & 1) != 0;
+        return (dataTracker.getByte(20) & 1) != 0;
     }
 
     @Override
@@ -474,10 +457,10 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
     {
         if(flag)
         {
-            dataTracker.set(21, Byte.valueOf((byte)1));
+            dataTracker.set(20, Byte.valueOf((byte)1));
         } else
         {
-            dataTracker.set(21, Byte.valueOf((byte)0));
+            dataTracker.set(20, Byte.valueOf((byte)0));
         }
     }
 
@@ -491,25 +474,25 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
     @Override
     public void setOwner(String owner)
     {
-        this.dataTracker.set(30, owner);
+        this.dataTracker.set(27, owner);
     }
 
     @Override
     public String getOwner()
     {
-        return this.dataTracker.getString(30);
+        return this.dataTracker.getString(27);
     }
 
     //NAME
     @Override
     public void setName(String name)
     {
-        this.dataTracker.set(31, name);
+        this.dataTracker.set(28, name);
     }
 
     @Override
     public String getName()
     {
-        return this.dataTracker.getString(31);
+        return this.dataTracker.getString(28);
     }
 }

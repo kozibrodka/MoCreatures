@@ -432,7 +432,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             gestationtime = 0;
             entitydolphin.gestationtime = 0;
             int l = Genetics(this, entitydolphin);
-            entitydolphin1.setBred(true);
+            entitydolphin1.bred = true;
             entitydolphin1.setAge(0.35F);
             entitydolphin1.setAdult(false);
             entitydolphin1.setType(l);
@@ -476,7 +476,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         nbttagcompound.putBoolean("Tamed", getTamed());
         nbttagcompound.putInt("TypeInt", getType());
         nbttagcompound.putBoolean("Adult", getAdult());
-        nbttagcompound.putBoolean("Bred", getBred());
+        nbttagcompound.putBoolean("Bred", bred);
         nbttagcompound.putFloat("Age", getAge());
         nbttagcompound.putString("Name", getName());
         nbttagcompound.putBoolean("DisplayName", getDisplayName());
@@ -493,7 +493,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         setTamed(nbttagcompound.getBoolean("Tamed"));
         setType(nbttagcompound.getInt("TypeInt"));
         setAdult(nbttagcompound.getBoolean("Adult"));
-        setBred(nbttagcompound.getBoolean("Bred"));
+        bred = nbttagcompound.getBoolean("Bred");
         setAge(nbttagcompound.getFloat("Age"));
         setName(nbttagcompound.getString("Name"));
         setDisplayName(nbttagcompound.getBoolean("DisplayName"));
@@ -591,7 +591,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     @Override
     public void markDead() /// Czy to ma jakikolwiek sens??? - bez checku remote, to powoduje duplikaty modelu na client
     {
-        if((getTamed() || getBred()) && health > 0 && !world.isRemote)
+        if((getTamed() || bred) && health > 0 && !world.isRemote)
         {
         } else
         {
@@ -602,7 +602,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     @Override
     protected boolean canDespawn()
     {
-        return !getTamed();
+        return !getTamed() && !bred; /// Logic change test.
     }
 
     @Override
@@ -658,6 +658,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     private int temper;
     public boolean hungry;
     public boolean askedServer;
+    public boolean bred;
 
     @Override
     protected void initDataTracker()
@@ -669,12 +670,11 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         dataTracker.startTracking(19, (byte) 0); //Eaten
         dataTracker.startTracking(20, (byte) 0); //Tamed
         dataTracker.startTracking(21, (byte) 0); //Public
-        dataTracker.startTracking(22, (byte) 0); //Bred
+        dataTracker.startTracking(22, (byte) 0); //Has Jokey
         dataTracker.startTracking(23, (byte) 0); //RenderName
-        dataTracker.startTracking(24, (byte) 0); //Has Jokey
+        dataTracker.startTracking(27, ""); //Owner
+        dataTracker.startTracking(28, ""); //Name
         dataTracker.startTracking(29, (byte) 0); //HEALTH
-        dataTracker.startTracking(30, ""); //Owner
-        dataTracker.startTracking(31, ""); //Name
     }
 
     @Override
@@ -804,21 +804,21 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     }
 
     //BRED
-    public boolean getBred()
-    {
-        return (dataTracker.getByte(22) & 1) != 0;
-    }
-
-    public void setBred(boolean flag)
-    {
-        if(flag)
-        {
-            dataTracker.set(22, (byte) 1);
-        } else
-        {
-            dataTracker.set(22, (byte) 0);
-        }
-    }
+//    public boolean getBred()
+//    {
+//        return (dataTracker.getByte(22) & 1) != 0;
+//    }
+//
+//    public void setBred(boolean flag)
+//    {
+//        if(flag)
+//        {
+//            dataTracker.set(22, (byte) 1);
+//        } else
+//        {
+//            dataTracker.set(22, (byte) 0);
+//        }
+//    }
 
     //RENDER NAME
     public boolean getDisplayName()
@@ -841,7 +841,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     //HAS JOKEY
     public boolean getJokey()
     {
-        return (dataTracker.getByte(24) & 1) != 0;
+        return (dataTracker.getByte(22) & 1) != 0;
     }
 
     @Override
@@ -849,10 +849,10 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     {
         if(flag)
         {
-            dataTracker.set(24, (byte) 1);
+            dataTracker.set(22, (byte) 1);
         } else
         {
-            dataTracker.set(24, (byte) 0);
+            dataTracker.set(22, (byte) 0);
         }
     }
 
@@ -866,26 +866,26 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     @Override
     public void setOwner(String owner)
     {
-        this.dataTracker.set(30, owner);
+        this.dataTracker.set(27, owner);
     }
 
     @Override
     public String getOwner()
     {
-        return this.dataTracker.getString(30);
+        return this.dataTracker.getString(27);
     }
 
     //NAME
     @Override
     public void setName(String name)
     {
-        this.dataTracker.set(31, name);
+        this.dataTracker.set(28, name);
     }
 
     @Override
     public String getName()
     {
-        return this.dataTracker.getString(31);
+        return this.dataTracker.getString(28);
     }
 
 

@@ -69,7 +69,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     @Override
     public void markDead() /// Czy to ma jakikolwiek sens??? - bez checku remote, to powoduje duplikaty modelu na client
     {
-        if((getTamed() || getBred()) && health > 0 && !world.isRemote)
+        if((getTamed() || bred) && health > 0 && !world.isRemote)
         {
         } else
         {
@@ -400,7 +400,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             gestationtime = 0;
             entityhorse.gestationtime = 0;
             int l = HorseGenetics(this, entityhorse);
-            entityhorse1.setBred(true);
+            entityhorse1.bred = true;
             entityhorse1.setAdult(false);
             entityhorse1.setType(l);
             entityhorse1.health = entityhorse1.maxhealth;
@@ -956,7 +956,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         if(world.isRemote){
             return false;
         }
-        if(getTamed() && getProtect() && !entityplayer.name.equals(getOwner()))
+        if(getTamed() && protectFromPlayers && !entityplayer.name.equals(getOwner()))
         {
             return false;
         }
@@ -965,12 +965,12 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
         if(itemstack != null && getTamed() && entityplayer.name.equals(getOwner()) && itemstack.getItem() instanceof SwordItem && entityplayer.isSneaking())
         {
-            if(getProtect()){
-                setProtect(false);
+            if(protectFromPlayers){
+                protectFromPlayers = false;
                 MoCTools.addHeartParticles(world,this);
                 world.broadcastEntityEvent(this, (byte)6);
             }else{
-                setProtect(true);
+                protectFromPlayers = true;
                 MoCTools.addFlameParticles(world,this);
                 world.broadcastEntityEvent(this, (byte)7);
             }
@@ -1085,7 +1085,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             {
                 entityplayer.inventory.setStack(entityplayer.inventory.selectedSlot, null);
             }
-            setSitting(true);
+            sitting = true;
             world.playSound(this, "mocreatures:eating", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
             world.broadcastEntityEvent(this, (byte)8);
             health = maxhealth;
@@ -1132,7 +1132,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             if (FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER){
                 PacketHelper.sendTo(entityplayer, new JokeyPacket(1));
             }
-            setSitting(!getSitting());
+            sitting = !sitting;
             entityplayer.swingHand();
             return true;
         }
@@ -1192,7 +1192,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         {
             entityplayer.yaw = yaw;
             entityplayer.pitch = pitch;
-            setSitting(false);
+            sitting = false;
             entityplayer.setVehicle(this);
             setJokey(true);
             sendPassengerPacket(world, this.id, entityplayer.name);
@@ -1303,19 +1303,19 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     {
         super.writeNbt(nbttagcompound);
         nbttagcompound.putBoolean("Saddle", getSaddled());
-        nbttagcompound.putBoolean("EatingHaystack", getSitting());
+        nbttagcompound.putBoolean("EatingHaystack", sitting);
         nbttagcompound.putBoolean("Tamed", getTamed());
         nbttagcompound.putInt("TypeInt", getType());
         nbttagcompound.putBoolean("ChestedHorse", getChested());
         nbttagcompound.putBoolean("HasReproduced", getReproduced());
-        nbttagcompound.putBoolean("Bred", getBred());
+        nbttagcompound.putBoolean("Bred", bred);
         nbttagcompound.putBoolean("Adult", getAdult());
         nbttagcompound.putFloat("Age", getAge());
         nbttagcompound.putString("Name", getName());
         nbttagcompound.putBoolean("DisplayName", getDisplayName());
         nbttagcompound.putInt("GestationTime", gestationtime);
         nbttagcompound.putBoolean("EatenPumpkin", getEaten());
-        nbttagcompound.putBoolean("PublicHorse", getProtect());
+        nbttagcompound.putBoolean("PublicHorse", protectFromPlayers);
         nbttagcompound.putBoolean("HasJokey", getJokey());
         nbttagcompound.putString("HorseOwner", getOwner());
         nbttagcompound.putBoolean("Roper", hasRopeOnNeck);
@@ -1355,8 +1355,8 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         super.readNbt(nbttagcompound);
         setSaddled(nbttagcompound.getBoolean("Saddle"));
         setTamed(nbttagcompound.getBoolean("Tamed"));
-        setSitting(nbttagcompound.getBoolean("EatingHaystack"));
-        setBred(nbttagcompound.getBoolean("Bred"));
+        sitting = nbttagcompound.getBoolean("EatingHaystack");
+        bred = nbttagcompound.getBoolean("Bred");
         setAdult(nbttagcompound.getBoolean("Adult"));
         setChested(nbttagcompound.getBoolean("ChestedHorse"));
         setReproduced(nbttagcompound.getBoolean("HasReproduced"));
@@ -1366,7 +1366,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         setDisplayName(nbttagcompound.getBoolean("DisplayName"));
         gestationtime = nbttagcompound.getInt("GestationTime");
         setEaten(nbttagcompound.getBoolean("EatenPumpkin"));
-        setProtect(nbttagcompound.getBoolean("PublicHorse"));
+        protectFromPlayers = nbttagcompound.getBoolean("PublicHorse");
         setJokey(nbttagcompound.getBoolean("HasJokey"));
         setOwner(nbttagcompound.getString("HorseOwner"));
         hasRopeOnNeck = (nbttagcompound.getBoolean("Roper"));
@@ -1402,7 +1402,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     @Override
     protected boolean isMovementBlocked()
     {
-        return getSitting() || passenger != null;
+        return sitting || passenger != null;
     }
 
     @Override
@@ -1452,7 +1452,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     @Override
     protected boolean canDespawn()
     {
-        return !getTamed();
+        return !getTamed() && !bred; /// Logic change test.
     }
 
     @Override
@@ -1502,6 +1502,9 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     public int fuelDuration;
     public boolean askedServer;
     public boolean hasRopeOnNeck;
+    public boolean sitting;
+    public boolean protectFromPlayers;
+    public boolean bred;
 
     @Override
     protected void initDataTracker()
@@ -1510,19 +1513,16 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         dataTracker.startTracking(16, (byte) 0); //Type
         dataTracker.startTracking(17, 0); //Age
         dataTracker.startTracking(18, (byte) 0); //Adult
-        dataTracker.startTracking(19, (byte) 0); //EatenHayStack //TODO
+        dataTracker.startTracking(19, (byte) 0); //Eaten Pumpkin
         dataTracker.startTracking(20, (byte) 0); //Tamed
-        dataTracker.startTracking(21, (byte) 0); //Sitting //TODO
+        dataTracker.startTracking(21, (byte) 0); //Has Jokey
         dataTracker.startTracking(22, (byte) 0); //Saddle
-        dataTracker.startTracking(23, (byte) 0); //Protect From Players/Public //TODO
-        dataTracker.startTracking(24, (byte) 0); //Bred //TODO
-        dataTracker.startTracking(25, (byte) 0); //Chested
-        dataTracker.startTracking(26, (byte) 0); //RenderName
-        dataTracker.startTracking(27, (byte) 0); //Reproduced
-        dataTracker.startTracking(28, (byte) 0); //Has Jokey
+        dataTracker.startTracking(23, (byte) 0); //Reproduced
+        dataTracker.startTracking(24, (byte) 0); //Chested
+        dataTracker.startTracking(25, (byte) 0); //RenderName
+        dataTracker.startTracking(27, ""); //Owner
+        dataTracker.startTracking(28, ""); //Name
         dataTracker.startTracking(29, (byte) 0); //HEALTH
-        dataTracker.startTracking(30, ""); //Owner
-        dataTracker.startTracking(31, ""); //Name
     }
 
     @Override
@@ -1673,23 +1673,6 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
     }
 
-    //SITTING
-    public boolean getSitting()
-    {
-        return (dataTracker.getByte(21) & 1) != 0;
-    }
-
-    public void setSitting(boolean flag)
-    {
-        if(flag)
-        {
-            dataTracker.set(21, (byte) 1);
-        } else
-        {
-            dataTracker.set(21, (byte) 0);
-        }
-    }
-
     //HUNGRY
     public boolean getSaddled()
     {
@@ -1707,30 +1690,13 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
     }
 
-    //PROTECT FROM PLAYERES / PUBLIC
-    public boolean getProtect()
-    {
-        return (dataTracker.getByte(23) & 1) != 0;
-    }
-
-    public void setProtect(boolean flag)
-    {
-        if(flag)
-        {
-            dataTracker.set(23, (byte) 1);
-        } else
-        {
-            dataTracker.set(23, (byte) 0);
-        }
-    }
-
-    //BRED
-    public boolean getBred()
+    //CHESTED
+    public boolean getChested()
     {
         return (dataTracker.getByte(24) & 1) != 0;
     }
 
-    public void setBred(boolean flag)
+    public void setChested(boolean flag)
     {
         if(flag)
         {
@@ -1741,13 +1707,38 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
     }
 
-    //CHESTED
-    public boolean getChested()
+    //OWNER
+    public void setOwner(String owner)
+    {
+        this.dataTracker.set(27, owner);
+    }
+
+    @Override
+    public String getOwner()
+    {
+        return this.dataTracker.getString(27);
+    }
+
+    //NAME
+    @Override
+    public void setName(String name)
+    {
+        this.dataTracker.set(28, name);
+    }
+
+    @Override
+    public String getName()
+    {
+        return this.dataTracker.getString(28);
+    }
+
+    //RENDER NAME
+    public boolean getDisplayName()
     {
         return (dataTracker.getByte(25) & 1) != 0;
     }
 
-    public void setChested(boolean flag)
+    public void setDisplayName(boolean flag)
     {
         if(flag)
         {
@@ -1758,79 +1749,37 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         }
     }
 
-    //OWNER
-    public void setOwner(String owner)
-    {
-        this.dataTracker.set(30, owner);
-    }
-
-    @Override
-    public String getOwner()
-    {
-        return this.dataTracker.getString(30);
-    }
-
-    //NAME
-    @Override
-    public void setName(String name)
-    {
-        this.dataTracker.set(31, name);
-    }
-
-    @Override
-    public String getName()
-    {
-        return this.dataTracker.getString(31);
-    }
-
-    //RENDER NAME
-    public boolean getDisplayName()
-    {
-        return (dataTracker.getByte(26) & 1) != 0;
-    }
-
-    public void setDisplayName(boolean flag)
-    {
-        if(flag)
-        {
-            dataTracker.set(26, (byte) 1);
-        } else
-        {
-            dataTracker.set(26, (byte) 0);
-        }
-    }
-
     //HAS REPRODUCED
     public boolean getReproduced()
     {
-        return (dataTracker.getByte(27) & 1) != 0;
+        return (dataTracker.getByte(23) & 1) != 0;
     }
 
     public void setReproduced(boolean flag)
     {
         if(flag)
         {
-            dataTracker.set(27, (byte) 1);
+            dataTracker.set(23, (byte) 1);
         } else
         {
-            dataTracker.set(27, (byte) 0);
+            dataTracker.set(23, (byte) 0);
         }
     }
 
     //HAS JOKEY
     public boolean getJokey()
     {
-        return (dataTracker.getByte(28) & 1) != 0;
+        return (dataTracker.getByte(21) & 1) != 0;
     }
 
     public void setJokey(boolean flag)
     {
         if(flag)
         {
-            dataTracker.set(28, (byte) 1);
+            dataTracker.set(21, (byte) 1);
         } else
         {
-            dataTracker.set(28, (byte) 0);
+            dataTracker.set(21, (byte) 0);
         }
     }
 

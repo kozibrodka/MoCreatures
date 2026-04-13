@@ -131,7 +131,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         if(world.isRemote){
             return false;
         }
-        if(getTamed() && getProtect() && !entityplayer.name.equals(getOwner())) /// owner lock
+        if(getTamed() && protectFromPlayers && !entityplayer.name.equals(getOwner())) /// owner lock
         {
             return false;
         }
@@ -145,12 +145,12 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
             ItemStack itemstack = entityplayer.inventory.getSelectedItem();
             if(itemstack != null && entityplayer.name.equals(getOwner()) && itemstack.getItem() instanceof SwordItem && entityplayer.isSneaking())
             {
-                if(getProtect()){
-                    setProtect(false);
+                if(protectFromPlayers){
+                    protectFromPlayers = false;
                     MoCTools.addHeartParticles(world,this);
                     world.broadcastEntityEvent(this, (byte)6);
                 }else{
-                    setProtect(true);
+                    protectFromPlayers = true;
                     MoCTools.addFlameParticles(world,this);
                     world.broadcastEntityEvent(this, (byte)7);
                 }
@@ -595,6 +595,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
     public float swingProgress;
     private Inventory localturtlechest;
     public ItemStack[] localstack;
+    public boolean protectFromPlayers;
 
     @Override
     public Identifier getHandlerIdentifier() {return Identifier.of(mod_mocreatures.MOD_ID, "Turtle");}
@@ -608,16 +609,14 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         dataTracker.startTracking(18, (byte) 0); //UpsideDown
         dataTracker.startTracking(19, (byte) 0); //Hiding
         dataTracker.startTracking(20, (byte) 0); //isSwinging
-        dataTracker.startTracking(21, (byte) 0); //Protect From Players/Public
+        dataTracker.startTracking(21, (byte) 0); //Sitting
         dataTracker.startTracking(22, (byte) 0); //Display Name
         dataTracker.startTracking(23, (byte) 0); //Picked
         dataTracker.startTracking(24, 0); //Swinging
         dataTracker.startTracking(25, (byte) 0); //TwistRight
-        dataTracker.startTracking(26, (byte) 0); //Sitting
-
+        dataTracker.startTracking(27, ""); //Owner
+        dataTracker.startTracking(28, ""); //Name
         dataTracker.startTracking(29, (byte) 0); //HEALTH
-        dataTracker.startTracking(30, ""); //Owner
-        dataTracker.startTracking(31, ""); //Name
     }
 
     @Override
@@ -632,6 +631,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         nbttagcompound.putString("TurtleOwner", getOwner());
         nbttagcompound.putBoolean("Hiding", getHiding());
         nbttagcompound.putBoolean("Sitting", getSitting());
+        nbttagcompound.putBoolean("Public", protectFromPlayers);
 
         NbtList nbttaglist = new NbtList();
         for(int i = 0; i < localstack.length; i++)
@@ -660,6 +660,7 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         setOwner(nbttagcompound.getString("TurtleOwner"));
         setHiding(nbttagcompound.getBoolean("Hiding"));
         setSitting(nbttagcompound.getBoolean("Sitting"));
+        protectFromPlayers = nbttagcompound.getBoolean("Public");
 
         NbtList nbttaglist = nbttagcompound.getList("Items");
         localstack = new ItemStack[54];
@@ -754,23 +755,6 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
         }
     }
 
-    //PROTECT FROM PLAYERES
-    public boolean getProtect()
-    {
-        return (dataTracker.getByte(21) & 1) != 0;
-    }
-
-    public void setProtect(boolean flag)
-    {
-        if(flag)
-        {
-            dataTracker.set(21, Byte.valueOf((byte)1));
-        } else
-        {
-            dataTracker.set(21, Byte.valueOf((byte)0));
-        }
-    }
-
     //DISPLAY NAME
     public boolean getDisplayName()
     {
@@ -834,17 +818,17 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
     //SITTING
     public boolean getSitting()
     {
-        return (dataTracker.getByte(26) & 1) != 0;
+        return (dataTracker.getByte(21) & 1) != 0;
     }
 
     public void setSitting(boolean flag)
     {
         if(flag)
         {
-            dataTracker.set(26, (byte) 1);
+            dataTracker.set(21, (byte) 1);
         } else
         {
-            dataTracker.set(26, (byte) 0);
+            dataTracker.set(21, (byte) 0);
         }
     }
 
@@ -857,26 +841,26 @@ public class EntityTurtle extends AnimalEntity implements MobSpawnDataProvider, 
     //OWNER
     public void setOwner(String owner)
     {
-        this.dataTracker.set(30, owner);
+        this.dataTracker.set(27, owner);
     }
 
     @Override
     public String getOwner()
     {
-        return this.dataTracker.getString(30);
+        return this.dataTracker.getString(27);
     }
 
     //NAME
     @Override
     public void setName(String name)
     {
-        this.dataTracker.set(31, name);
+        this.dataTracker.set(28, name);
     }
 
     @Override
     public String getName()
     {
-        return this.dataTracker.getString(31);
+        return this.dataTracker.getString(28);
     }
 
     @Override

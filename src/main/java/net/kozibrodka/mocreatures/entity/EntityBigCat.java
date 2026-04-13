@@ -60,12 +60,9 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         dataTracker.startTracking(16, (byte) 0); //Type
         dataTracker.startTracking(17, (int) 0); //Age
         dataTracker.startTracking(18, (byte) 0); //Adult
-//        dataTracker.startTracking(19, (byte) 0); //Eaten //TODO
         dataTracker.startTracking(19, (byte) 0); //Display Name
         dataTracker.startTracking(20, (byte) 0); //Tamed
         dataTracker.startTracking(21, (byte) 0); //Sitting
-//        dataTracker.startTracking(22, (byte) 0); //Hungry //TODO
-//        dataTracker.startTracking(23, (byte) 0); //Protect From Players //TODO
         dataTracker.startTracking(27, ""); //Owner
         dataTracker.startTracking(28, ""); //Name
         dataTracker.startTracking(29, (byte) 0); //HEALTH

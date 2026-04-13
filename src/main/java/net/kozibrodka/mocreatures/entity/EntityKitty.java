@@ -37,7 +37,6 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider,  
     {
         super(world);
         setBoundingBoxSpacing(0.7F, 0.5F);
-        texture = "/assets/mocreatures/stationapi/textures/mob/pussycata.png";
         killedByOtherEntity = true;
         inBed = false;
         sleepy = false;
@@ -771,11 +770,11 @@ label0:
 
         case 16: // '\020'
             kittytimer++;
-            if(kittytimer > 500 && !getOnTree())
+            if(kittytimer > 500 && !onTree)
             {
                 changeKittyState(7);
             }
-            if(!getOnTree())
+            if(!onTree)
             {
                 if(!foundTree && random.nextInt(50) == 0)
                 {
@@ -814,11 +813,11 @@ label0:
                 Double double1 = Double.valueOf(getSquaredDistance(treeCoord[0], treeCoord[1], treeCoord[2]));
                 if(double1.doubleValue() < 7D)
                 {
-                    setOnTree(true);
+                    onTree = true;
                 }
                 break;
             }
-            if(!getOnTree())
+            if(!onTree)
             {
                 break;
             }
@@ -1004,7 +1003,7 @@ label0:
         setVehicle(null);
         setSitting(false);
         kittytimer = 0;
-        setOnTree(false);
+        onTree = false;
         foundTree = false;
         target = null;
     }
@@ -1014,7 +1013,7 @@ label0:
     {
         if(getKittyState() == 16)
         {
-            return horizontalCollision && getOnTree();
+            return horizontalCollision && onTree;
         } else
         {
             return super.isOnLadder();
@@ -1295,7 +1294,7 @@ label0:
     @Override
     protected boolean isMovementBlocked()
     {
-        return getSitting() || getKittyState() == 6 || getKittyState() == 16 && getOnTree() || getKittyState() == 12 || getKittyState() == 17 || getKittyState() == 14 || getKittyState() == 20 || getKittyState() == 23;
+        return getSitting() || getKittyState() == 6 || getKittyState() == 16 && onTree || getKittyState() == 12 || getKittyState() == 17 || getKittyState() == 14 || getKittyState() == 20 || getKittyState() == 23;
     }
 
     public void swingArm()
@@ -1606,6 +1605,7 @@ label0:
     private int madtimer;
     public int maxhealth;
     private boolean foundTree;
+    private boolean onTree;
     private final int[] treeCoord = {
         -1, -1, -1
     };
@@ -1624,12 +1624,11 @@ label0:
         dataTracker.startTracking(21, (byte) 0); //Sitting
         dataTracker.startTracking(22, (byte) 0); //Display EMO
         dataTracker.startTracking(23, (byte) 0); //Display Name
-        dataTracker.startTracking(24, (byte) 0); //On Tree
+        dataTracker.startTracking(24, (byte) 0); //Climbing
         dataTracker.startTracking(25, (byte) 0); //Picked
-        dataTracker.startTracking(26, (byte) 0); //Climbing
+        dataTracker.startTracking(27, ""); //Owner
+        dataTracker.startTracking(28, ""); //Name
         dataTracker.startTracking(29, (byte) 0); //HEALTH
-        dataTracker.startTracking(30, ""); //Owner
-        dataTracker.startTracking(31, ""); //Name
     }
 
     @Override
@@ -1644,7 +1643,7 @@ label0:
         nbttagcompound.putString("Name", getName());
         nbttagcompound.putBoolean("DisplayName", getDisplayName());
         nbttagcompound.putString("KittyOwner", getOwner());
-        nbttagcompound.putBoolean("OnTree", getOnTree());
+        nbttagcompound.putBoolean("OnTree", onTree);
     }
 
     @Override
@@ -1659,7 +1658,7 @@ label0:
         setName(nbttagcompound.getString("Name"));
         setDisplayName(nbttagcompound.getBoolean("DisplayName"));
         setOwner(nbttagcompound.getString("KittyOwner"));
-        setOnTree(nbttagcompound.getBoolean("OnTree"));
+        onTree = nbttagcompound.getBoolean("OnTree");
     }
 
     @Override
@@ -1815,23 +1814,6 @@ label0:
         }
     }
 
-    //Get on Tree
-    public boolean getOnTree()
-    {
-        return (dataTracker.getByte(24) & 1) != 0;
-    }
-
-    public void setOnTree(boolean flag)
-    {
-        if(flag)
-        {
-            dataTracker.set(24, Byte.valueOf((byte)1));
-        } else
-        {
-            dataTracker.set(24, Byte.valueOf((byte)0));
-        }
-    }
-
     //Picked
     public boolean getPicked()
     {
@@ -1852,17 +1834,17 @@ label0:
     //Climbing
     public boolean getClimbing()
     {
-        return (dataTracker.getByte(26) & 1) != 0;
+        return (dataTracker.getByte(24) & 1) != 0;
     }
 
     public void setClimbing(boolean flag)
     {
         if(flag)
         {
-            dataTracker.set(26, (byte) 1);
+            dataTracker.set(24, (byte) 1);
         } else
         {
-            dataTracker.set(26, (byte) 0);
+            dataTracker.set(24, (byte) 0);
         }
     }
 
@@ -1875,26 +1857,26 @@ label0:
     //OWNER
     public void setOwner(String owner)
     {
-        this.dataTracker.set(30, owner);
+        this.dataTracker.set(27, owner);
     }
 
     @Override
     public String getOwner()
     {
-        return this.dataTracker.getString(30);
+        return this.dataTracker.getString(27);
     }
 
     //NAME
     @Override
     public void setName(String name)
     {
-        this.dataTracker.set(31, name);
+        this.dataTracker.set(28, name);
     }
 
     @Override
     public String getName()
     {
-        return this.dataTracker.getString(31);
+        return this.dataTracker.getString(28);
     }
 
     @Override
