@@ -150,8 +150,11 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
             if(typeint == 1)
             {
                 HorseSpeed = 0.90000000000000002D;
+                temper = 100;
+                HorseJump = 0.4D;
                 texture = "/assets/mocreatures/stationapi/textures/mob/horseb.png";
                 maxhealth = 25;
+                fireImmune = false;
             } else
             if(typeint == 2)
             {
@@ -160,6 +163,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 HorseJump = 0.5D;
                 texture = "/assets/mocreatures/stationapi/textures/mob/horsebrownb.png";
                 maxhealth = 30;
+                fireImmune = false;
             } else
             if(typeint == 3)
             {
@@ -168,6 +172,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 HorseJump = 0.59999999999999998D;
                 texture = "/assets/mocreatures/stationapi/textures/mob/horseblackb.png";
                 maxhealth = 35;
+                fireImmune = false;
             } else
             if(typeint == 4)
             {
@@ -176,6 +181,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 temper = 400;
                 texture = "/assets/mocreatures/stationapi/textures/mob/horsegoldb.png";
                 maxhealth = 40;
+                fireImmune = false;
             } else
             if(typeint == 5)
             {
@@ -183,6 +189,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 temper = 500;
                 texture = "/assets/mocreatures/stationapi/textures/mob/horsewhiteb.png";
                 maxhealth = 40;
+                fireImmune = false;
             } else
             if(typeint == 6)
             {
@@ -190,6 +197,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 temper = 600;
                 texture = "/assets/mocreatures/stationapi/textures/mob/horsepackb.png";
                 maxhealth = 40;
+                fireImmune = false;
             } else
             if(typeint == 7)
             {

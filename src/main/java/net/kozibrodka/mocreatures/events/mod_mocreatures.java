@@ -1,5 +1,6 @@
 package net.kozibrodka.mocreatures.events;
 
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.glasslauncher.mods.gcapi3.api.ConfigRoot;
@@ -162,13 +163,13 @@ public class mod_mocreatures {
         megalodonteeth = new TemplateItem(Identifier.of(MOD_ID, "megalodonteeth")).setTranslationKey(MOD_ID, "megalodonteeth").setMaxCount(16);
         polarleather = new TemplateItem(Identifier.of(MOD_ID, "polarleather")).setTranslationKey(MOD_ID, "polarleather");
         sheepbell = new TemplateItem(Identifier.of(MOD_ID, "sheepbell")).setTranslationKey(MOD_ID, "sheepbell");
-//        baobabfruit = new TemplateItem(Identifier.of(MOD_ID, "baobabfruit")).setTranslationKey(MOD_ID, "baobabfruit");
 
         crochide = new TemplateItem(Identifier.of(MOD_ID, "crochide")).setTranslationKey(MOD_ID, "crochide");
         helmetcroc = new CrocHideArmorItem(MOD_ID.id("helmetcroc"), 0).setTranslationKey(MOD_ID, "helmetcroc");
         platecroc = new CrocHideArmorItem(MOD_ID.id("platecroc"), 1).setTranslationKey(MOD_ID, "platecroc");
         legscroc = new CrocHideArmorItem(MOD_ID.id("legscroc"), 2).setTranslationKey(MOD_ID, "legscroc");
         bootscroc = new CrocHideArmorItem(MOD_ID.id("bootscroc"), 3).setTranslationKey(MOD_ID, "bootscroc");
+//        aersaddle = new AerSaddle(Identifier.of(MOD_ID, "aersaddle")).setTranslationKey(MOD_ID, "aersaddle").setTexturePosition(8, 6);
 
 
 //            wildleather = new TemplateItem(Identifier.of(MOD_ID, "wildleather")).setTranslationKey(MOD_ID, "wildleather");
@@ -227,9 +228,6 @@ public class mod_mocreatures {
 //            for (int j = 0; j < 16; j++) {
 //                CraftingRegistry.addShapelessRecipe(new ItemInstance(BlockBase.WOOL, 8, 15 - j), new ItemInstance(ItemBase.dyePowder, 1, j), new ItemInstance(wildleather, 1));
 //            }
-
-
-
     }
 
     public static int colorize(int i)
@@ -257,7 +255,7 @@ public class mod_mocreatures {
     public static Item elephanttusk;
     public static Item megalodonteeth;
     public static Item sheepbell;
-//    public static Item baobabfruit;
+//    public static Item aersaddle;
 
     public static Item crochide;
     public static Item platecroc;

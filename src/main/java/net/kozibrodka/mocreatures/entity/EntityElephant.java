@@ -102,9 +102,12 @@ public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider
                 velocityX = (d / (double)f1) * 0.5D * 1.800000011920929D + velocityX * 0.20000000298023224D; //2.800000011920929D
                 velocityZ = (d1 / (double)f1) * 0.5D * 1.800000011920929D + velocityZ * 0.20000000298023224D; //2.800000011920929D
                 velocityY = 0.40000000596046448D;
+                if(entity instanceof PlayerEntity && entity.vehicle instanceof LivingEntity && random.nextInt(4) == 0){
+                    target = entity.vehicle; ///Słoń kurwica na konia - anty exploit
+                }
             }
         } else
-        if((double)f < 1.5D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
+        if((double)f < 1.75D && entity.boundingBox.maxY > boundingBox.minY && entity.boundingBox.minY < boundingBox.maxY)
         {
             attackCooldown = 20;
             byte byte0 = 12;

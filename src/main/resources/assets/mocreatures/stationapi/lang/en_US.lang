@@ -107,17 +107,8 @@ item.@.dolphin4_egg.name = Dolphin Dark
 item.@.dolphin5_egg.name = Dolphin Pink
 item.@.dolphin6_egg.name = Dolphin Albino
 
-
-
 achievement.mocreatures.indiana=Bamboozled!
 achievement.mocreatures.indiana.desc=Get some bamboo, the most important material in Tropicraft
 
 achievement.@.indiana=Bamboozled!
 achievement.@.indiana.desc=Get some bamboo, the most important material in Tropicraft
-
-#gui.stationapi.achievementPage.@.mocreaturesAchievements=Mo Creatures
-#stationapi\:achievementPage.mocreaturesAchievements=Mo Creatures
-#achievement.@.indiana.name = Indiana, Master of the BigCats
-#achievement.@:bunnykilla = Da Bunny Killa
-#achievement.@.indiana.desc = Using a whip, command at least 7 tamed BigCats at once
-#achievement.@.bunnykilla.desc = Using the bunny-kill-o-matic, euthanize at least 69 promiscuous bunnies at once

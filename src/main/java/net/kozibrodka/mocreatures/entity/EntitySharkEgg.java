@@ -103,7 +103,7 @@ public class EntitySharkEgg extends LivingEntity implements MobSpawnDataProvider
                 entityshark.setAge(0.3F);
                 entityshark.setTamed(true);
                 entityshark.setOwner(ktoKto);
-                entityshark.setProtect(true);
+                entityshark.protectMyOwner = true;
                 entityshark.setType(1);
                 entityshark.setPosition(x, y, z);
                 world.spawnEntity(entityshark);

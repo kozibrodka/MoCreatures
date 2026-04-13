@@ -78,9 +78,9 @@ public class ItemWhip extends TemplateItem
                 if(entity instanceof EntityHorse)
                 {
                     EntityHorse entityhorse = (EntityHorse)entity;
-                    if((entityhorse.getTamed() && entityplayer.name.equals(entityhorse.getOwner()) || (entityhorse.getTamed() && !entityhorse.getProtect())))
+                    if((entityhorse.getTamed() && entityplayer.name.equals(entityhorse.getOwner()) || (entityhorse.getTamed() && !entityhorse.protectFromPlayers)))
                     {
-                        entityhorse.setSitting(!entityhorse.getSitting());
+                        entityhorse.sitting = !entityhorse.sitting;
                     }
                 }
                 /// ŻÓŁW wyłączony na razie - żeby śmiesznie chodził

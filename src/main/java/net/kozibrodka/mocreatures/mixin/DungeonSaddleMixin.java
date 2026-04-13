@@ -13,7 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(DungeonFeature.class)
 public class DungeonSaddleMixin {
 
-    /// Mixin usunięty z Configu. //TODO: Chciałbym opcje w Aether, żeby SIODŁO było innym itemem. TRY MIXIN INTO EATJHER
+    /// Mixin usunięty z Configu. /// Rezygnuje z kombinowania z RECIPE siodla w AETHER - i tak eather dodaje Świnie + Krowa + Moa
+    /// ktore są lepsze niż słabe konie. Fuel System jest spoko dla balansu.
 
     @Inject(method = "getRandomChestItem", at = @At(value = "RETURN", ordinal = 0), cancellable = true)
     private void injected(CallbackInfoReturnable<ItemStack> cir) {

@@ -14,6 +14,7 @@ public class GoldenShears extends TemplateItem {
         this.setMaxDamage(238);
     }
 
+    @Override
     public boolean postMine(ItemStack arg, int i, int j, int k, int l, LivingEntity arg2) {
         if (i == Block.LEAVES.id || i == Block.COBWEB.id) {
             arg.damage(1, arg2);
@@ -22,10 +23,12 @@ public class GoldenShears extends TemplateItem {
         return super.postMine(arg, i, j, k, l, arg2);
     }
 
+    @Override
     public boolean isSuitableFor(Block arg) {
         return arg.id == Block.COBWEB.id;
     }
 
+    @Override
     public float getMiningSpeedMultiplier(ItemStack arg, Block arg2) {
         if (arg2.id != Block.COBWEB.id && arg2.id != Block.LEAVES.id) {
             return arg2.id == Block.WOOL.id ? 5.0F : super.getMiningSpeedMultiplier(arg, arg2);
