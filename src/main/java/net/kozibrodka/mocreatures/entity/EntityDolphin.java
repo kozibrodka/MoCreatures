@@ -171,7 +171,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         switch (getType()) {
             case 1:
                 maxhealth = 20;
-                return "/assets/mocreatures/stationapi/textures/mob/dolphin1.png";
+                return "/assets/mocreatures/stationapi/textures/mob/dolphin.png";
             case 2:
                 maxhealth = 25;
                 return "/assets/mocreatures/stationapi/textures/mob/dolphin2.png";

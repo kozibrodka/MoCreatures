@@ -25,6 +25,7 @@ public class EntityMummy extends MonsterEntity implements MobSpawnDataProvider
         movementSpeed = 0.4F;
         attackDamage = 3;
         health = random.nextInt(6) + 25;
+        texture = "/assets/mocreatures/stationapi/textures/mob/mummy.png"; //TODO TEST BATTLE TOWERS + scorpion
         if(!world.isRemote){
             setTypeSpawn();
         }

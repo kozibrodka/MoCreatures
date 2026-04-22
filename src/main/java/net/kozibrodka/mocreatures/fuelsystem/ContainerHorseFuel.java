@@ -15,7 +15,7 @@ public class ContainerHorseFuel extends ScreenHandler
     {
         byte var3 = 51;
         horse = entityhorse;
-        addSlot(new Slot(entityhorse, 0, 80, 22));
+        addSlot(new Slot(entityhorse, 0, 80, 22)); //TODO SLOT NIEWPUSZCZAJACY
 
         for(int i1 = 0; i1 < 3; i1++)
         {

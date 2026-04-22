@@ -3,6 +3,7 @@ package net.kozibrodka.mocreatures.events;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import net.glasslauncher.mods.gcapi3.api.ConfigRoot;
 import net.kozibrodka.mocreatures.glasscfg.MocreaturesCFG;
 import net.kozibrodka.mocreatures.item.*;
@@ -169,8 +170,9 @@ public class mod_mocreatures {
         platecroc = new CrocHideArmorItem(MOD_ID.id("platecroc"), 1).setTranslationKey(MOD_ID, "platecroc");
         legscroc = new CrocHideArmorItem(MOD_ID.id("legscroc"), 2).setTranslationKey(MOD_ID, "legscroc");
         bootscroc = new CrocHideArmorItem(MOD_ID.id("bootscroc"), 3).setTranslationKey(MOD_ID, "bootscroc");
-//        aersaddle = new AerSaddle(Identifier.of(MOD_ID, "aersaddle")).setTranslationKey(MOD_ID, "aersaddle").setTexturePosition(8, 6);
-
+        if(FabricLoader.getInstance().isModLoaded("aether")) {
+            aersaddle = new AerSaddle(Identifier.of(MOD_ID, "aersaddle")).setTranslationKey(MOD_ID, "aersaddle").setTexturePosition(8, 6);
+        }
 
 //            wildleather = new TemplateItem(Identifier.of(MOD_ID, "wildleather")).setTranslationKey(MOD_ID, "wildleather");
 
@@ -255,7 +257,7 @@ public class mod_mocreatures {
     public static Item elephanttusk;
     public static Item megalodonteeth;
     public static Item sheepbell;
-//    public static Item aersaddle;
+    public static Item aersaddle;
 
     public static Item crochide;
     public static Item platecroc;

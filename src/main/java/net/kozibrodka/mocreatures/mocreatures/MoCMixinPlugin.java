@@ -12,12 +12,13 @@ public class MoCMixinPlugin  implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (mixinClassName.equals("net.kozibrodka.mocreatures.mixin.SpongeMixin")) {
             return !FabricLoader.getInstance().isModLoaded("goldentweaks") || !FabricLoader.getInstance().isModLoaded("nowobtainablerecipes");
-        } else {
+        } else if(mixinClassName.equals("net.kozibrodka.mocreatures.mixin.RecipeManagerMixin")){
+            return FabricLoader.getInstance().isModLoaded("aether");
+        } else
+        {
             return true;
         }
     }
-
-    // Boilerplate
 
     @Override
     public void onLoad(String mixinPackage) {

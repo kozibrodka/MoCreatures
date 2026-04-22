@@ -22,6 +22,7 @@ public class MoCGUI extends Screen
         NameToSet = s;
     }
 
+    @Override
     public void init()
     {
         buttons.clear();
@@ -29,16 +30,19 @@ public class MoCGUI extends Screen
         buttons.add(new ButtonWidget(0, width / 2 - 100, height / 4 + 120, "Done"));
     }
 
+    @Override
     public void removed()
     {
         Keyboard.enableRepeatEvents(false);
     }
 
+    @Override
     public void tick()
     {
         updateCounter++;
     }
 
+    @Override
     protected void buttonClicked(ButtonWidget guibutton)
     {
         if(!guibutton.active)
@@ -59,6 +63,7 @@ public class MoCGUI extends Screen
         }
     }
 
+    @Override
     protected void keyPressed(char c, int i)
     {
         if(i == 14 && NameToSet.length() > 0)
@@ -70,6 +75,7 @@ public class MoCGUI extends Screen
         }
     }
 
+    @Override
     public void render(int i, int j, float f)
     {
         renderBackground();
@@ -85,7 +91,7 @@ public class MoCGUI extends Screen
     }
 
     protected String screenTitle;
-    private LivingEntity NamedEntity;
+    private final LivingEntity NamedEntity;
     private int updateCounter;
     private static final String allowedCharacters;
     private String NameToSet;

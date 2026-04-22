@@ -15,6 +15,8 @@ public class DungeonSaddleMixin {
 
     /// Mixin usunięty z Configu. /// Rezygnuje z kombinowania z RECIPE siodla w AETHER - i tak eather dodaje Świnie + Krowa + Moa
     /// ktore są lepsze niż słabe konie. Fuel System jest spoko dla balansu.
+    ///
+    /// Do pomysłu zawsze można wrócić. Jedynie nie wiem jak zmodyfikować recipe w Aether stąd.
 
     @Inject(method = "getRandomChestItem", at = @At(value = "RETURN", ordinal = 0), cancellable = true)
     private void injected(CallbackInfoReturnable<ItemStack> cir) {

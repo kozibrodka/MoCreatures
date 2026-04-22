@@ -501,7 +501,7 @@ public class EntityCustomWM extends WaterCreatureEntity
         {
             velocityY += 0.029999999999999999D;
         }
-        if(!submergedInWater && random.nextInt(20) == 0 && passenger == null)
+        if(!submergedInWater && random.nextInt(20) == 0) // && passenger == null
         {
             outOfWater++;
             y += (double) outOfWater / 30;
