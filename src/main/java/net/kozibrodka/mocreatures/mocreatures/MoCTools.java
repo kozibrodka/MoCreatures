@@ -62,7 +62,7 @@ public class MoCTools {
     }
 
     public static void MoveToWater(MobEntity entity) {
-        int[] ai = ReturnNearestMaterialCoord(entity, Material.WATER, Double.valueOf(20.0D), Double.valueOf(2.0D));
+        int[] ai = ReturnNearestMaterialCoord(entity, Material.WATER, 20.0D, 2.0D);
         if(ai[1] != -1) {
             MoveCreatureToXYZ(entity, ai[0], ai[1], ai[2], 24.0F);
         }
@@ -75,7 +75,7 @@ public class MoCTools {
         int x = -1; /// ZMIANA LOGIKI było -9999 i sprawdzanie czy x > - 1000, z tym że wtedy na ogromnej czesci świata nie działa LOL
         int y = -1;
         int z = -1;
-        Box axisalignedbb = entity.boundingBox.expand(double1.doubleValue(), yOff.doubleValue(), double1.doubleValue());
+        Box axisalignedbb = entity.boundingBox.expand(double1, yOff, double1);
         int i = MathHelper.floor(axisalignedbb.minX);
         int j = MathHelper.floor(axisalignedbb.maxX + 1.0D);
         int k = MathHelper.floor(axisalignedbb.minY);
@@ -128,7 +128,7 @@ public class MoCTools {
         int x = -1;
         int y = -1;
         int z = -1;
-        Box axisalignedbb = entity.boundingBox.expand(double1.doubleValue(), yOff.doubleValue(), double1.doubleValue());
+        Box axisalignedbb = entity.boundingBox.expand(double1, yOff, double1);
         int i = MathHelper.floor(axisalignedbb.minX);
         int j = MathHelper.floor(axisalignedbb.maxX + 1.0D);
         int k = MathHelper.floor(axisalignedbb.minY);
@@ -208,7 +208,7 @@ public class MoCTools {
 
     public static boolean NearMaterialWithDistance(Entity entity, Double double1, Material mat)
     {
-        Box axisalignedbb = entity.boundingBox.expand(double1.doubleValue(), double1.doubleValue(), double1.doubleValue());
+        Box axisalignedbb = entity.boundingBox.expand(double1, double1, double1);
         int i = MathHelper.floor(axisalignedbb.minX);
         int j = MathHelper.floor(axisalignedbb.maxX + 1.0D);
         int k = MathHelper.floor(axisalignedbb.minY);
@@ -236,14 +236,14 @@ public class MoCTools {
     }
 
     public static boolean isNearWater(Entity entity) { /// Może 8 kratek za dużo???
-        return isNearBlockName(entity, Double.valueOf(12.0D), "tile.water"); // 8.0D
+        return isNearBlockName(entity, 12.0D, "tile.water"); // 8.0D
     }
 
     public static boolean isNearTorch(Entity entity) {
         if(mod_mocreatures.mocGlass.huntercreatures.huntersSpawnOnTorch){
             return false;
         }else{
-            return isNearBlockName(entity, Double.valueOf(8.0D), "tile.torch");
+            return isNearBlockName(entity, 8.0D, "tile.torch");
         }
     }
 
@@ -252,7 +252,7 @@ public class MoCTools {
     }
 
     public static boolean isNearBlockName(Entity entity, Double dist, String blockName) {
-        Box axisalignedbb = entity.boundingBox.expand(dist.doubleValue(), dist.doubleValue() / 2.0D, dist.doubleValue());
+        Box axisalignedbb = entity.boundingBox.expand(dist, dist / 2.0D, dist);
         int i = MathHelper.floor(axisalignedbb.minX);
         int j = MathHelper.floor(axisalignedbb.maxX + 1.0D);
         int k = MathHelper.floor(axisalignedbb.minY);
@@ -340,7 +340,7 @@ public class MoCTools {
     }
 
     public static boolean entitiesToIgnore(Entity hunter, Entity victim) {
-        return !(victim instanceof LivingEntity) || (victim instanceof MonsterEntity) && !(hunter instanceof EntityBigCat) && !(victim instanceof EntityWWolf) || victim == hunter || victim == hunter.passenger || victim == hunter.vehicle || (victim instanceof PlayerEntity) || (victim instanceof EntityKittyBed) || (victim instanceof EntityLitterBox) || (victim instanceof WolfEntity) && ((WolfEntity)victim).isTamed() && !mod_mocreatures.mocGlass.huntercreatures.attackwolves || (victim instanceof EntityHorse) && ((EntityHorse)victim).getTamed() && !mod_mocreatures.mocGlass.huntercreatures.attackhorses || (victim instanceof EntityDolphin) && ((EntityDolphin)victim).getTamed() && !mod_mocreatures.mocGlass.huntercreatures.attackdolphins || (victim instanceof EntityCollie) && ((EntityCollie)victim).isTamed() && !mod_mocreatures.mocGlass.huntercreatures.attackwolves;
+        return !(victim instanceof LivingEntity) || (victim instanceof MonsterEntity) && !(hunter instanceof EntityBigCat) && (!(victim instanceof EntityWWolf) && !(victim instanceof EntityRat)) || victim == hunter || victim == hunter.passenger || victim == hunter.vehicle || (victim instanceof PlayerEntity) || (victim instanceof EntityKittyBed) || (victim instanceof EntityLitterBox) || (victim instanceof WolfEntity) && ((WolfEntity)victim).isTamed() && !mod_mocreatures.mocGlass.huntercreatures.attackwolves || (victim instanceof EntityHorse) && ((EntityHorse)victim).getTamed() && !mod_mocreatures.mocGlass.huntercreatures.attackhorses || (victim instanceof EntityDolphin) && ((EntityDolphin)victim).getTamed() && !mod_mocreatures.mocGlass.huntercreatures.attackdolphins || (victim instanceof EntityCollie) && ((EntityCollie)victim).isTamed() && !mod_mocreatures.mocGlass.huntercreatures.attackwolves;
     }
     ///  opcje dla nie-atakowania bigcats tamed i cats na razie nie ma.
 

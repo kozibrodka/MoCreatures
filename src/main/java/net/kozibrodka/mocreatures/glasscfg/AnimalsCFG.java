@@ -4,7 +4,7 @@ import net.glasslauncher.mods.gcapi3.api.ConfigEntry;
 
 public class AnimalsCFG {
 
-    @ConfigEntry(name="Easy Horse Breed")
+    @ConfigEntry(name="Easy Horse Breed", description = "Horses don't lose fertility after breed, breed racial calculations have no RNG factor")
     public Boolean easybreeding = false;
 
     @ConfigEntry(name="§bHorse Fuel system", description = "Press H while riding horse to open stomach and put HayStack or SugarLump inside")
@@ -16,7 +16,7 @@ public class AnimalsCFG {
     @ConfigEntry(name="Horse Drop Saddle")
     public Boolean horse_saddle_drop = false;
 
-    @ConfigEntry(name="Horse speed boost glitch", description = "While player has mouse, bunny or bird on his head")
+    @ConfigEntry(name="Horse speed boost glitch", description = "While player has mouse, bunny or bird on his head horse moves unnaturally and uncontrolably fast")
     public Boolean horse_speed_glitch = false;
 
     @ConfigEntry(name="Pegasus chance", maxValue = 3)

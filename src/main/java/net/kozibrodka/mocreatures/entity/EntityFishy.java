@@ -125,7 +125,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         if(world.difficulty > 0 && getAge() >= 1.0F && getType() == 10)
         {
             PlayerEntity entityplayer = world.getClosestPlayer(this, 16D);
-            if(entityplayer != null && entityplayer.submergedInWater && !getTamed())
+            if(entityplayer != null && entityplayer.submergedInWater && !getTamed() && canSee(entityplayer))
             {
                 return entityplayer;
             }

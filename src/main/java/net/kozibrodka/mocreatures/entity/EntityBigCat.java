@@ -48,9 +48,6 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         attackRange = 1.0D;
         maxhealth = 25;
         askedServer = false;
-        if(!world.isRemote){
-            setTypeSpawn(); /// Addon for SpawnEggs + Summon command working
-        }
     }
 
     @Override
@@ -241,6 +238,10 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
     @Override
     protected void tickLiving() {
         super.tickLiving();
+        if(!chooseType && !world.isRemote && getType() == 0){
+            chooseType = true;
+            setTypeSpawn();
+        }
         this.dataTracker.set(29, (byte) health);
     }
 
@@ -489,7 +490,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         if(world.difficulty > 0)
         {
             PlayerEntity entityplayer = world.getClosestPlayer(this, 12D);
-            if(!getTamed() && entityplayer != null && getAdult() && hungry)
+            if(!getTamed() && entityplayer != null && canSee(entityplayer) && getAdult() && hungry)
             {
                 if(getType() == 1 || getType() == 5 || getType() == 7)
                 {
@@ -548,8 +549,9 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
     }
 
     public boolean privateToIgnore(Entity hunter, Entity victim) {
-        return (!getAdult() && ((double)victim.width > 0.5D || (double)victim.height > 0.5D) || (victim instanceof EntityShark) || (victim instanceof MonsterEntity) && (!getTamed() || !getAdult()) || (victim instanceof EntityHippo) || (victim instanceof EntityCrocodile) && ((EntityCrocodile) victim).getAge() > 1.1F || victim instanceof EntityElephant && ((EntityElephant) victim).getAdult());
+        return (!getAdult() && ((double)victim.width > 0.5D || (double)victim.height > 0.5D) || (victim instanceof EntityShark) || (victim instanceof MonsterEntity) && (!getTamed() || !getAdult()) && (!(victim instanceof EntityWWolf) && !(victim instanceof EntityRat)) || (victim instanceof EntityPolarBear) || (victim instanceof EntityHippo) || (victim instanceof EntityCrocodile) && ((EntityCrocodile) victim).getAge() > 1.1F || victim instanceof EntityElephant && ((EntityElephant) victim).getAdult());
     } ///Według kodu oswojony BigCat ADult ma atakowac potwory. BiCat jeżeli siedzi lub jest na Lince nie atakuje randomowo, jest w miare grzeczny.
+/// //TODO Ewentualnie dodać aby drapieżnicy atakowali BigCatsy które są młode? - wtedy też jakiś NOTICE parents...
 
     public boolean monstersToIgnore(Entity hunter, Entity victim) {
         return ((victim instanceof CreeperEntity) || (victim instanceof GhastEntity) || (victim instanceof EntityWerewolf) && !((EntityWerewolf) victim).getHumanForm() || (victim instanceof EntityOgre));
@@ -911,6 +913,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
     public boolean eaten;
     public boolean hungry;
     public boolean protectMyOwner;
+    public boolean chooseType;
 
     @Override
     public Identifier getHandlerIdentifier() {
@@ -947,8 +950,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
     public void setTypeSpawn() {
         if (!world.isRemote) {
             int i = 0;
-            //
-            if(MoCTools.NearMaterialWithDistance(this, Double.valueOf(1.0D), Material.SNOW_LAYER))
+            if(MoCTools.NearMaterialWithDistance(this, 1.0D, Material.SNOW_LAYER))
             {
                 i = 6;
             } else
@@ -962,7 +964,6 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
             if(i == 0){
                 i = getRandomRace();
             }
-            //
             if (random.nextInt(4) == 0) {
                 setAdult(false);
                 killedByOtherEntity = true;

@@ -364,7 +364,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
                 LivingEntity entityliving;
                 if(getIsResting()) {
                     PlayerEntity entityplayer = world.getClosestPlayer(this, 6.0D);
-                    if(entityplayer != null){
+                    if(entityplayer != null && canSee(entityplayer)){
                         return entityplayer;
                     }
                     entityliving = getClosestEntityLiving(this, 6.0D);
@@ -373,7 +373,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
 
                 if(random.nextInt(80) == 0) {
                     PlayerEntity entityplayer = world.getClosestPlayer(this, 12.0D);
-                    if(entityplayer != null){
+                    if(entityplayer != null && canSee(entityplayer)){
                         return entityplayer;
                     }
                     entityliving = getClosestEntityLiving(this, 12.0D);

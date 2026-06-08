@@ -131,11 +131,13 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider
         float f = getBrightnessAtEyes(1.0F);
         if(f < 0.5F)
         {
-            return world.getClosestPlayer(this, 16D);
-        } else
-        {
-            return null;
+            PlayerEntity entityplayer = world.getClosestPlayer(this, 16D);
+            if(entityplayer != null && canSee(entityplayer))
+            {
+                return entityplayer;
+            }
         }
+        return null;
     }
 
     @Override

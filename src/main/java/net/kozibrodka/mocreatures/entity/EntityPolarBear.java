@@ -35,7 +35,7 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
                 this.attackRange = 5.0D;
             }
             PlayerEntity entityplayer = world.getClosestPlayer(this, attackRange);
-            if(entityplayer != null)
+            if(entityplayer != null && canSee(entityplayer))
             {
                 return entityplayer;
             }
@@ -66,6 +66,11 @@ public class EntityPolarBear extends EntityBear implements MobSpawnDataProvider
             }
         }
     }
+
+    @Override
+    public boolean privateToIgnore(Entity hunter, Entity victim) {
+        return ((victim instanceof EntityBear) || (victim instanceof EntityBigCat) || (victim instanceof EntityShark) || (victim instanceof EntityDolphin) || (victim instanceof EntityCrocodile) || (victim instanceof EntityHippo) || (victim instanceof EntityElephant));
+    }   ///Polar Bear atakuje WildWolf, zwykły bear nie
 
     @Override
     protected void dropItems()

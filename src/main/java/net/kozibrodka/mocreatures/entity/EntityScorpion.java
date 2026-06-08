@@ -28,7 +28,16 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
         health = 15;
         poisontimer = 0;
         setAge(1.1F); /// For MobSpawner correct render
-        if(world != null && !world.isRemote){
+//        if(world != null && !world.isRemote){
+//            setTypeSpawn();
+//        }
+    }
+
+    @Override
+    protected void tickLiving() {
+        super.tickLiving();
+        if(!chooseType && !world.isRemote && getType() == 0){
+            chooseType = true;
             setTypeSpawn();
         }
     }
@@ -39,33 +48,27 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
             super.tickMovement();
             return;
         }
-
         if(getIsPoisoning()) {
             ++poisontimer;
             if(poisontimer == 1) {
                 world.playSound(this, "mocreatures:scorpionsting", 1.0F, 1.0F + (random.nextFloat() - random.nextFloat()) * 0.2F);
                 world.broadcastEntityEvent(this, (byte)6);
             }
-
             if(poisontimer > 50) {
                 poisontimer = 0;
                 setIsPoisoning(false);
             }
         }
-
         if(random.nextInt(50) == 0) {
             swingArm();
         }
-
         if(!getAdult() && random.nextInt(200) == 0) {
             setAge(getAge() + 0.01F);
             if(getAge() >= 1.1F) {
                 setAdult(true);
             }
         }
-
         setClimbing(climbing());
-
         super.tickMovement();
     }
 
@@ -89,7 +92,7 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
     @Override
     protected Entity getTargetInRange() {
         if(world.difficulty > 0 && !world.canMonsterSpawn() && getAdult()) {
-            PlayerEntity entityliving = world.getClosestPlayer(this, 12.0D); /// ovveride podobny do pająka? przez sciany aggro?
+            PlayerEntity entityliving = world.getClosestPlayer(this, 12.0D); /// Aggro przez ściany - jak pająk
             return entityliving;
         }
 
@@ -240,7 +243,7 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
 
     private int poisontimer;
     public float swingProgress;
-
+    public boolean chooseType;
 
     @Override
     public Identifier getHandlerIdentifier() {return Identifier.of(mod_mocreatures.MOD_ID, "Scorpion");}
@@ -250,11 +253,11 @@ public class EntityScorpion extends MonsterEntity implements MobSpawnDataProvide
             return;
         }
         byte i = 0;
-        if(MoCTools.NearMaterialWithDistance(this, Double.valueOf(1.0D), Material.SNOW_LAYER)) {
+        if(MoCTools.NearMaterialWithDistance(this, 1.0D, Material.SNOW_LAYER)) {
             i = 4;
         } else if(world.dimension.isNether) {
             i = 3;
-        }else if(MoCTools.NearMaterialWithDistance(this, Double.valueOf(1.0D), Material.SAND)){
+        }else if(MoCTools.NearMaterialWithDistance(this, 1.0D, Material.SAND)){
             i = 1;
         }else{
             i = 2;

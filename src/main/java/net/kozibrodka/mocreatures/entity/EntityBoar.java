@@ -51,7 +51,7 @@ public class EntityBoar extends PigEntity implements MobSpawnDataProvider
         if(world.difficulty > 0)
         {
             PlayerEntity entityplayer = world.getClosestPlayer(this, attackRange);
-            if(entityplayer != null && random.nextInt(50) == 0)
+            if(entityplayer != null && random.nextInt(50) == 0 && canSee(entityplayer))
             {
                 return entityplayer;
             }

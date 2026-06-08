@@ -17,9 +17,9 @@ public class ModelWolf2 extends QuadrupedEntityModel
         head = new ModelPart(0, 0);
         head.addCuboid(-4F, -2F, -6F, 8, 8, 6, 0.0F);
         head.setPivot(0.0F, 4F, -8F);
-        b = new ModelPart(8, 15);
-        b.addCuboid(-2F, 2.0F, -11F, 4, 4, 6, 0.0F);
-        b.setPivot(0.0F, 4F, -8F);
+        snout = new ModelPart(8, 15);
+        snout.addCuboid(-2F, 2.0F, -11F, 4, 4, 6, 0.0F);
+        snout.setPivot(0.0F, 4F, -8F);
         body = new ModelPart(28, 6);
         body.addCuboid(-5F, -8F, -9F, 10, 16, 6, 0.0F);
         body.setPivot(0.0F, 5F, 2.0F);
@@ -29,16 +29,16 @@ public class ModelWolf2 extends QuadrupedEntityModel
     public void render(float f, float f1, float f2, float f3, float f4, float f5)
     {
         super.render(f, f1, f2, f3, f4, f5);
-        b.render(f5);
+        snout.render(f5);
     }
 
     @Override
     public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
     {
         super.setAngles(f, f1, f2, f3, f4, f5);
-        b.yaw = head.yaw;
-        b.pitch = head.pitch;
+        snout.yaw = head.yaw;
+        snout.pitch = head.pitch;
     }
 
-    ModelPart b;
+    ModelPart snout;
 }

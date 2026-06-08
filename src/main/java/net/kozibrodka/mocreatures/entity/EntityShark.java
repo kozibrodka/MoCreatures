@@ -83,7 +83,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         if(world.difficulty > 0 && getAge() >= 1.0F)
         {
             PlayerEntity entityplayer = world.getClosestPlayer(this, 16D);
-            if(entityplayer != null && entityplayer.submergedInWater && !getTamed() && (this.y - entityplayer.y < 6.0D))
+            if(entityplayer != null && entityplayer.submergedInWater && !getTamed() && (this.y - entityplayer.y < 6.0D) && canSee(entityplayer))
             {
                 return entityplayer;
             }

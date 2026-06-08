@@ -91,7 +91,7 @@ public class EntityHippo extends AnimalEntity implements MobSpawnDataProvider {
         if(world.difficulty > 0 && hungry)
         {
             PlayerEntity entityplayer = world.getClosestPlayer(this, 12D);
-            if(entityplayer != null)
+            if(entityplayer != null && canSee(entityplayer))
             {
                 hungry = false;
                 hippoClock = 0;

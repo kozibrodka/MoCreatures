@@ -88,7 +88,7 @@ public class EntityOgre extends MonsterEntity
         if(f < 0.5F)
         {
             PlayerEntity entityplayer = world.getClosestPlayer(this, attackRange);
-            if(entityplayer != null && world.difficulty > 0)
+            if(entityplayer != null && world.difficulty > 0 && canSee(entityplayer))
             {
                 ogrehasenemy = true;
                 return entityplayer;

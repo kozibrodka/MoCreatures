@@ -5,7 +5,7 @@ import net.kozibrodka.mocreatures.glasscfg.enums.DifficultyEnum;
 
 public class WaterMobsCFG {
 
-    @ConfigEntry(name="§9Dolphin Diving")
+    @ConfigEntry(name="§9Dolphin Diving", description = "dolphins can dive under water while being ridden by player")
     public Boolean diving = true;
 
     @ConfigEntry(name="Dolphin Shallow Bogging", description = "less speed on shallow waters")
