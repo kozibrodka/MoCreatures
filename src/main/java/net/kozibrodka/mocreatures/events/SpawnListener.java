@@ -5,6 +5,7 @@ import net.mine_diver.unsafeevents.listener.EventListener;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.NetherDimension;
 import net.minecraft.world.dimension.OverworldDimension;
+import net.modificationstation.stationapi.api.event.world.WorldEvent;
 import net.modificationstation.stationapi.api.event.worldgen.biome.BiomeModificationEvent;
 import net.modificationstation.stationapi.api.mod.entrypoint.Entrypoint;
 import net.modificationstation.stationapi.api.util.Namespace;
@@ -86,21 +87,16 @@ public class SpawnListener {
                     event.biome.addPassiveEntity(EntityTurtle.class, mod_mocreatures.mocGlass.animals.turtlefreq);
                 }
             }
-        }else if (event.world.dimension instanceof NetherDimension) {
-            event.biome.addHostileEntity(EntityFireOgre.class, mod_mocreatures.mocGlass.hostilemobs.fogrefreq);
-            event.biome.addHostileEntity(EntityHellRat.class, mod_mocreatures.mocGlass.hostilemobs.hellratfreq);
-            event.biome.addHostileEntity(EntityFlameWraith.class, mod_mocreatures.mocGlass.hostilemobs.fwraithfreq);
         }else {
             /// non-overworld & non-nether
             /// maybe twilight forest should have some mobs?
             return;
         }
-
-
-
-
-
-
-
+    }
+    @EventListener //https://github.com/ModificationStation/StationAPI/issues/178
+    public void initFeatures(WorldEvent.Init event) {
+        Biome.HELL.addHostileEntity(EntityFireOgre.class, mod_mocreatures.mocGlass.hostilemobs.fogrefreq);
+        Biome.HELL.addHostileEntity(EntityHellRat.class, mod_mocreatures.mocGlass.hostilemobs.hellratfreq);
+        Biome.HELL.addHostileEntity(EntityFlameWraith.class, mod_mocreatures.mocGlass.hostilemobs.fwraithfreq);
     }
 }
