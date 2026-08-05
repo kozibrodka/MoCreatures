@@ -63,7 +63,7 @@ public class SpawnListener {
                     event.biome.addPassiveEntity(EntityCollie.class, mod_mocreatures.mocGlass.animals.colliefreq);
                 }
             }
-            if (!event.biome.canRain()) {
+            if (!(event.biome.canRain() || event.biome.canSnow())) {
                 /// Pustynne:
                 if(mod_mocreatures.mocGlass.spawnlimits.extra_mobs) {
                     event.biome.addPassiveEntity(EntityCamel.class, mod_mocreatures.mocGlass.animals.camelfreq);
