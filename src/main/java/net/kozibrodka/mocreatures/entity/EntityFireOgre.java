@@ -37,10 +37,7 @@ public class EntityFireOgre extends EntityOgre implements MobSpawnDataProvider
     @Override
     public void tickMovement()
     {
-        getTargetInRange();
-        destroyForce = mod_mocreatures.mocGlass.hostilemobs.fogreStrength;
-        attackRange = mod_mocreatures.mocGlass.hostilemobs.ogrerange;
-        if(ogrehasenemy && random.nextInt(frequencyA) == 0 && !world.isRemote)
+        if(ogrehasenemy && random.nextInt(frequencyA) == 0 && !world.isRemote && isTargetPlayerAvaiable())
         {
             setOgreAttack(true);
             attackCooldown = 15;
@@ -48,7 +45,9 @@ public class EntityFireOgre extends EntityOgre implements MobSpawnDataProvider
         if(attackCooldown <= 0 && getOgreAttack() && !world.isRemote)
         {
             setOgreAttack(false);
-            DestroyingOgre();
+            if(isTargetPlayerAvaiable()){
+                DestroyingOgre();
+            }
         }
         if(world.canMonsterSpawn() && !world.isRemote)
         {

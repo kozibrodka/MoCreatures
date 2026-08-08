@@ -37,10 +37,7 @@ public class EntityCaveOgre extends EntityOgre
     @Override
     public void tickMovement()
     {
-        getTargetInRange();
-        destroyForce = mod_mocreatures.mocGlass.hostilemobs.cogreStrength;
-        attackRange = mod_mocreatures.mocGlass.hostilemobs.ogrerange;
-        if(ogrehasenemy && random.nextInt(frequencyA) == 0 && !world.isRemote)
+        if(ogrehasenemy && random.nextInt(frequencyA) == 0 && !world.isRemote && isTargetPlayerAvaiable())
         {
             setOgreAttack(true);
             attackCooldown = 15;
@@ -48,7 +45,9 @@ public class EntityCaveOgre extends EntityOgre
         if(attackCooldown <= 0 && getOgreAttack() && !world.isRemote)
         {
             setOgreAttack(false);
-            DestroyingOgre();
+            if(isTargetPlayerAvaiable()){
+                DestroyingOgre();
+            }
         }
         if(world.canMonsterSpawn() && !world.isRemote)
         {

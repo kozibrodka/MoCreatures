@@ -26,6 +26,7 @@ public class EntitySharkEgg extends LivingEntity implements MobSpawnDataProvider
         tCounter = 0;
         lCounter = 0;
         texture = "/assets/mocreatures/stationapi/textures/mob/sharkeggt.png";
+        ktoKto = "";
     }
 
     public EntitySharkEgg(World world, String graczol)
@@ -41,7 +42,7 @@ public class EntitySharkEgg extends LivingEntity implements MobSpawnDataProvider
     @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
-        nbttagcompound.putString("Opiekun", ktoKto);
+        nbttagcompound.putString("Opiekun", ktoKto); //TODO crash when SpawnEgged - empty string not allowed. - chyba fixed
     }
 
     @Override

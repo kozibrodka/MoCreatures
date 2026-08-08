@@ -1,6 +1,7 @@
 To Do List:
-
-- setBoundingBoxSpacing - can it be sync on client?
+- setBoundingBoxSpacing - can it be sync on client? - tak - dzieci powinny być mniejsze...
+- Delfin - smoother client pos system - z Konia przekopiować...
+- Delfin extra: Skok
 
 
 (server fix mod:)

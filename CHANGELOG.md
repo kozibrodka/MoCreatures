@@ -1,5 +1,4 @@
-- Updated to StationAPI Alpha-6.2
-- Improved server riding of Horses and Dolphins
-- Lowered sound volume of Deer grunts
-- Fixed Mushroom stew horse interraction
-- Fixed Green Apple compability
+Fixed Mummies and Camels spawning in snow biomes
+Fixed mobs not spawning in nether
+Hunters Spawning Near Torches option now effect vanilla Wolves
+Fixed ogres destroying blocks when cannot see its target

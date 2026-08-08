@@ -554,7 +554,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
     }
 
     public void tickBaseMovement() {
-        if (this.bodyTrackingIncrements > 0) {
+        if (this.bodyTrackingIncrements > 0) {  /// TODO ten system nie został dodany dla delfina...
             double var1 = this.x + (this.lerpX - this.x) / ((double)this.bodyTrackingIncrements - 0.5D);
             double var3 = this.y + (this.lerpY - this.y) / ((double)this.bodyTrackingIncrements - 2.5D);
             double var5 = this.z + (this.lerpZ - this.z) / ((double)this.bodyTrackingIncrements - 0.5D);

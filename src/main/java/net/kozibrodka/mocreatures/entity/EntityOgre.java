@@ -13,6 +13,7 @@ import net.minecraft.entity.mob.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.server.entity.MobSpawnDataProvider;
@@ -91,6 +92,7 @@ public class EntityOgre extends MonsterEntity
             if(entityplayer != null && world.difficulty > 0 && canSee(entityplayer))
             {
                 ogrehasenemy = true;
+                targetPlayer = entityplayer;
                 return entityplayer;
             }
         }
@@ -122,19 +124,27 @@ public class EntityOgre extends MonsterEntity
     @Override
     public void tickMovement()
     {
-        destroyForce = mod_mocreatures.mocGlass.hostilemobs.ogreStrength; ///Czy musi to byc tu?
-        attackRange = mod_mocreatures.mocGlass.hostilemobs.ogrerange;
-        if(ogrehasenemy && random.nextInt(frequencyA) == 0 && !world.isRemote)
+        if(ogrehasenemy && random.nextInt(frequencyA) == 0 && !world.isRemote && isTargetPlayerAvaiable())
         {
             setOgreAttack(true);
-            attackCooldown = 15;
+            attackCooldown = 15; /// Nisko, być może trzeba będzie zwiększyć aby był mniej ABUSIVE
         }
         if(attackCooldown <= 0 && getOgreAttack() && !world.isRemote)
         {
             setOgreAttack(false);
-            DestroyingOgre();
+            if(isTargetPlayerAvaiable()){
+                DestroyingOgre();
+            }
         }
         super.tickMovement();
+    }
+
+    public boolean isTargetPlayerAvaiable(){ /// Ogres less abusive, player in theory can open/close Doors really fast to kill like a creeper - to avoid explosion
+        return targetPlayer != null && targetPlayer.isAlive() && (canSee(targetPlayer) || canSeeFromStomachLevel(targetPlayer));
+    }
+
+    public boolean canSeeFromStomachLevel(Entity entity) {
+        return this.world.raycast(Vec3d.createCached(this.x, this.y + (double)this.getEyeHeight() - 2.0D, this.z), Vec3d.createCached(entity.x, entity.y + (double)entity.getEyeHeight(), entity.z)) == null;
     }
 
     public void onLivingUpdate2()
@@ -204,6 +214,7 @@ public class EntityOgre extends MonsterEntity
     public boolean ogrehasenemy;
     public boolean bogrefire;
     protected double attackRange;
+    protected PlayerEntity targetPlayer;
 
     @Override
     public Identifier getHandlerIdentifier() {
