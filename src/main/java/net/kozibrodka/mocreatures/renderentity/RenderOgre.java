@@ -18,7 +18,7 @@ public class RenderOgre extends LivingEntityRenderer
 
     protected boolean a(EntityOgre entityogre, int i)
     {
-        bindTexture("/assets/mocreatures/stationapi/textures/mob/ogreb.png");
+        bindTexture(entityogre.getTextureB());
         return i == 0;
     }
 

@@ -2,6 +2,7 @@ package net.kozibrodka.mocreatures.mixin;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.kozibrodka.mocreatures.entity.EntityDolphin;
 import net.kozibrodka.mocreatures.entity.EntityHorse;
 import net.kozibrodka.mocreatures.events.KeybindListener;
 import net.kozibrodka.mocreatures.network.HorseFuelOpenGUIPacket;
@@ -33,7 +34,7 @@ public abstract class MinecraftMixin {
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Keyboard;next()Z"))
     private void mocreatures_tick(CallbackInfo ci) {
-        if (player == null || player.dead || !(player.vehicle instanceof EntityHorse)) return;
+        if (player == null || player.dead || (!(player.vehicle instanceof EntityHorse) && !(player.vehicle instanceof EntityDolphin))) return;
 
         if (Keyboard.getEventKeyState() && currentScreen == null) {
             if (Keyboard.getEventKey() == net.kozibrodka.mocreatures.events.KeybindListener.keyBinding_horseFuel.code) {

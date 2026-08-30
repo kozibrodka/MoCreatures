@@ -1,5 +1,6 @@
 package net.kozibrodka.mocreatures.renderentity;
 
+import net.kozibrodka.mocreatures.entity.EntityCustomWM;
 import net.kozibrodka.mocreatures.entity.EntityDolphin;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.client.font.TextRenderer;
@@ -7,6 +8,7 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 public class RenderDolphin extends LivingEntityRenderer
@@ -16,6 +18,18 @@ public class RenderDolphin extends LivingEntityRenderer
     {
         super(modelbase, f);
     }
+
+    @Override
+    protected void applyHandSwingRotation(LivingEntity entityliving, float f, float f1, float f2)
+    {
+        float renderPitch = ((EntityCustomWM)entityliving).prevDolphinPitch
+                + (((EntityCustomWM)entityliving).dolphinPitch - ((EntityCustomWM)entityliving).prevDolphinPitch) * f2;
+
+        GL11.glRotatef(180F - f1, 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(renderPitch * -1, 1.0F, 0.0F, 0.0F);
+    }
+
+
 
     @Override
     public void render(LivingEntity entityliving, double d, double d1, double d2,

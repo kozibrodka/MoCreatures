@@ -38,6 +38,25 @@ public class EntityOgre extends MonsterEntity
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
+    public String getTexture() {
+        if(mod_mocreatures.mocGlass.hostilemobs.ogreClassicTexture){
+            return "/assets/mocreatures/stationapi/textures/mob/ogre_classic.png";
+        }else{
+            return this.texture;
+        }
+    }
+
+    @Environment(EnvType.CLIENT)
+    public String getTextureB() {
+        if(mod_mocreatures.mocGlass.hostilemobs.ogreClassicTexture){
+            return "/assets/mocreatures/stationapi/textures/mob/ogreb_classic.png";
+        }else{
+            return "/assets/mocreatures/stationapi/textures/mob/ogreb.png";
+        }
+    }
+
+    @Override
     protected void initDataTracker()
     {
         super.initDataTracker();

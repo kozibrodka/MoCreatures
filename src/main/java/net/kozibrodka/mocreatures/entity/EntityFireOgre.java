@@ -1,6 +1,8 @@
 
 package net.kozibrodka.mocreatures.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Monster;
@@ -26,6 +28,26 @@ public class EntityFireOgre extends EntityOgre implements MobSpawnDataProvider
         destroyForce = mod_mocreatures.mocGlass.hostilemobs.fogreStrength;
         fireImmune = true;
         frequencyA = 35;
+    }
+
+    @Override
+    @Environment(EnvType.CLIENT)
+    public String getTexture() {
+        if(mod_mocreatures.mocGlass.hostilemobs.ogreClassicTexture){
+            return "/assets/mocreatures/stationapi/textures/mob/fireogre_classic.png";
+        }else{
+            return this.texture;
+        }
+    }
+
+    @Override
+    @Environment(EnvType.CLIENT)
+    public String getTextureB() {
+        if(mod_mocreatures.mocGlass.hostilemobs.ogreClassicTexture){
+            return "/assets/mocreatures/stationapi/textures/mob/fireogreb_classic.png";
+        }else{
+            return "/assets/mocreatures/stationapi/textures/mob/fireogreb.png";
+        }
     }
 
     @Override

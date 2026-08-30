@@ -17,7 +17,7 @@ public class RenderFireOgre extends RenderOgre
     @Override
     protected boolean a(EntityOgre entityogre, int i)
     {
-        bindTexture("/assets/mocreatures/stationapi/textures/mob/fireogreb.png");
+        bindTexture(entityogre.getTextureB());
         return i == 0;
     }
 

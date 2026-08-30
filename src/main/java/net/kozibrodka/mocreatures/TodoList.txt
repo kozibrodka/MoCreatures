@@ -1,8 +1,11 @@
 To Do List:
+- Tak naprawdę jedynie, zabawa aby dzieci miały mniejszy hitbox.
 - setBoundingBoxSpacing - can it be sync on client? - tak - dzieci powinny być mniejsze...
-- Delfin - smoother client pos system - z Konia przekopiować...
-- Delfin extra: Skok
+z tym, że potem aktualizować ten rozmiar... to już są na prawde takie detale.
 
+- ewentualnie aby drapieżnicy atakowali młode bigCatsy - bo na ten moment dzieciarnia łazi bez konsekwencji.
+
+- Aether psuje entities on server - onGround - jprd
 
 (server fix mod:)
 - Fix player animation when riding - VANILLA ALSO - boats
@@ -10,7 +13,7 @@ To Do List:
 
 - CONFIG STYLE - GLASSCGF - SUCKSS
 
-- MODERN ARMOR MOD
+- MODERN ARMOR MOD - some telvarost tweak has it.
 - DISABLE NETHER x8 TRAVEL
 
 

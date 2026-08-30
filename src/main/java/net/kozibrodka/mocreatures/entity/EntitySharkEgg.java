@@ -42,7 +42,7 @@ public class EntitySharkEgg extends LivingEntity implements MobSpawnDataProvider
     @Override
     public void writeNbt(NbtCompound nbttagcompound)
     {
-        nbttagcompound.putString("Opiekun", ktoKto); //TODO crash when SpawnEgged - empty string not allowed. - chyba fixed
+        nbttagcompound.putString("Opiekun", ktoKto);
     }
 
     @Override

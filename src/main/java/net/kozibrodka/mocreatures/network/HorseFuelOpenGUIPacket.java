@@ -2,6 +2,7 @@ package net.kozibrodka.mocreatures.network;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.kozibrodka.mocreatures.entity.EntityDolphin;
 import net.kozibrodka.mocreatures.entity.EntityHorse;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.fuelsystem.ContainerHorseFuel;
@@ -53,29 +54,35 @@ public class HorseFuelOpenGUIPacket extends Packet implements ManagedPacket<Hors
     @Environment(EnvType.CLIENT)
     private void handleClient(NetworkHandler networkHandler) {
         PlayerEntity player = PlayerHelper.getPlayerFromPacketHandler(networkHandler);
-        if (player == null || !(player.vehicle instanceof EntityHorse) || !mod_mocreatures.mocGlass.animals.horse_fuel) return;
-        EntityHorse airship = (EntityHorse) player.vehicle;
+        if(player != null && player.vehicle instanceof EntityHorse airship && mod_mocreatures.mocGlass.animals.horse_fuel){
+            GuiHelper.openGUI(
+                    player,
+                    Identifier.of(Namespace.of("mocreatures"), "openHorseFuel"),
+                    airship,
+                    new ContainerHorseFuel(player.inventory, airship)
+            );
+        }
 
-        GuiHelper.openGUI(
-                player,
-                Identifier.of(Namespace.of("mocreatures"), "openHorseFuel"),
-                airship,
-                new ContainerHorseFuel(player.inventory, airship)
-        );
+        if(player != null && player.vehicle instanceof EntityDolphin airship && mod_mocreatures.mocGlass.watermobs.jumpdolphin){
+            airship.performHighJump();
+        }
     }
 
     @Environment(EnvType.SERVER)
     public void handleServer(NetworkHandler networkHandler) {
         PlayerEntity player = PlayerHelper.getPlayerFromPacketHandler(networkHandler);
-        if (player == null || !(player.vehicle instanceof EntityHorse) || !mod_mocreatures.mocGlass.animals.horse_fuel) return;
-        EntityHorse airship = (EntityHorse) player.vehicle;
+        if(player != null && player.vehicle instanceof EntityHorse airship && mod_mocreatures.mocGlass.animals.horse_fuel) {
+            GuiHelper.openGUI(
+                    player,
+                    Identifier.of(Namespace.of("mocreatures"), "openHorseFuel"),
+                    airship,
+                    new ContainerHorseFuel(player.inventory, airship)
+            );
+        }
 
-        GuiHelper.openGUI(
-                player,
-                Identifier.of(Namespace.of("mocreatures"), "openHorseFuel"),
-                airship,
-                new ContainerHorseFuel(player.inventory, airship)
-        );
+        if(player != null && player.vehicle instanceof EntityDolphin airship && mod_mocreatures.mocGlass.watermobs.jumpdolphin){
+            airship.performHighJump();
+        }
     }
 
     @Override

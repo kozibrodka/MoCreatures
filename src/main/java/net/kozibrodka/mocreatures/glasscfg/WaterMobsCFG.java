@@ -11,6 +11,9 @@ public class WaterMobsCFG {
     @ConfigEntry(name="Dolphin Shallow Bogging", description = "less speed on shallow waters")
     public Boolean shallowdolphin = true;
 
+    @ConfigEntry(name="Dolphin Jump Ability", description = "jump while riding dolphin, H by default")
+    public Boolean jumpdolphin = true;
+
     @ConfigEntry(name="Aggresive Dolphins?", description = "dolphins attack sharks")
     public Boolean attackdolphins = true;
 

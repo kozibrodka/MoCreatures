@@ -355,6 +355,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         }
     }
 
+    @Override
     public int getType()
     {
         return dataTracker.getByte(16);

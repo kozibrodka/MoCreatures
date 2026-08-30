@@ -20,6 +20,9 @@ public class HostileMobsCFG {
     @ConfigEntry(name="§bCave Ogre Drop Diamonds", description = "Disable to get more balanced drops - damaged diamond tools")
     public Boolean caveogrediamond = true;
 
+    @ConfigEntry(name="Ogre Classic Textures", description = "from alpha/early beta versions of mo'creatures")
+    public Boolean ogreClassicTexture = false;
+
     @ConfigEntry(name="Spawn Ogre Difficulty")
     public DifficultyEnum ogreSpawnDifficulty = DifficultyEnum.NORMAL;
 

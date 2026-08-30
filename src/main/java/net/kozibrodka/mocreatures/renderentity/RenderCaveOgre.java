@@ -17,7 +17,7 @@ public class RenderCaveOgre extends RenderOgre
     @Override
     protected boolean a(EntityOgre entityogre, int i)
     {
-        bindTexture("/assets/mocreatures/stationapi/textures/mob/caveogreb.png");
+        bindTexture(entityogre.getTextureB());
         return i == 0;
     }
 

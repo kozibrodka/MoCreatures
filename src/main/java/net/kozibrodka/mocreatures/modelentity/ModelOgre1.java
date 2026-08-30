@@ -18,9 +18,9 @@ public class ModelOgre1 extends BipedEntityModel
         head = new ModelPart(0, 0);
         head.addCuboid(-4F, -25F, -6F, 8, 8, 8, 0.0F);
         head.setPivot(0.0F, 0.0F, 0.0F);
-        ears = new ModelPart(41, 24);
-        ears.addCuboid(-4F, -31F, -3F, 8, 6, 1, 0.5F);
-        ears.setPivot(0.0F, 0.0F, 0.0F);
+        hat = new ModelPart(41, 24);
+        hat.addCuboid(-4F, -31F, -3F, 8, 6, 1, 0.5F);
+        hat.setPivot(0.0F, 0.0F, 0.0F);
         body = new ModelPart(16, 16);
         body.addCuboid(-4F, -14F, -2F, 8, 12, 4, 3F);
         body.setPivot(0.0F, 0.0F, 0.0F);
@@ -49,15 +49,15 @@ public class ModelOgre1 extends BipedEntityModel
         leftArm.render(f5);
         rightLeg.render(f5);
         leftLeg.render(f5);
-        ears.render(f5);
+        hat.render(f5);
     }
 
     @Override
     public void setAngles(float f, float f1, float f2, float f3, float f4, float f5)
     {
         head.yaw = f3 / 57.29578F;
-        ears.yaw = head.yaw;
-        ears.pitch = head.pitch;
+        hat.yaw = head.yaw;
+        hat.pitch = head.pitch;
         rightArm.pitch = MathHelper.cos(f * 0.6662F + 3.141593F) * 2.0F * f1 * 0.5F;
         leftArm.pitch = MathHelper.cos(f * 0.6662F) * 2.0F * f1 * 0.5F;
         rightArm.roll = 0.0F;

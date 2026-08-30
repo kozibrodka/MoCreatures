@@ -17,6 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -34,6 +35,9 @@ public class EntityCustomWM extends WaterCreatureEntity
     private int outOfWater;
     private boolean tamed;
     private final int temper;
+    public int highJumpTick;
+    public int highJumpCooldown;
+    public int afterJumpDiveTick;
 
     public EntityCustomWM(World world)
     {
@@ -74,7 +78,7 @@ public class EntityCustomWM extends WaterCreatureEntity
             PacketHelper.send(new RidingHorsePacket(passenger.yaw, passenger.pitch, ((PlayerEntity) passenger).jumping));
         }
 
-        if(checkWaterCollisions())
+        if(checkWaterCollisions() || getHighJumping())
         {
             pitch = passenger.pitch * 0.5F;
             prevYaw = yaw = passenger.yaw;
@@ -91,6 +95,25 @@ public class EntityCustomWM extends WaterCreatureEntity
         }
         walkAnimationSpeed += (f4 - walkAnimationSpeed) * 0.4F;
         walkAnimationProgress += walkAnimationSpeed;
+    }
+
+
+    public void performHighJump(){
+        if(highJumpCooldown == 0 && !getHighJumping() && checkWaterCollisions()) { //isSwimming()
+            highJumpTick = 10;
+            highJumpCooldown = 40 + (getType() * 2);
+            setHighJumping(true);
+            velocityY += getJumpHeight();
+        }
+    }
+
+    public int getType()
+    {
+        return 0;
+    }
+
+    public double getJumpHeight(){
+        return 0D;
     }
 
     @Override
@@ -149,13 +172,14 @@ public class EntityCustomWM extends WaterCreatureEntity
                 velocityZ += passenger.velocityZ * speed();
                 if(mod_mocreatures.mocGlass.watermobs.diving) {
                     PlayerEntity ep = (PlayerEntity) passenger;
-                    if (ep.jumping) {
+                    if (ep.jumping || afterJumpDiveTick > 0) {
                         velocityY += 0.006D;
                     } else {
-                        velocityY = -0.008D;
+                        if(!getHighJumping()) {
+                            velocityY = -0.008D;
+                        }
                     }
-                    if (!isSwimming()) {
-
+                    if (!isSwimming() && !getHighJumping()) { /// Zanóżenia ponowne - falowanie
                         if (random.nextInt(2) == 0) {
                             velocityY = -0.07D - (random.nextInt(10) * 0.01D / 8);
                         } else {
@@ -164,7 +188,7 @@ public class EntityCustomWM extends WaterCreatureEntity
                     }
                 }else{
                     /// ORYG
-                    if(velocityY != 0.0D)
+                    if(velocityY != 0.0D && !getHighJumping())
                     {
                         velocityY = 0.0D;
                     }
@@ -195,6 +219,16 @@ public class EntityCustomWM extends WaterCreatureEntity
             {
                 velocityY = 0.30000001192092901D;
             }
+        } else if(getHighJumping()){ /// Podczas HIGH JUMP poza wodą.
+            boundingBox.maxY = passenger.boundingBox.maxY;
+            velocityX += passenger.velocityX * speed();
+            velocityZ += passenger.velocityZ * speed();
+            move(velocityX, velocityY, velocityZ);
+
+            pitch = passenger.pitch * 0.5F;
+            prevYaw = yaw = passenger.yaw;
+            setRotation(yaw, pitch);
+
         }
         float f2 = 0.91F;
         float sliperMark;
@@ -503,17 +537,54 @@ public class EntityCustomWM extends WaterCreatureEntity
         return entityitem;
     }
 
+    public void tickInterpelation(){
+        if (this.bodyTrackingIncrements > 0) {
+            double var1 = this.x + (this.lerpX - this.x) / ((double)this.bodyTrackingIncrements - 0.5D);
+            double var3 = this.y + (this.lerpY - this.y) / ((double)this.bodyTrackingIncrements - 2.5D);
+            double var5 = this.z + (this.lerpZ - this.z) / ((double)this.bodyTrackingIncrements - 0.5D);
+
+            double var7;
+            for(var7 = this.lerpYaw - (double)this.yaw; var7 < (double)-180.0F; var7 += (double)360.0F) {
+            }
+
+            while(var7 >= (double)180.0F) {
+                var7 -= (double)360.0F;
+            }
+
+            this.yaw = (float)((double)this.yaw + var7 / (double)this.bodyTrackingIncrements);
+            this.pitch = (float)((double)this.pitch + (this.lerpPitch - (double)this.pitch) / (double)this.bodyTrackingIncrements);
+            --this.bodyTrackingIncrements;
+            this.setPosition(var1, var3, var5);
+            this.setRotation(this.yaw, this.pitch);
+            List var9 = this.world.getEntityCollisions(this, this.boundingBox.contract((double)0.03125F, (double)0.0F, (double)0.03125F));
+            if (var9.size() > 0) {
+                double var10 = (double)0.0F;
+
+                for(int var12 = 0; var12 < var9.size(); ++var12) {
+                    Box var13 = (Box)var9.get(var12);
+                    if (var13.maxY > var10) {
+                        var10 = var13.maxY;
+                    }
+                }
+
+                var3 += var10 - this.boundingBox.minY;
+                this.setPosition(var1, var3, var5);
+            }
+        }
+    }
+
     @Override
     public void tickMovement()
     {
         if(world.isRemote){
-            super.tickMovement();
+            tickInterpelation();
+//            super.tickMovement();
         }
         if(onGround && submergedInWater && !gettingOutOfWater())
         {
             velocityY += 0.029999999999999999D;
         }
-        if(!submergedInWater && random.nextInt(20) == 0) // && passenger == null
+        if(!submergedInWater && random.nextInt(20) == 0 && !getHighJumping()) // && passenger == null
         {
             outOfWater++;
             y += (double) outOfWater / 30;
@@ -553,8 +624,17 @@ public class EntityCustomWM extends WaterCreatureEntity
             }
 
         }
+        ///
+        this.prevDolphinPitch = this.dolphinPitch;
+        double motion = this.velocityY;
+        if (this.checkWaterCollisions()) { motion *= 3D; }
+        float targetPitch = (180F / (1F + (float) Math.pow(Math.E, motion))) - 90F;
+        float smooth = 0.30F; ///0.15F   // Współczynnik wygładzania - im mniejszy, tym wolniej/płynniej 0.30
+        this.dolphinPitch += (targetPitch - this.dolphinPitch) * smooth;
     }
 
+    public float dolphinPitch;
+    public float prevDolphinPitch;
 
     @Override
     public boolean checkWaterCollisions()
@@ -635,6 +715,12 @@ public class EntityCustomWM extends WaterCreatureEntity
 
     public void setDisplayName(boolean flag) {
     }
+
+    public boolean getHighJumping(){
+        return false;
+    }
+
+    public void setHighJumping(boolean flag){}
 
     public void sendPassengerPacket(World world, int entityID, String jokeyID){
         if (net.fabricmc.loader.FabricLoader.INSTANCE.getEnvironmentType() == EnvType.SERVER) {

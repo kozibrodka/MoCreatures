@@ -4,6 +4,8 @@
 
 package net.kozibrodka.mocreatures.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -32,6 +34,26 @@ public class EntityCaveOgre extends EntityOgre
         destroyForce = mod_mocreatures.mocGlass.hostilemobs.cogreStrength;
         fireImmune = false;
         frequencyA = 35;
+    }
+
+    @Override
+    @Environment(EnvType.CLIENT)
+    public String getTexture() {
+        if(mod_mocreatures.mocGlass.hostilemobs.ogreClassicTexture){
+            return "/assets/mocreatures/stationapi/textures/mob/caveogre_classic.png";
+        }else{
+            return this.texture;
+        }
+    }
+
+    @Override
+    @Environment(EnvType.CLIENT)
+    public String getTextureB() {
+        if(mod_mocreatures.mocGlass.hostilemobs.ogreClassicTexture){
+            return "/assets/mocreatures/stationapi/textures/mob/caveogreb_classic.png";
+        }else{
+            return "/assets/mocreatures/stationapi/textures/mob/caveogreb.png";
+        }
     }
 
     @Override

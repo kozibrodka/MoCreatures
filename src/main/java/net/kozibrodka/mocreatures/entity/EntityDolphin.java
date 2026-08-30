@@ -11,6 +11,7 @@ import net.kozibrodka.mocreatures.mocreatures.MoCreatureNamed;
 import net.kozibrodka.mocreatures.mocreatures.MoGuiOpener;
 import net.kozibrodka.mocreatures.network.AskPacket;
 import net.kozibrodka.mocreatures.network.NamePacket;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
@@ -21,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import net.modificationstation.stationapi.api.server.entity.HasTrackingParameters;
@@ -126,6 +128,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/dolphin.png";
                 dolphinspeed = 1.5D;
+                dolphinJump = 0.45D;
                 temper = 50;
                 maxhealth = 20;
             } else
@@ -133,6 +136,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/dolphin2.png";
                 dolphinspeed = 2.5D;
+                dolphinJump = 0.50D;
                 temper = 100;
                 maxhealth = 25;
             } else
@@ -140,6 +144,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/dolphin3.png";
                 dolphinspeed = 3.5D;
+                dolphinJump = 0.55D;
                 temper = 150;
                 maxhealth = 30;
             } else
@@ -147,6 +152,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/dolphin4.png";
                 dolphinspeed = 4.5D;
+                dolphinJump = 0.60D;
                 temper = 200;
                 maxhealth = 35;
             } else
@@ -154,6 +160,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/dolphin5.png";
                 dolphinspeed = 5.5D;
+                dolphinJump = 0.65D;
                 temper = 250;
                 maxhealth = 40;
             } else
@@ -161,9 +168,15 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
             {
                 texture = "/assets/mocreatures/stationapi/textures/mob/dolphin6.png";
                 dolphinspeed = 6.5D;
+                dolphinJump = 0.70D;
                 temper = 300;
                 maxhealth = 45;
             }
+    }
+
+    @Override
+    public double getJumpHeight(){
+        return dolphinJump;
     }
 
     @Override
@@ -282,6 +295,8 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         }
         if(getAdult() && passenger == null)
         {
+            entityplayer.velocityZ *= 0.1D;
+            entityplayer.velocityX *= 0.1D;
             entityplayer.yaw = yaw;
             entityplayer.pitch = pitch;
             entityplayer.y = y;
@@ -328,6 +343,25 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
                 entityplayer.setVehicle(null);
                 passenger = null;
                 setJokey(false);
+            }
+            /// HIGH-JUMP MECHANIC
+            if(getHighJumping()){
+                if(highJumpTick > 0){
+                    highJumpTick --;
+                }
+                if(highJumpTick == 0){
+                    int idA = world.getBlockId(MathHelper.floor(x), MathHelper.floor(boundingBox.minY) - 1, MathHelper.floor(z));
+                    if(checkWaterCollisions() || onGround || (idA != 0 && idA != Block.WATER.id && idA != Block.FLOWING_WATER.id)){ //isSwimming() - chyba gorzej troche działa niż checkWaterCollisions()
+                        setHighJumping(false);
+                        afterJumpDiveTick = 10;
+                    }
+                }
+            }
+            if(afterJumpDiveTick > 0){
+                afterJumpDiveTick--;
+            }
+            if(highJumpCooldown > 0){
+                highJumpCooldown--;
             }
         }
         if(passenger == null && getJokey()){
@@ -655,6 +689,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
 
     public int gestationtime;
     private double dolphinspeed;
+    private double dolphinJump;
     public int maxhealth;
     private int temper;
     public boolean hungry;
@@ -673,6 +708,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         dataTracker.startTracking(21, (byte) 0); //Public
         dataTracker.startTracking(22, (byte) 0); //Has Jokey
         dataTracker.startTracking(23, (byte) 0); //RenderName
+        dataTracker.startTracking(24, (byte) 0); //HighJumping
         dataTracker.startTracking(27, ""); //Owner
         dataTracker.startTracking(28, ""); //Name
         dataTracker.startTracking(29, (byte) 0); //HEALTH
@@ -718,6 +754,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         }
     }
 
+    @Override
     public int getType()
     {
         return dataTracker.getByte(16);
@@ -804,22 +841,24 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         }
     }
 
-    //BRED
-//    public boolean getBred()
-//    {
-//        return (dataTracker.getByte(22) & 1) != 0;
-//    }
-//
-//    public void setBred(boolean flag)
-//    {
-//        if(flag)
-//        {
-//            dataTracker.set(22, (byte) 1);
-//        } else
-//        {
-//            dataTracker.set(22, (byte) 0);
-//        }
-//    }
+    //HIGHJUMP
+    @Override
+    public boolean getHighJumping()
+    {
+        return (dataTracker.getByte(24) & 1) != 0;
+    }
+
+    @Override
+    public void setHighJumping(boolean flag)
+    {
+        if(flag)
+        {
+            dataTracker.set(24, (byte) 1);
+        } else
+        {
+            dataTracker.set(24, (byte) 0);
+        }
+    }
 
     //RENDER NAME
     public boolean getDisplayName()
@@ -888,6 +927,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
     {
         return this.dataTracker.getString(28);
     }
+
 
 
 }
