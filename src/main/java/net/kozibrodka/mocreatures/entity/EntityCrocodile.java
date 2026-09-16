@@ -36,7 +36,7 @@ public class EntityCrocodile extends AnimalEntity implements MobSpawnDataProvide
         setBoundingBoxSpacing(2.0F, 0.6F);
         health = 25;
         movementSpeed = 0.5F;
-        if(!world.isRemote){
+        if(world != null && !world.isRemote){
             setTypeSpawn();
         }
     }

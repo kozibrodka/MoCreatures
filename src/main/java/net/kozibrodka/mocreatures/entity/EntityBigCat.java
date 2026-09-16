@@ -48,6 +48,9 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
         attackRange = 1.0D;
         maxhealth = 25;
         askedServer = false;
+        if(world != null && !world.isRemote){
+            setTypeSpawn();
+        }
     }
 
     @Override
@@ -112,7 +115,7 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
                 maxhealth = 40;
                 return "/assets/mocreatures/stationapi/textures/mob/tigerw.png";
             default:
-                return "";
+                return "/assets/mocreatures/stationapi/textures/mob/lionf.png"; ///spawn-egg
         }
     }
 
@@ -238,10 +241,10 @@ public class EntityBigCat extends AnimalEntity implements MobSpawnDataProvider, 
     @Override
     protected void tickLiving() {
         super.tickLiving();
-        if(!chooseType && !world.isRemote && getType() == 0){
-            chooseType = true;
-            setTypeSpawn();
-        }
+//        if(!chooseType && !world.isRemote && getType() == 0){
+//            chooseType = true;
+//            setTypeSpawn();
+//        }
         this.dataTracker.set(29, (byte) health);
     }
 

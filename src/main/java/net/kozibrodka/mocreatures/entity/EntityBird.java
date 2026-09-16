@@ -41,7 +41,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider,  M
         wingc = 0.0F;
         wingh = 1.0F;
         killedByOtherEntity = true;
-        if(!world.isRemote){
+        if(world != null && !world.isRemote){
             setTypeSpawn();
         }
     }
@@ -439,7 +439,7 @@ public class EntityBird extends AnimalEntity implements MobSpawnDataProvider,  M
     @Environment(EnvType.CLIENT)
     public String getTexture() {
         return switch (getType()) {
-            case 1 -> "/assets/mocreatures/stationapi/textures/mob/birdwhite.png";
+            case 0, 1 -> "/assets/mocreatures/stationapi/textures/mob/birdwhite.png";
             case 2 -> "/assets/mocreatures/stationapi/textures/mob/birdblack.png";
             case 3 -> "/assets/mocreatures/stationapi/textures/mob/birdgreen.png";
             case 4 -> "/assets/mocreatures/stationapi/textures/mob/birdblue.png";

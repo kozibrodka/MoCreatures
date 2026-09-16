@@ -63,7 +63,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
         fireImmune = false;
         roper = null;
         killedByOtherEntity = true; /// CZEMU?
-        if(!world.isRemote){
+        if(world != null && !world.isRemote){
             setTypeSpawn();
         }
     }
@@ -143,7 +143,7 @@ public class EntityHorse extends AnimalEntity implements Inventory, MobSpawnData
                 maxhealth = 50;
                 return "/assets/mocreatures/stationapi/textures/mob/horsebpb.png";
             default:
-                return "";
+                return "/assets/mocreatures/stationapi/textures/mob/horseb.png"; ///spawn-egg
         }
     }
 

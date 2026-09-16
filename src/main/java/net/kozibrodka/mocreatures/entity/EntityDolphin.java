@@ -46,7 +46,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
         maxhealth = 20; /// Delfin zaczyna z 10 i mozna dokarmić. (max health oryg. 30)
         temper = 50;
         killedByOtherEntity = true;
-        if(!world.isRemote){
+        if(world != null && !world.isRemote){
             setTypeSpawn();
         }
     }
@@ -202,7 +202,7 @@ public class EntityDolphin extends EntityCustomWM implements MobSpawnDataProvide
                 maxhealth = 45;
                 return "/assets/mocreatures/stationapi/textures/mob/dolphin6.png";
             default:
-                return "";
+                return "/assets/mocreatures/stationapi/textures/mob/dolphin.png"; ///spawn-egg
         }
     }
 

@@ -23,7 +23,7 @@ public class EntityElephant extends AnimalEntity implements MobSpawnDataProvider
         texture = "/assets/mocreatures/stationapi/textures/mob/elephant.png";
         setBoundingBoxSpacing(2.5F, 2.8F);
         movementSpeed = 1.1F;
-        if(!world.isRemote){
+        if(world != null && !world.isRemote){
             setTypeSpawn();
         }
     }

@@ -42,7 +42,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
         setBoundingBoxSpacing(1.8F, 1.3F);
         health = 25;
         maxhealth = 25;
-        if(!world.isRemote){
+        if(world != null && !world.isRemote){
             setTypeSpawn();
         }
     }
@@ -372,7 +372,7 @@ public class EntityShark extends EntityCustomWM implements MobSpawnDataProvider,
     @Environment(EnvType.CLIENT)
     public String getTexture() {
         return switch (getType()) {
-            case 1 -> "/assets/mocreatures/stationapi/textures/mob/shark.png";
+            case 0, 1 -> "/assets/mocreatures/stationapi/textures/mob/shark.png";
             case 2 -> "/assets/mocreatures/stationapi/textures/mob/sharkmega.png";
             default -> "";
         };

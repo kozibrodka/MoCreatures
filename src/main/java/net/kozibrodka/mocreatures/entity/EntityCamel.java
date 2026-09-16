@@ -37,7 +37,7 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider {
         attackrange = 16D;
         movementSpeed = 0.45F;
         spittimer = 30;
-        if(!world.isRemote){
+        if(world != null && !world.isRemote){
             setTypeSpawn();
         }
     }
@@ -246,22 +246,15 @@ public class EntityCamel extends AnimalEntity implements MobSpawnDataProvider {
     @Override
     @Environment(EnvType.CLIENT)
     public String getTexture() {
-        switch (getType()) {
-            case 1:
-                return "/assets/mocreatures/stationapi/textures/mob/camel.png";
-            case 2:
-                return "/assets/mocreatures/stationapi/textures/mob/camelbrown.png";
-            case 3:
-                return "/assets/mocreatures/stationapi/textures/mob/camelgrey.png";
-            case 4:
-                return "/assets/mocreatures/stationapi/textures/mob/camelblack.png";
-            case 5:
-                return "/assets/mocreatures/stationapi/textures/mob/camelwhite.png";
-            case 6:
-                return "/assets/mocreatures/stationapi/textures/mob/camel256.png";
-            default:
-                return "";
-        }
+        return switch (getType()) {
+            case 0, 1 -> "/assets/mocreatures/stationapi/textures/mob/camel.png";
+            case 2 -> "/assets/mocreatures/stationapi/textures/mob/camelbrown.png";
+            case 3 -> "/assets/mocreatures/stationapi/textures/mob/camelgrey.png";
+            case 4 -> "/assets/mocreatures/stationapi/textures/mob/camelblack.png";
+            case 5 -> "/assets/mocreatures/stationapi/textures/mob/camelwhite.png";
+            case 6 -> "/assets/mocreatures/stationapi/textures/mob/camel256.png";
+            default -> "";
+        };
     }
 
     public int getRandomRace(){

@@ -3,6 +3,8 @@ To Do List:
 - setBoundingBoxSpacing - can it be sync on client? - tak - dzieci powinny być mniejsze...
 z tym, że potem aktualizować ten rozmiar... to już są na prawde takie detale.
 
+//TODO FIshy Egg oraz Shark Egg IMO nie muszą używać DataTrackera...  ovveride setPositionAndAnglesAvoidEntities
+
 - ewentualnie aby drapieżnicy atakowali młode bigCatsy - bo na ten moment dzieciarnia łazi bez konsekwencji.
 
 - Aether psuje entities on server - onGround - jprd

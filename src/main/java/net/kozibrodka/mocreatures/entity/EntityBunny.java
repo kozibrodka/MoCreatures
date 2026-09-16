@@ -36,7 +36,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider,  
         j = random.nextInt(64);
         i = 0;
         killedByOtherEntity = true;
-        if(!world.isRemote){
+        if(world != null && !world.isRemote){
             setTypeSpawn();
         }
     }
@@ -76,7 +76,7 @@ public class EntityBunny extends AnimalEntity implements MobSpawnDataProvider,  
     @Environment(EnvType.CLIENT)
     public String getTexture() {
         return switch (getType()) {
-            case 1 -> "/assets/mocreatures/stationapi/textures/mob/bunny.png";
+            case 0, 1 -> "/assets/mocreatures/stationapi/textures/mob/bunny.png";
             case 2 -> "/assets/mocreatures/stationapi/textures/mob/bunnyb.png";
             case 3 -> "/assets/mocreatures/stationapi/textures/mob/bunnyc.png";
             case 4 -> "/assets/mocreatures/stationapi/textures/mob/bunnyd.png";

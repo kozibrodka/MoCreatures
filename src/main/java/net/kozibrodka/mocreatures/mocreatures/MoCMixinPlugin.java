@@ -1,5 +1,6 @@
 package net.kozibrodka.mocreatures.mocreatures;
 import net.fabricmc.loader.api.FabricLoader;
+import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;

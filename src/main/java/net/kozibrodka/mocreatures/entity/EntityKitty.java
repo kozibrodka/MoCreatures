@@ -45,7 +45,7 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider,  
         madtimer = random.nextInt(5);
         maxhealth = 15;
         foundTree = false;
-        if(!world.isRemote){
+        if(world != null && !world.isRemote){
             setTypeSpawn();
         }
     }
@@ -165,7 +165,7 @@ public class EntityKitty extends AnimalEntity implements MobSpawnDataProvider,  
     @Environment(EnvType.CLIENT)
     public String getTexture() {
         return switch (getType()) {
-            case 1 -> "/assets/mocreatures/stationapi/textures/mob/pussycata.png";
+            case 0, 1 -> "/assets/mocreatures/stationapi/textures/mob/pussycata.png";
             case 2 -> "/assets/mocreatures/stationapi/textures/mob/pussycatb.png";
             case 3 -> "/assets/mocreatures/stationapi/textures/mob/pussycatc.png";
             case 4 -> "/assets/mocreatures/stationapi/textures/mob/pussycatd.png";

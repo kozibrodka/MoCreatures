@@ -33,7 +33,7 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider
         super(world);
         setBoundingBoxSpacing(0.3F, 0.3F);
         health = 4;
-        if(!world.isRemote){
+        if(world != null && !world.isRemote){
             setTypeSpawn();
         }
     }
@@ -57,7 +57,7 @@ public class EntityMouse extends AnimalEntity implements MobSpawnDataProvider
     @Environment(EnvType.CLIENT)
     public String getTexture() {
         return switch (getType()) {
-            case 1 -> "/assets/mocreatures/stationapi/textures/mob/miceg.png";
+            case 0, 1 -> "/assets/mocreatures/stationapi/textures/mob/miceg.png";
             case 2 -> "/assets/mocreatures/stationapi/textures/mob/miceb.png";
             case 3 -> "/assets/mocreatures/stationapi/textures/mob/micew.png";
             default -> "";

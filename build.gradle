@@ -1,6 +1,6 @@
 plugins {
-	id 'fabric-loom' version '1.16.2'
-	id 'babric-loom-extension' version '1.15.3'
+	id 'fabric-loom' version '1.17.20'
+	id 'babric-loom-extension' version '1.17.4'
 	id 'maven-publish'
 	id "com.modrinth.minotaur" version "2.+"
 }
@@ -139,6 +139,7 @@ dependencies {
 	modImplementation(files("libs/mpentityfix_fabric1~client.jar"))
 	modImplementation(files("libs/InventoryTweaks-2.6.1.jar"))
 	modImplementation(files("libs/retroauth-1.1.1.jar"))
+	modImplementation(files("libs/spawneggs-1.13.0-TEST.jar"))
 }
 
 processResources {

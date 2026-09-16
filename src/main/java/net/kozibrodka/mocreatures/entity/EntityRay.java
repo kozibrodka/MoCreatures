@@ -25,7 +25,7 @@ public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider
         setBoundingBoxSpacing(0.6F, 0.5F);
         health = 10; ///
         movementSpeed = 0.3F;
-        if(!world.isRemote){
+        if(world != null && !world.isRemote){
             setTypeSpawn();
         }
     }
@@ -233,7 +233,7 @@ public class EntityRay extends EntityCustomAquaM implements MobSpawnDataProvider
     @Environment(EnvType.CLIENT)
     public String getTexture() {
         return switch (getType()) {
-            case 1 -> "/assets/mocreatures/stationapi/textures/mob/mantray.png";
+            case 0, 1 -> "/assets/mocreatures/stationapi/textures/mob/mantray.png";
             case 2 -> "/assets/mocreatures/stationapi/textures/mob/stingray.png";
             default -> "";
         };

@@ -29,7 +29,7 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider
         setBoundingBoxSpacing(0.5F, 0.5F);
         health = 10;
         attackDamage = 1;
-        if(!world.isRemote){
+        if(world != null && !world.isRemote){
             setTypeSpawn();
         }
     }
@@ -38,7 +38,7 @@ public class EntityRat extends MonsterEntity implements MobSpawnDataProvider
     @Environment(EnvType.CLIENT)
     public String getTexture() {
         return switch (getType()) {
-            case 1 -> "/assets/mocreatures/stationapi/textures/mob/blackrat.png";
+            case 0, 1 -> "/assets/mocreatures/stationapi/textures/mob/blackrat.png";
             case 2 -> "/assets/mocreatures/stationapi/textures/mob/lightrat.png";
             case 3 -> "/assets/mocreatures/stationapi/textures/mob/whiterat.png";
             case 4 -> "/assets/mocreatures/stationapi/textures/mob/hellrat.png";

@@ -32,7 +32,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider
     {
         super(world);
         setBoundingBoxSpacing(0.9F, 1.3F);
-        if(!world.isRemote){
+        if(world != null && !world.isRemote){
             setTypeSpawn();
         }
     }
@@ -75,7 +75,7 @@ public class EntityDeer extends AnimalEntity implements MobSpawnDataProvider
     @Environment(EnvType.CLIENT)
     public String getTexture() {
         return switch (getType()) {
-            case 1 -> "/assets/mocreatures/stationapi/textures/mob/deer.png";
+            case 0, 1 -> "/assets/mocreatures/stationapi/textures/mob/deer.png";
             case 2 -> "/assets/mocreatures/stationapi/textures/mob/deerf.png";
             case 3 -> "/assets/mocreatures/stationapi/textures/mob/deerb.png";
             default -> "";

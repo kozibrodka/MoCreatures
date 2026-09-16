@@ -1,6 +1,8 @@
 
 package net.kozibrodka.mocreatures.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.kozibrodka.mocreatures.events.mod_mocreatures;
 import net.kozibrodka.mocreatures.mocreatures.MoCreatureRacial;
 import net.minecraft.item.Item;
@@ -18,6 +20,12 @@ public class EntityHellRat extends EntityRat implements MobSpawnDataProvider
         health = 20;
         attackDamage = 2;
         fireImmune = true;
+    }
+
+    @Override
+    @Environment(EnvType.CLIENT)
+    public String getTexture() {
+        return "/assets/mocreatures/stationapi/textures/mob/hellrat.png";
     }
 
     @Override

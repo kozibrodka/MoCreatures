@@ -30,7 +30,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
         setBoundingBoxSpacing(0.3F, 0.3F);
         health = 4;
         killedByOtherEntity = true;
-        if(!world.isRemote){
+        if(world != null && !world.isRemote){
             setTypeSpawn();
         }
     }
@@ -263,7 +263,7 @@ public class EntityFishy extends EntityCustomWM implements MobSpawnDataProvider,
     @Environment(EnvType.CLIENT)
     public String getTexture() {
         return switch (getType()) {
-            case 1 -> "/assets/mocreatures/stationapi/textures/mob/fishy1.png";
+            case 0, 1 -> "/assets/mocreatures/stationapi/textures/mob/fishy1.png";
             case 2 -> "/assets/mocreatures/stationapi/textures/mob/fishy2.png";
             case 3 -> "/assets/mocreatures/stationapi/textures/mob/fishy3.png";
             case 4 -> "/assets/mocreatures/stationapi/textures/mob/fishy4.png";
